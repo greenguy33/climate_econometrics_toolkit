@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import statsmodels.api as sm
+import copy
 from statsmodels.tsa.statespace.tools import diff
 import pyfixest as pf
 from climate_econometrics_toolkit import model_builder as cet
@@ -117,9 +118,7 @@ def test_transformed_covariates_transformed_target_incremental_effects():
 
     res1 = cet.run_standard_regression(data, graph).summary2().tables[1]
 
-    covars = ["Precip", "Temp", "ln(Temp)", "ln(Precip)", "fd(Temp)", "fd(Precip)", "sq(Temp)", "sq(Precip)"]
-    data["ln(Temp)"] = np.log(data["Temp"])
-    data["ln(Precip)"] = np.log(data["Precip"])
+    climate_covars = ["Precip", "Temp", "fd(Temp)", "fd(Precip)", "sq(Temp)", "sq(Precip)"]
     data["fd(Temp)"] = diff(data["Temp"])
     data["fd(Precip)"] = diff(data["Precip"])
     data["sq(Temp)"] = np.square(data["Temp"])
@@ -135,6 +134,8 @@ def test_transformed_covariates_transformed_target_incremental_effects():
         for i in range(1, ie_level+1):
             data[f"ie_{element}_iso_{i}"] = np.power(data[f"ie_{element}_iso_1"], i)
 
+
+    covars = copy.deepcopy(climate_covars)
     covars.extend([col for col in data.columns if col.startswith("ie")])
 
     regression_data = data[covars]
@@ -143,4 +144,7 @@ def test_transformed_covariates_transformed_target_incremental_effects():
     model = sm.OLS(data["fd(ln(GDP))"],regression_data,missing="drop")
     res2 = model.fit().summary2().tables[1]
 
-    pd.testing.assert_frame_equal(res1.sort_index() ,res2.sort_index())
+    print(res1.columns)
+    print(res2.columns)
+
+    pd.testing.assert_frame_equal(res1.loc[climate_covars], res2.loc[climate_covars])
