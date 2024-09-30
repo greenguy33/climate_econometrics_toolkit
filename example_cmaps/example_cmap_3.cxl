@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cmap xmlns:dcterms="http://purl.org/dc/terms/" xmlns="http://cmap.ihmc.us/xml/cmap/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+    <res-meta>
+        <dc:title>Untitled 1</dc:title>
+        <dc:creator>
+            <vcard:FN>hayden</vcard:FN>
+            <vcard:EMAIL>hfreedma@uci.edu</vcard:EMAIL>
+            <vcard:ORG>
+                <vcard:Orgname>UCI</vcard:Orgname>
+            </vcard:ORG>
+        </dc:creator>
+        <dc:contributor>
+            <vcard:FN>hayden</vcard:FN>
+            <vcard:EMAIL>hfreedma@uci.edu</vcard:EMAIL>
+            <vcard:ORG>
+                <vcard:Orgname>UCI</vcard:Orgname>
+            </vcard:ORG>
+        </dc:contributor>
+        <dcterms:rightsHolder>
+            <vcard:FN>hayden</vcard:FN>
+            <vcard:EMAIL>hfreedma@uci.edu</vcard:EMAIL>
+            <vcard:ORG>
+                <vcard:Orgname>UCI</vcard:Orgname>
+            </vcard:ORG>
+        </dcterms:rightsHolder>
+        <dcterms:created>2024-09-24T11:50:47+01:00</dcterms:created>
+        <dcterms:modified>2024-09-24T11:50:47+01:00</dcterms:modified>
+        <dc:language>en</dc:language>
+        <dc:format>x-cmap/x-storable</dc:format>
+        <dc:publisher>FIHMC CmapTools 6.04</dc:publisher>
+        <dc:source>cmap:20QVFLQ6L-2B5J0LY-1:20QVFLSZV-2B68MH9-Z:20SPDHNH8-26CPCW5-GN</dc:source>
+    </res-meta>
+    <map width="384" height="347">
+        <concept-list>
+            <concept id="20SPX72SZ-1BGTPLZ-4Q8" label="sq(Temp)"/>
+            <concept id="20QVFW3FQ-23VXCG1-ZV" label="fd(ln(GDP))"/>
+            <concept id="20SPXK1XK-12T88FG-55K" label="ln(Precip)"/>
+            <concept id="20SPXJLSK-1CMSBQW-54Y" label="ln(Temp)"/>
+            <concept id="20SPX7J2X-1W49YX6-4QR" label="fd(Temp)"/>
+            <concept id="20QVG7P6Q-SRK9TP-1Q1" label="Precip"/>
+            <concept id="20SPX7X5W-7BQ2HH-4RV" label="sq(Precip)"/>
+            <concept id="20QVG75H5-V2H5SC-1N9" label="Temp"/>
+            <concept id="20SPX7LPY-R6CCX2-4R4" label="fd(Precip)"/>
+        </concept-list>
+        <linking-phrase-list>
+            <linking-phrase id="20SPX8SMH-1J3LR31-4VL" label=""/>
+            <linking-phrase id="20SPXK5RX-1N740SX-55Y" label=""/>
+            <linking-phrase id="20SPXKDM2-2BR2VDL-56N" label=""/>
+            <linking-phrase id="20SPX8L93-MC7QQD-4T7" label=""/>
+            <linking-phrase id="20SPX8G18-1D53KY-4SK" label=""/>
+            <linking-phrase id="20QVGCR3R-1MJWSPF-1YN" label=""/>
+            <linking-phrase id="20SPX8PSS-8Y0VD2-4TX" label=""/>
+            <linking-phrase id="20QVFZD51-1H52LFR-14N" label=""/>
+        </linking-phrase-list>
+        <connection-list>
+            <connection id="20SPX8PSY-1YJDB67-4V0" from-id="20SPX7X5W-7BQ2HH-4RV" to-id="20SPX8PSS-8Y0VD2-4TX"/>
+            <connection id="20SPX8L98-K3K5HB-4TB" from-id="20SPX72SZ-1BGTPLZ-4Q8" to-id="20SPX8L93-MC7QQD-4T7"/>
+            <connection id="20SPX8G1F-14WSBFB-4SN" from-id="20SPX7J2X-1W49YX6-4QR" to-id="20SPX8G18-1D53KY-4SK"/>
+            <connection id="20SPXKDM8-1R3FXHH-56Y" from-id="20SPXKDM2-2BR2VDL-56N" to-id="20QVFW3FQ-23VXCG1-ZV"/>
+            <connection id="20SPX8SMN-Z9LKSM-4VP" from-id="20SPX7LPY-R6CCX2-4R4" to-id="20SPX8SMH-1J3LR31-4VL"/>
+            <connection id="20QVGCR3X-WG3187-1YR" from-id="20QVG7P6Q-SRK9TP-1Q1" to-id="20QVGCR3R-1MJWSPF-1YN"/>
+            <connection id="20SPX8G1H-29GPMYH-4SV" from-id="20SPX8G18-1D53KY-4SK" to-id="20QVFW3FQ-23VXCG1-ZV"/>
+            <connection id="20SPX8SMP-1WGYRBT-4VW" from-id="20SPX8SMH-1J3LR31-4VL" to-id="20QVFW3FQ-23VXCG1-ZV"/>
+            <connection id="20SPXK5S3-1JLY6NX-561" from-id="20SPXK1XK-12T88FG-55K" to-id="20SPXK5RX-1N740SX-55Y"/>
+            <connection id="20SPX8PSZ-1SMDHK7-4V6" from-id="20SPX8PSS-8Y0VD2-4TX" to-id="20QVFW3FQ-23VXCG1-ZV"/>
+            <connection id="20SPX8L9B-224QL0T-4TJ" from-id="20SPX8L93-MC7QQD-4T7" to-id="20QVFW3FQ-23VXCG1-ZV"/>
+            <connection id="20SPXKDM7-1F7HTCM-56R" from-id="20SPXJLSK-1CMSBQW-54Y" to-id="20SPXKDM2-2BR2VDL-56N"/>
+            <connection id="20QVFZD57-111XXP6-14R" from-id="20QVG75H5-V2H5SC-1N9" to-id="20QVFZD51-1H52LFR-14N"/>
+            <connection id="20QVFZD58-GKPJ16-14X" from-id="20QVFZD51-1H52LFR-14N" to-id="20QVFW3FQ-23VXCG1-ZV"/>
+            <connection id="20SPXK5S4-1C0NP28-567" from-id="20SPXK5RX-1N740SX-55Y" to-id="20QVFW3FQ-23VXCG1-ZV"/>
+            <connection id="20QVGCR3Z-1M5J0JJ-1YX" from-id="20QVGCR3R-1MJWSPF-1YN" to-id="20QVFW3FQ-23VXCG1-ZV"/>
+        </connection-list>
+        <concept-appearance-list>
+            <concept-appearance id="20SPX72SZ-1BGTPLZ-4Q8" x="470" y="155" width="73" height="28" font-color="0,0,0,255" background-color="255,0,0,255" stylesheet-id="20SPX72SZ-R1P8Y2-4QC"/>
+            <concept-appearance id="20QVFW3FQ-23VXCG1-ZV" x="584" y="335" width="83" height="27" background-color="255,0,0,255" stylesheet-id="20QVFW3FQ-89BFQW-ZY"/>
+            <concept-appearance id="20SPXK1XK-12T88FG-55K" x="357" y="470" width="73" height="28" font-color="0,0,0,255" background-color="255,0,0,255" stylesheet-id="20SPXK1XK-9ZZ213-55N"/>
+            <concept-appearance id="20SPXJLSK-1CMSBQW-54Y" x="578" y="153" width="70" height="28" font-color="0,0,0,255" background-color="255,0,0,255" stylesheet-id="20SPXJLSK-5Z8Q0H-551"/>
+            <concept-appearance id="20SPX7J2X-1W49YX6-4QR" x="356" y="180" width="71" height="28" font-color="0,0,0,255" background-color="255,0,0,255" stylesheet-id="20SPX7J2X-1SPJTGC-4QV"/>
+            <concept-appearance id="20QVG7P6Q-SRK9TP-1Q1" x="316" y="405" width="53" height="28" stylesheet-id="20QVG7P6R-1785256-1Q4"/>
+            <concept-appearance id="20SPX7X5W-7BQ2HH-4RV" x="284" y="300" width="76" height="28" font-color="0,0,0,255" background-color="255,0,0,255" stylesheet-id="20SPX7X5X-1VR1Q15-4RY"/>
+            <concept-appearance id="20QVG75H5-V2H5SC-1N9" x="280" y="227" width="50" height="27" stylesheet-id="20QVG75H5-TMKKHR-1ND"/>
+            <concept-appearance id="20SPX7LPY-R6CCX2-4R4" x="281" y="364" width="74" height="28" font-color="0,0,0,255" background-color="255,0,0,255" stylesheet-id="20SPX7LPY-14V4GKZ-4R7"/>
+        </concept-appearance-list>
+        <linking-phrase-appearance-list>
+            <linking-phrase-appearance id="20SPX8SMH-1J3LR31-4VL" x="432" y="349" width="2" height="16"/>
+            <linking-phrase-appearance id="20SPXK5RX-1N740SX-55Y" x="470" y="402" width="2" height="16"/>
+            <linking-phrase-appearance id="20SPXKDM2-2BR2VDL-56N" x="581" y="244" width="2" height="16"/>
+            <linking-phrase-appearance id="20SPX8L93-MC7QQD-4T7" x="527" y="245" width="2" height="16"/>
+            <linking-phrase-appearance id="20SPX8G18-1D53KY-4SK" x="470" y="257" width="2" height="16"/>
+            <linking-phrase-appearance id="20QVGCR3R-1MJWSPF-1YN" x="439" y="369" width="2" height="16"/>
+            <linking-phrase-appearance id="20SPX8PSS-8Y0VD2-4TX" x="434" y="317" width="2" height="16"/>
+            <linking-phrase-appearance id="20QVFZD51-1H52LFR-14N" x="429" y="275" width="2" height="16"/>
+        </linking-phrase-appearance-list>
+        <connection-appearance-list>
+            <connection-appearance id="20SPX8PSY-1YJDB67-4V0" from-pos="center" to-pos="center"/>
+            <connection-appearance id="20SPX8L98-K3K5HB-4TB" from-pos="center" to-pos="center"/>
+            <connection-appearance id="20SPX8G1F-14WSBFB-4SN" from-pos="center" to-pos="center"/>
+            <connection-appearance id="20SPXKDM8-1R3FXHH-56Y" from-pos="center" to-pos="top"/>
+            <connection-appearance id="20SPX8SMN-Z9LKSM-4VP" from-pos="center" to-pos="center"/>
+            <connection-appearance id="20QVGCR3X-WG3187-1YR" from-pos="center" to-pos="center"/>
+            <connection-appearance id="20SPX8G1H-29GPMYH-4SV" from-pos="center" to-pos="top"/>
+            <connection-appearance id="20SPX8SMP-1WGYRBT-4VW" from-pos="center" to-pos="left"/>
+            <connection-appearance id="20SPXK5S3-1JLY6NX-561" from-pos="center" to-pos="center"/>
+            <connection-appearance id="20SPX8PSZ-1SMDHK7-4V6" from-pos="center" to-pos="left"/>
+            <connection-appearance id="20SPX8L9B-224QL0T-4TJ" from-pos="center" to-pos="top"/>
+            <connection-appearance id="20SPXKDM7-1F7HTCM-56R" from-pos="center" to-pos="center"/>
+            <connection-appearance id="20QVFZD57-111XXP6-14R" from-pos="center" to-pos="center"/>
+            <connection-appearance id="20QVFZD58-GKPJ16-14X" from-pos="center" to-pos="top-left"/>
+            <connection-appearance id="20SPXK5S4-1C0NP28-567" from-pos="center" to-pos="center"/>
+            <connection-appearance id="20QVGCR3Z-1M5J0JJ-1YX" from-pos="center" to-pos="bottom-left"/>
+        </connection-appearance-list>
+        <style-sheet-list>
+            <style-sheet id="_Default_">
+                <map-style background-color="255,255,255,0"/>
+                <concept-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="4" background-color="237,244,246,255" background-image-style="full" border-color="0,0,0,255" border-style="solid" border-thickness="1"
+                    border-shape="rounded-rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none" min-width="-1" min-height="-1" max-width="-1.0"/>
+                <linking-phrase-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="1" background-color="0,0,255,0" background-image-style="full" border-color="0,0,0,0" border-style="solid" border-thickness="1"
+                    border-shape="rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none"/>
+                <connection-style color="0,0,0,255" style="solid" thickness="1" type="straight" arrowhead="if-to-concept-and-slopes-up"/>
+                <resource-style font-name="SanSerif" font-size="12" font-style="plain" font-color="0,0,0,255" background-color="192,192,192,255"/>
+            </style-sheet>
+            <style-sheet id="_LatestChanges_">
+                <concept-style font-color="0,0,0,255" background-color="255,0,0,255"/>
+            </style-sheet>
+            <style-sheet id="20SPX72SZ-R1P8Y2-4QC">
+                <concept-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="4" background-color="237,244,246,255" background-image-style="full" border-color="0,0,0,255" border-style="solid" border-thickness="1"
+                    border-shape="rounded-rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none" min-width="-1" min-height="-1" max-width="-1.0"/>
+                <linking-phrase-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="1" background-color="0,0,255,0" background-image-style="full" border-color="0,0,0,0" border-style="solid" border-thickness="1"
+                    border-shape="rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none"/>
+                <connection-style color="0,0,0,255" style="solid" thickness="1" type="straight" arrowhead="if-to-concept-and-slopes-up"/>
+                <resource-style font-name="SanSerif" font-size="12" font-style="plain" font-color="0,0,0,255" background-color="192,192,192,255"/>
+            </style-sheet>
+            <style-sheet id="20QVFW3FQ-89BFQW-ZY">
+                <concept-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="4" background-color="237,244,246,255" background-image-style="full" border-color="0,0,0,255" border-style="solid" border-thickness="1"
+                    border-shape="rounded-rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none" min-width="-1" min-height="-1" max-width="-1.0"/>
+                <linking-phrase-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="1" background-color="0,0,255,0" background-image-style="full" border-color="0,0,0,0" border-style="solid" border-thickness="1"
+                    border-shape="rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none"/>
+                <connection-style color="0,0,0,255" style="solid" thickness="1" type="straight" arrowhead="if-to-concept-and-slopes-up"/>
+                <resource-style font-name="SanSerif" font-size="12" font-style="plain" font-color="0,0,0,255" background-color="192,192,192,255"/>
+            </style-sheet>
+            <style-sheet id="20SPXK1XK-9ZZ213-55N">
+                <concept-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="4" background-color="237,244,246,255" background-image-style="full" border-color="0,0,0,255" border-style="solid" border-thickness="1"
+                    border-shape="rounded-rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none" min-width="-1" min-height="-1" max-width="-1.0"/>
+                <linking-phrase-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="1" background-color="0,0,255,0" background-image-style="full" border-color="0,0,0,0" border-style="solid" border-thickness="1"
+                    border-shape="rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none"/>
+                <connection-style color="0,0,0,255" style="solid" thickness="1" type="straight" arrowhead="if-to-concept-and-slopes-up"/>
+                <resource-style font-name="SanSerif" font-size="12" font-style="plain" font-color="0,0,0,255" background-color="192,192,192,255"/>
+            </style-sheet>
+            <style-sheet id="20SPXJLSK-5Z8Q0H-551">
+                <concept-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="4" background-color="237,244,246,255" background-image-style="full" border-color="0,0,0,255" border-style="solid" border-thickness="1"
+                    border-shape="rounded-rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none" min-width="-1" min-height="-1" max-width="-1.0"/>
+                <linking-phrase-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="1" background-color="0,0,255,0" background-image-style="full" border-color="0,0,0,0" border-style="solid" border-thickness="1"
+                    border-shape="rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none"/>
+                <connection-style color="0,0,0,255" style="solid" thickness="1" type="straight" arrowhead="if-to-concept-and-slopes-up"/>
+                <resource-style font-name="SanSerif" font-size="12" font-style="plain" font-color="0,0,0,255" background-color="192,192,192,255"/>
+            </style-sheet>
+            <style-sheet id="20SPX7J2X-1SPJTGC-4QV">
+                <concept-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="4" background-color="237,244,246,255" background-image-style="full" border-color="0,0,0,255" border-style="solid" border-thickness="1"
+                    border-shape="rounded-rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none" min-width="-1" min-height="-1" max-width="-1.0"/>
+                <linking-phrase-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="1" background-color="0,0,255,0" background-image-style="full" border-color="0,0,0,0" border-style="solid" border-thickness="1"
+                    border-shape="rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none"/>
+                <connection-style color="0,0,0,255" style="solid" thickness="1" type="straight" arrowhead="if-to-concept-and-slopes-up"/>
+                <resource-style font-name="SanSerif" font-size="12" font-style="plain" font-color="0,0,0,255" background-color="192,192,192,255"/>
+            </style-sheet>
+            <style-sheet id="20QVG7P6R-1785256-1Q4">
+                <concept-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="4" background-color="237,244,246,255" background-image-style="full" border-color="0,0,0,255" border-style="solid" border-thickness="1"
+                    border-shape="rounded-rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none" min-width="-1" min-height="-1" max-width="-1.0"/>
+                <linking-phrase-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="1" background-color="0,0,255,0" background-image-style="full" border-color="0,0,0,0" border-style="solid" border-thickness="1"
+                    border-shape="rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none"/>
+                <connection-style color="0,0,0,255" style="solid" thickness="1" type="straight" arrowhead="if-to-concept-and-slopes-up"/>
+                <resource-style font-name="SanSerif" font-size="12" font-style="plain" font-color="0,0,0,255" background-color="192,192,192,255"/>
+            </style-sheet>
+            <style-sheet id="20SPX7X5X-1VR1Q15-4RY">
+                <concept-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="4" background-color="237,244,246,255" background-image-style="full" border-color="0,0,0,255" border-style="solid" border-thickness="1"
+                    border-shape="rounded-rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none" min-width="-1" min-height="-1" max-width="-1.0"/>
+                <linking-phrase-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="1" background-color="0,0,255,0" background-image-style="full" border-color="0,0,0,0" border-style="solid" border-thickness="1"
+                    border-shape="rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none"/>
+                <connection-style color="0,0,0,255" style="solid" thickness="1" type="straight" arrowhead="if-to-concept-and-slopes-up"/>
+                <resource-style font-name="SanSerif" font-size="12" font-style="plain" font-color="0,0,0,255" background-color="192,192,192,255"/>
+            </style-sheet>
+            <style-sheet id="20QVG75H5-TMKKHR-1ND">
+                <concept-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="4" background-color="237,244,246,255" background-image-style="full" border-color="0,0,0,255" border-style="solid" border-thickness="1"
+                    border-shape="rounded-rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none" min-width="-1" min-height="-1" max-width="-1.0"/>
+                <linking-phrase-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="1" background-color="0,0,255,0" background-image-style="full" border-color="0,0,0,0" border-style="solid" border-thickness="1"
+                    border-shape="rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none"/>
+                <connection-style color="0,0,0,255" style="solid" thickness="1" type="straight" arrowhead="if-to-concept-and-slopes-up"/>
+                <resource-style font-name="SanSerif" font-size="12" font-style="plain" font-color="0,0,0,255" background-color="192,192,192,255"/>
+            </style-sheet>
+            <style-sheet id="20SPX7LPY-14V4GKZ-4R7">
+                <concept-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="4" background-color="237,244,246,255" background-image-style="full" border-color="0,0,0,255" border-style="solid" border-thickness="1"
+                    border-shape="rounded-rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none" min-width="-1" min-height="-1" max-width="-1.0"/>
+                <linking-phrase-style font-name="Verdana" font-size="12" font-style="plain" font-color="0,0,0,255" text-margin="1" background-color="0,0,255,0" background-image-style="full" border-color="0,0,0,0" border-style="solid" border-thickness="1"
+                    border-shape="rectangle" border-shape-rrarc="15.0" text-alignment="center" shadow-color="none"/>
+                <connection-style color="0,0,0,255" style="solid" thickness="1" type="straight" arrowhead="if-to-concept-and-slopes-up"/>
+                <resource-style font-name="SanSerif" font-size="12" font-style="plain" font-color="0,0,0,255" background-color="192,192,192,255"/>
+            </style-sheet>
+        </style-sheet-list>
+        <extra-graphical-properties-list>
+            <properties-list id="20SPDHNH8-26CPCW5-GN">
+                <property key="StyleSheetGroup_0" value="//*@!#$%%^&amp;*()() No Grouped StyleSheets @"/>
+            </properties-list>
+        </extra-graphical-properties-list>
+    </map>
+</cmap>
