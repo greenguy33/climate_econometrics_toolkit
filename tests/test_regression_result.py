@@ -4,7 +4,10 @@ import statsmodels.api as sm
 import copy
 from statsmodels.tsa.statespace.tools import diff
 import pyfixest as pf
-from climate_econometrics_toolkit import model_builder as cet
+import climate_econometrics_toolkit.model_builder as cet
+import climate_econometrics_toolkit.climate_econometrics_regression as cer
+import climate_econometrics_toolkit.evaluate_model as cee
+import climate_econometrics_toolkit.climate_econometrics_utils as utils
 
 
 def get_data():
@@ -18,8 +21,13 @@ def get_data():
 def test_simple_covariates():
 
     data = get_data()
-    graph = cet.parse_cxl("example_cmaps/example_cmap_1.cxl")
-    res1 = cet.run_standard_regression(data, graph).summary2().tables[1]
+    model = cet.parse_cxl("example_cmaps/example_cmap_1.cxl")
+    transformed_data = utils.transform_data(data, model)
+    # TODO: check that transformed data has the right columns
+    res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
+    model = cee.evaluate_model(transformed_data, model)
+
+    assert not np.isnan(model.out_sample_mse)
 
     covars = ["Precip", "Temp"]
     regression_data = data[covars]
@@ -31,14 +39,14 @@ def test_simple_covariates():
 
 def test_simple_covariates_transformed_target():
 
-    graph = cet.parse_cxl("example_cmaps/example_cmap_2.cxl")
+    data = get_data()
+    model = cet.parse_cxl("example_cmaps/example_cmap_2.cxl")
+    transformed_data = utils.transform_data(data, model)
+    # TODO: check that transformed data has the right columns
+    res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
+    model = cee.evaluate_model(transformed_data, model)
 
-    data = pd.read_csv("GrowthClimateDataset.csv")
-    data["GDP"] = data["TotGDP"]
-    data["Temp"] = data["UDel_temp_popweight"]
-    data["Precip"] = data["UDel_precip_popweight"]
-
-    res1 = cet.run_standard_regression(data, graph).summary2().tables[1]
+    assert not np.isnan(model.out_sample_mse)
 
     covars = ["Precip", "Temp"]
     regression_data = data[covars]
@@ -53,14 +61,14 @@ def test_simple_covariates_transformed_target():
 
 def test_transformed_covariates_transformed_target():
 
-    graph = cet.parse_cxl("example_cmaps/example_cmap_3.cxl")
+    data = get_data()
+    model = cet.parse_cxl("example_cmaps/example_cmap_3.cxl")
+    transformed_data = utils.transform_data(data, model)
+    # TODO: check that transformed data has the right columns
+    res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
+    model = cee.evaluate_model(transformed_data, model)
 
-    data = pd.read_csv("GrowthClimateDataset.csv")
-    data["GDP"] = data["TotGDP"]
-    data["Temp"] = data["UDel_temp_popweight"]
-    data["Precip"] = data["UDel_precip_popweight"]
-
-    res1 = cet.run_standard_regression(data, graph).summary2().tables[1]
+    assert not np.isnan(model.out_sample_mse)
 
     covars = ["Precip", "Temp", "ln(Temp)", "ln(Precip)", "fd(Temp)", "fd(Precip)", "sq(Temp)", "sq(Precip)"]
     data["ln(Temp)"] = np.log(data["Temp"])
@@ -81,14 +89,17 @@ def test_transformed_covariates_transformed_target():
 
 def test_transformed_covariates_transformed_target_fixed_effects():
 
-    graph = cet.parse_cxl("example_cmaps/example_cmap_4.cxl")
+    data = get_data()
+    model = cet.parse_cxl("example_cmaps/example_cmap_4.cxl")
+    transformed_data = utils.transform_data(data, model)
+    # TODO: check that transformed data has the right columns
+    res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
+    model = cee.evaluate_model(transformed_data, model)
 
-    data = pd.read_csv("GrowthClimateDataset.csv")
-    data["GDP"] = data["TotGDP"]
-    data["Temp"] = data["UDel_temp_popweight"]
-    data["Precip"] = data["UDel_precip_popweight"]
+    res1 = cer.run_standard_regression(data, model).summary2().tables[1]
+    model = cee.evaluate_model(data, model)
 
-    res1 = cet.run_standard_regression(data, graph).summary2().tables[1]
+    assert not np.isnan(model.out_sample_mse)
 
     data["fd_temp"] = diff(data["Temp"])
     data["fd_precip"] = diff(data["Precip"])
@@ -109,14 +120,14 @@ def test_transformed_covariates_transformed_target_fixed_effects():
 
 def test_transformed_covariates_transformed_target_incremental_effects():
 
-    graph = cet.parse_cxl("example_cmaps/example_cmap_5.cxl")
+    data = get_data()
+    model = cet.parse_cxl("example_cmaps/example_cmap_5.cxl")
+    transformed_data = utils.transform_data(data, model)
+    # TODO: check that transformed data has the right columns
+    res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
+    model = cee.evaluate_model(transformed_data, model)
 
-    data = pd.read_csv("GrowthClimateDataset.csv")
-    data["GDP"] = data["TotGDP"]
-    data["Temp"] = data["UDel_temp_popweight"]
-    data["Precip"] = data["UDel_precip_popweight"]
-
-    res1 = cet.run_standard_regression(data, graph).summary2().tables[1]
+    assert not np.isnan(model.out_sample_mse)
 
     climate_covars = ["Precip", "Temp", "fd(Temp)", "fd(Precip)", "sq(Temp)", "sq(Precip)"]
     data["fd(Temp)"] = diff(data["Temp"])
@@ -143,8 +154,5 @@ def test_transformed_covariates_transformed_target_incremental_effects():
     
     model = sm.OLS(data["fd(ln(GDP))"],regression_data,missing="drop")
     res2 = model.fit().summary2().tables[1]
-
-    print(res1.columns)
-    print(res2.columns)
 
     pd.testing.assert_frame_equal(res1.loc[climate_covars], res2.loc[climate_covars])
