@@ -1,8 +1,13 @@
 import numpy as np
+import os
+import shutil
+import time
+import csv
 
 class ClimateEconometricsModel:
 
 	attrib_list = [
+		"filepath",
 		"target_var",
 		"covariates",
 		"fixed_effects",
@@ -16,6 +21,7 @@ class ClimateEconometricsModel:
 	]
 
 	def __init__(self):
+		self.filepath = np.NaN
 		self.target_var = np.NaN
 		self.covariates = []
 		self.model_vars = []
@@ -38,8 +44,15 @@ class ClimateEconometricsModel:
 		else:
 			return False
 
-	# def save_model_to_file(self):
-	# 	with open(f"output/models/{self.target_var}_best_model_from_grid_search.csv", "w") as write_file:
-	# 		writer = csv.writer(write_file)
-	# 		for val in self.attrib_list:
-	# 			writer.writerow([val, getattr(self, val)])
+	def save_model_to_cache(self):
+		# TODO: make this file path more flexible
+		dir_name = f"model_cache/{time.time()}"
+		os.makedirs(dir_name)
+		with open(f"{dir_name}/model.csv", "w") as write_file:
+			writer = csv.writer(write_file)
+			writer.writerow(["model_attribute","attribute_value"])
+			for val in self.attrib_list:
+				writer.writerow([val, getattr(self, val)])
+		shutil.copyfile(self.filepath, f"{dir_name}/cmap.cxl")
+		# TODO: Figure out why this is not working
+		self.filepath = f"{dir_name}/cmap.cxl"

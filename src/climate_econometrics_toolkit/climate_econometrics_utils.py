@@ -2,6 +2,7 @@ import numpy as np
 from statsmodels.tsa.statespace.tools import diff
 import pandas as pd
 import statsmodels.api as sm
+import os
 
 import warnings
 warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning)
@@ -70,3 +71,25 @@ def get_model_vars(data, model, demeaned):
 		for effect_col in [col for col in data if any(col.startswith(val) for val in supported_effects)]:
 			model_vars.append(effect_col)
 	return model_vars
+
+
+def get_last_model_out_sample_mse():
+	# TODO: make this path more flexible
+	cache_files = os.listdir("model_cache/")
+	if len(cache_files) == 0:
+		return None
+	latest_model_dir = max([float(file) for file in cache_files])
+	latest_model = pd.read_csv(f"model_cache/{latest_model_dir}/model.csv")
+	return float(latest_model["attribute_value"][latest_model['model_attribute']=='out_sample_mse'].values[0])
+
+
+def compare_to_last_model(model):
+	last_model_osmse = get_last_model_out_sample_mse()
+	if last_model_osmse == None:
+		print(f"This model has out-of-sample MSE of {str(model.out_sample_mse)[:7]}. There is no model in the cache to compare to this model.")
+	elif last_model_osmse < model.out_sample_mse:
+		print(f"This model has HIGHER OUT-OF-SAMPLE MSE {str(model.out_sample_mse)[:7]} than the last model {str(last_model_osmse)[:7]}")
+	elif last_model_osmse > model.out_sample_mse:
+		print(f"This model has LOWER OUT-OF-SAMPLE MSE {str(model.out_sample_mse)[:7]} than the last model {str(last_model_osmse)[:7]}")
+	elif last_model_osmse == model.out_sample_mse:
+		print(f"This model has THE SAME OUT-OF-SAMPLE MSE {str(model.out_sample_mse)[:7]} as the last model {str(last_model_osmse)[:7]}")

@@ -19,7 +19,7 @@ supported_functions = ["fd","sq","ln"]
 supported_effects = ["fe", "ie"]
 
 
-def build_model_from_graph(graph):
+def build_model_from_graph(graph, file):
 	model = cem.ClimateEconometricsModel()
 	target_var = [node for node in graph.nodes() if len(list(graph.successors(node))) == 0][0]
 	input_nodes = list(graph.predecessors(target_var))
@@ -34,12 +34,13 @@ def build_model_from_graph(graph):
 	model.model_vars = covars + [target_var]
 	model.fixed_effects = fixed_effects
 	model.incremental_effects = incremental_effects
+	model.filepath = file
 	return model
 
 
-def parse_cxl(file):
+def parse_cxl(filepath):
 
-	file = ET.parse(file)
+	file = ET.parse(filepath)
 	root = file.getroot()
 
 	fromIds, toIds = [], []
@@ -69,4 +70,4 @@ def parse_cxl(file):
 	len_target_vars = len([node for node in graph.nodes() if len(list(graph.successors(node))) == 0])
 	assert len_target_vars == 1, f"There must be exactly one target variable: found {len_target_vars}"
 
-	return build_model_from_graph(graph)
+	return build_model_from_graph(graph, filepath)

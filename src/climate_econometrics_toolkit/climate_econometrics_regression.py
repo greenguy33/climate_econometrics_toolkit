@@ -15,8 +15,7 @@ def run_standard_regression(transformed_data, model, demeaned=False):
 	return regression_result
 
 
-def run_bayesian_regression(data, model):
-	transformed_data = utils.transform_data(data, model).dropna().reset_index(drop=True)
+def run_bayesian_regression(transformed_data, model):
 	with pm.Model() as pymc_model:
 		covar_coefs = pm.Normal("covar_coefs", 0, 10, shape=(len(model.covariates)))
 		regressors = pm.Deterministic("regressors", pt.sum(covar_coefs * transformed_data[model.covariates], axis=1))
