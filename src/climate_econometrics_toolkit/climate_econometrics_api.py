@@ -13,39 +13,47 @@ def evaluate_model(data_file, model):
 	return_string = ""
 	model_id = None
 	try:
-		model, unused_nodes = mb.parse_model_input(model)
+		model, unused_nodes = mb.parse_model_input(model, data_file)
 		if len(unused_nodes) > 0:
 			return_string += "\nWARNING: The following nodes are unused in the regression. " + str(unused_nodes)
 		data = pd.read_csv(data_file)
 		data.columns = data.columns.str.replace(' ', '_') 
-		assert len(set(data.columns)) == len(data.columns), "Two column names in dataset collide when spaces are removed. Please correct."
-		model = ce_eval.evaluate_model(data, model)
-		return_string += "\n" + utils.compare_to_last_model(model)
-		model_id = model.save_model_to_cache()
+		if len(set(data.columns)) != len(data.columns): 
+			return_string += "\nTwo column names in dataset collide when spaces are removed. Please correct."
+		else:
+			model = ce_eval.evaluate_model(data, model)
+			return_string += "\n" + utils.compare_to_last_model(model, data_file)
+			model_id = model.save_model_to_cache()
 	except BaseException as e:
 		return_string += "\nERROR: " + str(e)
 	return model_id, return_string
 
 
-def get_best_model():
+def get_best_model_for_dataset(filename):
 	# TODO: make this path more flexible
+	min_mse, model_id = None, None
 	out_sample_mses = {}
 	cache_files = os.listdir("model_cache/")
 	if len(cache_files) == 0:
-		return None
+		return None, None
 	for file in cache_files:
-		latest_model = pd.read_csv(f"model_cache/{file}/model.csv")
-		out_sample_mses[file] = float(latest_model["attribute_value"][latest_model['model_attribute']=='out_sample_mse'].values[0])
-	min_mse = min(out_sample_mses.values())
-	model_id = [file for file in out_sample_mses if out_sample_mses[file] == min_mse][0]
+		if utils.get_attribute_from_model_file("dataset", file) == filename:
+			out_sample_mses[file] = float(utils.get_attribute_from_model_file("out_sample_mse", file))
+	if len(out_sample_mses) > 0:
+		min_mse = min(out_sample_mses.values())
+		model_id = [file for file in out_sample_mses if out_sample_mses[file] == min_mse][0]
 	return min_mse, model_id
+		
 
-			
-
-def clear_model_cache():
+def clear_model_cache(dataset):
+	if dataset == None:
 	# TODO: make this path more flexible
-	shutil.rmtree("model_cache/")
-	os.makedirs("model_cache/")
+		shutil.rmtree("model_cache/")
+		os.makedirs("model_cache/")
+	else:
+		dataset_cache_files = [float(file) for file in os.listdir("model_cache/") if utils.get_attribute_from_model_file("dataset", file) == dataset]
+		for dir in dataset_cache_files:
+			shutil.rmtree(f"model_cache/{dir}")
 
 
 def run_bayesian_regression(data, file):

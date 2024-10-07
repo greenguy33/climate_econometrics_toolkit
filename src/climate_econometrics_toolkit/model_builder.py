@@ -19,7 +19,7 @@ supported_functions = ["fd","sq","ln"]
 supported_effects = ["fe", "ie"]
 
 
-def build_model_from_graph(graph):
+def build_model_from_graph(graph, dataset):
 	model = cem.ClimateEconometricsModel()
 	target_var = [node for node in graph.nodes() if len(list(graph.successors(node))) == 0][0]
 	input_nodes = list(graph.predecessors(target_var))
@@ -34,10 +34,11 @@ def build_model_from_graph(graph):
 	model.model_vars = covars + [target_var]
 	model.fixed_effects = fixed_effects
 	model.incremental_effects = incremental_effects
+	model.dataset = dataset
 	return model, unused_nodes
 
 
-def parse_model_input(model):
+def parse_model_input(model, dataset):
 	from_indices,to_indices = model[0],model[1]
 	graph = nx.DiGraph()
 	for index in range(len(from_indices)):
@@ -47,39 +48,39 @@ def parse_model_input(model):
 	len_target_vars = len([node for node in graph.nodes() if len(list(graph.successors(node))) == 0])
 	assert len_target_vars == 1, f"There must be exactly one target variable: found {len_target_vars}"
 
-	return build_model_from_graph(graph)
+	return build_model_from_graph(graph, dataset)
 
 
-def parse_cxl(filepath):
+# def parse_cxl(filepath):
 
-	file = ET.parse(filepath)
-	root = file.getroot()
+# 	file = ET.parse(filepath)
+# 	root = file.getroot()
 
-	fromIds, toIds = [], []
-	nodeMap, edgeMap, finalMap = {}, {}, {}
+# 	fromIds, toIds = [], []
+# 	nodeMap, edgeMap, finalMap = {}, {}, {}
 
-	for child in root.iter("{http://cmap.ihmc.us/xml/cmap/}map"):
-		for concept in child.iter("{http://cmap.ihmc.us/xml/cmap/}concept"):
-			nodeMap[concept.get("id")] = concept.get("label").strip()
-		for link in child.iter("{http://cmap.ihmc.us/xml/cmap/}connection"):
-			if link.get("from-id") not in edgeMap:
-				edgeMap[link.get("from-id")] = []
-			edgeMap[link.get("from-id")].append(link.get("to-id"))
+# 	for child in root.iter("{http://cmap.ihmc.us/xml/cmap/}map"):
+# 		for concept in child.iter("{http://cmap.ihmc.us/xml/cmap/}concept"):
+# 			nodeMap[concept.get("id")] = concept.get("label").strip()
+# 		for link in child.iter("{http://cmap.ihmc.us/xml/cmap/}connection"):
+# 			if link.get("from-id") not in edgeMap:
+# 				edgeMap[link.get("from-id")] = []
+# 			edgeMap[link.get("from-id")].append(link.get("to-id"))
 		
-	for node in nodeMap:
-		if node in edgeMap:
-			target_nodes = []
-			for edge in edgeMap[node]:
-				target_nodes.extend(edgeMap[edge])
-			finalMap[nodeMap[node]] = [nodeMap[node] for node in target_nodes]
+# 	for node in nodeMap:
+# 		if node in edgeMap:
+# 			target_nodes = []
+# 			for edge in edgeMap[node]:
+# 				target_nodes.extend(edgeMap[edge])
+# 			finalMap[nodeMap[node]] = [nodeMap[node] for node in target_nodes]
 
-	graph = nx.DiGraph()
-	for source, targets in finalMap.items():
-		for target in targets:
-			graph.add_edge(source, target)
+# 	graph = nx.DiGraph()
+# 	for source, targets in finalMap.items():
+# 		for target in targets:
+# 			graph.add_edge(source, target)
 
-	assert nx.is_directed_acyclic_graph(graph), "Graph is cyclical - please remove cycles"
-	len_target_vars = len([node for node in graph.nodes() if len(list(graph.successors(node))) == 0])
-	assert len_target_vars == 1, f"There must be exactly one target variable: found {len_target_vars}"
+# 	assert nx.is_directed_acyclic_graph(graph), "Graph is cyclical - please remove cycles"
+# 	len_target_vars = len([node for node in graph.nodes() if len(list(graph.successors(node))) == 0])
+# 	assert len_target_vars == 1, f"There must be exactly one target variable: found {len_target_vars}"
 
-	return build_model_from_graph(graph, filepath)
+# 	return build_model_from_graph(graph, filepath)

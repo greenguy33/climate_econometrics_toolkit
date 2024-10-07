@@ -73,18 +73,23 @@ def get_model_vars(data, model, demeaned):
 	return model_vars
 
 
-def get_last_model_out_sample_mse():
+def get_attribute_from_model_file(attribute, file):
+	model = pd.read_csv(f"model_cache/{file}/model.csv")
+	return model["attribute_value"][model['model_attribute']==attribute].values[0]
+
+
+def get_last_model_out_sample_mse(data_file):
 	# TODO: make this path more flexible
-	cache_files = os.listdir("model_cache/")
-	if len(cache_files) == 0:
+	dataset_cache_files = [float(file) for file in os.listdir("model_cache/") if get_attribute_from_model_file("dataset", file) == data_file]
+	if len(dataset_cache_files) == 0:
 		return None
-	latest_model_dir = max([float(file) for file in cache_files])
-	latest_model = pd.read_csv(f"model_cache/{latest_model_dir}/model.csv")
+	latest_model = pd.read_csv(f"model_cache/{max(dataset_cache_files)}/model.csv")
+
 	return float(latest_model["attribute_value"][latest_model['model_attribute']=='out_sample_mse'].values[0])
 
 
-def compare_to_last_model(model):
-	last_model_osmse = get_last_model_out_sample_mse()
+def compare_to_last_model(model, data_file):
+	last_model_osmse = get_last_model_out_sample_mse(data_file)
 	if last_model_osmse == None:
 		return(f"This model has out-of-sample MSE of {str(model.out_sample_mse)[:7]}. There is no model in the cache to compare to this model.")
 	elif last_model_osmse < model.out_sample_mse:

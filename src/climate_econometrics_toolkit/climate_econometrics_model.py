@@ -16,7 +16,8 @@ class ClimateEconometricsModel:
 		"out_sample_mse_reduction",
 		"in_sample_mse_reduction",
 		"out_sample_pred_int_acc",
-		"in_sample_pred_int_acc"
+		"in_sample_pred_int_acc",
+		"dataset"
 	]
 
 	def __init__(self):
@@ -31,6 +32,7 @@ class ClimateEconometricsModel:
 		self.in_sample_pred_int_acc = np.NaN
 		self.fixed_effects = np.NaN
 		self.incremental_effects = np.NaN
+		self.dataset = None
 
 	def print(self):
 		for val in self.attrib_list:
@@ -53,5 +55,3 @@ class ClimateEconometricsModel:
 			for val in self.attrib_list:
 				writer.writerow([val, getattr(self, val)])
 		return time_based_id
-		# shutil.copyfile(self.filepath, f"{dir_name}/cmap.cxl")
-		# self.filepath = f"{dir_name}/cmap.cxl"
