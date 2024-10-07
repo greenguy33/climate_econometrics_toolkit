@@ -86,10 +86,10 @@ def get_last_model_out_sample_mse():
 def compare_to_last_model(model):
 	last_model_osmse = get_last_model_out_sample_mse()
 	if last_model_osmse == None:
-		print(f"This model has out-of-sample MSE of {str(model.out_sample_mse)[:7]}. There is no model in the cache to compare to this model.")
+		return(f"This model has out-of-sample MSE of {str(model.out_sample_mse)[:7]}. There is no model in the cache to compare to this model.")
 	elif last_model_osmse < model.out_sample_mse:
-		print(f"This model has HIGHER OUT-OF-SAMPLE MSE {str(model.out_sample_mse)[:7]} than the last model {str(last_model_osmse)[:7]}")
+		return(f"This model has HIGHER OUT-OF-SAMPLE MSE {str(model.out_sample_mse)[:7]} than the last model {str(last_model_osmse)[:7]}")
 	elif last_model_osmse > model.out_sample_mse:
-		print(f"This model has LOWER OUT-OF-SAMPLE MSE {str(model.out_sample_mse)[:7]} than the last model {str(last_model_osmse)[:7]}")
+		return(f"This model has LOWER OUT-OF-SAMPLE MSE {str(model.out_sample_mse)[:7]} than the last model {str(last_model_osmse)[:7]}")
 	elif last_model_osmse == model.out_sample_mse:
-		print(f"This model has THE SAME OUT-OF-SAMPLE MSE {str(model.out_sample_mse)[:7]} as the last model {str(last_model_osmse)[:7]}")
+		return(f"This model has THE SAME OUT-OF-SAMPLE MSE {str(model.out_sample_mse)[:7]} as the last model {str(last_model_osmse)[:7]}")

@@ -19,12 +19,12 @@ supported_functions = ["fd","sq","ln"]
 supported_effects = ["fe", "ie"]
 
 
-def build_model_from_graph(graph, file):
+def build_model_from_graph(graph):
 	model = cem.ClimateEconometricsModel()
 	target_var = [node for node in graph.nodes() if len(list(graph.successors(node))) == 0][0]
 	input_nodes = list(graph.predecessors(target_var))
-	
-	# TODO: warn user for ignored nodes (i.e. nodes not input to target)
+
+	unused_nodes = [node for node in graph.nodes() if node != target_var and node not in input_nodes]
 	
 	covars = [node for node in input_nodes if not any(node[0:2] == val for val in supported_effects)]
 	fixed_effects = [node.split(":")[1].strip() for node in input_nodes if node[0:2] == "fe"]
@@ -34,8 +34,20 @@ def build_model_from_graph(graph, file):
 	model.model_vars = covars + [target_var]
 	model.fixed_effects = fixed_effects
 	model.incremental_effects = incremental_effects
-	model.filepath = file
-	return model
+	return model, unused_nodes
+
+
+def parse_model_input(model):
+	from_indices,to_indices = model[0],model[1]
+	graph = nx.DiGraph()
+	for index in range(len(from_indices)):
+		graph.add_edge(from_indices[index], to_indices[index])
+
+	assert nx.is_directed_acyclic_graph(graph), "Graph is cyclical - please remove cycles"
+	len_target_vars = len([node for node in graph.nodes() if len(list(graph.successors(node))) == 0])
+	assert len_target_vars == 1, f"There must be exactly one target variable: found {len_target_vars}"
+
+	return build_model_from_graph(graph)
 
 
 def parse_cxl(filepath):
