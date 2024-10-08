@@ -1,10 +1,12 @@
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import Menu
 import pandas as pd
 import pickle as pkl
 import os
 
 import climate_econometrics_toolkit.climate_econometrics_api as api
+import climate_econometrics_toolkit.climate_econometrics_utils as utils
 
 class DragAndDropInterface():
 
@@ -12,14 +14,54 @@ class DragAndDropInterface():
         self.canvas = canvas
         self.drag_start_x = None
         self.drag_start_y = None
-        self.drag_object = None
+        self.left_clicked_object = None
+        self.right_clicked_object = None
         self.in_drag = False
         self.arrow_list = []
+        self.transformation_list = []
         self.variables_displayed = False
         self.data_source = None
         self.canvas_print_out = None
+        self.menu = None
 
         self.canvas.bind("<ButtonPress-1>", self.handle_canvas_click)
+
+    def get_menu(self, tag):
+
+        main_menu = Menu(window, tearoff=0)
+        transformation_menu = Menu(main_menu, tearoff=0)
+        incremental_effects_menu = Menu(main_menu, tearoff=0)
+
+        if f"sq({tag})" not in self.transformation_list:
+            transformation_menu.add_command(label="Square",command=lambda : self.add_transformation("sq"))
+        if f"fd({tag})" not in self.transformation_list:
+            transformation_menu.add_command(label="First Difference",command=lambda : self.add_transformation("fd"))
+        if f"ln({tag})" not in self.transformation_list:
+            transformation_menu.add_command(label="Natural Log",command=lambda : self.add_transformation("ln"))
+        if not all(f"{func}({tag})" in self.transformation_list for func in utils.supported_functions):
+            main_menu.add_cascade(label="Duplicate with Transformation",menu=transformation_menu)
+        
+        if not any(tag.startswith(val) for val in utils.supported_functions) and f"fe({tag})" not in self.transformation_list:
+            main_menu.add_command(label="Add Fixed Effect",command=lambda : self.add_transformation("fe"))
+
+        if not any([val in self.transformation_list for val in [f"ie1({tag})",f"ie2({tag})",f"ie3({tag})"]]) and not any(tag.startswith(val) for val in utils.supported_functions):
+            main_menu.add_cascade(label="Add Incremental Effect",menu=incremental_effects_menu)
+            incremental_effects_menu.add_command(label="X 1",command=lambda : self.add_transformation("ie1"))
+            incremental_effects_menu.add_command(label="X 2",command=lambda : self.add_transformation("ie2"))
+            incremental_effects_menu.add_command(label="X 3",command=lambda : self.add_transformation("ie3"))
+
+        return main_menu
+
+    def add_transformation(self, transformation):
+        element_tag = self.canvas.gettags(self.right_clicked_object)[0]
+        element_text = element_tag.split("boxed_text_")[1]
+        transformation_text = f"{transformation}({element_text})"
+        if transformation_text not in self.transformation_list:
+            self.new_elem_coords = [self.canvas.winfo_width() - 200, self.canvas.winfo_height() - 200]
+            self.add_model_variables([transformation_text], [self.new_elem_coords])
+            self.new_elem_coords[0] = self.new_elem_coords[0] - 50
+            self.transformation_list.append(transformation_text)
+        self.reset_click()
 
     def save_canvas_to_cache(self, model_id):
         canvas_data = []
@@ -60,36 +102,63 @@ class DragAndDropInterface():
             return True
         else:
             return False
+        
+    def color_clicked_rectangle(self, clicked_object, color):
+        tags = self.canvas.gettags(clicked_object)
+        clicked_rectangle = [elem for elem in self.canvas.find_withtag(tags[0]) if self.canvas.type(elem) == "rectangle"][0]
+        canvas.itemconfig(clicked_rectangle, fill=color)
 
     def get_arrow_source_and_target(self, arrow_tags):
         arrow_source = [elem for elem in self.canvas.find_withtag(arrow_tags[0].split("from_")[1]) if self.canvas.type(elem) == "text"][0]
         arrow_target = [elem for elem in self.canvas.find_withtag(arrow_tags[1].split("to_")[1]) if self.canvas.type(elem) == "text"][0]
         return (arrow_source, arrow_target)
+    
+    def popup_menu(self, event):
+        clicked_object = self.canvas.find_closest(event.x, event.y)[0]
+        tags = self.canvas.gettags(clicked_object)
+        if not self.tags_are_arrow(tags):
+            self.right_clicked_object = clicked_object
+            self.menu = self.get_menu(tags[0].split("boxed_text_")[1])
+            try:
+                self.menu.tk_popup(event.x_root, event.y_root)
+            finally:
+                self.menu.grab_release()
 
-    def add_model_variables(self, variables):
+    def add_model_variables(self, variables, coords=None):
 
         last_rectangle_right_side = 0
         row_count = 0
         for index, column in enumerate(variables):
-            if last_rectangle_right_side > self.canvas.winfo_width() - 100:
-                row_count += 1
-                last_rectangle_right_side = 0
+
+            if coords != None:
+                var_coords = coords[index]
+            else:
+                if last_rectangle_right_side > self.canvas.winfo_width() - 100:
+                    row_count += 1
+                    last_rectangle_right_side = 0
+
+                var_coords = [last_rectangle_right_side + len(column)*5+50, row_count * 50 + 20]
 
             column_box_tag = f"boxed_text_{column}".replace(" ","_")
 
-            text = self.canvas.create_text(last_rectangle_right_side + len(column)*5+50, row_count * 50 + 20, text=column, fill="white", tags=column_box_tag)
+            text = self.canvas.create_text(*var_coords, text=column, fill="white", tags=column_box_tag)
             rect = self.canvas.create_rectangle(self.canvas.bbox(text), fill="orange", tags=column_box_tag)
             self.canvas.lower(rect)
 
             self.canvas.tag_bind(column_box_tag, "<B1-Motion>", self.on_drag)
             self.canvas.tag_bind(column_box_tag, "<ButtonRelease-1>", self.end_drag)
+            if not (column.startswith("ie1(") or column.startswith("ie2(") or column.startswith("ie3(") or column.startswith("fe(")):
+                self.canvas.tag_bind(column_box_tag, "<ButtonPress-3>", self.popup_menu)
 
             last_rectangle_right_side = self.canvas.bbox(text)[2]
 
         self.variables_displayed = True
 
     def handle_canvas_click(self, event):
-        clicked_object = canvas.find_overlapping(event.x, event.y, event.x, event.y)
+        clicked_object = self.canvas.find_overlapping(event.x, event.y, event.x, event.y)
+        if self.menu != None:
+            self.menu.unpost()
+            self.menu = None
         if len(clicked_object) == 0:
             self.reset_click()
         else:
@@ -98,7 +167,10 @@ class DragAndDropInterface():
     def reset_click(self):
         self.drag_start_x = None
         self.drag_start_y = None
-        self.drag_object = None
+        if self.left_clicked_object != None:
+            self.color_clicked_rectangle(self.left_clicked_object, 'orange')
+        self.left_clicked_object = None
+        self.right_clicked_object = None
 
     def end_drag(self, event):
         if self.in_drag:
@@ -106,26 +178,33 @@ class DragAndDropInterface():
         self.in_drag = False
 
     def draw_arrow(self, event):
-        source_object = self.drag_object
+        source_object = self.left_clicked_object
         target_object = self.canvas.find_closest(event.x, event.y)[0]
-        if not self.tags_are_arrow(canvas.gettags(target_object)):
-            if source_object != target_object and (source_object,target_object) not in self.arrow_list and (target_object,source_object) not in self.arrow_list:
-                target_bb = canvas.bbox(target_object)
-                source_bb = canvas.bbox(source_object)
-                # TODO: ensure that an arrow cannot have another arrow as a source or target
-                arrow = self.canvas.create_line(
-                    (source_bb[0] + source_bb[2]) / 2,
-                    (source_bb[1] + source_bb[3]) / 2,
-                    (target_bb[0] + target_bb[2]) / 2,
-                    (target_bb[1] + target_bb[3]) / 2,
-                    arrow=tk.LAST,
-                    tags=[
-                        f"from_{self.canvas.gettags(source_object)[0]}",
-                        f"to_{self.canvas.gettags(target_object)[0]}"
-                    ]
-                )
-                canvas.tag_bind(f"from_{self.canvas.gettags(source_object)[0]}", "<ButtonPress-3>", self.delete_arrow)
-                self.arrow_list.append((source_object,target_object))
+        arrow_conditions = [
+            source_object != target_object,
+            (source_object,target_object) not in self.arrow_list,
+            (target_object,source_object) not in self.arrow_list,
+            not self.tags_are_arrow(canvas.gettags(target_object)),
+            self.canvas.type(source_object) == "text",
+            self.canvas.type(target_object) == "text"
+        ]
+        if all(arrow_conditions):
+            target_bb = canvas.bbox(target_object)
+            source_bb = canvas.bbox(source_object)
+            # TODO: ensure that an arrow cannot have another arrow as a source or target
+            arrow = self.canvas.create_line(
+                (source_bb[0] + source_bb[2]) / 2,
+                (source_bb[1] + source_bb[3]) / 2,
+                (target_bb[0] + target_bb[2]) / 2,
+                (target_bb[1] + target_bb[3]) / 2,
+                arrow=tk.LAST,
+                tags=[
+                    f"from_{self.canvas.gettags(source_object)[0]}",
+                    f"to_{self.canvas.gettags(target_object)[0]}"
+                ]
+            )
+            canvas.tag_bind(f"from_{self.canvas.gettags(source_object)[0]}", "<ButtonPress-3>", self.delete_arrow)
+            self.arrow_list.append((source_object,target_object))
             self.reset_click()
 
     def clear_canvas(self):
@@ -143,8 +222,8 @@ class DragAndDropInterface():
 
     def update_arrow_coordinates(self, event, delta_x, delta_y):
 
-        arrow_source_tags = f"from_{self.canvas.gettags(self.drag_object)[0]}"
-        arrow_target_tags = f"to_{self.canvas.gettags(self.drag_object)[0]}"
+        arrow_source_tags = f"from_{self.canvas.gettags(self.left_clicked_object)[0]}"
+        arrow_target_tags = f"to_{self.canvas.gettags(self.left_clicked_object)[0]}"
 
         for arrow in self.canvas.find_withtag(arrow_source_tags):
             arrow_source_coords = self.canvas.coords(arrow)
@@ -159,35 +238,33 @@ class DragAndDropInterface():
             self.canvas.coords(arrow, *arrow_target_coords)
 
     def on_click(self, event):
-        if self.drag_object == None:
+        if self.left_clicked_object == None:
             clicked_object = self.canvas.find_closest(event.x, event.y)[0]
             tags = self.canvas.gettags(clicked_object)
             if not self.tags_are_arrow(tags):
-                self.drag_object = clicked_object
+                self.left_clicked_object = clicked_object
                 self.drag_start_x = event.x
                 self.drag_start_y = event.y
-                print(tags)
-                print(self.canvas.find_withtag(tags))
-                clicked_rectangle = [elem for elem in self.canvas.find_withtag(tags) if self.canvas.type(elem) == "rectangle"][0]
-                canvas.itemconfig(clicked_rectangle, fill='red')
+                self.color_clicked_rectangle(clicked_object, "red")
         else:
             self.draw_arrow(event)
 
     def on_drag(self, event):
 
-        self.in_drag = True
+        if self.left_clicked_object != None:
+            self.in_drag = True
 
-        canvas_buffer = 25
-        if event.x >= canvas_buffer and event.y >= canvas_buffer and event.x <= self.canvas.winfo_width()-canvas_buffer and event.y <= self.canvas.winfo_height()-canvas_buffer:
+            canvas_buffer = 25
+            if event.x >= canvas_buffer and event.y >= canvas_buffer and event.x <= self.canvas.winfo_width()-canvas_buffer and event.y <= self.canvas.winfo_height()-canvas_buffer:
 
-            delta_x = event.x - self.drag_start_x
-            delta_y = event.y - self.drag_start_y
-            self.canvas.move(self.canvas.gettags(self.drag_object)[0], delta_x, delta_y)
+                delta_x = event.x - self.drag_start_x
+                delta_y = event.y - self.drag_start_y
+                self.canvas.move(self.canvas.gettags(self.left_clicked_object)[0], delta_x, delta_y)
 
-            self.drag_start_x = event.x
-            self.drag_start_y = event.y
+                self.drag_start_x = event.x
+                self.drag_start_y = event.y
 
-            self.update_arrow_coordinates(event, delta_x, delta_y)
+                self.update_arrow_coordinates(event, delta_x, delta_y)
 
 
 def add_data_columns_from_file():
@@ -195,15 +272,15 @@ def add_data_columns_from_file():
     if dnd.variables_displayed:
         dnd.canvas_print_out.insert(tk.END, "\nPlease clear the canvas before loading another dataset.")
     else:
-        filename = filedialog.askopenfilename(
-            initialdir = "/",
-            title = "Select a File",
-            filetypes = (("CSV files",
-                        "*.csv*"),
-                        ("all files",
-                        "*.*"))
-            )
-        # filename = "/home/hayden-freedman/climate_econometrics_toolkit/GrowthClimateDataset.csv"
+        # filename = filedialog.askopenfilename(
+        #     initialdir = "/",
+        #     title = "Select a File",
+        #     filetypes = (("CSV files",
+        #                 "*.csv*"),
+        #                 ("all files",
+        #                 "*.*"))
+        #     )
+        filename = "/home/hayden-freedman/climate_econometrics_toolkit/GrowthClimateDataset.csv"
 
         dnd.data_source = filename
         data = pd.read_csv(filename)
@@ -218,6 +295,8 @@ def evaluate_model():
             if dnd.tags_are_arrow(element_tags):
                 from_indices.append(element_tags[0].split("boxed_text_")[1])
                 to_indices.append(element_tags[1].split("boxed_text_")[1])
+        print(from_indices)
+        print(to_indices)
         model_id, result = api.evaluate_model(dnd.data_source, [from_indices,to_indices])
         dnd.canvas_print_out.insert(tk.END, result)
         if model_id != None:

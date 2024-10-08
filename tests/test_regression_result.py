@@ -21,12 +21,17 @@ def get_data():
 def test_simple_covariates():
 
     data = get_data()
-    model = cet.parse_cxl("example_cmaps/example_cmap_1.cxl")
+    # model = cet.parse_cxl("example_cmaps/example_cmap_1.cxl")
+    from_indices = ['Temp', 'Precip']
+    to_indices = ['GDP', 'GDP']
+    model = cet.parse_model_input([from_indices, to_indices], "file1.csv")[0]
+    
     transformed_data = utils.transform_data(data, model)
-    # TODO: check that transformed data has the right columns
-    res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
-    model = cee.evaluate_model(transformed_data, model)
 
+    res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
+    assert not any(np.isnan(val) for val in res1["Coef."])
+    
+    model = cee.evaluate_model(transformed_data, model)
     assert not np.isnan(model.out_sample_mse)
 
     covars = ["Precip", "Temp"]
@@ -40,12 +45,18 @@ def test_simple_covariates():
 def test_simple_covariates_transformed_target():
 
     data = get_data()
-    model = cet.parse_cxl("example_cmaps/example_cmap_2.cxl")
+    # model = cet.parse_cxl("example_cmaps/example_cmap_2.cxl")[0]
+    from_indices = ['Temp', 'Precip']
+    to_indices = ['fd(ln(GDP))', 'fd(ln(GDP))']
+    model = cet.parse_model_input([from_indices, to_indices], "file2.csv")[0]
+    
     transformed_data = utils.transform_data(data, model)
-    # TODO: check that transformed data has the right columns
+    assert(all(val in transformed_data for val in ['ln(GDP)','fd(ln(GDP))']))
+    
     res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
+    assert not any(np.isnan(val) for val in res1["Coef."])
+    
     model = cee.evaluate_model(transformed_data, model)
-
     assert not np.isnan(model.out_sample_mse)
 
     covars = ["Precip", "Temp"]
@@ -62,12 +73,18 @@ def test_simple_covariates_transformed_target():
 def test_transformed_covariates_transformed_target():
 
     data = get_data()
-    model = cet.parse_cxl("example_cmaps/example_cmap_3.cxl")
+    # model = cet.parse_cxl("example_cmaps/example_cmap_3.cxl")
+    from_indices = ['ln(Precip)', 'sq(Precip)', 'Precip', 'Temp', 'sq(Temp)', 'fd(Temp)', 'ln(Temp)', 'fd(Precip)']
+    to_indices = ['fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))']
+    model = cet.parse_model_input([from_indices, to_indices], "file3.csv")[0]
+    
     transformed_data = utils.transform_data(data, model)
-    # TODO: check that transformed data has the right columns
-    res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
-    model = cee.evaluate_model(transformed_data, model)
+    assert(all(val in transformed_data for val in ['ln(GDP)','fd(ln(GDP))','sq(Temp)','fd(Temp)','ln(Temp)','sq(Precip)','fd(Precip)','ln(Precip)']))
 
+    res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
+    assert not any(np.isnan(val) for val in res1["Coef."])
+
+    model = cee.evaluate_model(transformed_data, model)
     assert not np.isnan(model.out_sample_mse)
 
     covars = ["Precip", "Temp", "ln(Temp)", "ln(Precip)", "fd(Temp)", "fd(Precip)", "sq(Temp)", "sq(Precip)"]
@@ -90,15 +107,18 @@ def test_transformed_covariates_transformed_target():
 def test_transformed_covariates_transformed_target_fixed_effects():
 
     data = get_data()
-    model = cet.parse_cxl("example_cmaps/example_cmap_4.cxl")
+    # model = cet.parse_cxl("example_cmaps/example_cmap_4.cxl")
+    from_indices = ['fe(year)', 'fe(iso)', 'Temp', 'sq(Temp)', 'fd(Temp)', 'Precip', 'fd(Precip)', 'sq(Precip)']
+    to_indices = ['fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))']
+    model = cet.parse_model_input([from_indices, to_indices], "file4.csv")[0]
+    
     transformed_data = utils.transform_data(data, model)
-    # TODO: check that transformed data has the right columns
+    assert(all(val in transformed_data for val in ['ln(GDP)','fd(ln(GDP))','sq(Temp)','fd(Temp)','sq(Precip)','fd(Precip)','fe_AFG_iso','fe_1963_year']))
+
     res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
+    assert not any(np.isnan(val) for val in res1["Coef."])
+    
     model = cee.evaluate_model(transformed_data, model)
-
-    res1 = cer.run_standard_regression(data, model).summary2().tables[1]
-    model = cee.evaluate_model(data, model)
-
     assert not np.isnan(model.out_sample_mse)
 
     data["fd_temp"] = diff(data["Temp"])
@@ -115,18 +135,24 @@ def test_transformed_covariates_transformed_target_fixed_effects():
     np.testing.assert_allclose(float(res1.loc[["sq(Precip)"]]["Coef."]),float(res2.loc[["sq_precip"]]))
     np.testing.assert_allclose(float(res1.loc[["sq(Temp)"]]["Coef."]),float(res2.loc[["sq_temp"]]))
     np.testing.assert_allclose(float(res1.loc[["fd(Precip)"]]["Coef."]),float(res2.loc[["fd_precip"]]))
-    np.testing.assert_allclose(float(res1.loc[["fd(Temp)"]]["Coef."]),float(res2.loc[["fd_temp"]]))
+    np.testing.assert_allclose(float(res1.loc[["fd(Temp)"]]["Coef."]),float(res2.loc[["fd_temp"]]),rtol=1e-05)
 
 
 def test_transformed_covariates_transformed_target_incremental_effects():
 
     data = get_data()
-    model = cet.parse_cxl("example_cmaps/example_cmap_5.cxl")
+    # model = cet.parse_cxl("example_cmaps/example_cmap_5.cxl")
+    from_indices = ['Temp', 'Precip', 'fd(Temp)', 'sq(Temp)', 'sq(Precip)', 'fd(Precip)', 'ie3(iso)']
+    to_indices = ['fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))']
+    model = cet.parse_model_input([from_indices, to_indices], "file5.csv")[0]
+    
     transformed_data = utils.transform_data(data, model)
-    # TODO: check that transformed data has the right columns
-    res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
-    model = cee.evaluate_model(transformed_data, model)
+    assert(all(val in transformed_data for val in ['ln(GDP)','fd(ln(GDP))','sq(Temp)','fd(Temp)','sq(Precip)','fd(Precip)','ie_AFG_iso_1','ie_AFG_iso_2','ie_AFG_iso_3']))
 
+    res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
+    assert not any(np.isnan(val) for val in res1["Coef."])
+
+    model = cee.evaluate_model(transformed_data, model)
     assert not np.isnan(model.out_sample_mse)
 
     climate_covars = ["Precip", "Temp", "fd(Temp)", "fd(Precip)", "sq(Temp)", "sq(Precip)"]

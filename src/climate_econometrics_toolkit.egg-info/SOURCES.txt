@@ -4,6 +4,7 @@ src/climate_econometrics_toolkit/__init__.py
 src/climate_econometrics_toolkit/climate_econometrics_api.py
 src/climate_econometrics_toolkit/climate_econometrics_model.py
 src/climate_econometrics_toolkit/climate_econometrics_regression.py
+src/climate_econometrics_toolkit/climate_econometrics_transformations.py
 src/climate_econometrics_toolkit/climate_econometrics_utils.py
 src/climate_econometrics_toolkit/evaluate_model.py
 src/climate_econometrics_toolkit/model_builder.py
