@@ -2,15 +2,22 @@ import statsmodels.api as sm
 import pymc as pm
 from pytensor import tensor as pt
 import pickle as pkl
+import numpy as np
 import climate_econometrics_toolkit.climate_econometrics_utils as utils
 
 
 def run_standard_regression(transformed_data, model, demeaned=False):
 	model_vars = utils.get_model_vars(transformed_data, model, demeaned)
 	regression_data = transformed_data[model_vars]
-	if len(model.fixed_effects) == 0:
-		regression_data = sm.add_constant(regression_data)
+	regression_data = sm.add_constant(regression_data)
 	reg = sm.OLS(transformed_data[model.target_var],regression_data,missing="drop")
+	regression_result = reg.fit()
+	return regression_result
+
+
+def run_intercept_only_regression(transformed_data, model, demeaned=False):
+	intercept_col = np.ones(len(transformed_data))
+	reg = sm.OLS(transformed_data[model.target_var],intercept_col,missing="drop")
 	regression_result = reg.fit()
 	return regression_result
 

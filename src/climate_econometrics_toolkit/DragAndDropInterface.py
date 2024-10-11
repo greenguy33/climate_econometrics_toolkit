@@ -1,16 +1,15 @@
 import tkinter as tk
-from tkinter import filedialog
 from tkinter import Menu
-import pandas as pd
-import pickle as pkl
-import os
 
-import climate_econometrics_toolkit.climate_econometrics_api as api
+import pickle as pkl
+import pandas as pd
+
 import climate_econometrics_toolkit.climate_econometrics_utils as utils
 
 class DragAndDropInterface():
 
-    def __init__(self, canvas):
+    def __init__(self, canvas, window):
+        self.window = window
         self.canvas = canvas
         self.drag_start_x = None
         self.drag_start_y = None
@@ -28,7 +27,7 @@ class DragAndDropInterface():
 
     def get_menu(self, tag):
 
-        main_menu = Menu(window, tearoff=0)
+        main_menu = Menu(self.window, tearoff=0)
         transformation_menu = Menu(main_menu, tearoff=0)
         incremental_effects_menu = Menu(main_menu, tearoff=0)
 
@@ -44,11 +43,14 @@ class DragAndDropInterface():
         if not any(tag.startswith(val) for val in utils.supported_functions) and f"fe({tag})" not in self.transformation_list:
             main_menu.add_command(label="Add Fixed Effect",command=lambda : self.add_transformation("fe"))
 
-        if not any([val in self.transformation_list for val in [f"ie1({tag})",f"ie2({tag})",f"ie3({tag})"]]) and not any(tag.startswith(val) for val in utils.supported_functions):
+        if not any(tag.startswith(val) for val in utils.supported_functions):
             main_menu.add_cascade(label="Add Incremental Effect",menu=incremental_effects_menu)
-            incremental_effects_menu.add_command(label="X 1",command=lambda : self.add_transformation("ie1"))
-            incremental_effects_menu.add_command(label="X 2",command=lambda : self.add_transformation("ie2"))
-            incremental_effects_menu.add_command(label="X 3",command=lambda : self.add_transformation("ie3"))
+            if f"ie1({tag})" not in self.transformation_list:
+                incremental_effects_menu.add_command(label="X 1",command=lambda : self.add_transformation("ie1"))
+            if f"ie2({tag})" not in self.transformation_list:
+                incremental_effects_menu.add_command(label="X 2",command=lambda : self.add_transformation("ie2"))
+            if f"ie3({tag})" not in self.transformation_list:
+                incremental_effects_menu.add_command(label="X 3",command=lambda : self.add_transformation("ie3"))
 
         return main_menu
 
@@ -74,13 +76,13 @@ class DragAndDropInterface():
             if self.canvas.type(item) == "text":
                 item_info["text"] = self.canvas.itemcget(item, "text")
             canvas_data.append(item_info)
-        with open (f'model_cache/{model_id}/tkinter_canvas.pkl', 'wb') as buff:
-            pkl.dump({"data_source":self.data_source,"canvas_data":canvas_data},buff)
+        with open (f'model_cache/{self.data_source}/{model_id}/tkinter_canvas.pkl', 'wb') as buff:
+            pkl.dump({"data_source":self.data_source,"canvas_data":canvas_data,"transformation_list":self.transformation_list},buff)
 
     def restore_canvas_from_cache(self, model_id):
-        cached_canvas = pd.read_pickle(f'model_cache/{model_id}/tkinter_canvas.pkl')
+        cached_canvas = pd.read_pickle(f'model_cache/{self.data_source}/{model_id}/tkinter_canvas.pkl')
         if cached_canvas["data_source"] != self.data_source:
-            dnd.canvas_print_out.insert(tk.END, f"\nCached model is for a different data source. Please clear cache to use new dataset.")  
+            self.canvas_print_out.insert(tk.END, f"\nCached model is for a different data source. Please clear cache to use new dataset.")  
         else:
             self.clear_canvas()
             for item in cached_canvas["canvas_data"]:
@@ -91,6 +93,7 @@ class DragAndDropInterface():
                     self.arrow_list.append(self.get_arrow_source_and_target(item["tags"]))
                 elif item["type"] == "text":
                     self.canvas.create_text(*item["coords"], text=item["text"], fill="white", tags=item["tags"])
+            self.transformation_list = cached_canvas["transformation_list"]
             self.variables_displayed = True
 
     def tags_are_arrow(self, element_tags):
@@ -106,7 +109,7 @@ class DragAndDropInterface():
     def color_clicked_rectangle(self, clicked_object, color):
         tags = self.canvas.gettags(clicked_object)
         clicked_rectangle = [elem for elem in self.canvas.find_withtag(tags[0]) if self.canvas.type(elem) == "rectangle"][0]
-        canvas.itemconfig(clicked_rectangle, fill=color)
+        self.canvas.itemconfig(clicked_rectangle, fill=color)
 
     def get_arrow_source_and_target(self, arrow_tags):
         arrow_source = [elem for elem in self.canvas.find_withtag(arrow_tags[0].split("from_")[1]) if self.canvas.type(elem) == "text"][0]
@@ -184,13 +187,13 @@ class DragAndDropInterface():
             source_object != target_object,
             (source_object,target_object) not in self.arrow_list,
             (target_object,source_object) not in self.arrow_list,
-            not self.tags_are_arrow(canvas.gettags(target_object)),
+            not self.tags_are_arrow(self.canvas.gettags(target_object)),
             self.canvas.type(source_object) == "text",
             self.canvas.type(target_object) == "text"
         ]
         if all(arrow_conditions):
-            target_bb = canvas.bbox(target_object)
-            source_bb = canvas.bbox(source_object)
+            target_bb = self.canvas.bbox(target_object)
+            source_bb = self.canvas.bbox(source_object)
             # TODO: ensure that an arrow cannot have another arrow as a source or target
             arrow = self.canvas.create_line(
                 (source_bb[0] + source_bb[2]) / 2,
@@ -203,7 +206,7 @@ class DragAndDropInterface():
                     f"to_{self.canvas.gettags(target_object)[0]}"
                 ]
             )
-            canvas.tag_bind(f"from_{self.canvas.gettags(source_object)[0]}", "<ButtonPress-3>", self.delete_arrow)
+            self.canvas.tag_bind(f"from_{self.canvas.gettags(source_object)[0]}", "<ButtonPress-3>", self.delete_arrow)
             self.arrow_list.append((source_object,target_object))
             self.reset_click()
 
@@ -212,10 +215,11 @@ class DragAndDropInterface():
         self.arrow_list = []
         self.canvas.delete("all")
         self.variables_displayed = False
+        self.transformation_list = []
 
     def delete_arrow(self, event):
         arrow = self.canvas.find_closest(event.x, event.y)[0]
-        arrow_tags = canvas.gettags(arrow)
+        arrow_tags = self.canvas.gettags(arrow)
         if self.tags_are_arrow(arrow_tags): 
             self.arrow_list.remove(self.get_arrow_source_and_target(arrow_tags))
             self.canvas.delete(arrow)
@@ -265,92 +269,3 @@ class DragAndDropInterface():
                 self.drag_start_y = event.y
 
                 self.update_arrow_coordinates(event, delta_x, delta_y)
-
-
-def add_data_columns_from_file():
-
-    if dnd.variables_displayed:
-        dnd.canvas_print_out.insert(tk.END, "\nPlease clear the canvas before loading another dataset.")
-    else:
-        # filename = filedialog.askopenfilename(
-        #     initialdir = "/",
-        #     title = "Select a File",
-        #     filetypes = (("CSV files",
-        #                 "*.csv*"),
-        #                 ("all files",
-        #                 "*.*"))
-        #     )
-        filename = "/home/hayden-freedman/climate_econometrics_toolkit/GrowthClimateDataset.csv"
-
-        dnd.data_source = filename
-        data = pd.read_csv(filename)
-        columns = data.columns
-        dnd.add_model_variables(columns)
-
-def evaluate_model():
-    if dnd.variables_displayed:
-        from_indices,to_indices = [],[]
-        for element_id in canvas.find_all():
-            element_tags = canvas.gettags(element_id)
-            if dnd.tags_are_arrow(element_tags):
-                from_indices.append(element_tags[0].split("boxed_text_")[1])
-                to_indices.append(element_tags[1].split("boxed_text_")[1])
-        print(from_indices)
-        print(to_indices)
-        model_id, result = api.evaluate_model(dnd.data_source, [from_indices,to_indices])
-        dnd.canvas_print_out.insert(tk.END, result)
-        if model_id != None:
-            best_model_mse = api.get_best_model_for_dataset(dnd.data_source)[0]
-            dnd.canvas_print_out.insert(tk.END, f"\nThe best model in the cache has MSE {str(best_model_mse)[:7]}")
-            dnd.save_canvas_to_cache(str(model_id))
-
-def restore_best_model():
-    if dnd.data_source == None:
-        dnd.canvas_print_out.insert(tk.END, f"\nPlease load a dataset before restoring a model from cache.") 
-    else:
-        min_mse, model_id = api.get_best_model_for_dataset(dnd.data_source)
-        if model_id == None:
-            dnd.canvas_print_out.insert(tk.END, f"\nThere is no cached model for this dataset.")
-        else:
-            dnd.restore_canvas_from_cache(str(model_id))
-
-def clear_model_cache():
-    api.clear_model_cache(dnd.data_source)
-
-window = tk.Tk()
-window.title("Climate Econometrics Modeling Toolkit")
-
-window.rowconfigure(0, minsize=800, weight=0)
-window.rowconfigure(1, minsize=800, weight=0)
-window.columnconfigure(1, minsize=800, weight=0)
-
-canvas = tk.Canvas(
-    window, 
-    width=800, 
-    height=600, 
-    highlightthickness=5,
-    highlightbackground="black",
-    highlightcolor="red"
-)
-dnd = DragAndDropInterface(canvas)
-
-frm_buttons = tk.Frame(window, relief=tk.RAISED, bd=2)
-btn_load = tk.Button(frm_buttons, text="Load Dataset", command=add_data_columns_from_file)
-btn_clear_canvas = tk.Button(frm_buttons, text="Clear Canvas", command=dnd.clear_canvas)
-btn_evaluate = tk.Button(frm_buttons, text="Evaluate Model", command=evaluate_model)
-btn_best_model = tk.Button(frm_buttons, text="Restore Best Model", command=restore_best_model)
-btn_clear_model_cache = tk.Button(frm_buttons, text="Clear Model Cache", command=clear_model_cache)
-result_text = tk.Text(frm_buttons)
-
-dnd.canvas_print_out = result_text
-
-btn_load.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
-btn_clear_canvas.grid(row=1, column=0, stick="ew", padx=5)
-btn_evaluate.grid(row=2, column=0, sticky="ew", padx=5)
-btn_best_model.grid(row=3, column=0, sticky="ew", padx=5)
-btn_clear_model_cache.grid(row=4, column=0, sticky="ew", padx=5)
-result_text.grid(row=5, column=0)
-frm_buttons.grid(row=0, column=0, sticky="ns")
-canvas.grid(row=0, column=1, sticky="nsew")
-
-window.mainloop()

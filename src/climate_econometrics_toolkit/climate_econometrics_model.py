@@ -17,7 +17,8 @@ class ClimateEconometricsModel:
 		"in_sample_mse_reduction",
 		"out_sample_pred_int_acc",
 		"in_sample_pred_int_acc",
-		"dataset"
+		"dataset",
+		"regression_result"
 	]
 
 	def __init__(self):
@@ -33,6 +34,7 @@ class ClimateEconometricsModel:
 		self.fixed_effects = np.NaN
 		self.incremental_effects = np.NaN
 		self.dataset = None
+		self.regression_result = None
 
 	def print(self):
 		for val in self.attrib_list:
@@ -47,7 +49,7 @@ class ClimateEconometricsModel:
 	def save_model_to_cache(self):
 		# TODO: make this file path more flexible
 		time_based_id = time.time()
-		dir_name = f"model_cache/{time_based_id}"
+		dir_name = f"model_cache/{self.dataset}/{time_based_id}"
 		os.makedirs(dir_name)
 		with open(f"{dir_name}/model.csv", "w") as write_file:
 			writer = csv.writer(write_file)

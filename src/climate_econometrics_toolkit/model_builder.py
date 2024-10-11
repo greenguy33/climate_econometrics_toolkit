@@ -31,7 +31,7 @@ def build_model_from_graph(graph, dataset):
 	model.model_vars = covars + [target_var]
 	model.fixed_effects = fixed_effects
 	model.incremental_effects = incremental_effects
-	model.dataset = dataset
+	model.dataset = dataset.split("/")[-1]
 	return model, unused_nodes
 
 

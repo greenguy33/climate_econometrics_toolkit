@@ -31,8 +31,10 @@ def test_simple_covariates():
     res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
     assert not any(np.isnan(val) for val in res1["Coef."])
     
-    model = cee.evaluate_model(transformed_data, model)
+    model = cee.evaluate_model(data, model)
     assert not np.isnan(model.out_sample_mse)
+    assert not np.isnan(model.out_sample_mse_reduction)
+    pd.testing.assert_frame_equal(res1.sort_index(), model.regression_result.summary2().tables[1].sort_index())
 
     covars = ["Precip", "Temp"]
     regression_data = data[covars]
@@ -56,8 +58,10 @@ def test_simple_covariates_transformed_target():
     res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
     assert not any(np.isnan(val) for val in res1["Coef."])
     
-    model = cee.evaluate_model(transformed_data, model)
+    model = cee.evaluate_model(data, model)
     assert not np.isnan(model.out_sample_mse)
+    assert not np.isnan(model.out_sample_mse_reduction)
+    pd.testing.assert_frame_equal(res1.sort_index(), model.regression_result.summary2().tables[1].sort_index())
 
     covars = ["Precip", "Temp"]
     regression_data = data[covars]
@@ -67,6 +71,45 @@ def test_simple_covariates_transformed_target():
     model = sm.OLS(data["fd(ln(GDP))"],regression_data,missing="drop")
     res2 = model.fit().summary2().tables[1]
     
+    pd.testing.assert_frame_equal(res1.sort_index() ,res2.sort_index())
+
+
+def test_2_transformed_covariates_transformed_target():
+
+    data = get_data()
+    # model = cet.parse_cxl("example_cmaps/example_cmap_3.cxl")
+    from_indices = ['ln(Precip)', 'sq(Precip)', 'Precip', 'Temp', 'sq(Temp)', 'fd(Temp)', 'ln(Temp)', 'fd(Precip)']
+    to_indices = ['ln(fd(GDP))', 'ln(fd(GDP))', 'ln(fd(GDP))', 'ln(fd(GDP))', 'ln(fd(GDP))', 'ln(fd(GDP))', 'ln(fd(GDP))', 'ln(fd(GDP))']
+    model = cet.parse_model_input([from_indices, to_indices], "file3.csv")[0]
+    
+    transformed_data = utils.transform_data(data, model)
+    assert(all(val in transformed_data for val in ['fd(GDP)','ln(fd(GDP))','sq(Temp)','fd(Temp)','ln(Temp)','sq(Precip)','fd(Precip)','ln(Precip)']))
+
+    res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
+    assert not any(np.isnan(val) for val in res1["Coef."])
+
+    model = cee.evaluate_model(data, model)
+    assert not np.isnan(model.out_sample_mse)
+    assert not np.isnan(model.out_sample_mse_reduction)
+    pd.testing.assert_frame_equal(res1.sort_index(), model.regression_result.summary2().tables[1].sort_index())
+
+    covars = ["Precip", "Temp", "ln(Temp)", "ln(Precip)", "fd(Temp)", "fd(Precip)", "sq(Temp)", "sq(Precip)"]
+    data["ln(Temp)"] = np.log(data["Temp"])
+    data["ln(Precip)"] = np.log(data["Precip"])
+    data["fd(Temp)"] = diff(data["Temp"])
+    data["fd(Precip)"] = diff(data["Precip"])
+    data["sq(Temp)"] = np.square(data["Temp"])
+    data["sq(Precip)"] = np.square(data["Precip"])
+    data["fd(GDP)"] = diff(data["GDP"])
+    data["ln(fd(GDP))"] = np.log(data["fd(GDP)"])
+
+    data = utils.remove_nan_rows(data, ["ln(fd(GDP))"])
+
+    regression_data = data[covars]
+    regression_data = sm.add_constant(regression_data)
+    model = sm.OLS(data["ln(fd(GDP))"],regression_data,missing="drop")
+    res2 = model.fit().summary2().tables[1]
+
     pd.testing.assert_frame_equal(res1.sort_index() ,res2.sort_index())
 
 
@@ -84,8 +127,10 @@ def test_transformed_covariates_transformed_target():
     res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
     assert not any(np.isnan(val) for val in res1["Coef."])
 
-    model = cee.evaluate_model(transformed_data, model)
+    model = cee.evaluate_model(data, model)
     assert not np.isnan(model.out_sample_mse)
+    assert not np.isnan(model.out_sample_mse_reduction)
+    pd.testing.assert_frame_equal(res1.sort_index(), model.regression_result.summary2().tables[1].sort_index())
 
     covars = ["Precip", "Temp", "ln(Temp)", "ln(Precip)", "fd(Temp)", "fd(Precip)", "sq(Temp)", "sq(Precip)"]
     data["ln(Temp)"] = np.log(data["Temp"])
@@ -104,7 +149,7 @@ def test_transformed_covariates_transformed_target():
     pd.testing.assert_frame_equal(res1.sort_index() ,res2.sort_index())
 
 
-def test_transformed_covariates_transformed_target_fixed_effects():
+def test_fe_transformed_covariates_transformed_target_iso_year_fixed_effects():
 
     data = get_data()
     # model = cet.parse_cxl("example_cmaps/example_cmap_4.cxl")
@@ -113,13 +158,22 @@ def test_transformed_covariates_transformed_target_fixed_effects():
     model = cet.parse_model_input([from_indices, to_indices], "file4.csv")[0]
     
     transformed_data = utils.transform_data(data, model)
-    assert(all(val in transformed_data for val in ['ln(GDP)','fd(ln(GDP))','sq(Temp)','fd(Temp)','sq(Precip)','fd(Precip)','fe_AFG_iso','fe_1963_year']))
+    assert(all(val in transformed_data for val in ['ln(GDP)','fd(ln(GDP))','sq(Temp)','fd(Temp)','sq(Precip)','fd(Precip)','fe_AGO_iso','fe_1963_year']))
 
     res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
     assert not any(np.isnan(val) for val in res1["Coef."])
     
-    model = cee.evaluate_model(transformed_data, model)
+    model = cee.evaluate_model(data, model)
     assert not np.isnan(model.out_sample_mse)
+    assert not np.isnan(model.out_sample_mse_reduction)
+
+    res2 = model.regression_result.summary2().tables[1].sort_index()
+    np.testing.assert_allclose(res1.loc['Temp']["Coef."],res2.loc['Temp']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['Precip']["Coef."],res2.loc['Precip']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['sq(Temp)']["Coef."],res2.loc['sq(Temp)']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['sq(Precip)']["Coef."],res2.loc['sq(Precip)']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['fd(Temp)']["Coef."],res2.loc['fd(Temp)']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['fd(Precip)']["Coef."],res2.loc['fd(Precip)']["Coef."],rtol=1e-05)
 
     data["fd_temp"] = diff(data["Temp"])
     data["fd_precip"] = diff(data["Precip"])
@@ -128,17 +182,60 @@ def test_transformed_covariates_transformed_target_fixed_effects():
     data["ln_gdp"] = np.log(data["GDP"])
     data["fd_ln_gdp"] = diff(data["ln_gdp"])
     
-    res2 = pf.feols("fd_ln_gdp ~ Temp + Precip + fd_temp + fd_precip + sq_temp + sq_precip | iso + year", data=data).coef()
+    res3 = pf.feols("fd_ln_gdp ~ Temp + Precip + fd_temp + fd_precip + sq_temp + sq_precip | iso + year", data=data).coef()
 
-    np.testing.assert_allclose(float(res1.loc[["Precip"]]["Coef."]),float(res2.loc[["Precip"]]))
-    np.testing.assert_allclose(float(res1.loc[["Temp"]]["Coef."]),float(res2.loc[["Temp"]]))
-    np.testing.assert_allclose(float(res1.loc[["sq(Precip)"]]["Coef."]),float(res2.loc[["sq_precip"]]))
-    np.testing.assert_allclose(float(res1.loc[["sq(Temp)"]]["Coef."]),float(res2.loc[["sq_temp"]]))
+    np.testing.assert_allclose(float(res1.loc[["Precip"]]["Coef."]),float(res3.loc[["Precip"]]),rtol=1e-05)
+    np.testing.assert_allclose(float(res1.loc[["Temp"]]["Coef."]),float(res3.loc[["Temp"]]),rtol=1e-05)
+    np.testing.assert_allclose(float(res1.loc[["sq(Precip)"]]["Coef."]),float(res3.loc[["sq_precip"]]),rtol=1e-05)
+    np.testing.assert_allclose(float(res1.loc[["sq(Temp)"]]["Coef."]),float(res3.loc[["sq_temp"]]),rtol=1e-05)
+    np.testing.assert_allclose(float(res1.loc[["fd(Precip)"]]["Coef."]),float(res3.loc[["fd_precip"]]),rtol=1e-05)
+    np.testing.assert_allclose(float(res1.loc[["fd(Temp)"]]["Coef."]),float(res3.loc[["fd_temp"]]),rtol=1e-05)
+
+
+def test_fe_transformed_covariates_transformed_target_iso_fixed_effect():
+
+    data = get_data()
+    # model = cet.parse_cxl("example_cmaps/example_cmap_4.cxl")
+    from_indices = ['fe(iso)', 'Temp', 'sq(Temp)', 'fd(Temp)', 'Precip', 'fd(Precip)', 'sq(Precip)']
+    to_indices = ['fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))']
+    model = cet.parse_model_input([from_indices, to_indices], "file4.csv")[0]
+    
+    transformed_data = utils.transform_data(data, model)
+    assert(all(val in transformed_data for val in ['ln(GDP)','fd(ln(GDP))','sq(Temp)','fd(Temp)','sq(Precip)','fd(Precip)','fe_AGO_iso']))
+
+    res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
+    assert not any(np.isnan(val) for val in res1["Coef."])
+    
+    model = cee.evaluate_model(data, model)
+    assert not np.isnan(model.out_sample_mse)
+    assert not np.isnan(model.out_sample_mse_reduction)
+    
+    res2 = model.regression_result.summary2().tables[1].sort_index()
+    np.testing.assert_allclose(res1.loc['Temp']["Coef."],res2.loc['Temp']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['Precip']["Coef."],res2.loc['Precip']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['sq(Temp)']["Coef."],res2.loc['sq(Temp)']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['sq(Precip)']["Coef."],res2.loc['sq(Precip)']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['fd(Temp)']["Coef."],res2.loc['fd(Temp)']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['fd(Precip)']["Coef."],res2.loc['fd(Precip)']["Coef."],rtol=1e-05)
+
+    data["fd_temp"] = diff(data["Temp"])
+    data["fd_precip"] = diff(data["Precip"])
+    data["sq_temp"] = np.square(data["Temp"])
+    data["sq_precip"] = np.square(data["Precip"])
+    data["ln_gdp"] = np.log(data["GDP"])
+    data["fd_ln_gdp"] = diff(data["ln_gdp"])
+    
+    res2 = pf.feols("fd_ln_gdp ~ Temp + Precip + fd_temp + fd_precip + sq_temp + sq_precip | iso ", data=data).coef()
+
+    np.testing.assert_allclose(float(res1.loc[["Precip"]]["Coef."]),float(res2.loc[["Precip"]]),rtol=1e-05)
+    np.testing.assert_allclose(float(res1.loc[["Temp"]]["Coef."]),float(res2.loc[["Temp"]]),rtol=1e-05)
+    np.testing.assert_allclose(float(res1.loc[["sq(Precip)"]]["Coef."]),float(res2.loc[["sq_precip"]]),rtol=1e-05)
+    np.testing.assert_allclose(float(res1.loc[["sq(Temp)"]]["Coef."]),float(res2.loc[["sq_temp"]]),rtol=1e-05)
     np.testing.assert_allclose(float(res1.loc[["fd(Precip)"]]["Coef."]),float(res2.loc[["fd_precip"]]))
     np.testing.assert_allclose(float(res1.loc[["fd(Temp)"]]["Coef."]),float(res2.loc[["fd_temp"]]),rtol=1e-05)
 
 
-def test_transformed_covariates_transformed_target_incremental_effects():
+def test_ie_transformed_covariates_transformed_target_incremental_effects():
 
     data = get_data()
     # model = cet.parse_cxl("example_cmaps/example_cmap_5.cxl")
@@ -152,8 +249,10 @@ def test_transformed_covariates_transformed_target_incremental_effects():
     res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
     assert not any(np.isnan(val) for val in res1["Coef."])
 
-    model = cee.evaluate_model(transformed_data, model)
+    model = cee.evaluate_model(data, model)
     assert not np.isnan(model.out_sample_mse)
+    assert not np.isnan(model.out_sample_mse_reduction)
+    pd.testing.assert_frame_equal(res1.sort_index(), model.regression_result.summary2().tables[1].sort_index())
 
     climate_covars = ["Precip", "Temp", "fd(Temp)", "fd(Precip)", "sq(Temp)", "sq(Precip)"]
     data["fd(Temp)"] = diff(data["Temp"])

@@ -3,6 +3,8 @@ from statsmodels.tsa.statespace.tools import diff
 import pandas as pd
 import statsmodels.api as sm
 import os
+from sklearn.preprocessing import OrdinalEncoder
+import pyfixest as pf
 
 import warnings
 warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning)
@@ -40,7 +42,46 @@ def add_incremental_effects_to_data(node, data):
 	return data
 
 
-def transform_data(data, model):
+def is_inf(data):
+	try:
+		return np.isinf(data)
+	except TypeError:
+		return False
+
+
+def remove_nan_rows(data, no_nan_cols):
+	missing_indices = []
+	for index, row in enumerate(data.iterrows()):
+		if any(pd.isna(row[1][col]) or is_inf(row[1][col]) for col in no_nan_cols):
+			missing_indices.append(index)
+	data = data.drop(missing_indices).reset_index(drop=True)
+	return data
+
+
+def demean_fixed_effects(data, model):
+	# TODO: cache demean results for future models
+	fixed_effects = []
+	for fe in model.fixed_effects:
+		if not np.issubdtype(data[fe].dtype, np.number):
+			enc = OrdinalEncoder()
+			ordered_list = list(dict.fromkeys(data[fe]))
+			enc.fit(np.array(ordered_list).reshape(-1,1))
+			data[f"encoded_{fe}"] = [int(val) for val in enc.transform(np.array(data[fe]).reshape(-1,1))]
+			fixed_effects.append(f"encoded_{fe}")
+		else:
+			fixed_effects.append(fe)
+	centered_data = pf.estimation.demean(
+		np.array(data[model.model_vars]), 
+		np.array(data[fixed_effects]), 
+		np.ones(len(data))
+	)[0]
+	centered_data = pd.DataFrame(centered_data, columns=model.model_vars)
+	for fe in model.fixed_effects:
+		centered_data = pd.concat([data[fe], centered_data], axis=1).reset_index()
+	return centered_data
+
+
+def transform_data(data, model, demean=False):
 	transformations = []
 	for node in model.model_vars:
 		if node[0:2] not in supported_functions and node[0:2] not in supported_effects:
@@ -54,10 +95,15 @@ def transform_data(data, model):
 				transformations.append(function + f"({data_node})")
 				data = add_transformation_to_data(data, transformations[-1])
 				data_node = transformations[-1]
-	for fe in model.fixed_effects:
-		data = add_fixed_effect_to_data(fe, data)
 	for ie in model.incremental_effects:
 		data = add_incremental_effects_to_data(ie, data)
+	data = remove_nan_rows(data, model.covariates + model.fixed_effects + [model.target_var])
+	if not demean:
+		for fe in model.fixed_effects:
+			data = add_fixed_effect_to_data(fe, data)
+	else:
+		if len(model.fixed_effects) > 0:
+			data = demean_fixed_effects(data, model)
 	return data
 
 
@@ -73,28 +119,28 @@ def get_model_vars(data, model, demeaned):
 	return model_vars
 
 
-def get_attribute_from_model_file(attribute, file):
-	model = pd.read_csv(f"model_cache/{file}/model.csv")
+def get_attribute_from_model_file(dataset, attribute, file):
+	model = pd.read_csv(f"model_cache/{dataset}/{file}/model.csv")
 	return model["attribute_value"][model['model_attribute']==attribute].values[0]
 
 
 def get_last_model_out_sample_mse(data_file):
 	# TODO: make this path more flexible
-	dataset_cache_files = [float(file) for file in os.listdir("model_cache/") if get_attribute_from_model_file("dataset", file) == data_file]
+	if not os.path.isdir(f"model_cache/{data_file}"):
+		return None
+	dataset_cache_files = [float(file) for file in os.listdir(f"model_cache/{data_file}")]
 	if len(dataset_cache_files) == 0:
 		return None
-	latest_model = pd.read_csv(f"model_cache/{max(dataset_cache_files)}/model.csv")
-
-	return float(latest_model["attribute_value"][latest_model['model_attribute']=='out_sample_mse'].values[0])
+	return float(get_attribute_from_model_file(data_file, "out_sample_mse_reduction", max(dataset_cache_files)))
 
 
-def compare_to_last_model(model, data_file):
-	last_model_osmse = get_last_model_out_sample_mse(data_file)
-	if last_model_osmse == None:
-		return(f"This model has out-of-sample MSE of {str(model.out_sample_mse)[:7]}. There is no model in the cache to compare to this model.")
-	elif last_model_osmse < model.out_sample_mse:
-		return(f"This model has HIGHER OUT-OF-SAMPLE MSE {str(model.out_sample_mse)[:7]} than the last model {str(last_model_osmse)[:7]}")
-	elif last_model_osmse > model.out_sample_mse:
-		return(f"This model has LOWER OUT-OF-SAMPLE MSE {str(model.out_sample_mse)[:7]} than the last model {str(last_model_osmse)[:7]}")
-	elif last_model_osmse == model.out_sample_mse:
-		return(f"This model has THE SAME OUT-OF-SAMPLE MSE {str(model.out_sample_mse)[:7]} as the last model {str(last_model_osmse)[:7]}")
+# def compare_to_last_model(model, data_file):
+# 	last_model_osmse = get_last_model_out_sample_mse(data_file)
+# 	if last_model_osmse == None:
+# 		return(f"This model has out-of-sample MSE of {str(model.out_sample_mse_reduction)[:7]}. There is no model in the cache to compare to this model.")
+# 	elif last_model_osmse < model.out_sample_mse_reduction:
+# 		return(f"This model has HIGHER OUT-OF-SAMPLE MSE {str(model.out_sample_mse_reduction)[:7]} than the last model {str(last_model_osmse)[:7]}")
+# 	elif last_model_osmse > model.out_sample_mse_reduction:
+# 		return(f"This model has LOWER OUT-OF-SAMPLE MSE {str(model.out_sample_mse_reduction)[:7]} than the last model {str(last_model_osmse)[:7]}")
+# 	elif last_model_osmse == model.out_sample_mse_reduction:
+# 		return(f"This model has THE SAME OUT-OF-SAMPLE MSE {str(model.out_sample_mse_reduction)[:7]} as the last model {str(last_model_osmse)[:7]}")
