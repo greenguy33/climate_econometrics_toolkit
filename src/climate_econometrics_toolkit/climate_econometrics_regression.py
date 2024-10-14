@@ -15,7 +15,7 @@ def run_standard_regression(transformed_data, model, demeaned=False):
 	return regression_result
 
 
-def run_intercept_only_regression(transformed_data, model, demeaned=False):
+def run_intercept_only_regression(transformed_data, model):
 	intercept_col = np.ones(len(transformed_data))
 	reg = sm.OLS(transformed_data[model.target_var],intercept_col,missing="drop")
 	regression_result = reg.fit()

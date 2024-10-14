@@ -1,10 +1,10 @@
 import numpy as np
 from statsmodels.tsa.statespace.tools import diff
 import pandas as pd
-import statsmodels.api as sm
 import os
 from sklearn.preprocessing import OrdinalEncoder
 import pyfixest as pf
+import dateutil.parser as parser 
 
 import warnings
 warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning)
@@ -29,14 +29,20 @@ def add_fixed_effect_to_data(node, data):
 	return data
 
 
-def add_incremental_effects_to_data(node, data):
+def add_incremental_effects_to_data(node, data, time_column):
+	# TODO: This only supports time effects by year. Add support for monthly/weekly?
+	parsed_dates = [parser.parse(str(date)) for date in data[time_column]]
+	min_year = min(parsed_dates[index].year for index in range(len(parsed_dates)))
 	ie_level = 1
 	node_split = node.split(" ")
 	if len(node_split) > 1:
 		ie_level = int(node_split[1].strip())
 	for element in sorted(list(set(data[node_split[0]]))):
+		first_elem_year = min(data.loc[data[node_split[0]] == element][time_column])
+		time_past_min = first_elem_year - min_year
 		data[f"ie_{element}_{node_split[0]}_1"] = np.where(data[node_split[0]] == element, 1, 0)
 		data[f"ie_{element}_{node_split[0]}_1"] = np.where(data[node_split[0]] == element, data[f"ie_{element}_{node_split[0]}_1"].cumsum(), 0)
+		data[f"ie_{element}_{node_split[0]}_1"] = np.where(data[node_split[0]] == element, data[f"ie_{element}_{node_split[0]}_1"]+time_past_min-1, 0)
 		for i in range(1, ie_level+1):
 			data[f"ie_{element}_{node_split[0]}_{i}"] = np.power(data[f"ie_{element}_{node_split[0]}_1"], i)
 	return data
@@ -77,7 +83,10 @@ def demean_fixed_effects(data, model):
 	)[0]
 	centered_data = pd.DataFrame(centered_data, columns=model.model_vars)
 	for fe in model.fixed_effects:
-		centered_data = pd.concat([data[fe], centered_data], axis=1).reset_index()
+		centered_data = pd.concat([data[fe], centered_data], axis=1).reset_index(drop=True)
+	for ie in [col for col in data.columns if col.startswith("ie_")]:
+		centered_data = pd.concat([data[ie], centered_data], axis=1).reset_index(drop=True)
+	print(centered_data)
 	return centered_data
 
 
@@ -96,7 +105,7 @@ def transform_data(data, model, demean=False):
 				data = add_transformation_to_data(data, transformations[-1])
 				data_node = transformations[-1]
 	for ie in model.incremental_effects:
-		data = add_incremental_effects_to_data(ie, data)
+		data = add_incremental_effects_to_data(ie, data, model.time_column)
 	data = remove_nan_rows(data, model.covariates + model.fixed_effects + [model.target_var])
 	if not demean:
 		for fe in model.fixed_effects:

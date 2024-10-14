@@ -1,15 +1,8 @@
 import xml.etree.ElementTree as ET
 import networkx as nx
 import pandas as pd
-import copy
-import numpy as np
-from statsmodels.tsa.statespace.tools import diff
-import statsmodels.api as sm
-import pymc as pm
-from pytensor import tensor as pt
-import pickle as pkl
+
 import climate_econometrics_toolkit.climate_econometrics_model as cem
-import climate_econometrics_toolkit.evaluate_model as cet_eval
 import climate_econometrics_toolkit.climate_econometrics_utils as utils
 
 import warnings
@@ -21,8 +14,6 @@ def build_model_from_graph(graph, dataset):
 	target_var = [node for node in graph.nodes() if len(list(graph.successors(node))) == 0][0]
 	input_nodes = list(graph.predecessors(target_var))
 
-	unused_nodes = [node for node in graph.nodes() if node != target_var and node not in input_nodes]
-	
 	covars = [node for node in input_nodes if not any(node[0:2] == val for val in utils.supported_effects)]
 	fixed_effects = [node.split("(")[1].split(")")[0] for node in input_nodes if node[0:2] == "fe"]
 	incremental_effects = [node.split("(")[1].split(")")[0] + " " + node[2] for node in input_nodes if node[0:2] == "ie"]
@@ -32,6 +23,13 @@ def build_model_from_graph(graph, dataset):
 	model.fixed_effects = fixed_effects
 	model.incremental_effects = incremental_effects
 	model.dataset = dataset.split("/")[-1]
+
+	time_column = None
+	if len(model.incremental_effects) > 0:
+		time_column = list(graph.predecessors([node for node in input_nodes if node[0:2] == "ie"][0]))[0]
+	model.time_column = time_column
+
+	unused_nodes = [node for node in graph.nodes() if node != model.target_var and node not in input_nodes and node != model.time_column]
 	return model, unused_nodes
 
 

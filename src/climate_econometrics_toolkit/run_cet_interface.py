@@ -7,7 +7,7 @@ from tkinter import filedialog
 import climate_econometrics_toolkit.climate_econometrics_api as api
 from climate_econometrics_toolkit.DragAndDropInterface import DragAndDropInterface
 from climate_econometrics_toolkit.RegressionPlot import RegressionPlot
-from ResultPlot import ResultPlot
+from climate_econometrics_toolkit.ResultPlot import ResultPlot
 
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)

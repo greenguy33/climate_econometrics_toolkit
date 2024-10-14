@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import Menu
+from tkinter import simpledialog
 
 import pickle as pkl
 import pandas as pd
@@ -22,6 +23,7 @@ class DragAndDropInterface():
         self.data_source = None
         self.canvas_print_out = None
         self.menu = None
+        self.time_column = None
 
         self.canvas.bind("<ButtonPress-1>", self.handle_canvas_click)
 
@@ -63,6 +65,10 @@ class DragAndDropInterface():
             self.add_model_variables([transformation_text], [self.new_elem_coords])
             self.new_elem_coords[0] = self.new_elem_coords[0] - 50
             self.transformation_list.append(transformation_text)
+        if transformation.startswith("ie"):
+            if self.time_column == None:
+                self.time_column = simpledialog.askstring(title="Add Incremental Effect", prompt="Provide the name of a time-based column to apply incremental effects:")
+            self.draw_arrow(self.canvas.find_withtag(f"boxed_text_{self.time_column}")[1], self.canvas.find_withtag(f"boxed_text_{transformation_text}")[1])
         self.reset_click()
 
     def save_canvas_to_cache(self, model_id):
@@ -86,13 +92,19 @@ class DragAndDropInterface():
         else:
             self.clear_canvas()
             for item in cached_canvas["canvas_data"]:
-                if item["type"] == "rectangle":
-                    self.canvas.create_rectangle(*item["coords"], fill="orange", tags=item["tags"])
-                elif item["type"] == "line":
+                if item["type"] == "line":
                     self.canvas.create_line(*item["coords"], arrow=tk.LAST, tags=item["tags"])
-                    self.arrow_list.append(self.get_arrow_source_and_target(item["tags"]))
-                elif item["type"] == "text":
-                    self.canvas.create_text(*item["coords"], text=item["text"], fill="white", tags=item["tags"])
+                    arrow_source, arrow_target = self.get_arrow_source_and_target(item["tags"])
+                    self.arrow_list.append((arrow_source, arrow_target))
+                    self.canvas.tag_bind(f"from_{self.canvas.gettags(arrow_source)[0]}", "<ButtonPress-3>", self.delete_arrow)
+                else:
+                    if item["type"] == "rectangle":
+                        rect = self.canvas.create_rectangle(*item["coords"], fill="orange", tags=item["tags"])
+                    elif item["type"] == "text":
+                        self.canvas.create_text(*item["coords"], text=item["text"], fill="white", tags=item["tags"])
+                        text = item["text"]
+                        column_box_tag = f"boxed_text_{text}".replace(" ","_")
+                        self.add_tags_to_canvas_elements(column_box_tag, item["text"])
             self.transformation_list = cached_canvas["transformation_list"]
             self.variables_displayed = True
 
@@ -127,6 +139,12 @@ class DragAndDropInterface():
             finally:
                 self.menu.grab_release()
 
+    def add_tags_to_canvas_elements(self, column_box_tag, column):
+        self.canvas.tag_bind(column_box_tag, "<B1-Motion>", self.on_drag)
+        self.canvas.tag_bind(column_box_tag, "<ButtonRelease-1>", self.end_drag)
+        if not (column.startswith("ie1(") or column.startswith("ie2(") or column.startswith("ie3(") or column.startswith("fe(")):
+            self.canvas.tag_bind(column_box_tag, "<ButtonPress-3>", self.popup_menu)
+
     def add_model_variables(self, variables, coords=None):
 
         last_rectangle_right_side = 0
@@ -148,10 +166,7 @@ class DragAndDropInterface():
             rect = self.canvas.create_rectangle(self.canvas.bbox(text), fill="orange", tags=column_box_tag)
             self.canvas.lower(rect)
 
-            self.canvas.tag_bind(column_box_tag, "<B1-Motion>", self.on_drag)
-            self.canvas.tag_bind(column_box_tag, "<ButtonRelease-1>", self.end_drag)
-            if not (column.startswith("ie1(") or column.startswith("ie2(") or column.startswith("ie3(") or column.startswith("fe(")):
-                self.canvas.tag_bind(column_box_tag, "<ButtonPress-3>", self.popup_menu)
+            self.add_tags_to_canvas_elements(column_box_tag, column)
 
             last_rectangle_right_side = self.canvas.bbox(text)[2]
 
@@ -180,9 +195,12 @@ class DragAndDropInterface():
             self.reset_click()
         self.in_drag = False
 
-    def draw_arrow(self, event):
+    def draw_arrow_from_click(self, event):
         source_object = self.left_clicked_object
         target_object = self.canvas.find_closest(event.x, event.y)[0]
+        self.draw_arrow(source_object, target_object)
+        
+    def draw_arrow(self, source_object, target_object):
         arrow_conditions = [
             source_object != target_object,
             (source_object,target_object) not in self.arrow_list,
@@ -194,8 +212,7 @@ class DragAndDropInterface():
         if all(arrow_conditions):
             target_bb = self.canvas.bbox(target_object)
             source_bb = self.canvas.bbox(source_object)
-            # TODO: ensure that an arrow cannot have another arrow as a source or target
-            arrow = self.canvas.create_line(
+            self.canvas.create_line(
                 (source_bb[0] + source_bb[2]) / 2,
                 (source_bb[1] + source_bb[3]) / 2,
                 (target_bb[0] + target_bb[2]) / 2,
@@ -251,7 +268,7 @@ class DragAndDropInterface():
                 self.drag_start_y = event.y
                 self.color_clicked_rectangle(clicked_object, "red")
         else:
-            self.draw_arrow(event)
+            self.draw_arrow_from_click(event)
 
     def on_drag(self, event):
 

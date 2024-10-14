@@ -1,4 +1,3 @@
-import pandas as pd
 import random
 import numpy as np
 import statsmodels.api as sm
@@ -26,7 +25,7 @@ def split_data_by_column(data, column):
 
 
 def split_data_randomly(data, splits=10):
-	kf = KFold(n_splits=splits, shuffle=True)
+	kf = KFold(n_splits=splits, shuffle=True, random_state=1)
 	return kf.split(data)
 
 
