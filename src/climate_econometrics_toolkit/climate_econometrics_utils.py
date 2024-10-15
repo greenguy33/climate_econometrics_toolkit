@@ -13,6 +13,11 @@ supported_functions = ["fd","sq","ln"]
 supported_effects = ["fe", "ie"]
 
 
+def initial_checks():
+	if not os.path.isdir("model_cache"):
+		os.makedirs("model_cache")
+
+
 def add_transformation_to_data(data, function):
 	if function[0:2] == "sq":
 		data[function] = np.square(data[function[3:-1]])
@@ -86,7 +91,6 @@ def demean_fixed_effects(data, model):
 		centered_data = pd.concat([data[fe], centered_data], axis=1).reset_index(drop=True)
 	for ie in [col for col in data.columns if col.startswith("ie_")]:
 		centered_data = pd.concat([data[ie], centered_data], axis=1).reset_index(drop=True)
-	print(centered_data)
 	return centered_data
 
 

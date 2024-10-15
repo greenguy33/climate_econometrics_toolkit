@@ -2,7 +2,6 @@ import tkinter as tk
 
 import scipy.stats as stats
 import numpy as np
-import math
 import pickle as pkl
 import pandas as pd
 

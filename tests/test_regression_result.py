@@ -225,22 +225,22 @@ def test_fe_transformed_covariates_transformed_target_iso_fixed_effect():
     data["ln_gdp"] = np.log(data["GDP"])
     data["fd_ln_gdp"] = diff(data["ln_gdp"])
     
-    res2 = pf.feols("fd_ln_gdp ~ Temp + Precip + fd_temp + fd_precip + sq_temp + sq_precip | iso ", data=data).coef()
+    res3 = pf.feols("fd_ln_gdp ~ Temp + Precip + fd_temp + fd_precip + sq_temp + sq_precip | iso ", data=data).coef()
 
-    np.testing.assert_allclose(float(res1.loc[["Precip"]]["Coef."]),float(res2.loc[["Precip"]]),rtol=1e-05)
-    np.testing.assert_allclose(float(res1.loc[["Temp"]]["Coef."]),float(res2.loc[["Temp"]]),rtol=1e-05)
-    np.testing.assert_allclose(float(res1.loc[["sq(Precip)"]]["Coef."]),float(res2.loc[["sq_precip"]]),rtol=1e-05)
-    np.testing.assert_allclose(float(res1.loc[["sq(Temp)"]]["Coef."]),float(res2.loc[["sq_temp"]]),rtol=1e-05)
-    np.testing.assert_allclose(float(res1.loc[["fd(Precip)"]]["Coef."]),float(res2.loc[["fd_precip"]]))
-    np.testing.assert_allclose(float(res1.loc[["fd(Temp)"]]["Coef."]),float(res2.loc[["fd_temp"]]),rtol=1e-05)
+    np.testing.assert_allclose(float(res1.loc[["Precip"]]["Coef."]),float(res3.loc[["Precip"]]),rtol=1e-05)
+    np.testing.assert_allclose(float(res1.loc[["Temp"]]["Coef."]),float(res3.loc[["Temp"]]),rtol=1e-05)
+    np.testing.assert_allclose(float(res1.loc[["sq(Precip)"]]["Coef."]),float(res3.loc[["sq_precip"]]),rtol=1e-05)
+    np.testing.assert_allclose(float(res1.loc[["sq(Temp)"]]["Coef."]),float(res3.loc[["sq_temp"]]),rtol=1e-05)
+    np.testing.assert_allclose(float(res1.loc[["fd(Precip)"]]["Coef."]),float(res3.loc[["fd_precip"]]))
+    np.testing.assert_allclose(float(res1.loc[["fd(Temp)"]]["Coef."]),float(res3.loc[["fd_temp"]]),rtol=1e-05)
 
 
 def test_ie_transformed_covariates_transformed_target_incremental_effects():
 
     data = get_data()
     # model = cet.parse_cxl("example_cmaps/example_cmap_5.cxl")
-    from_indices = ['Temp', 'Precip', 'fd(Temp)', 'sq(Temp)', 'sq(Precip)', 'fd(Precip)', 'ie3(iso)']
-    to_indices = ['fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))']
+    from_indices = ['Temp', 'Precip', 'fd(Temp)', 'sq(Temp)', 'sq(Precip)', 'fd(Precip)', 'ie3(iso)', 'year']
+    to_indices = ['fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'ie3(iso)']
     model = cet.parse_model_input([from_indices, to_indices], "file5.csv")[0]
     
     transformed_data = utils.transform_data(data, model)
@@ -254,30 +254,67 @@ def test_ie_transformed_covariates_transformed_target_incremental_effects():
     assert not np.isnan(model.out_sample_mse_reduction)
     pd.testing.assert_frame_equal(res1.sort_index(), model.regression_result.summary2().tables[1].sort_index())
 
+    ie_test_data = pd.read_csv("tests/incremental_effect_test_data.csv")
     climate_covars = ["Precip", "Temp", "fd(Temp)", "fd(Precip)", "sq(Temp)", "sq(Precip)"]
-    data["fd(Temp)"] = diff(data["Temp"])
-    data["fd(Precip)"] = diff(data["Precip"])
-    data["sq(Temp)"] = np.square(data["Temp"])
-    data["sq(Precip)"] = np.square(data["Precip"])
-    
-    data["ln(GDP)"] = np.log(data["GDP"])
-    data["fd(ln(GDP))"] = diff(data["ln(GDP)"])
-
-    ie_level = 3
-    for element in sorted(list(set(data["iso"]))):
-        data[f"ie_{element}_iso_1"] = np.where(data["iso"] == element, 1, 0)
-        data[f"ie_{element}_iso_1"] = np.where(data["iso"] == element, data[f"ie_{element}_iso_1"].cumsum(), 0)
-        for i in range(1, ie_level+1):
-            data[f"ie_{element}_iso_{i}"] = np.power(data[f"ie_{element}_iso_1"], i)
-
-
     covars = copy.deepcopy(climate_covars)
-    covars.extend([col for col in data.columns if col.startswith("ie")])
-
-    regression_data = data[covars]
+    covars.extend([col for col in ie_test_data.columns if col.startswith("ie")])
+    regression_data = ie_test_data[covars]
     regression_data = sm.add_constant(regression_data)
     
-    model = sm.OLS(data["fd(ln(GDP))"],regression_data,missing="drop")
+    model = sm.OLS(ie_test_data["fd(ln(GDP))"],regression_data,missing="drop")
     res2 = model.fit().summary2().tables[1]
 
     pd.testing.assert_frame_equal(res1.loc[climate_covars], res2.loc[climate_covars])
+
+
+def test_ie_transformed_covariates_transformed_target_fixed_effects_and_incremental_effects():
+
+    data = get_data()
+    # model = cet.parse_cxl("example_cmaps/example_cmap_5.cxl")
+    from_indices = ['Temp', 'Precip', 'fd(Temp)', 'sq(Temp)', 'sq(Precip)', 'fd(Precip)', 'fe(year)', 'fe(iso)', 'ie3(iso)', 'year']
+    to_indices = ['fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'ie3(iso)']
+    model = cet.parse_model_input([from_indices, to_indices], "file5.csv")[0]
+    
+    transformed_data = utils.transform_data(data, model)
+    assert(all(val in transformed_data for val in ['ln(GDP)','fd(ln(GDP))','sq(Temp)','fd(Temp)','sq(Precip)','fd(Precip)','fe_AGO_iso','fe_1963_year','ie_AFG_iso_1','ie_AFG_iso_2','ie_AFG_iso_3']))
+
+    res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
+    assert not any(np.isnan(val) for val in res1["Coef."])
+    res1.to_csv("res1.csv")
+
+    model = cee.evaluate_model(data, model)
+    assert not np.isnan(model.out_sample_mse)
+    assert not np.isnan(model.out_sample_mse_reduction)
+
+    res2 = model.regression_result.summary2().tables[1]
+    res2.to_csv("res2.csv")
+    
+    np.testing.assert_allclose(res1.loc['Temp']["Coef."],res2.loc['Temp']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['Precip']["Coef."],res2.loc['Precip']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['sq(Temp)']["Coef."],res2.loc['sq(Temp)']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['sq(Precip)']["Coef."],res2.loc['sq(Precip)']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['fd(Temp)']["Coef."],res2.loc['fd(Temp)']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['fd(Precip)']["Coef."],res2.loc['fd(Precip)']["Coef."],rtol=1e-05)
+
+    # ie_test_data = pd.read_csv("tests/incremental_effect_test_data.csv")
+    # climate_covars = ["Precip", "Temp", "fd(Temp)", "fd(Precip)", "sq(Temp)", "sq(Precip)"]
+    # covars = copy.deepcopy(climate_covars)
+    # covars.extend([col for col in ie_test_data.columns if col.startswith("ie")])
+    # regression_data = ie_test_data[covars]
+    # regression_data = sm.add_constant(regression_data)
+
+    # covars = copy.deepcopy(climate_covars)
+    # covars.extend([col for col in regression_data.columns if col.startswith("ie")])
+
+    # covar_string = " + ".join(covars)
+
+    # res3 = pf.feols(f"fd_ln_gdp ~ {covar_string} | iso + year", data=regression_data).coef()
+
+    # np.testing.assert_allclose(float(res1.loc[["Precip"]]["Coef."]),float(res3.loc[["Precip"]]),rtol=1e-05)
+    # np.testing.assert_allclose(float(res1.loc[["Temp"]]["Coef."]),float(res3.loc[["Temp"]]),rtol=1e-05)
+    # np.testing.assert_allclose(float(res1.loc[["sq(Precip)"]]["Coef."]),float(res3.loc[["sq_precip"]]),rtol=1e-05)
+    # np.testing.assert_allclose(float(res1.loc[["sq(Temp)"]]["Coef."]),float(res3.loc[["sq_temp"]]),rtol=1e-05)
+    # np.testing.assert_allclose(float(res1.loc[["fd(Precip)"]]["Coef."]),float(res3.loc[["fd_precip"]]),rtol=1e-05)
+    # np.testing.assert_allclose(float(res1.loc[["fd(Temp)"]]["Coef."]),float(res3.loc[["fd_temp"]]),rtol=1e-05)
+
+    

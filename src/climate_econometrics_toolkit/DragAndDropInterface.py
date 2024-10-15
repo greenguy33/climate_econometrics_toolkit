@@ -21,6 +21,7 @@ class DragAndDropInterface():
         self.transformation_list = []
         self.variables_displayed = False
         self.data_source = None
+        self.filename = None
         self.canvas_print_out = None
         self.menu = None
         self.time_column = None

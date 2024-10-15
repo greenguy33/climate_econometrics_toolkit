@@ -10,9 +10,10 @@ src/climate_econometrics_toolkit/climate_econometrics_regression.py
 src/climate_econometrics_toolkit/climate_econometrics_utils.py
 src/climate_econometrics_toolkit/evaluate_model.py
 src/climate_econometrics_toolkit/model_builder.py
-src/climate_econometrics_toolkit/run_cet_interface.py
+src/climate_econometrics_toolkit/tkinter_interface_utils.py
 src/climate_econometrics_toolkit.egg-info/PKG-INFO
 src/climate_econometrics_toolkit.egg-info/SOURCES.txt
 src/climate_econometrics_toolkit.egg-info/dependency_links.txt
+src/climate_econometrics_toolkit.egg-info/requires.txt
 src/climate_econometrics_toolkit.egg-info/top_level.txt
 tests/test_regression_result.py
