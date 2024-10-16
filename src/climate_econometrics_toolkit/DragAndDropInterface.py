@@ -147,30 +147,22 @@ class DragAndDropInterface():
             self.canvas.tag_bind(column_box_tag, "<ButtonPress-3>", self.popup_menu)
 
     def add_model_variables(self, variables, coords=None):
-
         last_rectangle_right_side = 0
         row_count = 0
         for index, column in enumerate(variables):
-
             if coords != None:
                 var_coords = coords[index]
             else:
                 if last_rectangle_right_side > self.canvas.winfo_width() - 100:
                     row_count += 1
                     last_rectangle_right_side = 0
-
                 var_coords = [last_rectangle_right_side + len(column)*5+50, row_count * 50 + 20]
-
             column_box_tag = f"boxed_text_{column}".replace(" ","_")
-
             text = self.canvas.create_text(*var_coords, text=column, fill="white", tags=column_box_tag)
             rect = self.canvas.create_rectangle(self.canvas.bbox(text), fill="orange", tags=column_box_tag)
             self.canvas.lower(rect)
-
             self.add_tags_to_canvas_elements(column_box_tag, column)
-
             last_rectangle_right_side = self.canvas.bbox(text)[2]
-
         self.variables_displayed = True
 
     def handle_canvas_click(self, event):
@@ -243,16 +235,13 @@ class DragAndDropInterface():
             self.canvas.delete(arrow)
 
     def update_arrow_coordinates(self, event, delta_x, delta_y):
-
         arrow_source_tags = f"from_{self.canvas.gettags(self.left_clicked_object)[0]}"
         arrow_target_tags = f"to_{self.canvas.gettags(self.left_clicked_object)[0]}"
-
         for arrow in self.canvas.find_withtag(arrow_source_tags):
             arrow_source_coords = self.canvas.coords(arrow)
             arrow_source_coords[0] += delta_x
             arrow_source_coords[1] += delta_y
             self.canvas.coords(arrow, *arrow_source_coords)
-
         for arrow in self.canvas.find_withtag(arrow_target_tags):
             arrow_target_coords = self.canvas.coords(arrow)
             arrow_target_coords[2] += delta_x
@@ -272,18 +261,13 @@ class DragAndDropInterface():
             self.draw_arrow_from_click(event)
 
     def on_drag(self, event):
-
         if self.left_clicked_object != None:
             self.in_drag = True
-
             canvas_buffer = 25
             if event.x >= canvas_buffer and event.y >= canvas_buffer and event.x <= self.canvas.winfo_width()-canvas_buffer and event.y <= self.canvas.winfo_height()-canvas_buffer:
-
                 delta_x = event.x - self.drag_start_x
                 delta_y = event.y - self.drag_start_y
                 self.canvas.move(self.canvas.gettags(self.left_clicked_object)[0], delta_x, delta_y)
-
                 self.drag_start_x = event.x
                 self.drag_start_y = event.y
-
                 self.update_arrow_coordinates(event, delta_x, delta_y)

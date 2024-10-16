@@ -2,12 +2,14 @@ import pandas as pd
 import shutil
 import os
 import tkinter as tk
+import threading
 
 import climate_econometrics_toolkit.evaluate_model as ce_eval
 import climate_econometrics_toolkit.model_builder as mb
 import climate_econometrics_toolkit.climate_econometrics_utils as utils
-import climate_econometrics_toolkit.tkinter_interface_utils as tk_utils
 import climate_econometrics_toolkit.climate_econometrics_regression as regression
+
+from climate_econometrics_toolkit.TkInterfaceUtils import TkInterfaceUtils
 from climate_econometrics_toolkit.DragAndDropInterface import DragAndDropInterface
 from climate_econometrics_toolkit.RegressionPlot import RegressionPlot
 from climate_econometrics_toolkit.ResultPlot import ResultPlot
@@ -37,7 +39,6 @@ def evaluate_model(data_file, model):
 
 
 def get_best_model_for_dataset(filename):
-	# TODO: make this path more flexible
 	max_mse_red, model_id = None, None
 	out_sample_mses = {}
 	cache_dir = os.listdir("model_cache/")
@@ -49,11 +50,10 @@ def get_best_model_for_dataset(filename):
 		max_mse_red = max(out_sample_mses.values())
 		model_id = [file for file in out_sample_mses if out_sample_mses[file] == max_mse_red][0]
 	return max_mse_red, model_id
-		
+
 
 def clear_model_cache(dataset):
 	if dataset == None:
-		# TODO: make this path more flexible
 		shutil.rmtree("model_cache/")
 		os.makedirs("model_cache/")
 	else:
@@ -65,7 +65,9 @@ def run_bayesian_regression(data_file, model):
 	model, _ = mb.parse_model_input(model, data_file)
 	data = pd.read_csv(data_file)
 	transformed_data = utils.transform_data(data, model).dropna().reset_index(drop=True)
-	regression.run_bayesian_regression(transformed_data, model)
+	thread = threading.Thread(target=regression.run_bayesian_regression,name="bayes_sampling_thread",args=(transformed_data,model))
+	thread.daemon = True
+	thread.start()
 
 
 def start_interface():
@@ -77,8 +79,6 @@ def start_interface():
 	window.rowconfigure(0, minsize=100, weight=1)
 	window.rowconfigure(1, minsize=100, weight=1)
 	window.columnconfigure(1, minsize=800, weight=1)
-
-	window.protocol("WM_DELETE_WINDOW", lambda : tk_utils.on_close(window))
 
 	canvas = tk.Canvas(
 		window, 
@@ -95,13 +95,16 @@ def start_interface():
 	regression_plot = RegressionPlot(regression_plot_frame)
 	result_plot = ResultPlot(result_plot_frame)
 
+	tk_utils = TkInterfaceUtils(window, canvas, dnd, regression_plot, result_plot)
+	window.protocol("WM_DELETE_WINDOW", tk_utils.on_close)
+
 	lefthand_bar = tk.Frame(window, relief=tk.RAISED, bd=2)
-	btn_load = tk.Button(lefthand_bar, text="Load Dataset", command=lambda : tk_utils.add_data_columns_from_file(dnd, result_plot))
-	btn_clear_canvas = tk.Button(lefthand_bar, text="Clear Canvas", command=lambda : tk_utils.clear_canvas(dnd, regression_plot, result_plot))
-	btn_evaluate = tk.Button(lefthand_bar, text="Evaluate Model", command=lambda : tk_utils.evaluate_model(dnd, canvas, regression_plot, result_plot))
-	btn_best_model = tk.Button(lefthand_bar, text="Restore Best Model", command=lambda : tk_utils.restore_best_model(dnd, regression_plot))
-	btn_clear_model_cache = tk.Button(lefthand_bar, text="Clear Model Cache", command=lambda : tk_utils.clear_model_cache(dnd, result_plot))
-	btn_bayesian_regression = tk.Button(lefthand_bar, text="Run Bayesian Inference", command=lambda : tk_utils.run_bayesian_inference(dnd, canvas))
+	btn_load = tk.Button(lefthand_bar, text="Load Dataset", command=tk_utils.add_data_columns_from_file)
+	btn_clear_canvas = tk.Button(lefthand_bar, text="Clear Canvas", command=tk_utils.clear_canvas)
+	btn_evaluate = tk.Button(lefthand_bar, text="Evaluate Model", command=tk_utils.evaluate_model)
+	btn_best_model = tk.Button(lefthand_bar, text="Restore Best Model", command=tk_utils.restore_best_model)
+	btn_clear_model_cache = tk.Button(lefthand_bar, text="Clear Model Cache", command=tk_utils.clear_model_cache)
+	btn_bayesian_regression = tk.Button(lefthand_bar, text="Run Bayesian Inference", command=tk_utils.run_bayesian_inference)
 	result_text = tk.Text(lefthand_bar, height=10)
 
 	btn_load.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
@@ -119,4 +122,3 @@ def start_interface():
 
 	dnd.canvas_print_out = result_text
 	window.mainloop()
-

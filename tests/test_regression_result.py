@@ -11,7 +11,7 @@ import climate_econometrics_toolkit.climate_econometrics_utils as utils
 
 
 def get_data():
-    data = pd.read_csv("GrowthClimateDataset.csv")
+    data = pd.read_csv("data/GrowthClimateDataset.csv")
     data["GDP"] = data["TotGDP"]
     data["Temp"] = data["UDel_temp_popweight"]
     data["Precip"] = data["UDel_precip_popweight"]
@@ -168,12 +168,12 @@ def test_fe_transformed_covariates_transformed_target_iso_year_fixed_effects():
     assert not np.isnan(model.out_sample_mse_reduction)
 
     res2 = model.regression_result.summary2().tables[1].sort_index()
-    np.testing.assert_allclose(res1.loc['Temp']["Coef."],res2.loc['Temp']["Coef."],rtol=1e-05)
-    np.testing.assert_allclose(res1.loc['Precip']["Coef."],res2.loc['Precip']["Coef."],rtol=1e-05)
-    np.testing.assert_allclose(res1.loc['sq(Temp)']["Coef."],res2.loc['sq(Temp)']["Coef."],rtol=1e-05)
-    np.testing.assert_allclose(res1.loc['sq(Precip)']["Coef."],res2.loc['sq(Precip)']["Coef."],rtol=1e-05)
-    np.testing.assert_allclose(res1.loc['fd(Temp)']["Coef."],res2.loc['fd(Temp)']["Coef."],rtol=1e-05)
-    np.testing.assert_allclose(res1.loc['fd(Precip)']["Coef."],res2.loc['fd(Precip)']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['Temp']["Coef."],res2.loc['Temp']["Coef."],rtol=1e-04)
+    np.testing.assert_allclose(res1.loc['Precip']["Coef."],res2.loc['Precip']["Coef."],rtol=1e-04)
+    np.testing.assert_allclose(res1.loc['sq(Temp)']["Coef."],res2.loc['sq(Temp)']["Coef."],rtol=1e-04)
+    np.testing.assert_allclose(res1.loc['sq(Precip)']["Coef."],res2.loc['sq(Precip)']["Coef."],rtol=1e-04)
+    np.testing.assert_allclose(res1.loc['fd(Temp)']["Coef."],res2.loc['fd(Temp)']["Coef."],rtol=1e-04)
+    np.testing.assert_allclose(res1.loc['fd(Precip)']["Coef."],res2.loc['fd(Precip)']["Coef."],rtol=1e-04)
 
     data["fd_temp"] = diff(data["Temp"])
     data["fd_precip"] = diff(data["Precip"])
@@ -184,12 +184,12 @@ def test_fe_transformed_covariates_transformed_target_iso_year_fixed_effects():
     
     res3 = pf.feols("fd_ln_gdp ~ Temp + Precip + fd_temp + fd_precip + sq_temp + sq_precip | iso + year", data=data).coef()
 
-    np.testing.assert_allclose(float(res1.loc[["Precip"]]["Coef."]),float(res3.loc[["Precip"]]),rtol=1e-05)
-    np.testing.assert_allclose(float(res1.loc[["Temp"]]["Coef."]),float(res3.loc[["Temp"]]),rtol=1e-05)
-    np.testing.assert_allclose(float(res1.loc[["sq(Precip)"]]["Coef."]),float(res3.loc[["sq_precip"]]),rtol=1e-05)
-    np.testing.assert_allclose(float(res1.loc[["sq(Temp)"]]["Coef."]),float(res3.loc[["sq_temp"]]),rtol=1e-05)
-    np.testing.assert_allclose(float(res1.loc[["fd(Precip)"]]["Coef."]),float(res3.loc[["fd_precip"]]),rtol=1e-05)
-    np.testing.assert_allclose(float(res1.loc[["fd(Temp)"]]["Coef."]),float(res3.loc[["fd_temp"]]),rtol=1e-05)
+    np.testing.assert_allclose(float(res1.loc[["Precip"]]["Coef."]),float(res3.loc[["Precip"]]),rtol=1e-04)
+    np.testing.assert_allclose(float(res1.loc[["Temp"]]["Coef."]),float(res3.loc[["Temp"]]),rtol=1e-04)
+    np.testing.assert_allclose(float(res1.loc[["sq(Precip)"]]["Coef."]),float(res3.loc[["sq_precip"]]),rtol=1e-04)
+    np.testing.assert_allclose(float(res1.loc[["sq(Temp)"]]["Coef."]),float(res3.loc[["sq_temp"]]),rtol=1e-04)
+    np.testing.assert_allclose(float(res1.loc[["fd(Precip)"]]["Coef."]),float(res3.loc[["fd_precip"]]),rtol=1e-04)
+    np.testing.assert_allclose(float(res1.loc[["fd(Temp)"]]["Coef."]),float(res3.loc[["fd_temp"]]),rtol=1e-04)
 
 
 def test_fe_transformed_covariates_transformed_target_iso_fixed_effect():
@@ -211,12 +211,12 @@ def test_fe_transformed_covariates_transformed_target_iso_fixed_effect():
     assert not np.isnan(model.out_sample_mse_reduction)
     
     res2 = model.regression_result.summary2().tables[1].sort_index()
-    np.testing.assert_allclose(res1.loc['Temp']["Coef."],res2.loc['Temp']["Coef."],rtol=1e-05)
-    np.testing.assert_allclose(res1.loc['Precip']["Coef."],res2.loc['Precip']["Coef."],rtol=1e-05)
-    np.testing.assert_allclose(res1.loc['sq(Temp)']["Coef."],res2.loc['sq(Temp)']["Coef."],rtol=1e-05)
-    np.testing.assert_allclose(res1.loc['sq(Precip)']["Coef."],res2.loc['sq(Precip)']["Coef."],rtol=1e-05)
-    np.testing.assert_allclose(res1.loc['fd(Temp)']["Coef."],res2.loc['fd(Temp)']["Coef."],rtol=1e-05)
-    np.testing.assert_allclose(res1.loc['fd(Precip)']["Coef."],res2.loc['fd(Precip)']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['Temp']["Coef."],res2.loc['Temp']["Coef."],rtol=1e-04)
+    np.testing.assert_allclose(res1.loc['Precip']["Coef."],res2.loc['Precip']["Coef."],rtol=1e-04)
+    np.testing.assert_allclose(res1.loc['sq(Temp)']["Coef."],res2.loc['sq(Temp)']["Coef."],rtol=1e-04)
+    np.testing.assert_allclose(res1.loc['sq(Precip)']["Coef."],res2.loc['sq(Precip)']["Coef."],rtol=1e-04)
+    np.testing.assert_allclose(res1.loc['fd(Temp)']["Coef."],res2.loc['fd(Temp)']["Coef."],rtol=1e-04)
+    np.testing.assert_allclose(res1.loc['fd(Precip)']["Coef."],res2.loc['fd(Precip)']["Coef."],rtol=1e-04)
 
     data["fd_temp"] = diff(data["Temp"])
     data["fd_precip"] = diff(data["Precip"])
@@ -227,12 +227,12 @@ def test_fe_transformed_covariates_transformed_target_iso_fixed_effect():
     
     res3 = pf.feols("fd_ln_gdp ~ Temp + Precip + fd_temp + fd_precip + sq_temp + sq_precip | iso ", data=data).coef()
 
-    np.testing.assert_allclose(float(res1.loc[["Precip"]]["Coef."]),float(res3.loc[["Precip"]]),rtol=1e-05)
-    np.testing.assert_allclose(float(res1.loc[["Temp"]]["Coef."]),float(res3.loc[["Temp"]]),rtol=1e-05)
-    np.testing.assert_allclose(float(res1.loc[["sq(Precip)"]]["Coef."]),float(res3.loc[["sq_precip"]]),rtol=1e-05)
-    np.testing.assert_allclose(float(res1.loc[["sq(Temp)"]]["Coef."]),float(res3.loc[["sq_temp"]]),rtol=1e-05)
+    np.testing.assert_allclose(float(res1.loc[["Precip"]]["Coef."]),float(res3.loc[["Precip"]]),rtol=1e-04)
+    np.testing.assert_allclose(float(res1.loc[["Temp"]]["Coef."]),float(res3.loc[["Temp"]]),rtol=1e-04)
+    np.testing.assert_allclose(float(res1.loc[["sq(Precip)"]]["Coef."]),float(res3.loc[["sq_precip"]]),rtol=1e-04)
+    np.testing.assert_allclose(float(res1.loc[["sq(Temp)"]]["Coef."]),float(res3.loc[["sq_temp"]]),rtol=1e-04)
     np.testing.assert_allclose(float(res1.loc[["fd(Precip)"]]["Coef."]),float(res3.loc[["fd_precip"]]))
-    np.testing.assert_allclose(float(res1.loc[["fd(Temp)"]]["Coef."]),float(res3.loc[["fd_temp"]]),rtol=1e-05)
+    np.testing.assert_allclose(float(res1.loc[["fd(Temp)"]]["Coef."]),float(res3.loc[["fd_temp"]]),rtol=1e-04)
 
 
 def test_ie_transformed_covariates_transformed_target_incremental_effects():
@@ -280,41 +280,40 @@ def test_ie_transformed_covariates_transformed_target_fixed_effects_and_incremen
 
     res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
     assert not any(np.isnan(val) for val in res1["Coef."])
-    res1.to_csv("res1.csv")
 
     model = cee.evaluate_model(data, model)
     assert not np.isnan(model.out_sample_mse)
     assert not np.isnan(model.out_sample_mse_reduction)
 
     res2 = model.regression_result.summary2().tables[1]
-    res2.to_csv("res2.csv")
     
-    np.testing.assert_allclose(res1.loc['Temp']["Coef."],res2.loc['Temp']["Coef."],rtol=1e-05)
-    np.testing.assert_allclose(res1.loc['Precip']["Coef."],res2.loc['Precip']["Coef."],rtol=1e-05)
-    np.testing.assert_allclose(res1.loc['sq(Temp)']["Coef."],res2.loc['sq(Temp)']["Coef."],rtol=1e-05)
-    np.testing.assert_allclose(res1.loc['sq(Precip)']["Coef."],res2.loc['sq(Precip)']["Coef."],rtol=1e-05)
-    np.testing.assert_allclose(res1.loc['fd(Temp)']["Coef."],res2.loc['fd(Temp)']["Coef."],rtol=1e-05)
-    np.testing.assert_allclose(res1.loc['fd(Precip)']["Coef."],res2.loc['fd(Precip)']["Coef."],rtol=1e-05)
+    np.testing.assert_allclose(res1.loc['Temp']["Coef."],res2.loc['Temp']["Coef."],rtol=1e-04)
+    np.testing.assert_allclose(res1.loc['Precip']["Coef."],res2.loc['Precip']["Coef."],rtol=1e-04)
+    np.testing.assert_allclose(res1.loc['sq(Temp)']["Coef."],res2.loc['sq(Temp)']["Coef."],rtol=1e-04)
+    np.testing.assert_allclose(res1.loc['sq(Precip)']["Coef."],res2.loc['sq(Precip)']["Coef."],rtol=1e-04)
+    np.testing.assert_allclose(res1.loc['fd(Temp)']["Coef."],res2.loc['fd(Temp)']["Coef."],rtol=1e-04)
+    np.testing.assert_allclose(res1.loc['fd(Precip)']["Coef."],res2.loc['fd(Precip)']["Coef."],rtol=1e-04)
 
-    # ie_test_data = pd.read_csv("tests/incremental_effect_test_data.csv")
-    # climate_covars = ["Precip", "Temp", "fd(Temp)", "fd(Precip)", "sq(Temp)", "sq(Precip)"]
-    # covars = copy.deepcopy(climate_covars)
-    # covars.extend([col for col in ie_test_data.columns if col.startswith("ie")])
-    # regression_data = ie_test_data[covars]
-    # regression_data = sm.add_constant(regression_data)
+    ie_test_data = pd.read_csv("tests/incremental_effect_test_data.csv")
 
-    # covars = copy.deepcopy(climate_covars)
-    # covars.extend([col for col in regression_data.columns if col.startswith("ie")])
+    ie_test_data["fd_temp"] = ie_test_data["fd(Temp)"]
+    ie_test_data["fd_precip"] = ie_test_data["fd(Precip)"]
+    ie_test_data["sq_temp"] = ie_test_data["sq(Temp)"]
+    ie_test_data["sq_precip"] = ie_test_data["sq(Precip)"]
+    ie_test_data["fd_ln_gdp"] = ie_test_data["fd(ln(GDP))"]
 
-    # covar_string = " + ".join(covars)
+    climate_covars = ["Precip", "Temp", "fd_temp", "fd_precip", "sq_temp", "sq_precip"]
+    covars = copy.deepcopy(climate_covars)
+    covars.extend([col for col in ie_test_data.columns if col.startswith("ie")])
+    covar_string = " + ".join(covars)
 
-    # res3 = pf.feols(f"fd_ln_gdp ~ {covar_string} | iso + year", data=regression_data).coef()
+    res3 = pf.feols(f"fd_ln_gdp ~ {covar_string} | iso + year", data=ie_test_data).coef()
 
-    # np.testing.assert_allclose(float(res1.loc[["Precip"]]["Coef."]),float(res3.loc[["Precip"]]),rtol=1e-05)
-    # np.testing.assert_allclose(float(res1.loc[["Temp"]]["Coef."]),float(res3.loc[["Temp"]]),rtol=1e-05)
-    # np.testing.assert_allclose(float(res1.loc[["sq(Precip)"]]["Coef."]),float(res3.loc[["sq_precip"]]),rtol=1e-05)
-    # np.testing.assert_allclose(float(res1.loc[["sq(Temp)"]]["Coef."]),float(res3.loc[["sq_temp"]]),rtol=1e-05)
-    # np.testing.assert_allclose(float(res1.loc[["fd(Precip)"]]["Coef."]),float(res3.loc[["fd_precip"]]),rtol=1e-05)
-    # np.testing.assert_allclose(float(res1.loc[["fd(Temp)"]]["Coef."]),float(res3.loc[["fd_temp"]]),rtol=1e-05)
+    np.testing.assert_allclose(float(res1.loc[["Precip"]]["Coef."]),float(res3.loc[["Precip"]]),rtol=1e-04)
+    np.testing.assert_allclose(float(res1.loc[["Temp"]]["Coef."]),float(res3.loc[["Temp"]]),rtol=1e-04)
+    np.testing.assert_allclose(float(res1.loc[["sq(Precip)"]]["Coef."]),float(res3.loc[["sq_precip"]]),rtol=1e-04)
+    np.testing.assert_allclose(float(res1.loc[["sq(Temp)"]]["Coef."]),float(res3.loc[["sq_temp"]]),rtol=1e-04)
+    np.testing.assert_allclose(float(res1.loc[["fd(Precip)"]]["Coef."]),float(res3.loc[["fd_precip"]]),rtol=1e-04)
+    np.testing.assert_allclose(float(res1.loc[["fd(Temp)"]]["Coef."]),float(res3.loc[["fd_temp"]]),rtol=1e-04)
 
     

@@ -4,7 +4,8 @@ import pandas as pd
 import os
 from sklearn.preprocessing import OrdinalEncoder
 import pyfixest as pf
-import dateutil.parser as parser 
+import dateutil.parser as parser
+import copy
 
 import warnings
 warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning)
@@ -16,6 +17,8 @@ supported_effects = ["fe", "ie"]
 def initial_checks():
 	if not os.path.isdir("model_cache"):
 		os.makedirs("model_cache")
+	if not os.path.isdir("bayes_samples"):
+		os.makedirs("bayes_samples")
 
 
 def add_transformation_to_data(data, function):
@@ -81,16 +84,16 @@ def demean_fixed_effects(data, model):
 			fixed_effects.append(f"encoded_{fe}")
 		else:
 			fixed_effects.append(fe)
+	vars_to_demean = copy.deepcopy(model.model_vars)
+	vars_to_demean.extend([col for col in data.columns if col.startswith("ie")])
 	centered_data = pf.estimation.demean(
-		np.array(data[model.model_vars]), 
+		np.array(data[vars_to_demean]), 
 		np.array(data[fixed_effects]), 
 		np.ones(len(data))
 	)[0]
-	centered_data = pd.DataFrame(centered_data, columns=model.model_vars)
+	centered_data = pd.DataFrame(centered_data, columns=vars_to_demean)
 	for fe in model.fixed_effects:
 		centered_data = pd.concat([data[fe], centered_data], axis=1).reset_index(drop=True)
-	for ie in [col for col in data.columns if col.startswith("ie_")]:
-		centered_data = pd.concat([data[ie], centered_data], axis=1).reset_index(drop=True)
 	return centered_data
 
 
@@ -138,7 +141,6 @@ def get_attribute_from_model_file(dataset, attribute, file):
 
 
 def get_last_model_out_sample_mse(data_file):
-	# TODO: make this path more flexible
 	if not os.path.isdir(f"model_cache/{data_file}"):
 		return None
 	dataset_cache_files = [float(file) for file in os.listdir(f"model_cache/{data_file}")]

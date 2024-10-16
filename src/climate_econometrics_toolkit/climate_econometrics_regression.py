@@ -3,6 +3,7 @@ import pymc as pm
 from pytensor import tensor as pt
 import pickle as pkl
 import numpy as np
+
 import climate_econometrics_toolkit.climate_econometrics_utils as utils
 
 
@@ -20,9 +21,10 @@ def run_intercept_only_regression(transformed_data, model):
 	reg = sm.OLS(transformed_data[model.target_var],intercept_col,missing="drop")
 	regression_result = reg.fit()
 	return regression_result
-
+	
 
 def run_bayesian_regression(transformed_data, model):
+	# TODO: add support for fixed effects and incremental effects
 	with pm.Model() as pymc_model:
 		covar_coefs = pm.Normal("covar_coefs", 0, 10, shape=(len(model.covariates)))
 		regressors = pm.Deterministic("regressors", pt.sum(covar_coefs * transformed_data[model.covariates], axis=1))
@@ -34,6 +36,7 @@ def run_bayesian_regression(transformed_data, model):
 		trace = pm.sample(target_accept=.99, cores=4, tune=1000, draws=1000)
 		posterior = pm.sample_posterior_predictive(trace, extend_inferencedata=True)
 
+	# TODO: save samples as readable CSV
 	with open ('bayes_model.pkl', 'wb') as buff:
 		pkl.dump({
 			"prior":prior,
