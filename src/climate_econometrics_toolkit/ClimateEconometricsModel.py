@@ -9,13 +9,13 @@ class ClimateEconometricsModel:
 		"target_var",
 		"covariates",
 		"fixed_effects",
-		"incremental_effects",
+		"time_trends",
 		"out_sample_mse",
 		"in_sample_mse",
 		"out_sample_mse_reduction",
 		"in_sample_mse_reduction",
-		"out_sample_pred_int_acc",
-		"in_sample_pred_int_acc",
+		"out_sample_pred_int_cov",
+		"in_sample_pred_int_cov",
 		"dataset",
 		"regression_result"
 	]
@@ -28,10 +28,10 @@ class ClimateEconometricsModel:
 		self.in_sample_mse = np.NaN
 		self.out_sample_mse_reduction = np.NaN
 		self.in_sample_mse_reduction = np.NaN
-		self.out_sample_pred_int_acc = np.NaN
-		self.in_sample_pred_int_acc = np.NaN
+		self.out_sample_pred_int_cov = np.NaN
+		self.in_sample_pred_int_cov = np.NaN
 		self.fixed_effects = np.NaN
-		self.incremental_effects = np.NaN
+		self.time_trends = np.NaN
 		self.dataset = None
 		self.regression_result = None
 		self.time_column = None

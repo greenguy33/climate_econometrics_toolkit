@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 import networkx as nx
 import pandas as pd
 
-import climate_econometrics_toolkit.climate_econometrics_model as cem
+import climate_econometrics_toolkit.ClimateEconometricsModel as cem
 import climate_econometrics_toolkit.climate_econometrics_utils as utils
 
 import warnings
@@ -16,16 +16,16 @@ def build_model_from_graph(graph, dataset):
 
 	covars = [node for node in input_nodes if not any(node[0:2] == val for val in utils.supported_effects)]
 	fixed_effects = [node.split("(")[1].split(")")[0] for node in input_nodes if node[0:2] == "fe"]
-	incremental_effects = [node.split("(")[1].split(")")[0] + " " + node[2] for node in input_nodes if node[0:2] == "ie"]
+	time_trends = [node.split("(")[1].split(")")[0] + " " + node[2] for node in input_nodes if node[0:2] == "ie"]
 	model.covariates = covars
 	model.target_var = target_var
 	model.model_vars = covars + [target_var]
 	model.fixed_effects = fixed_effects
-	model.incremental_effects = incremental_effects
+	model.time_trends = time_trends
 	model.dataset = dataset.split("/")[-1]
 
 	time_column = None
-	if len(model.incremental_effects) > 0:
+	if len(model.time_trends) > 0:
 		time_column = list(graph.predecessors([node for node in input_nodes if node[0:2] == "ie"][0]))[0]
 	model.time_column = time_column
 

@@ -32,7 +32,7 @@ class DragAndDropInterface():
 
         main_menu = Menu(self.window, tearoff=0)
         transformation_menu = Menu(main_menu, tearoff=0)
-        incremental_effects_menu = Menu(main_menu, tearoff=0)
+        time_trends_menu = Menu(main_menu, tearoff=0)
 
         if f"sq({tag})" not in self.transformation_list:
             transformation_menu.add_command(label="Square",command=lambda : self.add_transformation("sq"))
@@ -47,13 +47,13 @@ class DragAndDropInterface():
             main_menu.add_command(label="Add Fixed Effect",command=lambda : self.add_transformation("fe"))
 
         if not any(tag.startswith(val) for val in utils.supported_functions):
-            main_menu.add_cascade(label="Add Incremental Effect",menu=incremental_effects_menu)
+            main_menu.add_cascade(label="Add time trend",menu=time_trends_menu)
             if f"ie1({tag})" not in self.transformation_list:
-                incremental_effects_menu.add_command(label="X 1",command=lambda : self.add_transformation("ie1"))
+                time_trends_menu.add_command(label="X 1",command=lambda : self.add_transformation("ie1"))
             if f"ie2({tag})" not in self.transformation_list:
-                incremental_effects_menu.add_command(label="X 2",command=lambda : self.add_transformation("ie2"))
+                time_trends_menu.add_command(label="X 2",command=lambda : self.add_transformation("ie2"))
             if f"ie3({tag})" not in self.transformation_list:
-                incremental_effects_menu.add_command(label="X 3",command=lambda : self.add_transformation("ie3"))
+                time_trends_menu.add_command(label="X 3",command=lambda : self.add_transformation("ie3"))
 
         return main_menu
 
@@ -68,7 +68,7 @@ class DragAndDropInterface():
             self.transformation_list.append(transformation_text)
         if transformation.startswith("ie"):
             if self.time_column == None:
-                self.time_column = simpledialog.askstring(title="Add Incremental Effect", prompt="Provide the name of a time-based column to apply incremental effects:")
+                self.time_column = simpledialog.askstring(title="Add time trend", prompt="Provide the name of a time-based column to apply time trends:")
             self.draw_arrow(self.canvas.find_withtag(f"boxed_text_{self.time_column}")[1], self.canvas.find_withtag(f"boxed_text_{transformation_text}")[1])
         self.reset_click()
 
@@ -89,7 +89,8 @@ class DragAndDropInterface():
     def restore_canvas_from_cache(self, model_id):
         cached_canvas = pd.read_pickle(f'model_cache/{self.data_source}/{model_id}/tkinter_canvas.pkl')
         if cached_canvas["data_source"] != self.data_source:
-            self.canvas_print_out.insert(tk.END, f"\nCached model is for a different data source. Please clear cache to use new dataset.")  
+            # self.canvas_print_out.insert(tk.END, f"\nCached model is for a different data source. Please clear cache to use new dataset.")  
+            pass
         else:
             self.clear_canvas()
             for item in cached_canvas["canvas_data"]:

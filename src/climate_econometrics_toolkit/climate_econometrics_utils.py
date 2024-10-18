@@ -37,7 +37,7 @@ def add_fixed_effect_to_data(node, data):
 	return data
 
 
-def add_incremental_effects_to_data(node, data, time_column):
+def add_time_trends_to_data(node, data, time_column):
 	# TODO: This only supports time effects by year. Add support for monthly/weekly?
 	parsed_dates = [parser.parse(str(date)) for date in data[time_column]]
 	min_year = min(parsed_dates[index].year for index in range(len(parsed_dates)))
@@ -111,8 +111,8 @@ def transform_data(data, model, demean=False):
 				transformations.append(function + f"({data_node})")
 				data = add_transformation_to_data(data, transformations[-1])
 				data_node = transformations[-1]
-	for ie in model.incremental_effects:
-		data = add_incremental_effects_to_data(ie, data, model.time_column)
+	for ie in model.time_trends:
+		data = add_time_trends_to_data(ie, data, model.time_column)
 	data = remove_nan_rows(data, model.covariates + model.fixed_effects + [model.target_var])
 	if not demean:
 		for fe in model.fixed_effects:

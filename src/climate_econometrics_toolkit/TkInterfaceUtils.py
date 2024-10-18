@@ -15,17 +15,19 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 class TkInterfaceUtils():
 
-    def __init__(self, window, canvas, dnd, regression_plot, result_plot):
+    def __init__(self, window, canvas, dnd, regression_plot, result_plot, stat_plot):
         self.window = window
         self.canvas = canvas
         self.dnd = dnd
         self.regression_plot = regression_plot
         self.result_plot = result_plot
+        self.stat_plot = stat_plot
 
     def add_data_columns_from_file(self):
 
         if self.dnd.variables_displayed:
-            self.dnd.canvas_print_out.insert(tk.END, "\nPlease clear the canvas before loading another dataset.")
+            pass
+            # self.dnd.canvas_print_out.insert(tk.END, "\nPlease clear the canvas before loading another dataset.")
         else:
         #     filename = filedialog.askopenfilename(
         #         initialdir = "/",
@@ -86,13 +88,16 @@ class TkInterfaceUtils():
         if self.dnd.variables_displayed:
             # TODO: Improve the text displayed
             model_id, regression_result, print_string = api.evaluate_model(self.dnd.filename, self.build_model_indices_lists())
-            self.dnd.canvas_print_out.insert(tk.END, print_string)
+            # self.dnd.canvas_print_out.insert(tk.END, print_string)
             if model_id != None:
-                best_model_mse = api.get_best_model_for_dataset(self.dnd.data_source)[0]
-                self.dnd.canvas_print_out.insert(tk.END, f"\nThe best model in the cache has MSE reduction of {str(best_model_mse*100)[:5]}%")
+                # best_model_mse = api.get_best_model_for_dataset(self.dnd.data_source)[0]
+                # self.dnd.canvas_print_out.insert(tk.END, f"\nThe best model in the cache has MSE reduction of {str(best_model_mse*100)[:5]}%")
                 self.dnd.save_canvas_to_cache(str(model_id))
                 self.regression_plot.plot_new_regression_result(regression_result.summary2().tables[1], self.dnd.data_source, model_id)
                 self.update_result_plot(self.dnd.data_source)
+                out_sample_mse = float(utils.get_attribute_from_model_file(self.dnd.data_source, "out_sample_mse_reduction", str(model_id)))
+                pred_int_cov = float(utils.get_attribute_from_model_file(self.dnd.data_source, "out_sample_pred_int_cov", str(model_id)))
+                self.stat_plot.update_stat_plot(out_sample_mse, pred_int_cov)
 
     def restore_model(self, model_id):
         self.dnd.restore_canvas_from_cache(str(model_id))
@@ -100,13 +105,15 @@ class TkInterfaceUtils():
 
     def restore_best_model(self):
         if self.dnd.data_source == None:
-            self.dnd.canvas_print_out.insert(tk.END, f"\nPlease load a dataset before restoring a model from cache.") 
+            # self.dnd.canvas_print_out.insert(tk.END, f"\nPlease load a dataset before restoring a model from cache.") 
+            pass
         else:
             min_mse, model_id = api.get_best_model_for_dataset(self.dnd.data_source)
             if model_id == None:
-                self.dnd.canvas_print_out.insert(tk.END, f"\nThere is no cached model for this dataset.")
+                # self.dnd.canvas_print_out.insert(tk.END, f"\nThere is no cached model for this dataset.")
+                pass
             else:
-                self.restore_model(self.dnd, self.regression_plot, model_id)
+                self.restore_model(model_id)
 
     def run_bayesian_inference(self):
         api.run_bayesian_regression(self.dnd.filename, self.build_model_indices_lists())
