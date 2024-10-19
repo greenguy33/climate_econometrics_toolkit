@@ -4,8 +4,9 @@ import os
 import tkinter as tk
 from tkinter import filedialog
 
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.transforms as transform
 
 import climate_econometrics_toolkit.climate_econometrics_api as api
 import climate_econometrics_toolkit.climate_econometrics_utils as utils
@@ -26,8 +27,7 @@ class TkInterfaceUtils():
     def add_data_columns_from_file(self):
 
         if self.dnd.variables_displayed:
-            pass
-            # self.dnd.canvas_print_out.insert(tk.END, "\nPlease clear the canvas before loading another dataset.")
+            self.dnd.canvas_print_out.insert(tk.END, "\nPlease clear the canvas before loading another dataset.")
         else:
         #     filename = filedialog.askopenfilename(
         #         initialdir = "/",
@@ -64,9 +64,11 @@ class TkInterfaceUtils():
         
     def create_result_plot(self):
         fig, axis = plt.subplots(1)
-        axis.plot(self.result_plot.plot_data, marker='o', color='r')
+        axis.set_title("Out-of-sample MSE Reduction from Intercept-Only Model")
+        axis.set_ylabel("% Reduced")
+        axis.plot(self.result_plot.plot_data, marker='o', color='r', zorder=1)
         for index, point in enumerate(self.result_plot.plot_data):
-            circle = plt.Circle((index,point), 0.05, color='b')
+            circle = plt.Circle((0,0), 0.05, color='b', transform=(fig.dpi_scale_trans + transform.ScaledTranslation(index, point, axis.transData)), zorder=2)
             axis.add_patch(circle)
             self.result_plot.circles.append(circle)
         self.result_plot.plot_canvas = FigureCanvasTkAgg(fig, master=self.result_plot.plot_frame)
@@ -88,7 +90,7 @@ class TkInterfaceUtils():
         if self.dnd.variables_displayed:
             # TODO: Improve the text displayed
             model_id, regression_result, print_string = api.evaluate_model(self.dnd.filename, self.build_model_indices_lists())
-            # self.dnd.canvas_print_out.insert(tk.END, print_string)
+            self.dnd.canvas_print_out.insert(tk.END, print_string)
             if model_id != None:
                 # best_model_mse = api.get_best_model_for_dataset(self.dnd.data_source)[0]
                 # self.dnd.canvas_print_out.insert(tk.END, f"\nThe best model in the cache has MSE reduction of {str(best_model_mse*100)[:5]}%")
@@ -98,20 +100,23 @@ class TkInterfaceUtils():
                 out_sample_mse = float(utils.get_attribute_from_model_file(self.dnd.data_source, "out_sample_mse_reduction", str(model_id)))
                 pred_int_cov = float(utils.get_attribute_from_model_file(self.dnd.data_source, "out_sample_pred_int_cov", str(model_id)))
                 self.stat_plot.update_stat_plot(out_sample_mse, pred_int_cov)
+        else:
+            self.dnd.canvas_print_out.insert(tk.END, "\nPlease load a dataset and create a model before evaluating model.")
 
     def restore_model(self, model_id):
         self.dnd.restore_canvas_from_cache(str(model_id))
         self.regression_plot.restore_regression_result(self.dnd.data_source, str(model_id))
+        out_sample_mse = float(utils.get_attribute_from_model_file(self.dnd.data_source, "out_sample_mse_reduction", str(model_id)))
+        pred_int_cov = float(utils.get_attribute_from_model_file(self.dnd.data_source, "out_sample_pred_int_cov", str(model_id)))
+        self.stat_plot.update_stat_plot(out_sample_mse, pred_int_cov)
 
     def restore_best_model(self):
         if self.dnd.data_source == None:
-            # self.dnd.canvas_print_out.insert(tk.END, f"\nPlease load a dataset before restoring a model from cache.") 
-            pass
+            self.dnd.canvas_print_out.insert(tk.END, f"\nPlease load a dataset before restoring a model from cache.") 
         else:
             min_mse, model_id = api.get_best_model_for_dataset(self.dnd.data_source)
             if model_id == None:
-                # self.dnd.canvas_print_out.insert(tk.END, f"\nThere is no cached model for this dataset.")
-                pass
+                self.dnd.canvas_print_out.insert(tk.END, f"\nThere is no cached model for this dataset.")
             else:
                 self.restore_model(model_id)
 
@@ -122,10 +127,12 @@ class TkInterfaceUtils():
         self.dnd.clear_canvas()
         self.regression_plot.clear_figure()
         self.result_plot.clear_figure()
+        self.stat_plot.clear_stat_plot()
 
     def clear_model_cache(self):
         api.clear_model_cache(self.dnd.data_source)
         self.result_plot.clear_figure()
+        self.dnd.canvas_print_out.insert(tk.END, "\nModel cache cleared")
 
     def on_close(self):
         self.window.quit()

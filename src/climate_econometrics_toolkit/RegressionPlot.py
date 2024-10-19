@@ -52,7 +52,8 @@ class RegressionPlot():
             pkl.dump({"axes":axes,"fig":fig},buff)
 
     def clear_figure(self):
-        self.plot_canvas.get_tk_widget().destroy()
+        if self.plot_canvas != None:
+            self.plot_canvas.get_tk_widget().destroy()
 
     def restore_regression_result(self, dataset, cache_dir):
 

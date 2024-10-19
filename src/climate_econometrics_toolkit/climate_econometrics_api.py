@@ -21,21 +21,21 @@ def evaluate_model(data_file, model):
 	return_string = ""
 	model_id = None
 	regression_result = None
-	# try:
-	model, unused_nodes = mb.parse_model_input(model, data_file)
-	if len(unused_nodes) > 0:
-		return_string += "\nWARNING: The following nodes are unused in the regression. " + str(unused_nodes)
-	data = pd.read_csv(data_file)
-	data.columns = data.columns.str.replace(' ', '_') 
-	if len(set(data.columns)) != len(data.columns): 
-		return_string += "\nTwo column names in dataset collide when spaces are removed. Please correct."
-	else:
-		model = ce_eval.evaluate_model(data, model)
-		# return_string += "\n" + utils.compare_to_last_model(model, data_file)
-		model_id = model.save_model_to_cache()
-		regression_result = model.regression_result
-	# except BaseException as e:
-	# 	return_string += "\nERROR: " + str(e)
+	try:
+		model, unused_nodes = mb.parse_model_input(model, data_file)
+		if len(unused_nodes) > 0:
+			return_string += "\nWARNING: The following nodes are unused in the regression. " + str(unused_nodes)
+		data = pd.read_csv(data_file)
+		data.columns = data.columns.str.replace(' ', '_') 
+		if len(set(data.columns)) != len(data.columns): 
+			return_string += "\nTwo column names in dataset collide when spaces are removed. Please correct."
+		else:
+			model = ce_eval.evaluate_model(data, model)
+			# return_string += "\n" + utils.compare_to_last_model(model, data_file)
+			model_id = model.save_model_to_cache()
+			regression_result = model.regression_result
+	except BaseException as e:
+		return_string += "\nERROR: " + str(e)
 	return model_id, regression_result, return_string
 
 
@@ -89,17 +89,17 @@ def start_interface():
 		highlightbackground="black",
 		highlightcolor="red"
 	)
-	lefthand_bar = tk.Frame(window, relief=tk.RAISED, bd=2)
-
 	regression_plot_frame = tk.Frame(window, relief=tk.RAISED, bd=2)
 	result_plot_frame = tk.Frame(window, relief=tk.RAISED, bd=2)
-	stat_plot_frame = tk.Frame(lefthand_bar, height=10)
 
 	dnd = DragAndDropInterface(canvas, window)
 	regression_plot = RegressionPlot(regression_plot_frame)
 	result_plot = ResultPlot(result_plot_frame)
-	stat_plot = StatPlot(stat_plot_frame)
 
+	lefthand_bar = tk.Frame(window, relief=tk.RAISED, bd=2)
+	mse_canvas = tk.Canvas(lefthand_bar, width=100, height=200)
+	pred_int_canvas = tk.Canvas(lefthand_bar, width=100, height=200)
+	stat_plot = StatPlot(mse_canvas, pred_int_canvas)
 	tk_utils = TkInterfaceUtils(window, canvas, dnd, regression_plot, result_plot, stat_plot)
 	window.protocol("WM_DELETE_WINDOW", tk_utils.on_close)
 
@@ -109,19 +109,21 @@ def start_interface():
 	btn_best_model = tk.Button(lefthand_bar, text="Restore Best Model", command=tk_utils.restore_best_model)
 	btn_clear_model_cache = tk.Button(lefthand_bar, text="Clear Model Cache", command=tk_utils.clear_model_cache)
 	btn_bayesian_regression = tk.Button(lefthand_bar, text="Run Bayesian Inference", command=tk_utils.run_bayesian_inference)
+	result_text = tk.Text(lefthand_bar, height=5)
 
-	btn_load.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
-	btn_clear_canvas.grid(row=1, column=0, stick="nsew", padx=5)
-	btn_evaluate.grid(row=2, column=0, sticky="nsew", padx=5)
-	btn_best_model.grid(row=3, column=0, sticky="nsew", padx=5)
-	btn_clear_model_cache.grid(row=4, column=0, sticky="nsew", padx=5)
-	btn_bayesian_regression.grid(row=5, column=0, sticky="nsew", padx=5)
-	stat_plot_frame.grid(row=6, column=0, sticky="nsew", padx=5)
-
-	lefthand_bar.grid(row=0, column=0, sticky="nsew")
-	regression_plot_frame.grid(row=1, column=0, sticky="nsew")
+	btn_load.grid(row=0, column=0, sticky="nsew", padx=5, pady=5, columnspan=2)
+	btn_clear_canvas.grid(row=1, column=0, sticky="nsew", padx=5, columnspan=2)
+	btn_evaluate.grid(row=2, column=0, sticky="nsew", padx=5, columnspan=2)
+	btn_best_model.grid(row=3, column=0, sticky="nsew", padx=5, columnspan=2)
+	btn_clear_model_cache.grid(row=4, column=0, sticky="nsew", padx=5, columnspan=2)
+	btn_bayesian_regression.grid(row=5, column=0, sticky="nsew", columnspan=2)
+	result_text.grid(row=6, column=0, sticky="nsew", columnspan=2)
+	mse_canvas.grid(row=7, column=0, sticky="nsew")
+	pred_int_canvas.grid(row=7, column=1, sticky="nsew")
+	lefthand_bar.grid(row=0, column=0, sticky="ns")
+	regression_plot_frame.grid(row=1, column=0, sticky="ns")
 	canvas.grid(row=0, column=1, sticky="nsew")
-	result_plot_frame.grid(row=1, column=1, stick="nsew")
+	result_plot_frame.grid(row=1, column=1, sticky="nsew")
 
-	# dnd.canvas_print_out = result_text
+	dnd.canvas_print_out = result_text
 	window.mainloop()

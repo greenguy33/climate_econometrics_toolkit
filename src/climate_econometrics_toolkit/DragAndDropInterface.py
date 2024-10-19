@@ -89,8 +89,7 @@ class DragAndDropInterface():
     def restore_canvas_from_cache(self, model_id):
         cached_canvas = pd.read_pickle(f'model_cache/{self.data_source}/{model_id}/tkinter_canvas.pkl')
         if cached_canvas["data_source"] != self.data_source:
-            # self.canvas_print_out.insert(tk.END, f"\nCached model is for a different data source. Please clear cache to use new dataset.")  
-            pass
+            self.canvas_print_out.insert(tk.END, f"\nCached model is for a different data source. Please clear cache to use new dataset.")  
         else:
             self.clear_canvas()
             for item in cached_canvas["canvas_data"]:
@@ -154,7 +153,7 @@ class DragAndDropInterface():
             if coords != None:
                 var_coords = coords[index]
             else:
-                if last_rectangle_right_side > self.canvas.winfo_width() - 100:
+                if last_rectangle_right_side > self.canvas.winfo_width() - 125:
                     row_count += 1
                     last_rectangle_right_side = 0
                 var_coords = [last_rectangle_right_side + len(column)*5+50, row_count * 50 + 20]

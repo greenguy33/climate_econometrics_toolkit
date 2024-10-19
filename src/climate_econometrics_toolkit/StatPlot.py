@@ -1,30 +1,26 @@
 import tkinter as tk
 
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import matplotlib.pyplot as plt
-
 class StatPlot():
 
-    def __init__(self, plot_frame):
-        self.plot_frame = plot_frame
-        self.plot_canvas = None
+    def __init__(self, mse_canvas, pred_int_canvas):
+        self.mse_canvas = mse_canvas
+        self.pred_int_canvas = pred_int_canvas
+
+    def clear_stat_plot(self):
+        self.mse_canvas.delete("all")
+        self.pred_int_canvas.delete("all")
 
     def update_stat_plot(self, mse, pred_int_cov):
-        
-        fig, axes = plt.subplots(1,2,figsize=(5,5))
-
-        axes[0].text(.25, .25, "MSE reduction:" + str(mse),
-                horizontalalignment='left',
-                verticalalignment='top',
-                transform=axes[0].transAxes)
-
-        axes[1].text(.25, .25, "Prediction interval coverage:" + str(pred_int_cov),
-                horizontalalignment='left',
-                verticalalignment='top',
-                transform=axes[0].transAxes)
-
-        # ax.set_axis_off()
-
-        self.plot_canvas = FigureCanvasTkAgg(fig, master=self.plot_frame)
-        self.plot_canvas.draw()
-        self.plot_canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+        self.clear_stat_plot()
+        mse_string = '%.2f' % (mse * 100) + "%"
+        pred_int_cov_string = '%.2f' % (pred_int_cov * 100) + "%"
+        self.mse_canvas.create_text(self.mse_canvas.winfo_width()/2, self.mse_canvas.winfo_height()/2-20, text="Mean Squared Error Reduction %")
+        self.pred_int_canvas.create_text(self.mse_canvas.winfo_width()/2, self.mse_canvas.winfo_height()/2-20, text="Prediction Interval Coverage %")
+        mse_text = self.mse_canvas.create_text(self.mse_canvas.winfo_width()/2, self.mse_canvas.winfo_height()/2+20, text=mse_string, font=("Purisa", 25))
+        pred_int_text = self.pred_int_canvas.create_text(self.pred_int_canvas.winfo_width()/2, self.pred_int_canvas.winfo_height()/2+20, text=pred_int_cov_string, font=("Purisa", 25))
+        mse_box_color = "green" if mse > 0 else "red"
+        pred_int_box_color = "green" if pred_int_cov < .96 and pred_int_cov > .94 else "red"
+        mse_rect = self.mse_canvas.create_rectangle(self.mse_canvas.bbox(mse_text), fill=mse_box_color)
+        pred_int_rect = self.pred_int_canvas.create_rectangle(self.pred_int_canvas.bbox(pred_int_text), fill=pred_int_box_color)
+        self.mse_canvas.lower(mse_rect)
+        self.pred_int_canvas.lower(pred_int_rect)

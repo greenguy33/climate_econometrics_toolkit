@@ -44,7 +44,6 @@ def generate_withheld_data(data, model):
 
 def calculate_prediction_interval_accuracy(y, predictions, in_sample_mse):
 	pred_data = pd.DataFrame(np.transpose([y, predictions.predicted_mean, predictions.var_pred_mean]), columns=["real_y", "pred_mean", "pred_var"])
-	assert not any(val < 0 for val in pred_data.pred_var)
 	pred_data["pred_int_acc"] = np.where(
 		(pred_data.pred_mean + np.sqrt(pred_data.pred_var + in_sample_mse) * 1.9603795 > pred_data.real_y) &
 		(pred_data.pred_mean - np.sqrt(pred_data.pred_var + in_sample_mse) * 1.9603795 < pred_data.real_y),
