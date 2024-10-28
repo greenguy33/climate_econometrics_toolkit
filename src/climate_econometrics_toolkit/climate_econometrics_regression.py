@@ -25,6 +25,7 @@ def run_intercept_only_regression(transformed_data, model):
 
 def run_bayesian_regression(transformed_data, model):
 	# TODO: add support for fixed effects and time trends
+	# TODO: add intercept
 	with pm.Model() as pymc_model:
 		covar_coefs = pm.Normal("covar_coefs", 0, 10, shape=(len(model.covariates)))
 		regressors = pm.Deterministic("regressors", pt.sum(covar_coefs * transformed_data[model.covariates], axis=1))

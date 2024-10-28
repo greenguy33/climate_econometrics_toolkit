@@ -18,6 +18,7 @@ def get_data():
 	return data
 
 # TODO: include checks that makes sure the pred int cov acc is correct (maybe get Stata result to verify)
+# TODO: include checks to make sure the out-sample-MSE is accurate
 
 
 def test_simple_covariates():

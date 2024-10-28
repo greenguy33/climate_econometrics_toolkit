@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import Menu
-from tkinter import simpledialog
 
 import pickle as pkl
 import pandas as pd
@@ -30,8 +29,10 @@ class DragAndDropInterface():
 
     def get_menu(self, tag):
 
+        # TODO: add lag transformation
         main_menu = Menu(self.window, tearoff=0)
         transformation_menu = Menu(main_menu, tearoff=0)
+        # lag_menu = Menu(transformation_menu, tearoff=0)
         time_trends_menu = Menu(main_menu, tearoff=0)
 
         if f"sq({tag})" not in self.transformation_list:
@@ -40,20 +41,24 @@ class DragAndDropInterface():
             transformation_menu.add_command(label="First Difference",command=lambda : self.add_transformation("fd"))
         if f"ln({tag})" not in self.transformation_list:
             transformation_menu.add_command(label="Natural Log",command=lambda : self.add_transformation("ln"))
+        # if not all(f"{func}{tag}" in self.transformation_list for func in ["lag1","lag2","lag3"]):
+        #     transformation_menu.add_cascade(label="Lag", menu=lag_menu)
         if not all(f"{func}({tag})" in self.transformation_list for func in utils.supported_functions):
             main_menu.add_cascade(label="Duplicate with Transformation",menu=transformation_menu)
-        
+
+        # lags_menu.add_command(label="Lag ")
+
         if not any(tag.startswith(val) for val in utils.supported_functions) and f"fe({tag})" not in self.transformation_list:
             main_menu.add_command(label="Add Fixed Effect",command=lambda : self.add_transformation("fe"))
 
         if not any(tag.startswith(val) for val in utils.supported_functions):
-            main_menu.add_cascade(label="Add time trend",menu=time_trends_menu)
-            if f"ie1({tag})" not in self.transformation_list:
-                time_trends_menu.add_command(label="X 1",command=lambda : self.add_transformation("ie1"))
-            if f"ie2({tag})" not in self.transformation_list:
-                time_trends_menu.add_command(label="X 2",command=lambda : self.add_transformation("ie2"))
-            if f"ie3({tag})" not in self.transformation_list:
-                time_trends_menu.add_command(label="X 3",command=lambda : self.add_transformation("ie3"))
+            main_menu.add_cascade(label="Add Time Trend",menu=time_trends_menu)
+            if f"tt1({tag})" not in self.transformation_list:
+                time_trends_menu.add_command(label="X 1",command=lambda : self.add_transformation("tt1"))
+            if f"tt2({tag})" not in self.transformation_list:
+                time_trends_menu.add_command(label="X 2",command=lambda : self.add_transformation("tt2"))
+            if f"tt3({tag})" not in self.transformation_list:
+                time_trends_menu.add_command(label="X 3",command=lambda : self.add_transformation("tt3"))
 
         return main_menu
 
@@ -66,13 +71,9 @@ class DragAndDropInterface():
             self.add_model_variables([transformation_text], [self.new_elem_coords])
             self.new_elem_coords[0] = self.new_elem_coords[0] - 50
             self.transformation_list.append(transformation_text)
-        if transformation.startswith("ie"):
-            if self.time_column == None:
-                self.time_column = simpledialog.askstring(title="Add time trend", prompt="Provide the name of a time-based column to apply time trends:")
-            self.draw_arrow(self.canvas.find_withtag(f"boxed_text_{self.time_column}")[1], self.canvas.find_withtag(f"boxed_text_{transformation_text}")[1])
         self.reset_click()
 
-    def save_canvas_to_cache(self, model_id):
+    def save_canvas_to_cache(self, model_id, panel_column, time_column):
         canvas_data = []
         for item in self.canvas.find_all():
             item_info = {
@@ -84,7 +85,13 @@ class DragAndDropInterface():
                 item_info["text"] = self.canvas.itemcget(item, "text")
             canvas_data.append(item_info)
         with open (f'model_cache/{self.data_source}/{model_id}/tkinter_canvas.pkl', 'wb') as buff:
-            pkl.dump({"data_source":self.data_source,"canvas_data":canvas_data,"transformation_list":self.transformation_list},buff)
+            pkl.dump({
+                "data_source":self.data_source,
+                "canvas_data":canvas_data,
+                "transformation_list":self.transformation_list,
+                "panel_column":panel_column,
+                "time_column":time_column
+            },buff)
 
     def restore_canvas_from_cache(self, model_id):
         cached_canvas = pd.read_pickle(f'model_cache/{self.data_source}/{model_id}/tkinter_canvas.pkl')
@@ -102,7 +109,7 @@ class DragAndDropInterface():
                     if item["type"] == "rectangle":
                         rect = self.canvas.create_rectangle(*item["coords"], fill="orange", tags=item["tags"])
                     elif item["type"] == "text":
-                        self.canvas.create_text(*item["coords"], text=item["text"], fill="white", tags=item["tags"])
+                        self.canvas.create_text(*item["coords"], text=item["text"], fill="black", tags=item["tags"])
                         text = item["text"]
                         column_box_tag = f"boxed_text_{text}".replace(" ","_")
                         self.add_tags_to_canvas_elements(column_box_tag, item["text"])
@@ -143,7 +150,7 @@ class DragAndDropInterface():
     def add_tags_to_canvas_elements(self, column_box_tag, column):
         self.canvas.tag_bind(column_box_tag, "<B1-Motion>", self.on_drag)
         self.canvas.tag_bind(column_box_tag, "<ButtonRelease-1>", self.end_drag)
-        if not (column.startswith("ie1(") or column.startswith("ie2(") or column.startswith("ie3(") or column.startswith("fe(")):
+        if not (column.startswith("tt1(") or column.startswith("tt2(") or column.startswith("tt3(") or column.startswith("fe(")):
             self.canvas.tag_bind(column_box_tag, "<ButtonPress-3>", self.popup_menu)
 
     def add_model_variables(self, variables, coords=None):
@@ -158,7 +165,7 @@ class DragAndDropInterface():
                     last_rectangle_right_side = 0
                 var_coords = [last_rectangle_right_side + len(column)*5+50, row_count * 50 + 20]
             column_box_tag = f"boxed_text_{column}".replace(" ","_")
-            text = self.canvas.create_text(*var_coords, text=column, fill="white", tags=column_box_tag)
+            text = self.canvas.create_text(*var_coords, text=column, fill="black", tags=column_box_tag)
             rect = self.canvas.create_rectangle(self.canvas.bbox(text), fill="orange", tags=column_box_tag)
             self.canvas.lower(rect)
             self.add_tags_to_canvas_elements(column_box_tag, column)

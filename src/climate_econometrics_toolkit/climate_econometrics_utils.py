@@ -1,5 +1,5 @@
 import numpy as np
-from statsmodels.tsa.statespace.tools import diff
+from statsmodels.tsa.tsatools import add_lag
 import pandas as pd
 import os
 from sklearn.preprocessing import OrdinalEncoder
@@ -10,8 +10,11 @@ import copy
 import warnings
 warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning)
 
+# TODO: add lag function
+# supported_functions = ["fd","sq","ln","lag1","lag2","lag3"]
+# remember that func[0:2] will break once lag is added
 supported_functions = ["fd","sq","ln"]
-supported_effects = ["fe", "ie"]
+supported_effects = ["fe", "tt"]
 
 
 def initial_checks():
@@ -21,13 +24,18 @@ def initial_checks():
 		os.makedirs("bayes_samples")
 
 
-def add_transformation_to_data(data, function):
+def add_transformation_to_data(data, model, function):
 	if function[0:2] == "sq":
 		data[function] = np.square(data[function[3:-1]])
 	elif function[0:2] == "fd":
-		data[function] = diff(data[function[3:-1]])
+		# TODO: this won't work if the data isn't sorted by year or if there are missing year values
+		data[function] = data.groupby(model.panel_column)[function[3:-1]].diff()
 	elif function[0:2] == "ln":
 		data[function] = np.log(data[function[3:-1]])
+	# TODO: function[0:3] breaks once lag is added
+	# elif function[0:3] == "lag":
+	# 	num_lags = int(function[3])
+	# 	data[function] = np.insert(add_lag(data[function[5:-1]], lags=num_lags)[:,1], 0, np.NaN)
 	return data
 
 
@@ -38,7 +46,7 @@ def add_fixed_effect_to_data(node, data):
 
 
 def add_time_trends_to_data(node, data, time_column):
-	# TODO: This only supports time effects by year. Add support for monthly/weekly?
+	# TODO: This only supports time effects by year. Add support for monthly/weekly
 	parsed_dates = [parser.parse(str(date)) for date in data[time_column]]
 	min_year = min(parsed_dates[index].year for index in range(len(parsed_dates)))
 	ie_level = 1
@@ -48,11 +56,11 @@ def add_time_trends_to_data(node, data, time_column):
 	for element in sorted(list(set(data[node_split[0]]))):
 		first_elem_year = min(data.loc[data[node_split[0]] == element][time_column])
 		time_past_min = first_elem_year - min_year
-		data[f"ie_{element}_{node_split[0]}_1"] = np.where(data[node_split[0]] == element, 1, 0)
-		data[f"ie_{element}_{node_split[0]}_1"] = np.where(data[node_split[0]] == element, data[f"ie_{element}_{node_split[0]}_1"].cumsum(), 0)
-		data[f"ie_{element}_{node_split[0]}_1"] = np.where(data[node_split[0]] == element, data[f"ie_{element}_{node_split[0]}_1"]+time_past_min-1, 0)
+		data[f"tt_{element}_{node_split[0]}_1"] = np.where(data[node_split[0]] == element, 1, 0)
+		data[f"tt_{element}_{node_split[0]}_1"] = np.where(data[node_split[0]] == element, data[f"tt_{element}_{node_split[0]}_1"].cumsum(), 0)
+		data[f"tt_{element}_{node_split[0]}_1"] = np.where(data[node_split[0]] == element, data[f"tt_{element}_{node_split[0]}_1"]+time_past_min-1, 0)
 		for i in range(1, ie_level+1):
-			data[f"ie_{element}_{node_split[0]}_{i}"] = np.power(data[f"ie_{element}_{node_split[0]}_1"], i)
+			data[f"tt_{element}_{node_split[0]}_{i}"] = np.power(data[f"tt_{element}_{node_split[0]}_1"], i)
 	return data
 
 
@@ -73,7 +81,6 @@ def remove_nan_rows(data, no_nan_cols):
 
 
 def demean_fixed_effects(data, model):
-	# TODO: cache demean results for future models
 	fixed_effects = []
 	for fe in model.fixed_effects:
 		if not np.issubdtype(data[fe].dtype, np.number):
@@ -85,7 +92,7 @@ def demean_fixed_effects(data, model):
 		else:
 			fixed_effects.append(fe)
 	vars_to_demean = copy.deepcopy(model.model_vars)
-	vars_to_demean.extend([col for col in data.columns if col.startswith("ie")])
+	vars_to_demean.extend([col for col in data.columns if col.startswith("tt_")])
 	centered_data = pf.estimation.demean(
 		np.array(data[vars_to_demean]), 
 		np.array(data[fixed_effects]), 
@@ -109,7 +116,7 @@ def transform_data(data, model, demean=False):
 			for function in reversed(function_split[:-1]):
 				assert function in supported_functions, f"Invalid function call {function}"
 				transformations.append(function + f"({data_node})")
-				data = add_transformation_to_data(data, transformations[-1])
+				data = add_transformation_to_data(data, model, transformations[-1])
 				data_node = transformations[-1]
 	for ie in model.time_trends:
 		data = add_time_trends_to_data(ie, data, model.time_column)
@@ -127,7 +134,7 @@ def get_model_vars(data, model, demeaned):
 	model_vars = [var for var in model.covariates]
 	if demeaned:
 		# exclude fixed effects from demeaned data
-		for effect_col in [col for col in data if any(col.startswith(val) for val in supported_effects) and not col.startswith("fe")]:
+		for effect_col in [col for col in data if any(col.startswith(val) for val in supported_effects) and not col.startswith("fe_")]:
 			model_vars.append(effect_col)
 	else:
 		for effect_col in [col for col in data if any(col.startswith(val) for val in supported_effects)]:

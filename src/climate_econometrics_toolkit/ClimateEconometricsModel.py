@@ -35,6 +35,7 @@ class ClimateEconometricsModel:
 		self.dataset = None
 		self.regression_result = None
 		self.time_column = None
+		self.panel_column = None
 
 	def print(self):
 		for val in self.attrib_list:

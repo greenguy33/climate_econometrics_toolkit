@@ -9,31 +9,28 @@ import warnings
 warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 
 
-def build_model_from_graph(graph, dataset):
+def build_model_from_graph(graph, dataset, panel_column, time_column):
 	model = cem.ClimateEconometricsModel()
 	target_var = [node for node in graph.nodes() if len(list(graph.successors(node))) == 0][0]
 	input_nodes = list(graph.predecessors(target_var))
 
 	covars = [node for node in input_nodes if not any(node[0:2] == val for val in utils.supported_effects)]
 	fixed_effects = [node.split("(")[1].split(")")[0] for node in input_nodes if node[0:2] == "fe"]
-	time_trends = [node.split("(")[1].split(")")[0] + " " + node[2] for node in input_nodes if node[0:2] == "ie"]
+	time_trends = [node.split("(")[1].split(")")[0] + " " + node[2] for node in input_nodes if node[0:2] == "tt"]
 	model.covariates = covars
 	model.target_var = target_var
 	model.model_vars = covars + [target_var]
 	model.fixed_effects = fixed_effects
 	model.time_trends = time_trends
 	model.dataset = dataset.split("/")[-1]
-
-	time_column = None
-	if len(model.time_trends) > 0:
-		time_column = list(graph.predecessors([node for node in input_nodes if node[0:2] == "ie"][0]))[0]
 	model.time_column = time_column
+	model.panel_column = panel_column
 
-	unused_nodes = [node for node in graph.nodes() if node != model.target_var and node not in input_nodes and node != model.time_column]
+	unused_nodes = [node for node in graph.nodes() if node != model.target_var and node not in input_nodes]
 	return model, unused_nodes
 
 
-def parse_model_input(model, dataset):
+def parse_model_input(model, dataset, panel_column, time_column):
 	from_indices,to_indices = model[0],model[1]
 	graph = nx.DiGraph()
 	for index in range(len(from_indices)):
@@ -43,7 +40,7 @@ def parse_model_input(model, dataset):
 	len_target_vars = len([node for node in graph.nodes() if len(list(graph.successors(node))) == 0])
 	assert len_target_vars == 1, f"There must be exactly one target variable: found {len_target_vars}"
 
-	return build_model_from_graph(graph, dataset)
+	return build_model_from_graph(graph, dataset, panel_column, time_column)
 
 
 def parse_cxl(filepath):
