@@ -17,10 +17,6 @@ def get_data():
 	data["Precip"] = data["UDel_precip_popweight"]
 	return data
 
-# TODO: include checks that makes sure the pred int cov acc is correct (maybe get Stata result to verify)
-# TODO: include checks to make sure the out-sample-MSE is accurate
-
-
 def test_simple_covariates():
 
 	data = get_data()
@@ -256,16 +252,16 @@ def test_fe_transformed_covariates_transformed_target_iso_fixed_effect():
 	np.testing.assert_allclose(float(res1.loc[["fd(Temp)"]]["Coef."]),float(res3.loc[["fd_temp"]]),rtol=1e-04)
 
 
-def test_ie_transformed_covariates_transformed_target_incremental_effects():
+def test_tt_transformed_covariates_transformed_target_time_trends():
 
 	data = get_data()
 	# model = cet.parse_cxl("example_cmaps/example_cmap_5.cxl")
-	from_indices = ['Temp', 'Precip', 'fd(Temp)', 'sq(Temp)', 'sq(Precip)', 'fd(Precip)', 'ie3(iso)', 'year']
-	to_indices = ['fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'ie3(iso)']
+	from_indices = ['Temp', 'Precip', 'fd(Temp)', 'sq(Temp)', 'sq(Precip)', 'fd(Precip)', 'tt3(iso)', 'year']
+	to_indices = ['fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'tt3(iso)']
 	model = cet.parse_model_input([from_indices, to_indices], "file5.csv")[0]
 	
 	transformed_data = utils.transform_data(data, model)
-	assert(all(val in transformed_data for val in ['ln(GDP)','fd(ln(GDP))','sq(Temp)','fd(Temp)','sq(Precip)','fd(Precip)','ie_AFG_iso_1','ie_AFG_iso_2','ie_AFG_iso_3']))
+	assert(all(val in transformed_data for val in ['ln(GDP)','fd(ln(GDP))','sq(Temp)','fd(Temp)','sq(Precip)','fd(Precip)','tt_AFG_iso_1','tt_AFG_iso_2','tt_AFG_iso_3']))
 
 	res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
 	assert not any(np.isnan(val) for val in res1["Coef."])
@@ -278,29 +274,29 @@ def test_ie_transformed_covariates_transformed_target_incremental_effects():
 	assert .99 > model.out_sample_pred_int_cov and .92 < model.out_sample_pred_int_cov
 	pd.testing.assert_frame_equal(res1.sort_index(), model.regression_result.summary2().tables[1].sort_index())
 
-	ie_test_data = pd.read_csv("tests/incremental_effect_test_data.csv")
+	tt_test_data = pd.read_csv("tests/time_trend_test_data.csv")
 	climate_covars = ["Precip", "Temp", "fd(Temp)", "fd(Precip)", "sq(Temp)", "sq(Precip)"]
 	covars = copy.deepcopy(climate_covars)
-	covars.extend([col for col in ie_test_data.columns if col.startswith("ie")])
-	regression_data = ie_test_data[covars]
+	covars.extend([col for col in tt_test_data.columns if col.startswith("tt")])
+	regression_data = tt_test_data[covars]
 	regression_data = sm.add_constant(regression_data)
 	
-	model = sm.OLS(ie_test_data["fd(ln(GDP))"],regression_data,missing="drop")
+	model = sm.OLS(tt_test_data["fd(ln(GDP))"],regression_data,missing="drop")
 	res2 = model.fit().summary2().tables[1]
 
 	pd.testing.assert_frame_equal(res1.loc[climate_covars], res2.loc[climate_covars])
 
 
-def test_ie_transformed_covariates_transformed_target_fixed_effects_and_incremental_effects():
+def test_tt_transformed_covariates_transformed_target_fixed_effects_and_time_trends():
 
 	data = get_data()
 	# model = cet.parse_cxl("example_cmaps/example_cmap_5.cxl")
-	from_indices = ['Temp', 'Precip', 'fd(Temp)', 'sq(Temp)', 'sq(Precip)', 'fd(Precip)', 'fe(year)', 'fe(iso)', 'ie3(iso)', 'year']
-	to_indices = ['fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'ie3(iso)']
+	from_indices = ['Temp', 'Precip', 'fd(Temp)', 'sq(Temp)', 'sq(Precip)', 'fd(Precip)', 'fe(year)', 'fe(iso)', 'tt3(iso)', 'year']
+	to_indices = ['fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'fd(ln(GDP))', 'tt3(iso)']
 	model = cet.parse_model_input([from_indices, to_indices], "file5.csv")[0]
 	
 	transformed_data = utils.transform_data(data, model)
-	assert(all(val in transformed_data for val in ['ln(GDP)','fd(ln(GDP))','sq(Temp)','fd(Temp)','sq(Precip)','fd(Precip)','fe_AGO_iso','fe_1963_year','ie_AFG_iso_1','ie_AFG_iso_2','ie_AFG_iso_3']))
+	assert(all(val in transformed_data for val in ['ln(GDP)','fd(ln(GDP))','sq(Temp)','fd(Temp)','sq(Precip)','fd(Precip)','fe_AGO_iso','fe_1963_year','tt_AFG_iso_1','tt_AFG_iso_2','tt_AFG_iso_3']))
 
 	res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
 	assert not any(np.isnan(val) for val in res1["Coef."])
@@ -321,20 +317,20 @@ def test_ie_transformed_covariates_transformed_target_fixed_effects_and_incremen
 	np.testing.assert_allclose(res1.loc['fd(Temp)']["Coef."],res2.loc['fd(Temp)']["Coef."],rtol=1e-04)
 	np.testing.assert_allclose(res1.loc['fd(Precip)']["Coef."],res2.loc['fd(Precip)']["Coef."],rtol=1e-04)
 
-	ie_test_data = pd.read_csv("tests/incremental_effect_test_data.csv")
+	tt_test_data = pd.read_csv("tests/time_trend_test_data.csv")
 
-	ie_test_data["fd_temp"] = ie_test_data["fd(Temp)"]
-	ie_test_data["fd_precip"] = ie_test_data["fd(Precip)"]
-	ie_test_data["sq_temp"] = ie_test_data["sq(Temp)"]
-	ie_test_data["sq_precip"] = ie_test_data["sq(Precip)"]
-	ie_test_data["fd_ln_gdp"] = ie_test_data["fd(ln(GDP))"]
+	tt_test_data["fd_temp"] = tt_test_data["fd(Temp)"]
+	tt_test_data["fd_precip"] = tt_test_data["fd(Precip)"]
+	tt_test_data["sq_temp"] = tt_test_data["sq(Temp)"]
+	tt_test_data["sq_precip"] = tt_test_data["sq(Precip)"]
+	tt_test_data["fd_ln_gdp"] = tt_test_data["fd(ln(GDP))"]
 
 	climate_covars = ["Precip", "Temp", "fd_temp", "fd_precip", "sq_temp", "sq_precip"]
 	covars = copy.deepcopy(climate_covars)
-	covars.extend([col for col in ie_test_data.columns if col.startswith("ie")])
+	covars.extend([col for col in tt_test_data.columns if col.startswith("tt")])
 	covar_string = " + ".join(covars)
 
-	res3 = pf.feols(f"fd_ln_gdp ~ {covar_string} | iso + year", data=ie_test_data).coef()
+	res3 = pf.feols(f"fd_ln_gdp ~ {covar_string} | iso + year", data=tt_test_data).coef()
 
 	np.testing.assert_allclose(float(res1.loc[["Precip"]]["Coef."]),float(res3.loc[["Precip"]]),rtol=1e-04)
 	np.testing.assert_allclose(float(res1.loc[["Temp"]]["Coef."]),float(res3.loc[["Temp"]]),rtol=1e-04)
@@ -343,4 +339,39 @@ def test_ie_transformed_covariates_transformed_target_fixed_effects_and_incremen
 	np.testing.assert_allclose(float(res1.loc[["fd(Precip)"]]["Coef."]),float(res3.loc[["fd_precip"]]),rtol=1e-04)
 	np.testing.assert_allclose(float(res1.loc[["fd(Temp)"]]["Coef."]),float(res3.loc[["fd_temp"]]),rtol=1e-04)
 
+
+def test_burke_model():
+
+	# test from original burke dataset
+
+	from_indices = ['Temp', 'Precip', 'sq(Temp)', 'sq(Precip)','fe(year)', 'fe(iso_id)', 'tt2(iso_id)']
+	to_indices = ['growthWDI', 'growthWDI', 'growthWDI', 'growthWDI', 'growthWDI', 'growthWDI', 'growthWDI', 'growthWDI', 'growthWDI']
+	data = pd.read_csv("data/GrowthClimateDataset.csv")
+	model = cet.parse_model_input([from_indices, to_indices], "file5.csv", "iso_id", "year")[0]
+
+	utils.random_state = 123
+	model = cee.evaluate_model(data, model)
+	assert .1 < model.out_sample_mse_reduction < .15
+	assert .949 < model.out_sample_pred_int_cov < .951
 	
+	utils.random_state = 1
+	model = cee.evaluate_model(data, model)
+	assert .1 < model.out_sample_mse_reduction < .15
+	assert .949 < model.out_sample_pred_int_cov < .951
+
+	# test from dataset with dependent variable created through transformations
+
+	from_indices = ['Temp', 'Precip', 'sq(Temp)', 'sq(Precip)','fe(year)', 'fe(iso_id)', 'tt2(iso_id)']
+	to_indices = ['fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))']
+	data = pd.read_csv("data/GDP_climate_test_data.csv")
+	model = cet.parse_model_input([from_indices, to_indices], "file5.csv", "iso_id", "year")[0]
+	
+	utils.random_state = 123
+	model = cee.evaluate_model(data, model)
+	assert .1 < model.out_sample_mse_reduction < .15
+	assert .949 < model.out_sample_pred_int_cov < .951
+
+	utils.random_state = 1
+	model = cee.evaluate_model(data, model)
+	assert .1 < model.out_sample_mse_reduction < .15
+	assert .949 < model.out_sample_pred_int_cov < .951

@@ -11,3 +11,5 @@ class ResultPlot():
         if self.plot_canvas != None:
             self.plot_canvas.get_tk_widget().destroy()
             self.plot_data = []
+            self.circles = []
+            self.models = []

@@ -18,6 +18,7 @@ from climate_econometrics_toolkit.StatPlot import StatPlot
 # TODO: improve python-facing API for users
 # TODO: facilitate loading a model directly from the model cache into the API
 # To do this you might need to add a "get model id" button in the interface which the user can copy/paste in their code
+# TODO: refactor code into API and interface directories
 def evaluate_model(data_file, model, panel_column, time_column):
 	# model = mb.parse_cxl(model)
 	return_string = ""
@@ -27,6 +28,7 @@ def evaluate_model(data_file, model, panel_column, time_column):
 	model, unused_nodes = mb.parse_model_input(model, data_file, panel_column, time_column)
 	if len(unused_nodes) > 0:
 		return_string += "\nWARNING: The following nodes are unused in the regression. " + str(unused_nodes)
+	# TODO: find out why this sorting was causing nan's in the predictions
 	data = pd.read_csv(data_file)#.sort_values([model.time_column, model.panel_column])
 	data.columns = data.columns.str.replace(' ', '_') 
 	if len(set(data.columns)) != len(data.columns): 
@@ -64,8 +66,8 @@ def clear_model_cache(dataset):
 			shutil.rmtree(f"model_cache/{dataset}")
 
 
-def run_bayesian_regression(data_file, model):
-	model, _ = mb.parse_model_input(model, data_file)
+def run_bayesian_regression(data_file, model, panel_column, time_column):
+	model, _ = mb.parse_model_input(model, data_file, panel_column, time_column)
 	data = pd.read_csv(data_file)#.sort_values([model.time_column, model.panel_column])
 	transformed_data = utils.transform_data(data, model).dropna().reset_index(drop=True)
 	thread = threading.Thread(target=regression.run_bayesian_regression,name="bayes_sampling_thread",args=(transformed_data,model))

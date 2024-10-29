@@ -97,8 +97,8 @@ class TkInterfaceUtils():
                 out_sample_mse = float(utils.get_attribute_from_model_file(dataset, "out_sample_mse_reduction", str(cache_file[0])))
                 self.result_plot.plot_data.append(out_sample_mse)
                 self.result_plot.models.append(cache_file[0])
-            cached_canvas = pd.read_pickle(f'model_cache/{dataset}/{cache_file[0]}/tkinter_canvas.pkl')
             self.create_result_plot()
+            cached_canvas = pd.read_pickle(f'model_cache/{dataset}/{cache_file[0]}/tkinter_canvas.pkl')
             return cached_canvas["panel_column"], cached_canvas["time_column"]
 
     def evaluate_model(self):
@@ -136,7 +136,7 @@ class TkInterfaceUtils():
                 self.restore_model(model_id)
 
     def run_bayesian_inference(self):
-        api.run_bayesian_regression(self.dnd.filename, self.build_model_indices_lists())
+        api.run_bayesian_regression(self.dnd.filename, self.build_model_indices_lists(), self.panel_column, self.time_column)
 
     def clear_canvas(self):
         self.dnd.clear_canvas()

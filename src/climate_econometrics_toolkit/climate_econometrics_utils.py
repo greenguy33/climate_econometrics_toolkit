@@ -15,6 +15,8 @@ warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning
 # remember that func[0:2] will break once lag is added
 supported_functions = ["fd","sq","ln"]
 supported_effects = ["fe", "tt"]
+# TODO: understand how changing this can lead to undesirable results (e.g. in the Burke model)
+random_state = 123
 
 
 def initial_checks():
@@ -47,6 +49,7 @@ def add_fixed_effect_to_data(node, data):
 
 def add_time_trends_to_data(node, data, time_column):
 	# TODO: This only supports time effects by year. Add support for monthly/weekly
+	# TODO: handle the case where some years are missing
 	parsed_dates = [parser.parse(str(date)) for date in data[time_column]]
 	min_year = min(parsed_dates[index].year for index in range(len(parsed_dates)))
 	ie_level = 1

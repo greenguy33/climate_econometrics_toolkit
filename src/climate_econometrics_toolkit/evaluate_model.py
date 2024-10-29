@@ -17,7 +17,7 @@ def get_year_column(data):
 
 
 def split_data_by_column(data, column):
-	random.seed(1)
+	random.seed(utils.random_state)
 	unique_vals = len(set(data[column]))
 	withheld_years = random.sample(set(data[column]), int(unique_vals/5))
 	train_data = data.loc[~data[column].isin(withheld_years)]
@@ -31,7 +31,7 @@ def split_data_randomly(data, model, splits=10):
 		target_var = target_var.split("(")[-1].split(")")[0]
 	# split data based on the target variable to reproduce same train/test split between different model variations
 	data = data[target_var]
-	kf = KFold(n_splits=splits, shuffle=True, random_state=1)
+	kf = KFold(n_splits=splits, shuffle=True, random_state=utils.random_state)
 	return kf.split(data)
 
 
