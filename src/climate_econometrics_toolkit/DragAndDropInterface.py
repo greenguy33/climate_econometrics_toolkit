@@ -1,3 +1,4 @@
+import sys
 import tkinter as tk
 from tkinter import Menu
 
@@ -24,6 +25,9 @@ class DragAndDropInterface():
         self.canvas_print_out = None
         self.menu = None
         self.time_column = None
+        self.right_click_button = "<ButtonPress-3>"
+        if sys.platform == "darwin":
+            self.right_click_button = "<ButtonPress-2>"
 
         self.canvas.bind("<ButtonPress-1>", self.handle_canvas_click)
 
@@ -104,7 +108,9 @@ class DragAndDropInterface():
                     self.canvas.create_line(*item["coords"], arrow=tk.LAST, tags=item["tags"])
                     arrow_source, arrow_target = self.get_arrow_source_and_target(item["tags"])
                     self.arrow_list.append((arrow_source, arrow_target))
-                    self.canvas.tag_bind(f"from_{self.canvas.gettags(arrow_source)[0]}", "<ButtonPress-3>", self.delete_arrow)
+                    self.canvas.tag_bind(f"from_{self.canvas.gettags(arrow_source)[0]}", self.right_click_button, self.delete_arrow)
+                    self.canvas.tag_bind(f"from_{self.canvas.gettags(arrow_source)[0]}", "<Control-Button-1>", self.delete_arrow)
+                    self.canvas.tag_bind(f"from_{self.canvas.gettags(arrow_source)[0]}", "<Command-Button-1>", self.delete_arrow)
                 else:
                     if item["type"] == "rectangle":
                         rect = self.canvas.create_rectangle(*item["coords"], fill="orange", tags=item["tags"])
@@ -151,7 +157,9 @@ class DragAndDropInterface():
         self.canvas.tag_bind(column_box_tag, "<B1-Motion>", self.on_drag)
         self.canvas.tag_bind(column_box_tag, "<ButtonRelease-1>", self.end_drag)
         if not (column.startswith("tt1(") or column.startswith("tt2(") or column.startswith("tt3(") or column.startswith("fe(")):
-            self.canvas.tag_bind(column_box_tag, "<ButtonPress-3>", self.popup_menu)
+            self.canvas.tag_bind(column_box_tag, self.right_click_button, self.popup_menu)
+            self.canvas.tag_bind(column_box_tag, "<Control-Button-1>", self.popup_menu)
+            self.canvas.tag_bind(column_box_tag, "<Command-Button-1>", self.popup_menu)
 
     def add_model_variables(self, variables, coords=None):
         last_rectangle_right_side = 0
@@ -173,14 +181,16 @@ class DragAndDropInterface():
         self.variables_displayed = True
 
     def handle_canvas_click(self, event):
-        clicked_object = self.canvas.find_overlapping(event.x, event.y, event.x, event.y)
-        if self.menu != None:
-            self.menu.unpost()
-            self.menu = None
-        if len(clicked_object) == 0:
-            self.reset_click()
-        else:
-            self.on_click(event)
+        # if ctrl/command key isn't held
+        if not (event.state & 0x4) or (event.state & 0x1000) or (event.state & 0x100000):
+            clicked_object = self.canvas.find_overlapping(event.x, event.y, event.x, event.y)
+            if self.menu != None:
+                self.menu.unpost()
+                self.menu = None
+            if len(clicked_object) == 0:
+                self.reset_click()
+            else:
+                self.on_click(event)
         
     def reset_click(self):
         self.drag_start_x = None
@@ -191,9 +201,10 @@ class DragAndDropInterface():
         self.right_clicked_object = None
 
     def end_drag(self, event):
-        if self.in_drag:
-            self.reset_click()
-        self.in_drag = False
+        if not (event.state & 0x4) or (event.state & 0x1000) or (event.state & 0x100000):
+            if self.in_drag:
+                self.reset_click()
+            self.in_drag = False
 
     def draw_arrow_from_click(self, event):
         source_object = self.left_clicked_object
@@ -223,7 +234,9 @@ class DragAndDropInterface():
                     f"to_{self.canvas.gettags(target_object)[0]}"
                 ]
             )
-            self.canvas.tag_bind(f"from_{self.canvas.gettags(source_object)[0]}", "<ButtonPress-3>", self.delete_arrow)
+            self.canvas.tag_bind(f"from_{self.canvas.gettags(source_object)[0]}", self.right_click_button, self.delete_arrow)
+            self.canvas.tag_bind(f"from_{self.canvas.gettags(source_object)[0]}", "<Control-Button-1>", self.delete_arrow)
+            self.canvas.tag_bind(f"from_{self.canvas.gettags(source_object)[0]}", "<Command-Button-1>", self.delete_arrow)
             self.arrow_list.append((source_object,target_object))
             self.reset_click()
 

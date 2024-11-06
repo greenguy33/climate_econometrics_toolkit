@@ -3,7 +3,7 @@ from statsmodels.tsa.tsatools import add_lag
 import pandas as pd
 import os
 from sklearn.preprocessing import OrdinalEncoder
-import pyfixest as pf
+# import pyfixest as pf
 import dateutil.parser as parser
 import copy
 
@@ -31,6 +31,23 @@ def add_transformation_to_data(data, model, function):
 		data[function] = np.square(data[function[3:-1]])
 	elif function[0:2] == "fd":
 		# TODO: this won't work if the data isn't sorted by year or if there are missing year values
+		# add something like this for missing year values:
+		# data["T5_mean_diff"] = data.groupby("ID")["T5_mean"].diff()
+		# t5_mean_diff = []
+		# last_year = 0
+		# last_region = ""
+		# last_row = None
+		# for row in data.itertuples():
+		# 	this_year = row.yearn
+		# 	this_region = row.ID
+		# 	t5_mean_diff.append(row.T5_mean_diff)
+		# 	if this_year - last_year > 1 and row.ID == last_region:
+		# 		print(last_row.ID, last_row.year, last_row.country, last_row.T5_mean, last_row.T5_mean_diff)
+		# 		print(row.ID, row.year, row.country, row.T5_mean, row.T5_mean_diff)
+		# 		t5_mean_diff[-1] = np.NaN
+		# 	last_year = this_year
+		# 	last_region = this_region
+		# 	last_row = row
 		data[function] = data.groupby(model.panel_column)[function[3:-1]].diff()
 	elif function[0:2] == "ln":
 		data[function] = np.log(data[function[3:-1]])
@@ -83,28 +100,28 @@ def remove_nan_rows(data, no_nan_cols):
 	return data
 
 
-def demean_fixed_effects(data, model):
-	fixed_effects = []
-	for fe in model.fixed_effects:
-		if not np.issubdtype(data[fe].dtype, np.number):
-			enc = OrdinalEncoder()
-			ordered_list = list(dict.fromkeys(data[fe]))
-			enc.fit(np.array(ordered_list).reshape(-1,1))
-			data[f"encoded_{fe}"] = [int(val) for val in enc.transform(np.array(data[fe]).reshape(-1,1))]
-			fixed_effects.append(f"encoded_{fe}")
-		else:
-			fixed_effects.append(fe)
-	vars_to_demean = copy.deepcopy(model.model_vars)
-	vars_to_demean.extend([col for col in data.columns if col.startswith("tt_")])
-	centered_data = pf.estimation.demean(
-		np.array(data[vars_to_demean]), 
-		np.array(data[fixed_effects]), 
-		np.ones(len(data))
-	)[0]
-	centered_data = pd.DataFrame(centered_data, columns=vars_to_demean)
-	for fe in model.fixed_effects:
-		centered_data = pd.concat([data[fe], centered_data], axis=1).reset_index(drop=True)
-	return centered_data
+# def demean_fixed_effects(data, model):
+# 	fixed_effects = []
+# 	for fe in model.fixed_effects:
+# 		if not np.issubdtype(data[fe].dtype, np.number):
+# 			enc = OrdinalEncoder()
+# 			ordered_list = list(dict.fromkeys(data[fe]))
+# 			enc.fit(np.array(ordered_list).reshape(-1,1))
+# 			data[f"encoded_{fe}"] = [int(val) for val in enc.transform(np.array(data[fe]).reshape(-1,1))]
+# 			fixed_effects.append(f"encoded_{fe}")
+# 		else:
+# 			fixed_effects.append(fe)
+# 	vars_to_demean = copy.deepcopy(model.model_vars)
+# 	vars_to_demean.extend([col for col in data.columns if col.startswith("tt_")])
+# 	centered_data = pf.estimation.demean(
+# 		np.array(data[vars_to_demean]), 
+# 		np.array(data[fixed_effects]), 
+# 		np.ones(len(data))
+# 	)[0]
+# 	centered_data = pd.DataFrame(centered_data, columns=vars_to_demean)
+# 	for fe in model.fixed_effects:
+# 		centered_data = pd.concat([data[fe], centered_data], axis=1).reset_index(drop=True)
+# 	return centered_data
 
 
 def transform_data(data, model, demean=False):
@@ -124,12 +141,12 @@ def transform_data(data, model, demean=False):
 	for ie in model.time_trends:
 		data = add_time_trends_to_data(ie, data, model.time_column)
 	data = remove_nan_rows(data, model.covariates + model.fixed_effects + [model.target_var])
-	if not demean:
-		for fe in model.fixed_effects:
-			data = add_fixed_effect_to_data(fe, data)
-	else:
-		if len(model.fixed_effects) > 0:
-			data = demean_fixed_effects(data, model)
+	# if not demean:
+	for fe in model.fixed_effects:
+		data = add_fixed_effect_to_data(fe, data)
+	# else:
+	# 	if len(model.fixed_effects) > 0:
+	# 		data = demean_fixed_effects(data, model)
 	return data
 
 
