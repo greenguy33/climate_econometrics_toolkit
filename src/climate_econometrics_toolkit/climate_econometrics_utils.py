@@ -10,10 +10,7 @@ import copy
 import warnings
 warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning)
 
-# TODO: add lag function
-# supported_functions = ["fd","sq","ln","lag1","lag2","lag3"]
-# remember that func[0:2] will break once lag is added
-supported_functions = ["fd","sq","ln"]
+supported_functions = ["fd","sq","cu","ln","lag1","lag2","lag3"]
 supported_effects = ["fe", "tt1", "tt2", "tt3"]
 # TODO: understand how changing this can lead to undesirable results (e.g. in the Burke model)
 random_state = 123
@@ -56,7 +53,9 @@ def add_transformation_to_data(data, model, function):
 	elif function_split[0].startswith("lag"):
 		# TODO: this won't work if the data isn't sorted by year or if there are missing year values
 		num_lags = int(function_split[0][3])
-		data[function] = np.insert(add_lag(data[data_col], lags=num_lags)[:,1], 0, np.NaN)
+		data[function] = data.groupby(model.panel_column)[data_col].shift(num_lags)
+	elif function_split[0] == "cu":
+		data[function] = np.power(data[data_col], 3)
 	return data
 
 
@@ -152,7 +151,7 @@ def transform_data(data, model, demean=False):
 	return data
 
 
-def get_model_vars(data, model, demeaned):
+def get_model_vars(data, model, demeaned=False):
 	model_vars = [var for var in model.covariates]
 	if demeaned:
 		# exclude fixed effects from demeaned data

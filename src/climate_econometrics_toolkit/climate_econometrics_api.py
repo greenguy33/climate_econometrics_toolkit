@@ -66,11 +66,11 @@ def clear_model_cache(dataset):
 			shutil.rmtree(f"model_cache/{dataset}")
 
 
-def run_bayesian_regression(data_file, model, panel_column, time_column):
+def run_bayesian_regression(data_file, model, panel_column, time_column, model_id):
 	model, _ = mb.parse_model_input(model, data_file, panel_column, time_column)
 	data = pd.read_csv(data_file)#.sort_values([model.time_column, model.panel_column])
 	transformed_data = utils.transform_data(data, model).dropna().reset_index(drop=True)
-	thread = threading.Thread(target=regression.run_bayesian_regression,name="bayes_sampling_thread",args=(transformed_data,model))
+	thread = threading.Thread(target=regression.run_bayesian_regression,name="bayes_sampling_thread",args=(transformed_data,model,model_id))
 	thread.daemon = True
 	thread.start()
 

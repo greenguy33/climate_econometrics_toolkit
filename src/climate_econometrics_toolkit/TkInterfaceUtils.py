@@ -117,6 +117,7 @@ class TkInterfaceUtils():
                 self.stat_plot.update_stat_plot(out_sample_mse, pred_int_cov)
         else:
             self.dnd.canvas_print_out.insert(tk.END, "\nPlease load a dataset and create a model before evaluating model.")
+        return model_id
 
     def restore_model(self, model_id):
         self.dnd.restore_canvas_from_cache(str(model_id))
@@ -136,7 +137,8 @@ class TkInterfaceUtils():
                 self.restore_model(model_id)
 
     def run_bayesian_inference(self):
-        api.run_bayesian_regression(self.dnd.filename, self.build_model_indices_lists(), self.panel_column, self.time_column)
+        model_id = self.evaluate_model()
+        api.run_bayesian_regression(self.dnd.filename, self.build_model_indices_lists(), self.panel_column, self.time_column, model_id)
 
     def clear_canvas(self):
         self.dnd.clear_canvas()

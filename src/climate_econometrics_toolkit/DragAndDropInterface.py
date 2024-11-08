@@ -33,24 +33,26 @@ class DragAndDropInterface():
 
     def get_menu(self, tag):
 
-        # TODO: add lag transformation
         main_menu = Menu(self.window, tearoff=0)
         transformation_menu = Menu(main_menu, tearoff=0)
-        # lag_menu = Menu(transformation_menu, tearoff=0)
         time_trends_menu = Menu(main_menu, tearoff=0)
 
         if f"sq({tag})" not in self.transformation_list:
             transformation_menu.add_command(label="Square",command=lambda : self.add_transformation("sq"))
+        if f"cu({tag})" not in self.transformation_list:
+            transformation_menu.add_command(label="Cube",command=lambda : self.add_transformation("cu"))
         if f"fd({tag})" not in self.transformation_list:
             transformation_menu.add_command(label="First Difference",command=lambda : self.add_transformation("fd"))
         if f"ln({tag})" not in self.transformation_list:
             transformation_menu.add_command(label="Natural Log",command=lambda : self.add_transformation("ln"))
-        # if not all(f"{func}{tag}" in self.transformation_list for func in ["lag1","lag2","lag3"]):
-        #     transformation_menu.add_cascade(label="Lag", menu=lag_menu)
+        if f"lag1({tag})" not in self.transformation_list:
+            transformation_menu.add_command(label="Lag 1",command=lambda : self.add_transformation("lag1"))
+        if f"lag2({tag})" not in self.transformation_list:
+            transformation_menu.add_command(label="Lag 2",command=lambda : self.add_transformation("lag2"))
+        if f"lag3({tag})" not in self.transformation_list:
+            transformation_menu.add_command(label="Lag 3",command=lambda : self.add_transformation("lag3"))
         if not all(f"{func}({tag})" in self.transformation_list for func in utils.supported_functions):
             main_menu.add_cascade(label="Duplicate with Transformation",menu=transformation_menu)
-
-        # lags_menu.add_command(label="Lag ")
 
         if not any(tag.startswith(val) for val in utils.supported_functions) and f"fe({tag})" not in self.transformation_list:
             main_menu.add_command(label="Add Fixed Effect",command=lambda : self.add_transformation("fe"))

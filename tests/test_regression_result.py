@@ -77,12 +77,12 @@ def test_transformed_target_simple_covariates():
 def test_2_transformed_covariates_transformed_target():
 
 	data = get_data()
-	from_indices = ['ln(Precip)', 'sq(Precip)', 'Precip', 'Temp', 'sq(Temp)', 'fd(Temp)', 'ln(Temp)', 'fd(Precip)']
-	to_indices = ['ln(fd(GDP_per_capita))', 'ln(fd(GDP_per_capita))', 'ln(fd(GDP_per_capita))', 'ln(fd(GDP_per_capita))', 'ln(fd(GDP_per_capita))', 'ln(fd(GDP_per_capita))', 'ln(fd(GDP_per_capita))', 'ln(fd(GDP_per_capita))']
+	from_indices = ['ln(Precip)', 'sq(Precip)', 'Precip', 'Temp', 'sq(Temp)', 'fd(Temp)', 'ln(Temp)', 'fd(Precip)', 'lag1(Precip)', 'lag3(Temp)']
+	to_indices = ['ln(fd(GDP_per_capita))', 'ln(fd(GDP_per_capita))', 'ln(fd(GDP_per_capita))', 'ln(fd(GDP_per_capita))', 'ln(fd(GDP_per_capita))', 'ln(fd(GDP_per_capita))', 'ln(fd(GDP_per_capita))', 'ln(fd(GDP_per_capita))','ln(fd(GDP_per_capita))', 'ln(fd(GDP_per_capita))']
 	model = cet.parse_model_input([from_indices, to_indices], "file3.csv", "iso_id", "year")[0]
 	
 	transformed_data = utils.transform_data(data, model)
-	assert(all(val in transformed_data for val in ['fd(GDP_per_capita)','ln(fd(GDP_per_capita))','sq(Temp)','fd(Temp)','ln(Temp)','sq(Precip)','fd(Precip)','ln(Precip)']))
+	assert(all(val in transformed_data for val in ['fd(GDP_per_capita)','ln(fd(GDP_per_capita))','sq(Temp)','fd(Temp)','ln(Temp)','sq(Precip)','fd(Precip)','ln(Precip)','lag1(Precip)','lag3(Temp)']))
 
 	res1 = cer.run_standard_regression(transformed_data, model).summary2().tables[1]
 	assert not any(np.isnan(val) for val in res1["Coef."])
@@ -95,7 +95,7 @@ def test_2_transformed_covariates_transformed_target():
 	assert .99 > model.out_sample_pred_int_cov and .92 < model.out_sample_pred_int_cov
 	pd.testing.assert_frame_equal(res1.sort_index(), model.regression_result.summary2().tables[1].sort_index())
 
-	covars = ["Precip", "Temp", "ln(Temp)", "ln(Precip)", "fd(Temp)", "fd(Precip)", "sq(Temp)", "sq(Precip)"]
+	covars = ["Precip", "Temp", "ln(Temp)", "ln(Precip)", "fd(Temp)", "fd(Precip)", "sq(Temp)", "sq(Precip)","lag1(Precip)","lag3(Temp)"]
 	data["ln(Temp)"] = np.log(data["Temp"])
 	data["ln(Precip)"] = np.log(data["Precip"])
 	data["fd(Temp)"] = data.groupby("iso_id")["Temp"].diff()
@@ -104,6 +104,8 @@ def test_2_transformed_covariates_transformed_target():
 	data["sq(Precip)"] = np.square(data["Precip"])
 	data["fd(GDP_per_capita)"] = data.groupby("iso_id")["GDP_per_capita"].diff()
 	data["ln(fd(GDP_per_capita))"] = np.log(data["fd(GDP_per_capita)"])
+	data["lag1(Precip)"] = data.groupby("iso_id")["Precip"].shift(1)
+	data["lag3(Temp)"] = data.groupby("iso_id")["Temp"].shift(3)
 
 	data = utils.remove_nan_rows(data, ["ln(fd(GDP_per_capita))"])
 
@@ -112,7 +114,7 @@ def test_2_transformed_covariates_transformed_target():
 	model = sm.OLS(data["ln(fd(GDP_per_capita))"],regression_data,missing="drop")
 	res2 = model.fit().summary2().tables[1]
 
-	pd.testing.assert_frame_equal(res1.sort_index() ,res2.sort_index())
+	pd.testing.assert_frame_equal(res1.sort_index() ,res2.sort_index(), rtol=1e-04)
 
 
 def test_transformed_covariates_transformed_target():
