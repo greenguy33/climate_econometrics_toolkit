@@ -14,7 +14,7 @@ warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning
 # supported_functions = ["fd","sq","ln","lag1","lag2","lag3"]
 # remember that func[0:2] will break once lag is added
 supported_functions = ["fd","sq","ln"]
-supported_effects = ["fe", "tt"]
+supported_effects = ["fe", "tt1", "tt2", "tt3"]
 # TODO: understand how changing this can lead to undesirable results (e.g. in the Burke model)
 random_state = 123
 
@@ -27,9 +27,11 @@ def initial_checks():
 
 
 def add_transformation_to_data(data, model, function):
-	if function[0:2] == "sq":
-		data[function] = np.square(data[function[3:-1]])
-	elif function[0:2] == "fd":
+	function_split = function.split("(")
+	data_col = "(".join(function_split[1:])[:-1]
+	if function_split[0] == "sq":
+		data[function] = np.square(data[data_col])
+	elif function_split[0] == "fd":
 		# TODO: this won't work if the data isn't sorted by year or if there are missing year values
 		# add something like this for missing year values:
 		# data["T5_mean_diff"] = data.groupby("ID")["T5_mean"].diff()
@@ -48,13 +50,13 @@ def add_transformation_to_data(data, model, function):
 		# 	last_year = this_year
 		# 	last_region = this_region
 		# 	last_row = row
-		data[function] = data.groupby(model.panel_column)[function[3:-1]].diff()
-	elif function[0:2] == "ln":
-		data[function] = np.log(data[function[3:-1]])
-	# TODO: function[0:3] breaks once lag is added
-	# elif function[0:3] == "lag":
-	# 	num_lags = int(function[3])
-	# 	data[function] = np.insert(add_lag(data[function[5:-1]], lags=num_lags)[:,1], 0, np.NaN)
+		data[function] = data.groupby(model.panel_column)[data_col].diff()
+	elif function_split[0] == "ln":
+		data[function] = np.log(data[data_col])
+	elif function_split[0].startswith("lag"):
+		# TODO: this won't work if the data isn't sorted by year or if there are missing year values
+		num_lags = int(function_split[0][3])
+		data[function] = np.insert(add_lag(data[data_col], lags=num_lags)[:,1], 0, np.NaN)
 	return data
 
 
@@ -76,11 +78,11 @@ def add_time_trends_to_data(node, data, time_column):
 	for element in sorted(list(set(data[node_split[0]]))):
 		first_elem_year = min(data.loc[data[node_split[0]] == element][time_column])
 		time_past_min = first_elem_year - min_year
-		data[f"tt_{element}_{node_split[0]}_1"] = np.where(data[node_split[0]] == element, 1, 0)
-		data[f"tt_{element}_{node_split[0]}_1"] = np.where(data[node_split[0]] == element, data[f"tt_{element}_{node_split[0]}_1"].cumsum(), 0)
-		data[f"tt_{element}_{node_split[0]}_1"] = np.where(data[node_split[0]] == element, data[f"tt_{element}_{node_split[0]}_1"]+time_past_min-1, 0)
+		data[f"tt1_{element}_{node_split[0]}"] = np.where(data[node_split[0]] == element, 1, 0)
+		data[f"tt1_{element}_{node_split[0]}"] = np.where(data[node_split[0]] == element, data[f"tt1_{element}_{node_split[0]}"].cumsum(), 0)
+		data[f"tt1_{element}_{node_split[0]}"] = np.where(data[node_split[0]] == element, data[f"tt1_{element}_{node_split[0]}"]+time_past_min-1, 0)
 		for i in range(1, ie_level+1):
-			data[f"tt_{element}_{node_split[0]}_{i}"] = np.power(data[f"tt_{element}_{node_split[0]}_1"], i)
+			data[f"tt{i}_{element}_{node_split[0]}"] = np.power(data[f"tt1_{element}_{node_split[0]}"], i)
 	return data
 
 
@@ -127,10 +129,10 @@ def remove_nan_rows(data, no_nan_cols):
 def transform_data(data, model, demean=False):
 	transformations = []
 	for node in model.model_vars:
-		if node[0:2] not in supported_functions and node[0:2] not in supported_effects:
+		function_split = node.split("(")
+		if function_split[0] not in supported_functions and function_split[0] not in supported_effects:
 			assert node in data, f"Element {node} not found in data"
-		elif node[0:2] in supported_functions:
-			function_split = node.split("(")
+		elif function_split[0] in supported_functions:
 			data_node = function_split[-1].replace(")","")
 			assert data_node in data, f"Element {data_node} not found in data"
 			for function in reversed(function_split[:-1]):

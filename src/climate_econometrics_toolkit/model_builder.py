@@ -14,9 +14,10 @@ def build_model_from_graph(graph, dataset, panel_column, time_column):
 	target_var = [node for node in graph.nodes() if len(list(graph.successors(node))) == 0][0]
 	input_nodes = list(graph.predecessors(target_var))
 
-	covars = [node for node in input_nodes if not any(node[0:2] == val for val in utils.supported_effects)]
-	fixed_effects = [node.split("(")[1].split(")")[0] for node in input_nodes if node[0:2] == "fe"]
-	time_trends = [node.split("(")[1].split(")")[0] + " " + node[2] for node in input_nodes if node[0:2] == "tt"]
+	function_split = [node.split("(") for node in input_nodes]
+	covars = [node for index, node in enumerate(input_nodes) if not any(function_split[index][0] == val for val in utils.supported_effects)]
+	fixed_effects = [node.split("(")[1].split(")")[0] for node in input_nodes if node[0:3] == "fe("]
+	time_trends = [node.split("(")[1].split(")")[0] + " " + node[2] for node in input_nodes if node[0:2] == "tt" and node[3] == "("]
 	model.covariates = covars
 	model.target_var = target_var
 	model.model_vars = covars + [target_var]

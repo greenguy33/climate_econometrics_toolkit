@@ -8,14 +8,6 @@ import climate_econometrics_toolkit.climate_econometrics_utils as utils
 import climate_econometrics_toolkit.climate_econometrics_regression as regression
 
 
-def get_year_column(data):
-	for col in data.columns:
-		if all(len(str(val)) == 4 for val in data[col]) and min(data[col]) > 1600 and "year" in col:
-			return col
-		else:
-			return None
-
-
 def split_data_by_column(data, column):
 	random.seed(utils.random_state)
 	unique_vals = len(set(data[column]))

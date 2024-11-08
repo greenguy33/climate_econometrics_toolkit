@@ -24,12 +24,12 @@ class RegressionPlot():
         return axis       
 
     def build_axes(self, reg_result):
-        num_plots = len([val for val in reg_result.index if val != "const" and not val.startswith("fe_") and not val.startswith("tt_")])
+        num_plots = len([val for val in reg_result.index if val != "const" and not val.startswith("fe_") and not (val.startswith("tt") and val[3] == "_")])
         fig, axes = plt.subplots(1,num_plots,figsize=(5,5))
         axis_count = 0
         for index in range(len(reg_result.index)):
             coef_name = reg_result.index[index]
-            if coef_name != "const" and not coef_name.startswith("fe_") and not coef_name.startswith("tt_"):
+            if coef_name != "const" and not coef_name.startswith("fe_") and not (coef_name.startswith("tt") and coef_name[3] == "_"):
                 if num_plots == 1:
                     axis = self.add_normal_distribution_to_axis(coef_name, reg_result, index, axes)
                 else:

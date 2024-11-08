@@ -24,22 +24,22 @@ def evaluate_model(data_file, model, panel_column, time_column):
 	return_string = ""
 	model_id = None
 	regression_result = None
-	# try:
-	model, unused_nodes = mb.parse_model_input(model, data_file, panel_column, time_column)
-	if len(unused_nodes) > 0:
-		return_string += "\nWARNING: The following nodes are unused in the regression. " + str(unused_nodes)
-	# TODO: find out why this sorting was causing nan's in the predictions
-	data = pd.read_csv(data_file)#.sort_values([model.time_column, model.panel_column])
-	data.columns = data.columns.str.replace(' ', '_') 
-	if len(set(data.columns)) != len(data.columns): 
-		return_string += "\nTwo column names in dataset collide when spaces are removed. Please correct."
-	else:
-		model = ce_eval.evaluate_model(data, model)
-		# return_string += "\n" + utils.compare_to_last_model(model, data_file)
-		model_id = model.save_model_to_cache()
-		regression_result = model.regression_result
-	# except BaseException as e:
-	# 	return_string += "\nERROR: " + str(e)
+	try:
+		model, unused_nodes = mb.parse_model_input(model, data_file, panel_column, time_column)
+		if len(unused_nodes) > 0:
+			return_string += "\nWARNING: The following nodes are unused in the regression. " + str(unused_nodes)
+		# TODO: find out why this sorting was causing nan's in the predictions
+		data = pd.read_csv(data_file)#.sort_values([model.time_column, model.panel_column])
+		data.columns = data.columns.str.replace(' ', '_') 
+		if len(set(data.columns)) != len(data.columns): 
+			return_string += "\nTwo column names in dataset collide when spaces are removed. Please correct."
+		else:
+			model = ce_eval.evaluate_model(data, model)
+			# return_string += "\n" + utils.compare_to_last_model(model, data_file)
+			model_id = model.save_model_to_cache()
+			regression_result = model.regression_result
+	except BaseException as e:
+		return_string += "\nERROR: " + str(e)
 	return model_id, regression_result, return_string
 
 
