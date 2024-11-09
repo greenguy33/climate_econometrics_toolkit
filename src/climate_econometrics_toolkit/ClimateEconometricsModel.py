@@ -17,7 +17,8 @@ class ClimateEconometricsModel:
 		"out_sample_pred_int_cov",
 		"in_sample_pred_int_cov",
 		"dataset",
-		"regression_result"
+		"time_column",
+		"panel_column"
 	]
 
 	def __init__(self):

@@ -138,13 +138,15 @@ class TkInterfaceUtils():
 
     def run_bayesian_inference(self):
         model_id = self.evaluate_model()
-        api.run_bayesian_regression(self.dnd.filename, self.build_model_indices_lists(), self.panel_column, self.time_column, model_id)
+        api.run_bayesian_regression(self.dnd.filename, model_id, use_threading=True)
 
     def clear_canvas(self):
         self.dnd.clear_canvas()
         self.regression_plot.clear_figure()
         self.result_plot.clear_figure()
         self.stat_plot.clear_stat_plot()
+        self.panel_column = None
+        self.time_column = None
 
     def clear_model_cache(self):
         api.clear_model_cache(self.dnd.data_source)

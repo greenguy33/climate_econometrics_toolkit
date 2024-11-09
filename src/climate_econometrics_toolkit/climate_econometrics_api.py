@@ -15,6 +15,9 @@ from climate_econometrics_toolkit.RegressionPlot import RegressionPlot
 from climate_econometrics_toolkit.ResultPlot import ResultPlot
 from climate_econometrics_toolkit.StatPlot import StatPlot
 
+pd.set_option('display.min_rows', 100)
+pd.set_option('display.max_rows', 100)
+
 # TODO: improve python-facing API for users
 # TODO: facilitate loading a model directly from the model cache into the API
 # To do this you might need to add a "get model id" button in the interface which the user can copy/paste in their code
@@ -29,7 +32,7 @@ def evaluate_model(data_file, model, panel_column, time_column):
 		if len(unused_nodes) > 0:
 			return_string += "\nWARNING: The following nodes are unused in the regression. " + str(unused_nodes)
 		# TODO: find out why this sorting was causing nan's in the predictions
-		data = pd.read_csv(data_file)#.sort_values([model.time_column, model.panel_column])
+		data = pd.read_csv(data_file).sort_values([model.panel_column, model.time_column]).reset_index(drop=True)
 		data.columns = data.columns.str.replace(' ', '_') 
 		if len(set(data.columns)) != len(data.columns): 
 			return_string += "\nTwo column names in dataset collide when spaces are removed. Please correct."
@@ -40,6 +43,7 @@ def evaluate_model(data_file, model, panel_column, time_column):
 			regression_result = model.regression_result
 	except BaseException as e:
 		return_string += "\nERROR: " + str(e)
+	print(regression_result.summary2().tables[1])
 	return model_id, regression_result, return_string
 
 
@@ -66,13 +70,18 @@ def clear_model_cache(dataset):
 			shutil.rmtree(f"model_cache/{dataset}")
 
 
-def run_bayesian_regression(data_file, model, panel_column, time_column, model_id):
+def run_bayesian_regression(data_file, model_id, use_threading=False):
+	data_file_short = data_file.split("/")[-1]
+	model, panel_column, time_column = utils.construct_model_input_from_cache(data_file_short, model_id)
 	model, _ = mb.parse_model_input(model, data_file, panel_column, time_column)
-	data = pd.read_csv(data_file)#.sort_values([model.time_column, model.panel_column])
+	data = pd.read_csv(data_file).sort_values([model.time_column, model.panel_column]).reset_index(drop=True)
 	transformed_data = utils.transform_data(data, model).dropna().reset_index(drop=True)
-	thread = threading.Thread(target=regression.run_bayesian_regression,name="bayes_sampling_thread",args=(transformed_data,model,model_id))
-	thread.daemon = True
-	thread.start()
+	if use_threading:
+		thread = threading.Thread(target=regression.run_bayesian_regression,name="bayes_sampling_thread",args=(transformed_data,model,model_id))
+		thread.daemon = True
+		thread.start()
+	else:
+		regression.run_bayesian_regression(transformed_data,model,model_id)
 
 
 def start_interface():

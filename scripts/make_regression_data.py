@@ -18,20 +18,21 @@ def write_regression_data_to_file(file, data):
 					new_row.append(data[column])
 				writer.writerow(new_row)
 
-climate_data = pd.read_csv("../data/monthly_climate_data_by_geo_region.csv")
-ag_data = pd.read_csv("../data/hvstat_africa_data_v1.0.csv")
+climate_data = pd.read_csv("data/monthly_climate_data_by_geo_region.csv")
+ag_data = pd.read_csv("data/hvstat_africa_data_v1.0.csv")
 regression_dataset = {}
 
 for row in ag_data.iterrows():
 	row = row[1]
-	if row.country not in regression_dataset:
-		regression_dataset[row.country] = {}
-	if row.admin_1 not in regression_dataset[row.country]:
-		regression_dataset[row.country][row.admin_1] = {}
-	if row.harvest_year not in regression_dataset[row.country][row.admin_1]:
-		regression_dataset[row.country][row.admin_1][row.harvest_year] = {}
-	regression_dataset[row.country][row.admin_1][row.harvest_year]["crop_production"] = row.production
-	regression_dataset[row.country][row.admin_1][row.harvest_year]["crop_yield"] = row["yield"]
+	if row["product"] == "Maize":
+		if row.country not in regression_dataset:
+			regression_dataset[row.country] = {}
+		if row.admin_1 not in regression_dataset[row.country]:
+			regression_dataset[row.country][row.admin_1] = {}
+		if row.harvest_year not in regression_dataset[row.country][row.admin_1]:
+			regression_dataset[row.country][row.admin_1][row.harvest_year] = {}
+		regression_dataset[row.country][row.admin_1][row.harvest_year]["crop_production"] = row.production
+		regression_dataset[row.country][row.admin_1][row.harvest_year]["crop_yield"] = row["yield"]
 
 climate_labels = {"temp":"air_temp","precip":"precip","humidity":"humidity"}
 omitted_countries = set()
@@ -61,7 +62,18 @@ for climate_var in ["temp","precip","humidity"]:
 						annual_climate_mean = annual_climate_mean * 2.628e+6
 					regression_dataset[country][row.admin1][year][f"{climate_var}"] = annual_climate_mean
 
-with open("../data/regression_dataset.csv", "w") as regression:
+filename = "data/harveststat_maize_regression_data.csv"
+
+with open(filename, "w") as regression:
 	write_regression_data_to_file(regression, regression_dataset)
+
+# handle duplicate admin1 names
+regression_dataset = pd.read_csv(filename)
+for admin1 in set(regression_dataset["admin1"]):
+	countries = set(regression_dataset.loc[regression_dataset["admin1"] == admin1]["country"])
+	if len(countries) > 1:
+		for country in countries:
+			regression_dataset["admin1"] = np.where((regression_dataset["country"]==country) & (regression_dataset["admin1"] == admin1), admin1+"_"+country, regression_dataset["admin1"])
+regression_dataset.to_csv(filename)
 
 print("Omitted countries:", list(omitted_countries))

@@ -30,12 +30,7 @@ def split_data_randomly(data, model, splits=10):
 def generate_withheld_data(data, model):
 	# TOOD: hardcode year col for now - bad
 	# TODO: does this introduce problems for comparing fe/non-fe models?
-	# split_column = "year"
-	# 	if "year" not in data:
-	# 		split_column = model.fixed_effects[0]
-	# if split_column in data:
-	# 	return split_data_by_column(data, split_column)
-	# else:
+	# return split_data_by_column(data, model.time_column)
 	return split_data_randomly(data, model)
 
 
@@ -56,6 +51,7 @@ def evaluate_model(data, model):
 
 	demean_data = False
 	transformed_data = utils.transform_data(data, model, demean=demean_data)
+
 	for train_indices, test_indices in generate_withheld_data(transformed_data, model):
 		train_data_transformed = transformed_data.iloc[train_indices]
 		test_data_transformed = transformed_data.iloc[test_indices] 
@@ -85,5 +81,7 @@ def evaluate_model(data, model):
 	model.out_sample_pred_int_cov = np.mean(out_sample_pred_int_cov_list)
 	model.in_sample_mse = np.mean(in_sample_mse_list)
 	model.regression_result = regression.run_standard_regression(transformed_data, model, demeaned=demean_data)
+
+	# transformed_data.to_csv("test_regression_data_2.csv")
 
 	return model

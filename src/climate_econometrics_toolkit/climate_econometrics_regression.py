@@ -6,7 +6,6 @@ import numpy as np
 
 import climate_econometrics_toolkit.climate_econometrics_utils as utils
 
-
 def run_standard_regression(transformed_data, model, demeaned=False):
 	model_vars = utils.get_model_vars(transformed_data, model, demeaned)
 	regression_data = transformed_data[model_vars]
@@ -24,6 +23,8 @@ def run_intercept_only_regression(transformed_data, model):
 	
 
 def run_bayesian_regression(transformed_data, model, model_id):
+
+	# TODO: add scaling/unscaling/save to CSV
 
 	model_vars = utils.get_model_vars(transformed_data, model)
 	print("Fitting Bayesian model containing variables: ", model_vars)
