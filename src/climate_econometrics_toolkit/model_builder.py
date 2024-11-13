@@ -9,7 +9,7 @@ import warnings
 warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 
 
-def build_model_from_graph(graph, dataset, panel_column, time_column):
+def build_model_from_graph(graph, data_file, panel_column, time_column):
 	model = cem.ClimateEconometricsModel()
 	target_var = [node for node in graph.nodes() if len(list(graph.successors(node))) == 0][0]
 	input_nodes = list(graph.predecessors(target_var))
@@ -23,7 +23,7 @@ def build_model_from_graph(graph, dataset, panel_column, time_column):
 	model.model_vars = covars + [target_var]
 	model.fixed_effects = fixed_effects
 	model.time_trends = time_trends
-	model.dataset = dataset.split("/")[-1]
+	model.data_file = data_file.split("/")[-1]
 	model.time_column = time_column
 	model.panel_column = panel_column
 
@@ -31,7 +31,7 @@ def build_model_from_graph(graph, dataset, panel_column, time_column):
 	return model, unused_nodes
 
 
-def parse_model_input(model, dataset, panel_column, time_column):
+def parse_model_input(model, data_file, panel_column, time_column):
 	from_indices,to_indices = model[0],model[1]
 	graph = nx.DiGraph()
 	for index in range(len(from_indices)):
@@ -41,7 +41,7 @@ def parse_model_input(model, dataset, panel_column, time_column):
 	len_target_vars = len([node for node in graph.nodes() if len(list(graph.successors(node))) == 0])
 	assert len_target_vars == 1, f"There must be exactly one target variable: found {len_target_vars}"
 
-	return build_model_from_graph(graph, dataset, panel_column, time_column)
+	return build_model_from_graph(graph, data_file, panel_column, time_column)
 
 
 def parse_cxl(filepath):

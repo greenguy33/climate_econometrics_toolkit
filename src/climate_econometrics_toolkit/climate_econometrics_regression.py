@@ -5,6 +5,7 @@ import pickle as pkl
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
+import threading
 
 import climate_econometrics_toolkit.climate_econometrics_utils as utils
 
@@ -25,8 +26,19 @@ def run_intercept_only_regression(transformed_data, model):
 	return regression_result
 	
 
-def run_bayesian_regression(transformed_data, model, model_id):
+def run_bayesian_regression(model, use_threading=False):
 
+	data = model.dataset
+	transformed_data = utils.transform_data(data, model).dropna().reset_index(drop=True)
+	if use_threading:
+		thread = threading.Thread(target=run_bayesian_inference,name="bayes_sampling_thread",args=(transformed_data,model,model_id))
+		thread.daemon = True
+		thread.start()
+	else:
+		run_bayesian_inference(transformed_data,model,model.model_id)
+
+
+def run_bayesian_inference(transformed_data, model, model_id):
 	model_vars = utils.get_model_vars(transformed_data, model)
 
 	scalers, scaled_data = {}, {}

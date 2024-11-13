@@ -49,7 +49,7 @@ def evaluate_model(data, model):
 
 	in_sample_mse_list, out_sample_mse_list, out_sample_mse_reduction_list, out_sample_pred_int_cov_list = [], [], [], []
 
-	demean_data = False
+	demean_data = True
 	transformed_data = utils.transform_data(data, model, demean=demean_data)
 
 	for train_indices, test_indices in generate_withheld_data(transformed_data, model):
@@ -82,6 +82,6 @@ def evaluate_model(data, model):
 	model.in_sample_mse = np.mean(in_sample_mse_list)
 	model.regression_result = regression.run_standard_regression(transformed_data, model, demeaned=demean_data)
 
-	# transformed_data.to_csv("test_regression_data_2.csv")
+	# train_regression_data.to_csv("test_regression_data.csv")
 
 	return model

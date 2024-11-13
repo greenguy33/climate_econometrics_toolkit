@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.transforms as transform
 
-import climate_econometrics_toolkit.climate_econometrics_api as api
+import climate_econometrics_toolkit.climate_econometrics_interface_api as api
 import climate_econometrics_toolkit.climate_econometrics_utils as utils
 
 import warnings
@@ -32,15 +32,15 @@ class TkInterfaceUtils():
         if self.dnd.variables_displayed:
             self.dnd.canvas_print_out.insert(tk.END, "\nPlease clear the canvas before loading another dataset.")
         else:
-            filename = filedialog.askopenfilename(
-                initialdir = "/",
-                title = "Select a File",
-                filetypes = (("CSV files",
-                            "*.csv*"),
-                            ("all files",
-                            "*.*"))
-               )
-            # filename = "/home/hayden-freedman/climate_econometrics_toolkit/data/GDP_climate_test_data.csv"
+            # filename = filedialog.askopenfilename(
+            #     initialdir = "/",
+            #     title = "Select a File",
+            #     filetypes = (("CSV files",
+            #                 "*.csv*"),
+            #                 ("all files",
+            #                 "*.*"))
+            #   )
+            filename = "/home/hayden-freedman/nature_paper_uncertainty_comparison/data/ortiz-bobea/data2/regdata_preferred_case.csv"
 
             self.dnd.data_source = filename.split("/")[-1]
             self.dnd.filename = filename

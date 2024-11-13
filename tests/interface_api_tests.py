@@ -379,15 +379,35 @@ def test_burke_model():
 	# assert .1 < model.out_sample_mse_reduction < .15
 	# assert .949 < model.out_sample_pred_int_cov < .951
 
-	# test from dataset with dependent variable created through transformations
-	
-	utils.random_state = 123
-	model = cee.evaluate_model(test_data, model_input)
-	assert .1 < model.out_sample_mse_reduction < .15
-	assert .949 < model.out_sample_pred_int_cov < .951
+	utils.random_state = 99
+	model = cee.evaluate_model(data, model_input)
+	assert .9 < model.out_sample_mse_reduction < .94
+	assert .947 < model.out_sample_pred_int_cov < .950
 
-	# TODO: check random state 1
-	# utils.random_state = 1
-	# model = cee.evaluate_model(test_data, model_input)
-	# assert .1 < model.out_sample_mse_reduction < .15
-	# assert .949 < model.out_sample_pred_int_cov < .951
+
+def test_ortiz_bobea_model():
+
+	# test from original ortiz-bobea dataset
+
+	data = pd.read_csv("data/ortiz_bobea_test_data.csv")
+
+	from_indices = ['fd_tmean', 'fd_prcp', 'fd_tmean_sq', 'fd_prcp_sq','fe(year)', 'fe(ISO3)']
+	to_indices = ['fd_log_tfp', 'fd_log_tfp', 'fd_log_tfp', 'fd_log_tfp', 'fd_log_tfp', 'fd_log_tfp']
+	model_input = cet.parse_model_input([from_indices, to_indices], "file5.csv", "ISO3", "year")[0]
+
+	# TODO: test transformations lead to same result
+
+	utils.random_state = 123
+	model = cee.evaluate_model(data, model_input)
+	assert .0083 < model.out_sample_mse_reduction < .0097
+	assert .947 < model.out_sample_pred_int_cov < .950
+	
+	utils.random_state = 1
+	model = cee.evaluate_model(data, model_input)
+	assert .0083 < model.out_sample_mse_reduction < .0097
+	assert .947 < model.out_sample_pred_int_cov < .950
+
+	utils.random_state = 99
+	model = cee.evaluate_model(data, model_input)
+	assert .0083 < model.out_sample_mse_reduction < .0097
+	assert .947 < model.out_sample_pred_int_cov < .950

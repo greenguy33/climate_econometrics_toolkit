@@ -10,15 +10,12 @@ class ClimateEconometricsModel:
 		"covariates",
 		"fixed_effects",
 		"time_trends",
-		"out_sample_mse",
-		"in_sample_mse",
-		"out_sample_mse_reduction",
-		"in_sample_mse_reduction",
-		"out_sample_pred_int_cov",
-		"in_sample_pred_int_cov",
-		"dataset",
 		"time_column",
-		"panel_column"
+		"panel_column",
+		"out_sample_mse",
+		"out_sample_mse_reduction",
+		"out_sample_pred_int_cov",
+		"model_id"
 	]
 
 	def __init__(self):
@@ -31,12 +28,14 @@ class ClimateEconometricsModel:
 		self.in_sample_mse_reduction = np.NaN
 		self.out_sample_pred_int_cov = np.NaN
 		self.in_sample_pred_int_cov = np.NaN
-		self.fixed_effects = np.NaN
-		self.time_trends = np.NaN
-		self.dataset = None
+		self.fixed_effects = []
+		self.time_trends = []
+		self.data_file = None
 		self.regression_result = None
 		self.time_column = None
 		self.panel_column = None
+		self.dataset = None
+		self.model_id = None
 
 	def print(self):
 		for val in self.attrib_list:
@@ -51,7 +50,8 @@ class ClimateEconometricsModel:
 	def save_model_to_cache(self):
 		# TODO: make this file path more flexible
 		time_based_id = time.time()
-		dir_name = f"model_cache/{self.dataset}/{time_based_id}"
+		dir_name = f"model_cache/{self.data_file}/{time_based_id}"
+		self.model_id = time_based_id
 		os.makedirs(dir_name)
 		with open(f"{dir_name}/model.csv", "w") as write_file:
 			writer = csv.writer(write_file)

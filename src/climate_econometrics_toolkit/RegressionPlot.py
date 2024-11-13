@@ -21,11 +21,20 @@ class RegressionPlot():
         x = np.linspace(mean - 3*sd, mean + 3*sd, 100)
         axis.plot(x, stats.norm.pdf(x, mean, sd))
         axis.set_title(coef_name)
+        axis.title.set_size(8)
+        axis.get_yaxis().set_visible(False)
+        axis.xaxis.set_tick_params(labelsize=8)
         return axis       
 
     def build_axes(self, reg_result):
         num_plots = len([val for val in reg_result.index if val != "const" and not val.startswith("fe_") and not (val.startswith("tt") and val[3] == "_")])
-        fig, axes = plt.subplots(1,num_plots,figsize=(5,5))
+        if num_plots <= 4:
+            fig, axes = plt.subplots(1,num_plots,figsize=(6,2))
+        else:
+            num_rows = int(num_plots/4)
+            if num_plots % 4 != 0:
+                num_rows += 1
+            fig, axes = plt.subplots(num_rows,4,figsize=(6,5))
         axis_count = 0
         for index in range(len(reg_result.index)):
             coef_name = reg_result.index[index]
@@ -33,7 +42,11 @@ class RegressionPlot():
                 if num_plots == 1:
                     axis = self.add_normal_distribution_to_axis(coef_name, reg_result, index, axes)
                 else:
-                    axis = self.add_normal_distribution_to_axis(coef_name, reg_result, index, axes[axis_count])
+                    if num_plots <= 4:
+                        axis = self.add_normal_distribution_to_axis(coef_name, reg_result, index, axes[axis_count])
+                    else:
+                        col_num = int(axis_count/4)
+                        axis = self.add_normal_distribution_to_axis(coef_name, reg_result, index, axes[col_num][axis_count-(4*col_num)])
                     axis_count += 1 
         return fig, axes
 
@@ -43,6 +56,8 @@ class RegressionPlot():
             self.plot_canvas.get_tk_widget().destroy()
 
         fig, axes = self.build_axes(reg_result)
+
+        plt.tight_layout(h_pad = -.3)
 
         self.plot_canvas = FigureCanvasTkAgg(fig, master=self.plot_frame)
         self.plot_canvas.draw()
