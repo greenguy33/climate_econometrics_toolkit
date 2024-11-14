@@ -466,5 +466,5 @@ def test_ortiz_bobea_model():
 
 	both_fe_red = model.out_sample_mse_reduction
 
-	assert country_fe_red < year_fe_red 
 	assert year_fe_red < both_fe_red
+	assert both_fe_red < country_fe_red

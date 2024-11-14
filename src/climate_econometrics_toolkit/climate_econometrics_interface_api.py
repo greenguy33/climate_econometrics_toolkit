@@ -68,7 +68,8 @@ def run_bayesian_regression(data_file, model_id, use_threading=False):
 	data_file_short = data_file.split("/")[-1]
 	model, panel_column, time_column = utils.construct_model_input_from_cache(data_file_short, model_id)
 	model, _ = mb.parse_model_input(model, data_file, panel_column, time_column)
-	data = pd.read_csv(data_file).sort_values([model.time_column, model.panel_column]).reset_index(drop=True)
+	model.dataset = pd.read_csv(data_file).sort_values([model.time_column, model.panel_column]).reset_index(drop=True)
+	model.model_id = model_id
 	regression.run_bayesian_regression(model, use_threading)
 
 

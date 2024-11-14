@@ -29,16 +29,18 @@ def run_intercept_only_regression(transformed_data, model):
 def run_bayesian_regression(model, use_threading=False):
 
 	data = model.dataset
-	transformed_data = utils.transform_data(data, model).dropna().reset_index(drop=True)
+	transformed_data = utils.transform_data(data, model)
 	if use_threading:
-		thread = threading.Thread(target=run_bayesian_inference,name="bayes_sampling_thread",args=(transformed_data,model,model_id))
+		thread = threading.Thread(target=run_bayesian_inference,name="bayes_sampling_thread",args=(transformed_data,model))
 		thread.daemon = True
 		thread.start()
 	else:
-		run_bayesian_inference(transformed_data,model,model.model_id)
+		run_bayesian_inference(transformed_data,model)
 
 
-def run_bayesian_inference(transformed_data, model, model_id):
+def run_bayesian_inference(transformed_data, model):
+
+	assert model.model_id is not None
 	model_vars = utils.get_model_vars(transformed_data, model)
 
 	scalers, scaled_data = {}, {}
@@ -72,7 +74,7 @@ def run_bayesian_inference(transformed_data, model, model_id):
 		trace = pm.sample(target_accept=.99, cores=4, tune=1000, draws=1000)
 		posterior = pm.sample_posterior_predictive(trace, extend_inferencedata=True)
 
-	with open (f'bayes_samples/bayes_model_{str(model_id)}.pkl', 'wb') as buff:
+	with open (f'bayes_samples/bayes_model_{str(model.model_id)}.pkl', 'wb') as buff:
 		pkl.dump({
 			"prior":prior,
 			"trace":trace,
@@ -84,4 +86,4 @@ def run_bayesian_inference(transformed_data, model, model_id):
 	unscaled_samples = pd.DataFrame()
 	for index, var in enumerate(model.covariates):
 		unscaled_samples[var] = trace.posterior.covar_coefs[:,:,index].data.flatten() * np.std(transformed_data[model.target_var]) / np.std(transformed_data[var])
-	unscaled_samples.to_csv(f'bayes_samples/coefficient_samples_{str(model_id)}.csv')
+	unscaled_samples.to_csv(f'bayes_samples/coefficient_samples_{str(model.model_id)}.csv')
