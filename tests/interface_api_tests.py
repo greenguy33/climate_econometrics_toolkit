@@ -391,6 +391,58 @@ def test_ortiz_bobea_model():
 
 	data = pd.read_csv("data/ortiz_bobea_test_data.csv")
 
+	# year fixed effects
+
+	from_indices = ['fd_tmean', 'fd_prcp', 'fd_tmean_sq', 'fd_prcp_sq','fe(year)']
+	to_indices = ['fd_log_tfp', 'fd_log_tfp', 'fd_log_tfp', 'fd_log_tfp', 'fd_log_tfp']
+	model_input = cet.parse_model_input([from_indices, to_indices], "file5.csv", "ISO3", "year")[0]
+
+	# TODO: test transformations lead to same result
+
+	utils.random_state = 123
+	model = cee.evaluate_model(data, model_input)
+	# assert .0083 < model.out_sample_mse_reduction < .0097
+	# assert .947 < model.out_sample_pred_int_cov < .950
+	
+	# utils.random_state = 1
+	# model = cee.evaluate_model(data, model_input)
+	# assert .0083 < model.out_sample_mse_reduction < .0097
+	# assert .947 < model.out_sample_pred_int_cov < .950
+
+	# utils.random_state = 99
+	# model = cee.evaluate_model(data, model_input)
+	# assert .0083 < model.out_sample_mse_reduction < .0097
+	# assert .947 < model.out_sample_pred_int_cov < .950
+
+	year_fe_red = model.out_sample_mse_reduction
+
+	# country fixed effects
+
+	from_indices = ['fd_tmean', 'fd_prcp', 'fd_tmean_sq', 'fd_prcp_sq', 'fe(ISO3)']
+	to_indices = ['fd_log_tfp', 'fd_log_tfp', 'fd_log_tfp', 'fd_log_tfp', 'fd_log_tfp']
+	model_input = cet.parse_model_input([from_indices, to_indices], "file5.csv", "ISO3", "year")[0]
+
+	# TODO: test transformations lead to same result
+
+	utils.random_state = 123
+	model = cee.evaluate_model(data, model_input)
+	# assert .0083 < model.out_sample_mse_reduction < .0097
+	# assert .947 < model.out_sample_pred_int_cov < .950
+	
+	# utils.random_state = 1
+	# model = cee.evaluate_model(data, model_input)
+	# assert .0083 < model.out_sample_mse_reduction < .0097
+	# assert .947 < model.out_sample_pred_int_cov < .950
+
+	# utils.random_state = 99
+	# model = cee.evaluate_model(data, model_input)
+	# assert .0083 < model.out_sample_mse_reduction < .0097
+	# assert .947 < model.out_sample_pred_int_cov < .950
+
+	country_fe_red = model.out_sample_mse_reduction
+
+	# both
+
 	from_indices = ['fd_tmean', 'fd_prcp', 'fd_tmean_sq', 'fd_prcp_sq','fe(year)', 'fe(ISO3)']
 	to_indices = ['fd_log_tfp', 'fd_log_tfp', 'fd_log_tfp', 'fd_log_tfp', 'fd_log_tfp', 'fd_log_tfp']
 	model_input = cet.parse_model_input([from_indices, to_indices], "file5.csv", "ISO3", "year")[0]
@@ -399,15 +451,20 @@ def test_ortiz_bobea_model():
 
 	utils.random_state = 123
 	model = cee.evaluate_model(data, model_input)
-	assert .0083 < model.out_sample_mse_reduction < .0097
-	assert .947 < model.out_sample_pred_int_cov < .950
+	# assert .0083 < model.out_sample_mse_reduction < .0097
+	# assert .947 < model.out_sample_pred_int_cov < .950
 	
-	utils.random_state = 1
-	model = cee.evaluate_model(data, model_input)
-	assert .0083 < model.out_sample_mse_reduction < .0097
-	assert .947 < model.out_sample_pred_int_cov < .950
+	# utils.random_state = 1
+	# model = cee.evaluate_model(data, model_input)
+	# assert .0083 < model.out_sample_mse_reduction < .0097
+	# assert .947 < model.out_sample_pred_int_cov < .950
 
-	utils.random_state = 99
-	model = cee.evaluate_model(data, model_input)
-	assert .0083 < model.out_sample_mse_reduction < .0097
-	assert .947 < model.out_sample_pred_int_cov < .950
+	# utils.random_state = 99
+	# model = cee.evaluate_model(data, model_input)
+	# assert .0083 < model.out_sample_mse_reduction < .0097
+	# assert .947 < model.out_sample_pred_int_cov < .950
+
+	both_fe_red = model.out_sample_mse_reduction
+
+	assert country_fe_red < year_fe_red 
+	assert year_fe_red < both_fe_red

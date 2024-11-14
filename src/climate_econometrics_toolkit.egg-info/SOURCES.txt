@@ -1,5 +1,6 @@
 README.md
 pyproject.toml
+src/climate_econometrics_user_api.py
 src/climate_econometrics_toolkit/ClimateEconometricsModel.py
 src/climate_econometrics_toolkit/DragAndDropInterface.py
 src/climate_econometrics_toolkit/RegressionPlot.py

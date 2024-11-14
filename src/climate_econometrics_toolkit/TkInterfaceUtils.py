@@ -40,7 +40,8 @@ class TkInterfaceUtils():
             #                 ("all files",
             #                 "*.*"))
             #   )
-            filename = "/home/hayden-freedman/nature_paper_uncertainty_comparison/data/ortiz-bobea/data2/regdata_preferred_case.csv"
+            filename = "data/ortiz-bobea_test_data_2.csv"
+            # filename = "data/ortiz_bobea_test_data.csv"
 
             self.dnd.data_source = filename.split("/")[-1]
             self.dnd.filename = filename

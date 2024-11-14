@@ -7,14 +7,18 @@ import pandas as pd
 import climate_econometrics_toolkit.climate_econometrics_utils as utils
 import climate_econometrics_toolkit.climate_econometrics_regression as regression
 
-
-def split_data_by_column(data, column):
+# TODO: Let the user pick which withholding method they woudl like to use
+def split_data_by_column(data, column, splits=10):
 	random.seed(utils.random_state)
-	unique_vals = len(set(data[column]))
-	withheld_years = random.sample(set(data[column]), int(unique_vals/5))
-	train_data = data.loc[~data[column].isin(withheld_years)]
-	test_data = data.loc[data[column].isin(withheld_years)]
-	return train_data, test_data
+	random_years = random.sample(list(set(data[column])), k=len(set(data[column])))
+	col_splits = np.array_split(random_years, splits)
+	split_list = []
+	for col_split in col_splits:
+		split_data = []
+		split_data.append(list(data.loc[~data[column].isin(col_split)].index))
+		split_data.append(list(data.loc[data[column].isin(col_split)].index))
+		split_list.append(split_data)
+	return split_list
 
 
 def split_data_randomly(data, model, splits=10):
@@ -30,8 +34,8 @@ def split_data_randomly(data, model, splits=10):
 def generate_withheld_data(data, model):
 	# TOOD: hardcode year col for now - bad
 	# TODO: does this introduce problems for comparing fe/non-fe models?
-	# return split_data_by_column(data, model.time_column)
-	return split_data_randomly(data, model)
+	return split_data_by_column(data, model.time_column)
+	# return split_data_randomly(data, model)
 
 
 def calculate_prediction_interval_accuracy(y, predictions, in_sample_mse):
@@ -47,14 +51,16 @@ def calculate_prediction_interval_accuracy(y, predictions, in_sample_mse):
 
 def evaluate_model(data, model):
 
-	in_sample_mse_list, out_sample_mse_list, out_sample_mse_reduction_list, out_sample_pred_int_cov_list = [], [], [], []
+	in_sample_mse_list, out_sample_mse_list, out_sample_pred_int_cov_list, intercept_only_mse_list = [], [], [], []
 
 	demean_data = True
 	transformed_data = utils.transform_data(data, model, demean=demean_data)
 
 	for train_indices, test_indices in generate_withheld_data(transformed_data, model):
+
 		train_data_transformed = transformed_data.iloc[train_indices]
 		test_data_transformed = transformed_data.iloc[test_indices] 
+	
 		reg_result = regression.run_standard_regression(train_data_transformed, model)
 		
 		train_regression_data = train_data_transformed[utils.get_model_vars(test_data_transformed, model, demeaned=demean_data)]
@@ -64,24 +70,25 @@ def evaluate_model(data, model):
 		
 		in_sample_predictions = reg_result.get_prediction(train_regression_data)
 		out_sample_predictions = reg_result.get_prediction(test_regression_data)
+
 		in_sample_mse = np.mean(np.square(in_sample_predictions.predicted_mean-train_data_transformed[model.target_var]))
 		out_sample_mse = np.mean(np.square(out_sample_predictions.predicted_mean-test_data_transformed[model.target_var]))
-
+		
 		intercept_only_model = regression.run_intercept_only_regression(transformed_data, model)
 		intercept_only_predictions = intercept_only_model.predict(np.ones(len(test_data_transformed)))
 		intercept_only_mse = np.mean(np.square(intercept_only_predictions-test_data_transformed[model.target_var]))
 
+		intercept_only_mse_list.append(intercept_only_mse)
 		in_sample_mse_list.append(in_sample_mse)
 		out_sample_mse_list.append(out_sample_mse)
-		out_sample_mse_reduction_list.append((intercept_only_mse - out_sample_mse) / intercept_only_mse)
 		out_sample_pred_int_cov_list.append(calculate_prediction_interval_accuracy(test_data_transformed[model.target_var], out_sample_predictions, in_sample_mse))
 
 	model.out_sample_mse = np.mean(out_sample_mse_list)
-	model.out_sample_mse_reduction = np.mean(out_sample_mse_reduction_list)
+	model.out_sample_mse_reduction = (np.mean(intercept_only_mse_list) - np.mean(out_sample_mse_list)) / np.mean(intercept_only_mse_list)
 	model.out_sample_pred_int_cov = np.mean(out_sample_pred_int_cov_list)
 	model.in_sample_mse = np.mean(in_sample_mse_list)
 	model.regression_result = regression.run_standard_regression(transformed_data, model, demeaned=demean_data)
 
-	# train_regression_data.to_csv("test_regression_data.csv")
+	# transformed_data.to_csv("test_regression_data.csv")
 
 	return model

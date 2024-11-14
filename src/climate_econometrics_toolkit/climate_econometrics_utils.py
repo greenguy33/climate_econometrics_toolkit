@@ -6,6 +6,13 @@ import pyfixest as pf
 import dateutil.parser as parser
 import copy
 import ast
+import tkinter as tk
+
+from climate_econometrics_toolkit.TkInterfaceUtils import TkInterfaceUtils
+from climate_econometrics_toolkit.DragAndDropInterface import DragAndDropInterface
+from climate_econometrics_toolkit.RegressionPlot import RegressionPlot
+from climate_econometrics_toolkit.ResultPlot import ResultPlot
+from climate_econometrics_toolkit.StatPlot import StatPlot
 
 import warnings
 warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning)
@@ -13,7 +20,7 @@ warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning
 supported_functions = ["fd","sq","cu","ln","lag1","lag2","lag3"]
 supported_effects = ["fe", "tt1", "tt2", "tt3"]
 # TODO: understand how changing this can lead to undesirable results (e.g. in the Burke model)
-random_state = 99
+random_state = 123
 
 
 def initial_checks():
@@ -97,6 +104,7 @@ def remove_nan_rows(data, no_nan_cols):
 
 
 def demean_fixed_effects(data, model):
+	data.to_csv("data_to_demean.csv")
 	fixed_effects = []
 	for fe in model.fixed_effects:
 		if not np.issubdtype(data[fe].dtype, np.number):
@@ -108,7 +116,6 @@ def demean_fixed_effects(data, model):
 		else:
 			fixed_effects.append(fe)
 	vars_to_demean = copy.deepcopy(model.model_vars)
-	time_trend_columns = [col for col in data.columns if any(col.startswith(val) for val in ["tt1_","tt2_","tt3_"])]
 	# vars_to_demean.extend(time_trend_columns)
 	centered_data = pf.estimation.demean(
 		np.array(data[vars_to_demean]), 
@@ -138,6 +145,8 @@ def transform_data(data, model, demean=False):
 				data_node = transformations[-1]
 	for ie in model.time_trends:
 		data = add_time_trends_to_data(ie, data, model.time_column)
+	# Note: removing nan's before demeaning fixed effects may slightly impact the results compared to other statistical packages.
+	# This is done because the demeaning package does not handle NaNs.
 	data = remove_nan_rows(data, model.covariates + model.fixed_effects + [model.target_var])
 	if not demean:
 		for fe in model.fixed_effects:
@@ -191,6 +200,65 @@ def construct_model_input_from_cache(data_file, model_id):
 	covariate_list.extend(time_trend_list)
 	target_var_list = [target_var] * len(covariate_list)
 	return [covariate_list, target_var_list], panel_column, time_column
+
+def start_user_interface():
+	initial_checks()
+	window = tk.Tk()
+	window.title("Climate Econometrics Modeling Toolkit")
+
+	window.rowconfigure(0, minsize=100, weight=1)
+	window.rowconfigure(1, minsize=100, weight=1)
+	window.columnconfigure(1, minsize=800, weight=1)
+
+	canvas = tk.Canvas(
+		window, 
+		width=800, 
+		height=800, 
+		highlightthickness=5,
+		highlightbackground="black",
+		highlightcolor="red"
+	)
+
+	lefthand_bar = tk.Frame(window, relief=tk.RAISED, bd=2)
+
+	regression_plot_frame = tk.Frame(lefthand_bar, relief=tk.RAISED, bd=2)
+	result_plot_frame = tk.Frame(window, relief=tk.RAISED, bd=2)
+
+	dnd = DragAndDropInterface(canvas, window)
+	regression_plot = RegressionPlot(regression_plot_frame)
+	result_plot = ResultPlot(result_plot_frame)
+
+	mse_canvas = tk.Canvas(lefthand_bar, width=100, height=75)
+	pred_int_canvas = tk.Canvas(lefthand_bar, width=100, height=75)
+	stat_plot = StatPlot(mse_canvas, pred_int_canvas)
+	tk_utils = TkInterfaceUtils(window, canvas, dnd, regression_plot, result_plot, stat_plot)
+	window.protocol("WM_DELETE_WINDOW", tk_utils.on_close)
+
+	# TODO: add frame for showing/changing the panel and time columns
+	btn_load = tk.Button(lefthand_bar, text="Load Dataset", command=tk_utils.add_data_columns_from_file)
+	btn_clear_canvas = tk.Button(lefthand_bar, text="Clear Canvas", command=tk_utils.clear_canvas)
+	btn_evaluate = tk.Button(lefthand_bar, text="Evaluate Model", command=tk_utils.evaluate_model)
+	btn_best_model = tk.Button(lefthand_bar, text="Restore Best Model", command=tk_utils.restore_best_model)
+	btn_clear_model_cache = tk.Button(lefthand_bar, text="Clear Model Cache", command=tk_utils.clear_model_cache)
+	btn_bayesian_regression = tk.Button(lefthand_bar, text="Run Bayesian Inference", command=tk_utils.run_bayesian_inference)
+	result_text = tk.Text(lefthand_bar, height=2)
+
+	btn_load.grid(row=0, column=0, sticky="nsew", padx=5, pady=5, columnspan=2)
+	btn_clear_canvas.grid(row=1, column=0, sticky="nsew", padx=5, columnspan=2)
+	btn_evaluate.grid(row=2, column=0, sticky="nsew", padx=5, columnspan=2)
+	btn_best_model.grid(row=3, column=0, sticky="nsew", padx=5, columnspan=2)
+	btn_clear_model_cache.grid(row=4, column=0, sticky="nsew", padx=5, columnspan=2)
+	btn_bayesian_regression.grid(row=5, column=0, sticky="nsew", columnspan=2)
+	result_text.grid(row=6, column=0, sticky="nsew", columnspan=2)
+	mse_canvas.grid(row=7, column=0, sticky="nsew")
+	pred_int_canvas.grid(row=7, column=1, sticky="nsew")
+	regression_plot_frame.grid(row=8, column=0, sticky="ns", columnspan=2)
+	lefthand_bar.grid(row=0, column=0, sticky="ns", rowspan=2)
+	canvas.grid(row=0, column=1, sticky="nsew")
+	result_plot_frame.grid(row=1, column=1, sticky="nsew")
+
+	dnd.canvas_print_out = result_text
+	window.mainloop()
 
 
 # def compare_to_last_model(model, data_file):
