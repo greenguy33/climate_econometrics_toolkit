@@ -4,10 +4,11 @@ from pytensor import tensor as pt
 import pickle as pkl
 import numpy as np
 from sklearn.preprocessing import StandardScaler
+from sklearn.utils import resample
 import pandas as pd
 import threading
 
-import climate_econometrics_toolkit.climate_econometrics_utils as utils
+import climate_econometrics_toolkit.utils as utils
 
 
 def run_standard_regression(transformed_data, model, demeaned=False):
@@ -24,10 +25,36 @@ def run_intercept_only_regression(transformed_data, model):
 	reg = sm.OLS(transformed_data[model.target_var],intercept_col,missing="drop")
 	regression_result = reg.fit()
 	return regression_result
-	
+
+
+def run_block_bootstrap(model, use_threading=False):
+	print("Bootstrappin'...")
+	data = model.dataset
+	transformed_data = utils.transform_data(data, model)
+	if use_threading:
+		thread = threading.Thread(target=bootstrap,name="bootstrap_thread",args=(transformed_data,model))
+		thread.daemon = True
+		thread.start()
+	else:
+		bootstrap(transformed_data,model)
+
+
+def bootstrap(transformed_data, model, num_samples=100):
+	# TOOD: this is too slow
+	covar_coefs = {covar:[] for covar in model.covariates}
+	panel_ids = list(set(transformed_data[model.panel_column]))
+	for i in range(num_samples):
+		panel_id_resample = resample(panel_ids)
+		resampled_data = pd.DataFrame()
+		for panel_id in panel_id_resample:
+			resampled_data = pd.concat([resampled_data,transformed_data.loc[transformed_data[model.panel_column] == panel_id]])
+		reg_result = run_standard_regression(resampled_data, model).summary2().tables[1]
+		for covar in covar_coefs:
+			covar_coefs[covar].append(reg_result.loc[reg_result.index == covar]["Coef."].item())
+	pd.DataFrame.from_dict(covar_coefs).to_csv(f"bootstrap_samples/coefficient_samples_{str(model.model_id)}.csv")
+
 
 def run_bayesian_regression(model, use_threading=False):
-
 	data = model.dataset
 	transformed_data = utils.transform_data(data, model)
 	if use_threading:

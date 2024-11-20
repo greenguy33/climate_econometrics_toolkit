@@ -9,8 +9,9 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.transforms as transform
 
-import climate_econometrics_toolkit.climate_econometrics_interface_api as api
-import climate_econometrics_toolkit.climate_econometrics_utils as utils
+import climate_econometrics_toolkit.interface_api as api
+import climate_econometrics_toolkit.utils as utils
+from climate_econometrics_toolkit.GcmSelectionPopup import GcmSelectionPopup
 
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -32,16 +33,15 @@ class TkInterfaceUtils():
         if self.dnd.variables_displayed:
             self.dnd.canvas_print_out.insert(tk.END, "\nPlease clear the canvas before loading another dataset.")
         else:
-            # filename = filedialog.askopenfilename(
-            #     initialdir = "/",
-            #     title = "Select a File",
-            #     filetypes = (("CSV files",
-            #                 "*.csv*"),
-            #                 ("all files",
-            #                 "*.*"))
-            #   )
-            filename = "data/ortiz-bobea_test_data_2.csv"
-            # filename = "data/ortiz_bobea_test_data.csv"
+            filename = filedialog.askopenfilename(
+                initialdir = "/",
+                title = "Select a File",
+                filetypes = (("CSV files",
+                            "*.csv*"),
+                            ("all files",
+                            "*.*"))
+              )
+            # filename = "data/GDP_climate_test_data.csv"
 
             self.dnd.data_source = filename.split("/")[-1]
             self.dnd.filename = filename
@@ -51,7 +51,7 @@ class TkInterfaceUtils():
                 self.dnd.canvas_print_out.insert(tk.END, f"\nERROR: This dataset exceeds the maximum number of columns(100)")
             else:
                 self.dnd.add_model_variables(columns)
-                user_identified_columns = self.update_result_plot(self.dnd.data_source)
+                user_identified_columns = self.update_result_plot(self.dnd.data_source, "r2")
                 if user_identified_columns == None:
                     while self.time_column not in data:
                         self.time_column = simpledialog.askstring(title="get_time_col", prompt="Provide the name of the time-based column:")
@@ -76,10 +76,10 @@ class TkInterfaceUtils():
                 self.restore_model(self.result_plot.models[index])
                 break
         
-    def create_result_plot(self):
+    def create_result_plot(self, metric):
         fig, axis = plt.subplots(1)
-        axis.set_title("Out-of-sample MSE Reduction from Intercept-Only Model")
-        axis.set_ylabel("% Reduced")
+        axis.set_title(metric)
+        axis.set_ylabel(metric + " value")
         axis.plot(self.result_plot.plot_data, marker='o', color='r', zorder=1)
         for index, point in enumerate(self.result_plot.plot_data):
             circle = plt.Circle((0,0), 0.05, color='b', transform=(fig.dpi_scale_trans + transform.ScaledTranslation(index, point, axis.transData)), zorder=2)
@@ -90,17 +90,30 @@ class TkInterfaceUtils():
         self.result_plot.plot_canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
         self.result_plot.plot_canvas.mpl_connect('button_press_event', self.handle_click_on_result_plot)
 
-    def update_result_plot(self, dataset):
+    def update_result_plot(self, dataset, metric):
         if os.path.isdir(f"model_cache/{dataset}"):
             self.result_plot.clear_figure()
             sorted_cache_files = sorted({val:float(val) for val in os.listdir(f"model_cache/{dataset}")}.items(), key=lambda item: item[1])
             for cache_file in sorted_cache_files:
-                out_sample_mse = float(utils.get_attribute_from_model_file(dataset, "out_sample_mse_reduction", str(cache_file[0])))
-                self.result_plot.plot_data.append(out_sample_mse)
+                values = float(utils.get_attribute_from_model_file(dataset, metric, str(cache_file[0])))
+                self.result_plot.plot_data.append(values)
                 self.result_plot.models.append(cache_file[0])
-            self.create_result_plot()
+            self.create_result_plot(metric)
             cached_canvas = pd.read_pickle(f'model_cache/{dataset}/{cache_file[0]}/tkinter_canvas.pkl')
             return cached_canvas["panel_column"], cached_canvas["time_column"]
+
+    def get_regression_stats_from_model(self ,model_id):
+        out_sample_mse = float(utils.get_attribute_from_model_file(self.dnd.data_source, "out_sample_mse_reduction", str(model_id)))
+        pred_int_cov = float(utils.get_attribute_from_model_file(self.dnd.data_source, "out_sample_pred_int_cov", str(model_id)))
+        r2 = float(utils.get_attribute_from_model_file(self.dnd.data_source, "r2", str(model_id)))
+        rmse = float(utils.get_attribute_from_model_file(self.dnd.data_source, "rmse", str(model_id)))
+        return out_sample_mse, pred_int_cov, r2, rmse
+    
+    def bind_stat_canvases_to_result_plot(self, mse_canvas, pred_int_canvas, r2_canvas, rmse_canvas):
+        mse_canvas.bind("<ButtonPress-1>", lambda x, data=self.dnd.data_source, metric="out_sample_mse_reduction" : self.update_result_plot(data, metric))
+        pred_int_canvas.bind("<ButtonPress-1>", lambda x, data=self.dnd.data_source, metric="out_sample_pred_int_cov" : self.update_result_plot(data, metric))
+        r2_canvas.bind("<ButtonPress-1>", lambda x, data=self.dnd.data_source, metric="r2" : self.update_result_plot(data, metric))
+        rmse_canvas.bind("<ButtonPress-1>", lambda x, data=self.dnd.data_source, metric="rmse": self.update_result_plot(data, metric))
 
     def evaluate_model(self):
         if self.dnd.variables_displayed:
@@ -112,10 +125,9 @@ class TkInterfaceUtils():
                 # self.dnd.canvas_print_out.insert(tk.END, f"\nThe best model in the cache has MSE reduction of {str(best_model_mse*100)[:5]}%")
                 self.dnd.save_canvas_to_cache(str(model_id), self.panel_column, self.time_column)
                 self.regression_plot.plot_new_regression_result(regression_result.summary2().tables[1], self.dnd.data_source, model_id)
-                self.update_result_plot(self.dnd.data_source)
-                out_sample_mse = float(utils.get_attribute_from_model_file(self.dnd.data_source, "out_sample_mse_reduction", str(model_id)))
-                pred_int_cov = float(utils.get_attribute_from_model_file(self.dnd.data_source, "out_sample_pred_int_cov", str(model_id)))
-                self.stat_plot.update_stat_plot(out_sample_mse, pred_int_cov)
+                self.update_result_plot(self.dnd.data_source, "r2")
+                canvases = self.stat_plot.update_stat_plot(*self.get_regression_stats_from_model(model_id))
+                self.bind_stat_canvases_to_result_plot(*canvases)
         else:
             self.dnd.canvas_print_out.insert(tk.END, "\nPlease load a dataset and create a model before evaluating model.")
         return model_id
@@ -123,9 +135,8 @@ class TkInterfaceUtils():
     def restore_model(self, model_id):
         self.dnd.restore_canvas_from_cache(str(model_id))
         self.regression_plot.restore_regression_result(self.dnd.data_source, str(model_id))
-        out_sample_mse = float(utils.get_attribute_from_model_file(self.dnd.data_source, "out_sample_mse_reduction", str(model_id)))
-        pred_int_cov = float(utils.get_attribute_from_model_file(self.dnd.data_source, "out_sample_pred_int_cov", str(model_id)))
-        self.stat_plot.update_stat_plot(out_sample_mse, pred_int_cov)
+        canvases = self.stat_plot.update_stat_plot(*self.get_regression_stats_from_model(model_id))
+        self.bind_stat_canvases_to_result_plot(*canvases)
 
     def restore_best_model(self):
         if self.dnd.data_source == None:
@@ -138,8 +149,20 @@ class TkInterfaceUtils():
                 self.restore_model(model_id)
 
     def run_bayesian_inference(self):
+        # TODO: I don't like how we need to evaluate the model to get the model id
         model_id = self.evaluate_model()
         api.run_bayesian_regression(self.dnd.filename, model_id, use_threading=True)
+
+    def run_block_bootstrap(self):
+        model_id = self.evaluate_model()
+        # TODO: I don't like how we need to evaluate the model to get the model id
+        api.run_block_bootstrap(self.dnd.filename, model_id, use_threading=True)
+
+    def predict_from_gcms(self, window):
+        gcm_popup = GcmSelectionPopup(window)
+        model_id = self.evaluate_model()
+        # # TODO: I don't like how we need to evaluate the model to get the model id
+        api.predict_from_gcms(self.dnd.filename, model_id, list(gcm_popup.gcms_to_use), use_threading=True)
 
     def clear_canvas(self):
         self.dnd.clear_canvas()

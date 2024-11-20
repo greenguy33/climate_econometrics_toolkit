@@ -5,9 +5,9 @@ import copy
 from statsmodels.tsa.statespace.tools import diff
 import pyfixest as pf
 import climate_econometrics_toolkit.model_builder as cet
-import climate_econometrics_toolkit.climate_econometrics_regression as cer
+import climate_econometrics_toolkit.regression as cer
 import climate_econometrics_toolkit.evaluate_model as cee
-import climate_econometrics_toolkit.climate_econometrics_utils as utils
+import climate_econometrics_toolkit.utils as utils
 
 
 def get_data():

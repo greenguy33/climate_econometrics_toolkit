@@ -4,8 +4,8 @@ import statsmodels.api as sm
 from sklearn.model_selection import KFold
 import pandas as pd
 
-import climate_econometrics_toolkit.climate_econometrics_utils as utils
-import climate_econometrics_toolkit.climate_econometrics_regression as regression
+import climate_econometrics_toolkit.utils as utils
+import climate_econometrics_toolkit.regression as regression
 
 # TODO: Let the user pick which withholding method they woudl like to use
 def split_data_by_column(data, column, splits=10):
@@ -32,10 +32,10 @@ def split_data_randomly(data, model, splits=10):
 
 
 def generate_withheld_data(data, model):
-	# TOOD: hardcode year col for now - bad
 	# TODO: does this introduce problems for comparing fe/non-fe models?
-	return split_data_by_column(data, model.time_column)
-	# return split_data_randomly(data, model)
+	# TODO: changing this mades HUGE difference in result of Burke model
+	# return split_data_by_column(data, model.time_column)
+	return split_data_randomly(data, model)
 
 
 def calculate_prediction_interval_accuracy(y, predictions, in_sample_mse):
@@ -53,7 +53,8 @@ def evaluate_model(data, model):
 
 	in_sample_mse_list, out_sample_mse_list, out_sample_pred_int_cov_list, intercept_only_mse_list = [], [], [], []
 
-	demean_data = True
+	# TODO: changing this mades HUGE difference in result of Burke model
+	demean_data = False
 	transformed_data = utils.transform_data(data, model, demean=demean_data)
 
 	for train_indices, test_indices in generate_withheld_data(transformed_data, model):
@@ -88,7 +89,9 @@ def evaluate_model(data, model):
 	model.out_sample_pred_int_cov = np.mean(out_sample_pred_int_cov_list)
 	model.in_sample_mse = np.mean(in_sample_mse_list)
 	model.regression_result = regression.run_standard_regression(transformed_data, model, demeaned=demean_data)
+	model.r2 = float(model.regression_result.summary2().tables[0].loc[model.regression_result.summary2().tables[0][0]=="R-squared:"][1].item())
+	model.rmse = np.sqrt(model.out_sample_mse)
 
-	# transformed_data.to_csv("test_regression_data.csv")
+	transformed_data.to_csv("test_regression_data.csv")
 
 	return model

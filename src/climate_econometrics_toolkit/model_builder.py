@@ -3,7 +3,7 @@ import networkx as nx
 import pandas as pd
 
 import climate_econometrics_toolkit.ClimateEconometricsModel as cem
-import climate_econometrics_toolkit.climate_econometrics_utils as utils
+import climate_econometrics_toolkit.utils as utils
 
 import warnings
 warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)

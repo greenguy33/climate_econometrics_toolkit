@@ -19,24 +19,29 @@ warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning
 
 supported_functions = ["fd","sq","cu","ln","lag1","lag2","lag3"]
 supported_effects = ["fe", "tt1", "tt2", "tt3"]
+supported_metrics = ["out_sample_mse_reduction","out_sample_mse","out_sample_pred_int_cov","rmse","r2"]
+supported_gcms = ["BCC-CSM2-MR","CanESM5","CNRM-CM6-1","HadGEM3-GC31-LL","IPSL-CM6A-LR","MIROC6","MRI-ESM2-0"]
+
 # TODO: understand how changing this can lead to undesirable results (e.g. in the Burke model)
 random_state = 123
 
 
 def initial_checks():
-	if not os.path.isdir("model_cache"):
-		os.makedirs("model_cache")
-	if not os.path.isdir("bayes_samples"):
-		os.makedirs("bayes_samples")
+	dirs_to_init = ["model_cache","bayes_samples","bootstrap_samples","predictions"]
+	for dir in dirs_to_init:
+		if not os.path.isdir(dir):
+			os.makedirs(dir)
 
 
 def add_transformation_to_data(data, model, function):
+	# TODO: add interaction transformations
 	function_split = function.split("(")
 	data_col = "(".join(function_split[1:])[:-1]
 	if function_split[0] == "sq":
 		data[function] = np.square(data[data_col])
 	elif function_split[0] == "fd":
 		# TODO: this won't work if the data isn't sorted by year or if there are missing year values
+		# TODO: this also breaks if there are multiple panel column/time column observations, like in the harveststat data
 		# add something like this for missing year values:
 		# data["T5_mean_diff"] = data.groupby("ID")["T5_mean"].diff()
 		# t5_mean_diff = []
@@ -59,6 +64,7 @@ def add_transformation_to_data(data, model, function):
 		data[function] = np.log(data[data_col])
 	elif function_split[0].startswith("lag"):
 		# TODO: this won't work if the data isn't sorted by year or if there are missing year values
+		# TODO: this also breaks if there are multiple panel column/time column observations, like in the harveststat data
 		num_lags = int(function_split[0][3])
 		data[function] = data.groupby(model.panel_column)[data_col].shift(num_lags)
 	elif function_split[0] == "cu":
@@ -230,7 +236,9 @@ def start_user_interface():
 
 	mse_canvas = tk.Canvas(lefthand_bar, width=100, height=75)
 	pred_int_canvas = tk.Canvas(lefthand_bar, width=100, height=75)
-	stat_plot = StatPlot(mse_canvas, pred_int_canvas)
+	r2_canvas = tk.Canvas(lefthand_bar, width=100, height=75)
+	rmse_canvas = tk.Canvas(lefthand_bar, width=100, height=75)
+	stat_plot = StatPlot(mse_canvas, pred_int_canvas, r2_canvas, rmse_canvas)
 	tk_utils = TkInterfaceUtils(window, canvas, dnd, regression_plot, result_plot, stat_plot)
 	window.protocol("WM_DELETE_WINDOW", tk_utils.on_close)
 
@@ -240,7 +248,9 @@ def start_user_interface():
 	btn_evaluate = tk.Button(lefthand_bar, text="Evaluate Model", command=tk_utils.evaluate_model)
 	btn_best_model = tk.Button(lefthand_bar, text="Restore Best Model", command=tk_utils.restore_best_model)
 	btn_clear_model_cache = tk.Button(lefthand_bar, text="Clear Model Cache", command=tk_utils.clear_model_cache)
+	btn_bootstrap = tk.Button(lefthand_bar, text="Run Block Bootstrap", command=tk_utils.run_block_bootstrap)
 	btn_bayesian_regression = tk.Button(lefthand_bar, text="Run Bayesian Inference", command=tk_utils.run_bayesian_inference)
+	btn_predict = tk.Button(lefthand_bar, text="Predict from GCMs", command=lambda : tk_utils.predict_from_gcms(window))
 	result_text = tk.Text(lefthand_bar, height=2)
 
 	btn_load.grid(row=0, column=0, sticky="nsew", padx=5, pady=5, columnspan=2)
@@ -248,11 +258,15 @@ def start_user_interface():
 	btn_evaluate.grid(row=2, column=0, sticky="nsew", padx=5, columnspan=2)
 	btn_best_model.grid(row=3, column=0, sticky="nsew", padx=5, columnspan=2)
 	btn_clear_model_cache.grid(row=4, column=0, sticky="nsew", padx=5, columnspan=2)
-	btn_bayesian_regression.grid(row=5, column=0, sticky="nsew", columnspan=2)
-	result_text.grid(row=6, column=0, sticky="nsew", columnspan=2)
-	mse_canvas.grid(row=7, column=0, sticky="nsew")
-	pred_int_canvas.grid(row=7, column=1, sticky="nsew")
-	regression_plot_frame.grid(row=8, column=0, sticky="ns", columnspan=2)
+	btn_bootstrap.grid(row=5, column=0, sticky="nsew")
+	btn_bayesian_regression.grid(row=5, column=1, sticky="nsew")
+	btn_predict.grid(row=6, column=0, stick="nsew", columnspan=2)
+	result_text.grid(row=7, column=0, sticky="nsew", columnspan=2)
+	mse_canvas.grid(row=8, column=0, sticky="nsew")
+	pred_int_canvas.grid(row=8, column=1, sticky="nsew")
+	r2_canvas.grid(row=9, column=0, sticky="nsew")
+	rmse_canvas.grid(row=9, column=1, sticky="nsew")
+	regression_plot_frame.grid(row=10, column=0, sticky="ns", columnspan=2)
 	lefthand_bar.grid(row=0, column=0, sticky="ns", rowspan=2)
 	canvas.grid(row=0, column=1, sticky="nsew")
 	result_plot_frame.grid(row=1, column=1, sticky="nsew")

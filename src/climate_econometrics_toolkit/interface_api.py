@@ -1,11 +1,13 @@
 import pandas as pd
 import shutil
 import os
+import time
 
 import climate_econometrics_toolkit.evaluate_model as ce_eval
 import climate_econometrics_toolkit.model_builder as mb
-import climate_econometrics_toolkit.climate_econometrics_utils as utils
-import climate_econometrics_toolkit.climate_econometrics_regression as regression
+import climate_econometrics_toolkit.utils as utils
+import climate_econometrics_toolkit.regression as regression
+import climate_econometrics_toolkit.prediction as prediction
 
 pd.set_option('display.min_rows', 100)
 pd.set_option('display.max_rows', 100)
@@ -14,7 +16,7 @@ pd.set_option('display.max_rows', 100)
 # To do this you might need to add a "get model id" button in the interface which the user can copy/paste in their code
 # TODO: refactor code into API and interface directories
 
-def run_model_analysis(data, model):
+def run_model_analysis(data, model, save_to_cache=True):
 	model_id = None
 	regression_result = None
 	return_string = ""
@@ -24,7 +26,9 @@ def run_model_analysis(data, model):
 		return_string += "\nTwo column names in dataset collide when spaces are removed. Please correct."
 	else:
 		model = ce_eval.evaluate_model(data, model)
-		model_id = model.save_model_to_cache()
+		model_id = time.time()
+		if save_to_cache:
+			model.save_model_to_cache(model_id)
 		regression_result = model.regression_result
 		print(regression_result.summary2().tables[1])
 	return model_id, regression_result, return_string
@@ -71,6 +75,24 @@ def run_bayesian_regression(data_file, model_id, use_threading=False):
 	model.dataset = pd.read_csv(data_file).sort_values([model.time_column, model.panel_column]).reset_index(drop=True)
 	model.model_id = model_id
 	regression.run_bayesian_regression(model, use_threading)
+
+
+def run_block_bootstrap(data_file, model_id, use_threading=False):
+	data_file_short = data_file.split("/")[-1]
+	model, panel_column, time_column = utils.construct_model_input_from_cache(data_file_short, model_id)
+	model, _ = mb.parse_model_input(model, data_file, panel_column, time_column)
+	model.dataset = pd.read_csv(data_file).sort_values([model.time_column, model.panel_column]).reset_index(drop=True)
+	model.model_id = model_id
+	regression.run_block_bootstrap(model, use_threading)
+
+
+def predict_from_gcms(data_file, model_id, gcms_to_use, use_threading=False):
+	data_file_short = data_file.split("/")[-1]
+	model, panel_column, time_column = utils.construct_model_input_from_cache(data_file_short, model_id)
+	model, _ = mb.parse_model_input(model, data_file, panel_column, time_column)
+	model.dataset = pd.read_csv(data_file).sort_values([model.time_column, model.panel_column]).reset_index(drop=True)
+	model.model_id = model_id
+	prediction.predict_from_gcms(model, gcms_to_use, use_threading)
 
 
 def start_interface():

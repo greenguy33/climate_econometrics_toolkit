@@ -5,7 +5,7 @@ from tkinter import Menu
 import pickle as pkl
 import pandas as pd
 
-import climate_econometrics_toolkit.climate_econometrics_utils as utils
+import climate_econometrics_toolkit.utils as utils
 
 class DragAndDropInterface():
 

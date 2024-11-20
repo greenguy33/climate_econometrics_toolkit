@@ -1,6 +1,5 @@
 import numpy as np
 import os
-import time
 import csv
 
 class ClimateEconometricsModel:
@@ -15,6 +14,8 @@ class ClimateEconometricsModel:
 		"out_sample_mse",
 		"out_sample_mse_reduction",
 		"out_sample_pred_int_cov",
+		"r2",
+		"rmse",
 		"model_id"
 	]
 
@@ -28,6 +29,8 @@ class ClimateEconometricsModel:
 		self.in_sample_mse_reduction = np.NaN
 		self.out_sample_pred_int_cov = np.NaN
 		self.in_sample_pred_int_cov = np.NaN
+		self.r2 = np.NaN
+		self.rmse = np.NaN
 		self.fixed_effects = []
 		self.time_trends = []
 		self.data_file = None
@@ -47,15 +50,12 @@ class ClimateEconometricsModel:
 		else:
 			return False
 
-	def save_model_to_cache(self):
-		# TODO: make this file path more flexible
-		time_based_id = time.time()
-		dir_name = f"model_cache/{self.data_file}/{time_based_id}"
-		self.model_id = time_based_id
+	def save_model_to_cache(self, model_id):
+		dir_name = f"model_cache/{self.data_file}/{model_id}"
+		self.model_id = model_id
 		os.makedirs(dir_name)
 		with open(f"{dir_name}/model.csv", "w") as write_file:
 			writer = csv.writer(write_file)
 			writer.writerow(["model_attribute","attribute_value"])
 			for val in self.attrib_list:
 				writer.writerow([val, getattr(self, val)])
-		return time_based_id
