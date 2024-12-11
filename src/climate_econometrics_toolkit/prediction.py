@@ -3,6 +3,8 @@ import pandas as pd
 import random
 import numpy as np
 import threading
+from exactextract import exact_extract
+import geopandas as gpd
 
 import climate_econometrics_toolkit.utils as utils
 import climate_econometrics_toolkit.regression as regression
@@ -15,6 +17,44 @@ def predict_from_gcms(model, gcms, use_threading=False):
 	else:
 		predict(model, gcms)
 
+
+def aggregate_gcm_data(
+		gcm_file, 
+		shape_file, 
+		gcm_obs_per_year, 
+		first_year_in_data,
+		shape_file_geo_identifier,
+		obs_to_include,
+		aggregation_func,
+		climate_var_name,
+		weights_file=None
+	):
+	# TODO: this is only working for aggregations to the year level now
+	assert aggregation_func == "sum" or aggregation_func == "mean", "Argument aggregation_func must be 'sum' or 'mean'"
+	out = exact_extract(gcm_file, shape_file, ["mean"], weights=weights_file)
+	data = []
+	geo_shapes = gpd.read_file(shape_file)
+	for index, geo in enumerate(geo_shapes[shape_file_geo_identifier]):
+		year = first_year_in_data
+		agg_mean = []
+		period = 0
+		for obs in range(len(out[index]["properties"])):
+			period += 1
+			if obs_to_include is None or (geo in obs_to_include and period in obs_to_include[geo]):
+				agg_mean.append(out[index]["properties"][f"band_{str(obs+1)}_mean"])
+			if period == gcm_obs_per_year:
+				if aggregation_func == "sum":
+					if len(agg_mean) > 0:
+						data.append([geo, year, np.nansum(agg_mean)])
+					else:
+						data.append([geo, year, np.NaN])
+				elif aggregation_func == "mean":
+					data.append([geo, year, np.nanmean(agg_mean)])
+				year += 1
+				agg_mean = []
+				period = 0
+	return pd.DataFrame.from_records(data, columns=[geo,"year",climate_var_name])
+	
 
 def predict(model, gcms):
 

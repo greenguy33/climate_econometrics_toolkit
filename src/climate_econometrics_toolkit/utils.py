@@ -19,6 +19,8 @@ warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning
 
 supported_functions = ["fd","sq","cu","ln","lag1","lag2","lag3"]
 supported_effects = ["fe", "tt1", "tt2", "tt3"]
+# TODO: consider adjusted r2, as this accounts for different numbers of variables?
+# last line of https://www.nature.com/articles/s43016-024-01040-8#Sec8
 supported_metrics = ["out_sample_mse_reduction","out_sample_mse","out_sample_pred_int_cov","rmse","r2"]
 supported_gcms = ["BCC-CSM2-MR","CanESM5","CNRM-CM6-1","HadGEM3-GC31-LL","IPSL-CM6A-LR","MIROC6","MRI-ESM2-0"]
 

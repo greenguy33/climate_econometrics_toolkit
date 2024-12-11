@@ -163,3 +163,22 @@ def remove_fixed_effect(node):
 def remove_time_trend(node, exp):
     time_trend = node + " " + str(exp)
     model.time_trends = [var for var in model.time_trends if var != time_trend]
+
+def aggregate_gcm_data(
+        gcm_file, 
+		shape_file, 
+		gcm_obs_per_year, 
+		first_year_in_data,
+		shape_file_geo_identifier,
+		obs_to_include,
+		aggregation_func,
+		climate_var_name,
+        savedir,
+		weights_file=None):
+    
+    data = predict.aggregate_gcm_data(gcm_file, shape_file, gcm_obs_per_year, first_year_in_data,shape_file_geo_identifier,obs_to_include,aggregation_func,climate_var_name,weights_file)
+    gcm_file_short = gcm_file.split("/")[-1].split(".")[0] + ".csv"
+    if savedir.endswith("/"):
+        data.to_csv(savedir + "aggregated_" + gcm_file_short)
+    else:
+        data.to_csv(savedir + "/aggregated_" + gcm_file_short)
