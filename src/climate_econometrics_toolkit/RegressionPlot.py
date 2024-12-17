@@ -5,8 +5,12 @@ import numpy as np
 import pickle as pkl
 import pandas as pd
 
+import os
+
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
+
+cet_home = os.getenv("CETHOME")
 
 class RegressionPlot():
 
@@ -83,7 +87,7 @@ class RegressionPlot():
         self.plot_canvas.draw()
         self.plot_canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
-        with open (f'model_cache/{dataset}/{cache_dir}/regression_plot.pkl', 'wb') as buff:
+        with open (f'{cet_home}/model_cache/{dataset}/{cache_dir}/regression_plot.pkl', 'wb') as buff:
             pkl.dump({"axes":axes,"fig":fig},buff)
 
     def clear_figure(self):
@@ -95,7 +99,7 @@ class RegressionPlot():
         if self.plot_canvas != None:
             self.clear_figure()
 
-        cached_plot = pd.read_pickle(f'model_cache/{dataset}/{cache_dir}/regression_plot.pkl')
+        cached_plot = pd.read_pickle(f'{cet_home}/model_cache/{dataset}/{cache_dir}/regression_plot.pkl')
         fig = cached_plot["fig"]
 
         self.plot_canvas = FigureCanvasTkAgg(fig, master=self.plot_frame)

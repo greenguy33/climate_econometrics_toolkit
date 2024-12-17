@@ -2,6 +2,8 @@ import numpy as np
 import os
 import csv
 
+cet_home = os.getenv("CETHOME")
+
 class ClimateEconometricsModel:
 
 	attrib_list = [
@@ -51,7 +53,7 @@ class ClimateEconometricsModel:
 			return False
 
 	def save_model_to_cache(self, model_id):
-		dir_name = f"model_cache/{self.data_file}/{model_id}"
+		dir_name = f"{cet_home}/model_cache/{self.data_file}/{model_id}"
 		self.model_id = model_id
 		os.makedirs(dir_name)
 		with open(f"{dir_name}/model.csv", "w") as write_file:

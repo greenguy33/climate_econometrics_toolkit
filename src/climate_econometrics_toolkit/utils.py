@@ -17,6 +17,8 @@ from climate_econometrics_toolkit.StatPlot import StatPlot
 import warnings
 warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning)
 
+cet_home = os.getenv("CETHOME")
+
 supported_functions = ["fd","sq","cu","ln","lag1","lag2","lag3"]
 supported_effects = ["fe", "tt1", "tt2", "tt3"]
 # TODO: consider adjusted r2, as this accounts for different numbers of variables?
@@ -29,7 +31,10 @@ random_state = 123
 
 
 def initial_checks():
-	dirs_to_init = ["model_cache","bayes_samples","bootstrap_samples","predictions"]
+	env_var_name = "CETHOME"
+	if os.getenv(env_var_name) is None:
+		os.environ["CETHOME"] = "."
+	dirs_to_init = ["model_cache","bayes_samples","bootstrap_samples","predictions","processed_gcm_data"]
 	for dir in dirs_to_init:
 		if not os.path.isdir(dir):
 			os.makedirs(dir)
@@ -112,7 +117,6 @@ def remove_nan_rows(data, no_nan_cols):
 
 
 def demean_fixed_effects(data, model):
-	data.to_csv("data_to_demean.csv")
 	fixed_effects = []
 	for fe in model.fixed_effects:
 		if not np.issubdtype(data[fe].dtype, np.number):
@@ -137,9 +141,12 @@ def demean_fixed_effects(data, model):
 	return centered_data
 
 
-def transform_data(data, model, demean=False):
+def transform_data(data, model, include_target_var=True, demean=False):
 	transformations = []
-	for node in model.model_vars:
+	vars_to_transform = model.model_vars
+	if not include_target_var:
+		vars_to_transform = model.covariates
+	for node in vars_to_transform:
 		function_split = node.split("(")
 		if function_split[0] not in supported_functions and function_split[0] not in supported_effects:
 			assert node in data, f"Element {node} not found in data"
@@ -155,7 +162,10 @@ def transform_data(data, model, demean=False):
 		data = add_time_trends_to_data(ie, data, model.time_column)
 	# Note: removing nan's before demeaning fixed effects may slightly impact the results compared to other statistical packages.
 	# This is done because the demeaning package does not handle NaNs.
-	data = remove_nan_rows(data, model.covariates + model.fixed_effects + [model.target_var])
+	vars_to_include = model.covariates + model.fixed_effects
+	if include_target_var:
+		vars_to_include = vars_to_include + [model.target_var]
+	data = remove_nan_rows(data, vars_to_include)
 	if not demean:
 		for fe in model.fixed_effects:
 			data = add_fixed_effect_to_data(fe, data)
@@ -178,14 +188,14 @@ def get_model_vars(data, model, demeaned=False):
 
 
 def get_attribute_from_model_file(dataset, attribute, model_id):
-	model = pd.read_csv(f"model_cache/{dataset}/{model_id}/model.csv")
+	model = pd.read_csv(f"{cet_home}/model_cache/{dataset}/{model_id}/model.csv")
 	return model["attribute_value"][model['model_attribute']==attribute].values[0]
 
 
 def get_last_model_out_sample_mse(data_file):
-	if not os.path.isdir(f"model_cache/{data_file}"):
+	if not os.path.isdir(f"{cet_home}/model_cache/{data_file}"):
 		return None
-	dataset_cache_files = [float(file) for file in os.listdir(f"model_cache/{data_file}")]
+	dataset_cache_files = [float(file) for file in os.listdir(f"{cet_home}/model_cache/{data_file}")]
 	if len(dataset_cache_files) == 0:
 		return None
 	return float(get_attribute_from_model_file(data_file, "out_sample_mse_reduction", max(dataset_cache_files)))

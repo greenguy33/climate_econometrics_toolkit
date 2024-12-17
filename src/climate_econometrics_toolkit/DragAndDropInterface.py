@@ -5,7 +5,11 @@ from tkinter import Menu
 import pickle as pkl
 import pandas as pd
 
+import os
+
 import climate_econometrics_toolkit.utils as utils
+
+cet_home = os.getenv("CETHOME")
 
 class DragAndDropInterface():
 
@@ -90,7 +94,7 @@ class DragAndDropInterface():
             if self.canvas.type(item) == "text":
                 item_info["text"] = self.canvas.itemcget(item, "text")
             canvas_data.append(item_info)
-        with open (f'model_cache/{self.data_source}/{model_id}/tkinter_canvas.pkl', 'wb') as buff:
+        with open (f'{cet_home}/model_cache/{self.data_source}/{model_id}/tkinter_canvas.pkl', 'wb') as buff:
             pkl.dump({
                 "data_source":self.data_source,
                 "canvas_data":canvas_data,
@@ -100,7 +104,7 @@ class DragAndDropInterface():
             },buff)
 
     def restore_canvas_from_cache(self, model_id):
-        cached_canvas = pd.read_pickle(f'model_cache/{self.data_source}/{model_id}/tkinter_canvas.pkl')
+        cached_canvas = pd.read_pickle(f'{cet_home}/model_cache/{self.data_source}/{model_id}/tkinter_canvas.pkl')
         if cached_canvas["data_source"] != self.data_source:
             self.canvas_print_out.insert(tk.END, f"\nCached model is for a different data source. Please clear cache to use new dataset.")  
         else:

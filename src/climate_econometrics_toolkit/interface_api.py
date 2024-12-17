@@ -12,6 +12,8 @@ import climate_econometrics_toolkit.prediction as prediction
 pd.set_option('display.min_rows', 100)
 pd.set_option('display.max_rows', 100)
 
+cet_home = os.getenv("CETHOME")
+
 # TODO: facilitate loading a model directly from the model cache into the API
 # To do this you might need to add a "get model id" button in the interface which the user can copy/paste in their code
 # TODO: refactor code into API and interface directories
@@ -30,6 +32,7 @@ def run_model_analysis(data, model, save_to_cache=True):
 		if save_to_cache:
 			model.save_model_to_cache(model_id)
 		regression_result = model.regression_result
+		# TODO: don't print out fixed effect/time trend coefficients
 		print(regression_result.summary2().tables[1])
 	return model_id, regression_result, return_string
 
@@ -48,10 +51,10 @@ def evaluate_model(data_file, model, panel_column, time_column):
 def get_best_model_for_dataset(filename):
 	max_mse_red, model_id = None, None
 	out_sample_mses = {}
-	cache_dir = os.listdir("model_cache/")
+	cache_dir = os.listdir(f"{cet_home}/model_cache/")
 	if filename not in cache_dir:
 		return None, None
-	for file in os.listdir(f"model_cache/{filename}"):
+	for file in os.listdir(f"{cet_home}/model_cache/{filename}"):
 		out_sample_mses[file] = float(utils.get_attribute_from_model_file(filename, "out_sample_mse_reduction", file))
 	if len(out_sample_mses) > 0:
 		max_mse_red = max(out_sample_mses.values())
@@ -61,11 +64,11 @@ def get_best_model_for_dataset(filename):
 
 def clear_model_cache(dataset):
 	if dataset == None:
-		shutil.rmtree("model_cache/")
-		os.makedirs("model_cache/")
+		shutil.rmtree(f"{cet_home}/model_cache/")
+		os.makedirs(f"{cet_home}/model_cache/")
 	else:
-		if os.path.isdir(f"model_cache/{dataset}"):
-			shutil.rmtree(f"model_cache/{dataset}")
+		if os.path.isdir(f"{cet_home}/model_cache/{dataset}"):
+			shutil.rmtree(f"{cet_home}/model_cache/{dataset}")
 
 
 def run_bayesian_regression(data_file, model_id, use_threading=False):

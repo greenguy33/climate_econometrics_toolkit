@@ -1,5 +1,6 @@
 import statsmodels.api as sm
 import pymc as pm
+import os
 from pytensor import tensor as pt
 import pickle as pkl
 import numpy as np
@@ -7,9 +8,11 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.utils import resample
 import pandas as pd
 import threading
+import progressbar
 
 import climate_econometrics_toolkit.utils as utils
 
+cet_home = os.getenv("CETHOME")
 
 def run_standard_regression(transformed_data, model, demeaned=False):
 	model_vars = utils.get_model_vars(transformed_data, model, demeaned)
@@ -27,23 +30,23 @@ def run_intercept_only_regression(transformed_data, model):
 	return regression_result
 
 
-def run_block_bootstrap(model, use_threading=False):
-	print("Bootstrappin'...")
+def run_block_bootstrap(model, num_samples=1000, use_threading=False):
+	print("Running bootstrap...this may take awhile")
 	data = model.dataset
 	transformed_data = utils.transform_data(data, model)
 	if use_threading:
-		thread = threading.Thread(target=bootstrap,name="bootstrap_thread",args=(transformed_data,model))
+		thread = threading.Thread(target=bootstrap,name="bootstrap_thread",args=(transformed_data,model,num_samples))
 		thread.daemon = True
 		thread.start()
 	else:
-		bootstrap(transformed_data,model)
+		bootstrap(transformed_data,model,num_samples)
 
 
-def bootstrap(transformed_data, model, num_samples=100):
+def bootstrap(transformed_data, model, num_samples):
 	# TOOD: this is too slow
 	covar_coefs = {covar:[] for covar in model.covariates}
 	panel_ids = list(set(transformed_data[model.panel_column]))
-	for i in range(num_samples):
+	for i in progressbar.progressbar(range(num_samples)):
 		panel_id_resample = resample(panel_ids)
 		resampled_data = pd.DataFrame()
 		for panel_id in panel_id_resample:
@@ -51,7 +54,7 @@ def bootstrap(transformed_data, model, num_samples=100):
 		reg_result = run_standard_regression(resampled_data, model).summary2().tables[1]
 		for covar in covar_coefs:
 			covar_coefs[covar].append(reg_result.loc[reg_result.index == covar]["Coef."].item())
-	pd.DataFrame.from_dict(covar_coefs).to_csv(f"bootstrap_samples/coefficient_samples_{str(model.model_id)}.csv")
+	pd.DataFrame.from_dict(covar_coefs).to_csv(f"{cet_home}/bootstrap_samples/coefficient_samples_{str(model.model_id)}.csv")
 
 
 def run_bayesian_regression(model, use_threading=False):
@@ -101,7 +104,7 @@ def run_bayesian_inference(transformed_data, model):
 		trace = pm.sample(target_accept=.99, cores=4, tune=1000, draws=1000)
 		posterior = pm.sample_posterior_predictive(trace, extend_inferencedata=True)
 
-	with open (f'bayes_samples/bayes_model_{str(model.model_id)}.pkl', 'wb') as buff:
+	with open (f'{cet_home}/bayes_samples/bayes_model_{str(model.model_id)}.pkl', 'wb') as buff:
 		pkl.dump({
 			"prior":prior,
 			"trace":trace,
@@ -113,4 +116,4 @@ def run_bayesian_inference(transformed_data, model):
 	unscaled_samples = pd.DataFrame()
 	for index, var in enumerate(model.covariates):
 		unscaled_samples[var] = trace.posterior.covar_coefs[:,:,index].data.flatten() * np.std(transformed_data[model.target_var]) / np.std(transformed_data[var])
-	unscaled_samples.to_csv(f'bayes_samples/coefficient_samples_{str(model.model_id)}.csv')
+	unscaled_samples.to_csv(f'{cet_home}/bayes_samples/coefficient_samples_{str(model.model_id)}.csv')

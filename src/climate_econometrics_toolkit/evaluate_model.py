@@ -92,6 +92,4 @@ def evaluate_model(data, model):
 	model.r2 = float(model.regression_result.summary2().tables[0].loc[model.regression_result.summary2().tables[0][0]=="R-squared:"][1].item())
 	model.rmse = np.sqrt(model.out_sample_mse)
 
-	transformed_data.to_csv("test_regression_data.csv")
-
 	return model

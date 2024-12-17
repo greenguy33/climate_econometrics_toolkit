@@ -5,10 +5,15 @@ from climate_econometrics_toolkit import regression as regression
 from climate_econometrics_toolkit import prediction as predict
 
 import pandas as pd
+import os
 import copy
 
 model = ClimateEconometricsModel()
 model_list = {}
+
+cet_home = os.getenv("CETHOME")
+
+# TODO: It's inconsistent when model is passed as an argument and when the local variable is used
 
 def model_checks():
     checks = {
@@ -58,11 +63,11 @@ def get_model_by_id(model_id):
 def run_bayesian_regression(model):
     regression.run_bayesian_regression(model)
 
-def run_block_bootstrap(model):
-    regression.run_block_bootstrap(model)
+def run_block_bootstrap(model, num_samples=1000):
+    regression.run_block_bootstrap(model, num_samples)
 
-def predict_from_gcms(model, gcms_to_use):
-    predict.predict_from_gcms(model, gcms_to_use)
+def predict_from_gcms(model, gcms_to_use="all", vars_to_use="all", groups_to_use="all"):
+    predict.predict_from_gcms(model, gcms_to_use, vars_to_use, groups_to_use)
 
 def load_dataset_from_file(datafile):
     model.data_file = datafile.split("/")[-1]
@@ -156,6 +161,12 @@ def add_time_trend(node, exp):
 def remove_covariate(node):
     # TODO: cannot easily remove a transformed node
     model.covariates = [var for var in model.covariates if var != node]
+    model.model_vars = [var for var in model.model_vars if var != node]
+
+def remove_covariates(nodes):
+    # TODO: cannot easily remove a transformed node
+    for node in nodes:
+        model.covariates = [var for var in model.covariates if var != node]
 
 def remove_fixed_effect(node):
     model.fixed_effects = [var for var in model.fixed_effects if var != node]
@@ -167,18 +178,19 @@ def remove_time_trend(node, exp):
 def aggregate_gcm_data(
         gcm_file, 
 		shape_file, 
+        gcm_name,
 		gcm_obs_per_year, 
 		first_year_in_data,
 		shape_file_geo_identifier,
-		obs_to_include,
 		aggregation_func,
 		climate_var_name,
-        savedir,
+        grouping,
+        obs_to_include=None,
 		weights_file=None):
     
     data = predict.aggregate_gcm_data(gcm_file, shape_file, gcm_obs_per_year, first_year_in_data,shape_file_geo_identifier,obs_to_include,aggregation_func,climate_var_name,weights_file)
     gcm_file_short = gcm_file.split("/")[-1].split(".")[0] + ".csv"
-    if savedir.endswith("/"):
-        data.to_csv(savedir + "aggregated_" + gcm_file_short)
-    else:
-        data.to_csv(savedir + "/aggregated_" + gcm_file_short)
+    dir = f"{cet_home}/processed_gcm_data/{climate_var_name}/{gcm_name}/{grouping}"
+    if not os.path.isdir(dir):
+        os.makedirs(dir)
+    data.to_csv(f"{dir}/aggregated_{gcm_file_short}")

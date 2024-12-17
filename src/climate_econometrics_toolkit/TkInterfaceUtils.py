@@ -16,6 +16,8 @@ from climate_econometrics_toolkit.GcmSelectionPopup import GcmSelectionPopup
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
+cet_home = os.getenv("CETHOME")
+
 class TkInterfaceUtils():
 
     def __init__(self, window, canvas, dnd, regression_plot, result_plot, stat_plot):
@@ -91,7 +93,7 @@ class TkInterfaceUtils():
         self.result_plot.plot_canvas.mpl_connect('button_press_event', self.handle_click_on_result_plot)
 
     def update_result_plot(self, dataset, metric):
-        if os.path.isdir(f"model_cache/{dataset}"):
+        if os.path.isdir(f"{cet_home}/model_cache/{dataset}"):
             self.result_plot.clear_figure()
             sorted_cache_files = sorted({val:float(val) for val in os.listdir(f"model_cache/{dataset}")}.items(), key=lambda item: item[1])
             for cache_file in sorted_cache_files:
@@ -99,7 +101,7 @@ class TkInterfaceUtils():
                 self.result_plot.plot_data.append(values)
                 self.result_plot.models.append(cache_file[0])
             self.create_result_plot(metric)
-            cached_canvas = pd.read_pickle(f'model_cache/{dataset}/{cache_file[0]}/tkinter_canvas.pkl')
+            cached_canvas = pd.read_pickle(f"{cet_home}/model_cache/{dataset}/{cache_file[0]}/tkinter_canvas.pkl")
             return cached_canvas["panel_column"], cached_canvas["time_column"]
 
     def get_regression_stats_from_model(self ,model_id):
