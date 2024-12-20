@@ -14,6 +14,7 @@ model_list = {}
 cet_home = os.getenv("CETHOME")
 
 # TODO: It's inconsistent when model is passed as an argument and when the local variable is used
+# TOOD: There should be a model cache for the user API
 
 def model_checks():
     checks = {
@@ -175,22 +176,11 @@ def remove_time_trend(node, exp):
     time_trend = node + " " + str(exp)
     model.time_trends = [var for var in model.time_trends if var != time_trend]
 
-def aggregate_gcm_data(
-        gcm_file, 
-		shape_file, 
-        gcm_name,
-		gcm_obs_per_year, 
-		first_year_in_data,
-		shape_file_geo_identifier,
-		aggregation_func,
-		climate_var_name,
-        grouping,
-        obs_to_include=None,
-		weights_file=None):
-    
-    data = predict.aggregate_gcm_data(gcm_file, shape_file, gcm_obs_per_year, first_year_in_data,shape_file_geo_identifier,obs_to_include,aggregation_func,climate_var_name,weights_file)
-    gcm_file_short = gcm_file.split("/")[-1].split(".")[0] + ".csv"
-    dir = f"{cet_home}/processed_gcm_data/{climate_var_name}/{gcm_name}/{grouping}"
-    if not os.path.isdir(dir):
-        os.makedirs(dir)
-    data.to_csv(f"{dir}/aggregated_{gcm_file_short}")
+def extract_raster_data(gcm_file, shape_file, aggregation_func, weights_file=None):
+    return predict.extract_raster_data(gcm_file, shape_file, aggregation_func, weights_file)
+
+def aggregate_raster_data_to_country_year_level(data, shape_file, first_year_in_data, climate_var_name, aggregation_func, geo_identifier, months_to_use=None):
+    return predict.aggregate_raster_data_to_country_year_level(data, shape_file, first_year_in_data, climate_var_name, aggregation_func, geo_identifier, months_to_use)
+
+def predict_out_of_sample(model, data, transform_data=False, var_map=None):
+    return predict.predict_out_of_sample(model, data, transform_data, var_map)

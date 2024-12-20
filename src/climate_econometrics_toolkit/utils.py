@@ -34,7 +34,7 @@ def initial_checks():
 	env_var_name = "CETHOME"
 	if os.getenv(env_var_name) is None:
 		os.environ["CETHOME"] = "."
-	dirs_to_init = ["model_cache","bayes_samples","bootstrap_samples","predictions","processed_gcm_data"]
+	dirs_to_init = ["model_cache","bayes_samples","bootstrap_samples"]
 	for dir in dirs_to_init:
 		if not os.path.isdir(dir):
 			os.makedirs(dir)
