@@ -1,6 +1,6 @@
 # Climate Econometrics Toolkit
 
-This project has been developed as part of my PhD research. It is a work in progress. Please reach out with any questions or make an issue.
+This project contains both a user interface and a Python API designed for helping researchers with climate impact modeling using econometric-style regression models. This project has been developed as part of my PhD research. It is a work in progress. Please reach out with any questions or make an issue.
 
 Developer contact: Hayden Freedman (hfreedma@uci.edu)
 
@@ -16,6 +16,7 @@ If this tool will be helpful to you, you most likely...
 - Are a climate impacts researcher or statistician interested in econometric-style analyses
 - Have some basic knowledge of econometric regression and working with panel data
 - Are interested in putting together a workflow for modeling climate impacts without starting completely from scratch
+- Are familiar with Python (API only)
 
 If you are aren't sure what type of analysis this project is designed to help with, I recommend checking out the paper [Anthropogenic climate change has slowed global agricultural productivity growth](https://www.nature.com/articles/s41558-021-01000-1)
 by Ortiz-Bobea et al. as an example. I based some of the implementations in this tool off of the codebase attached to this paper and implemented a reproduction of this paper using the tool.
@@ -28,18 +29,30 @@ After analyzing the workflows of several climate econometric research papers, I 
 
 # Installation
 
-The package is currently hosted on TestPyPi. When installing, use the commands below to install all dependencies from PyPi in addition to the TestPyPi repo.
+The package is currently hosted on TestPyPi. When installing, use the commands below to install all dependencies from PyPi in addition to the TestPyPi repo. Python 3 must be installed prior to installation.
 
 #### Create and enter new virtual environment (optional)
 
+```
 python3 -m venv climate_econometrics_toolkit.venv
-
 source climate_econometrics_toolkit.venv/bin/activate
+```
 
 #### Install package and dependencies
 
+```
 pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ climate-econometrics-toolkit==0.0.13
+```
 
 # Quick Start
 
-This package contains 
+## User interface
+
+To start the interface, simply open a Python shell and execute the following commands:
+
+```
+from climate_econometrics_toolkit import climate_econometrics_api as api
+api.start_interface()
+```
+
+The interface should launch in a separate window.
