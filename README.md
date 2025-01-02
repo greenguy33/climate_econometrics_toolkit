@@ -4,7 +4,7 @@ This project has been developed as part of my PhD research. It is a work in prog
 
 Developer contact: Hayden Freedman (hfreedma@uci.edu)
 
-There is an installation and quick start guide in this README. For more detailed instructions, you can reference the full User Guide [here](url).
+There is an installation and quick start guide in this README. For more detailed instructions, you can reference the full [User Guide](USER_GUIDE.md).
 
 # Is this the right tool for you?
 
@@ -19,6 +19,12 @@ If this tool will be helpful to you, you most likely...
 
 If you are aren't sure what type of analysis this project is designed to help with, I recommend checking out the paper [Anthropogenic climate change has slowed global agricultural productivity growth](https://www.nature.com/articles/s41558-021-01000-1)
 by Ortiz-Bobea et al. as an example. I based some of the implementations in this tool off of the codebase attached to this paper and implemented a reproduction of this paper using the tool.
+
+# Overview
+
+After analyzing the workflows of several climate econometric research papers, I identified a three-step workflow which many of these papers have in common.
+
+
 
 # Installation
 
@@ -36,3 +42,4 @@ pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/
 
 # Quick Start
 
+This package contains 
