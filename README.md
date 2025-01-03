@@ -54,7 +54,7 @@ pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/
 
 #### Add environmental variable CET_HOME
 
-In order for all features to work properly, the environmental variable `CET_HOME` must be set. Exported files will be saved from this directory.
+In order for all features to work properly, the environmental variable `CET_HOME` must be set. Exported files will be saved to this directory.
 
 # Quick Start
 
