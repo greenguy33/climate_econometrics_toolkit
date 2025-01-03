@@ -93,8 +93,8 @@ def extract_raster_data(raster_file, shape_file, weights_file=None):
 	return predict.extract_raster_data(raster_file, shape_file, weights_file)
 
 
-def aggregate_raster_data(data, shape_file, first_year_in_data, climate_var_name, aggregation_func, timescale, geo_identifier):
-	return predict.aggregate_raster_data(data, shape_file, first_year_in_data, climate_var_name, aggregation_func, geo_identifier, timescale, months_to_use=None)
+def aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, timescale, geo_identifier):
+	return predict.aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, timescale, months_to_use=None)
 
 
 def start_interface():

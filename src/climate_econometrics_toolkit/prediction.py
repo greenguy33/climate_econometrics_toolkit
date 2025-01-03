@@ -13,12 +13,12 @@ cet_home = os.getenv("CETHOME")
 def extract_raster_data(gcm_file, shape_file, weights_file):
 	aggregation_func = "weighted_mean"
 	if weights_file is None:
-		print("No weights file provided for extraction...using uniform weights...")
+		print("No weights file provided for extraction...using uniform weights.")
 		aggregation_func = "mean"
 	return exact_extract(gcm_file, shape_file, [aggregation_func], weights=weights_file)
 
 def aggregate_raster_data(
-		raster_data, shape_file, first_year_in_data, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use, 
+		raster_data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use, 
 	):
 	assert isinstance(subperiods_per_time_unit, int)
 	assert aggregation_func == "sum" or aggregation_func == "mean", "Argument aggregation_func must be 'sum' or 'mean'"
@@ -29,7 +29,7 @@ def aggregate_raster_data(
 		new_dict = {}
 		for key in raster_data[index]["properties"]:
 			new_dict[key.split("_")[0] + "_" + key.split("_")[1]] = raster_data[index]["properties"][key]
-		period = first_year_in_data
+		period = 0
 		agg_mean = []
 		subperiod = 0
 		for obs in range(len(raster_data[index]["properties"])):
@@ -47,7 +47,7 @@ def aggregate_raster_data(
 				period += 1
 				agg_mean = []
 				subperiod = 0
-	return pd.DataFrame.from_records(data, columns=[geo_identifier,"year",climate_var_name])
+	return pd.DataFrame.from_records(data, columns=[geo_identifier,"time",climate_var_name])
 	
 
 def predict_out_of_sample(model, gcm_data, transform_data, gcm_to_model_var_map):

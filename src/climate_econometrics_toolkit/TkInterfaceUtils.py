@@ -181,34 +181,64 @@ class TkInterfaceUtils():
 
 	def extract_raster_data(self, window):
 		raster_extract_popup = RasterExtractionPopup(window)
-		raster_file = raster_extract_popup.raster_file
+		raster_files = raster_extract_popup.raster_file
 		shape_file = raster_extract_popup.shape_file
 
-		if raster_file is None or shape_file is None:
+		if raster_files is None or shape_file is None:
 			self.dnd.canvas_print_out.insert(tk.END, "\nBoth a raster file and a shape file must be selected.")
 		else:
 			time_interval = int(raster_extract_popup.time_interval)
 			weights_file = raster_extract_popup.weight_file
 			aggregation_func = raster_extract_popup.func
 			self.dnd.canvas_print_out.insert(tk.END, f"\nRaster aggregation will run in background. When complete file will be saved to {cet_home}/raster_output. Check command line for errors.")
-			thread = threading.Thread(target=self.raster_aggregation,name="bootstrap_thread",args=(raster_file, shape_file, aggregation_func, weights_file, time_interval))
+			thread = threading.Thread(target=self.raster_aggregation,name="bootstrap_thread",args=(raster_files, shape_file, aggregation_func, weights_file, time_interval))
 			thread.daemon = True
 			thread.start()
 
 
-	def raster_aggregation(self, raster_file, shape_file, aggregation_func, weights_file, time_interval):
-		raster = xr.open_dataset(raster_file)
-		geo_identifier = gpd.read_file(shape_file).columns[0]
-		climate_var_name = list(raster.data_vars)[-1]
-		try:
-			first_year = raster.time.values[0].year
-		except:
-			first_year = 0
-			print("Could not automatically identify year in raster data - years will be indexed from 0")
-		out = api.extract_raster_data(raster_file, shape_file, weights_file)
-		data = api.aggregate_raster_data(out, shape_file, first_year, climate_var_name, aggregation_func.lower(), time_interval, geo_identifier)
-		raster_file_short = raster_file.split("/")[-1].rpartition('.')[0]
-		data.to_csv(f"{cet_home}/raster_output/{raster_file_short}.csv")
+	def integrate_raster_datasets(self, raster_datasets, geo_id):
+		# remove values of panel and time variables that aren't shared between all datasets
+		common_time_vals = set()
+		common_geo_vals = set()
+		for dataset in raster_datasets:
+			if len(common_time_vals) == 0:
+				common_time_vals = set(dataset["time"])
+			else:
+				for time_val in common_time_vals:
+					if time_val not in set(dataset["time"]):
+						common_time_vals.remove(time_val)
+			if len(common_geo_vals) == 0:
+				common_geo_vals = set(dataset[geo_id])
+			else:
+				for geo_val in common_geo_vals:
+					if geo_val not in set(dataset[geo_id]):
+						common_geo_vals.remove(geo_val)
+		for dataset in raster_datasets:
+			dataset = dataset[dataset["time"].isin(common_time_vals)]
+			dataset = dataset[dataset[geo_id].isin(common_geo_vals)]
+		df = pd.DataFrame()
+		df[geo_id] = raster_datasets[0][geo_id]
+		df["time"] = raster_datasets[0]["time"]
+		for dataset in raster_datasets:
+			df[dataset.columns[2]] = dataset[dataset.columns[2]]
+		df.to_csv(f"{cet_home}/raster_output/integrated_dataset_with_{len(raster_datasets)}_input_files.csv")
+
+
+
+	def raster_aggregation(self, raster_files, shape_file, aggregation_func, weights_file, time_interval):
+		raster_datasets = []
+		# TODO: for multiple rasters, since time index is set to 0 for all files, this will erroneously align time spans even if they are not aligned in original files
+		for raster_file in raster_files:
+			raster = xr.open_dataset(raster_file)
+			geo_identifier = gpd.read_file(shape_file).columns[0]
+			climate_var_name = list(raster.data_vars)[-1]
+			out = api.extract_raster_data(raster_file, shape_file, weights_file)
+			raster_datasets.append(api.aggregate_raster_data(out, shape_file, climate_var_name, aggregation_func.lower(), time_interval, geo_identifier))
+		if len(raster_files) == 1:
+			raster_file_short = raster_file.split("/")[-1].rpartition('.')[0]
+			raster_datasets[0].to_csv(f"{cet_home}/raster_output/{raster_file_short}.csv")
+		else:
+			self.integrate_raster_datasets(raster_datasets, geo_identifier)
 
 
 	def clear_canvas(self):

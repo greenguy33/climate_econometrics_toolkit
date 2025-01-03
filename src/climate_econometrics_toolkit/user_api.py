@@ -178,8 +178,8 @@ def predict_from_gcms(model, gcms_to_use="all", vars_to_use="all", groups_to_use
 def extract_raster_data(gcm_file, shape_file, weights_file=None):
     return predict.extract_raster_data(gcm_file, shape_file, weights_file)
 
-def aggregate_raster_data(data, shape_file, first_year_in_data, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use=None):
-    return predict.aggregate_raster_data(data, shape_file, first_year_in_data, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use)
+def aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use=None):
+    return predict.aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use)
 
 def predict_out_of_sample(model, data, transform_data=False, var_map=None):
     if isinstance(model, str):
