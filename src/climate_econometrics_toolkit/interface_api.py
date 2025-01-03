@@ -7,7 +7,7 @@ import climate_econometrics_toolkit.evaluate_model as ce_eval
 import climate_econometrics_toolkit.model_builder as mb
 import climate_econometrics_toolkit.utils as utils
 import climate_econometrics_toolkit.regression as regression
-import climate_econometrics_toolkit.prediction as prediction
+import climate_econometrics_toolkit.prediction as predict
 
 pd.set_option('display.min_rows', 100)
 pd.set_option('display.max_rows', 100)
@@ -89,13 +89,12 @@ def run_block_bootstrap(data_file, model_id, use_threading=False):
 	regression.run_block_bootstrap(model, use_threading)
 
 
-def predict_from_gcms(data_file, model_id, gcms_to_use, use_threading=False):
-	data_file_short = data_file.split("/")[-1]
-	model, panel_column, time_column = utils.construct_model_input_from_cache(data_file_short, model_id)
-	model, _ = mb.parse_model_input(model, data_file, panel_column, time_column)
-	model.dataset = pd.read_csv(data_file).sort_values([model.time_column, model.panel_column]).reset_index(drop=True)
-	model.model_id = model_id
-	prediction.predict_from_gcms(model, gcms_to_use, use_threading)
+def extract_raster_data(raster_file, shape_file, weights_file=None):
+	return predict.extract_raster_data(raster_file, shape_file, weights_file)
+
+
+def aggregate_raster_data(data, shape_file, first_year_in_data, climate_var_name, aggregation_func, timescale, geo_identifier):
+	return predict.aggregate_raster_data(data, shape_file, first_year_in_data, climate_var_name, aggregation_func, geo_identifier, timescale, months_to_use=None)
 
 
 def start_interface():

@@ -2,7 +2,7 @@ README.md
 pyproject.toml
 src/climate_econometrics_toolkit/ClimateEconometricsModel.py
 src/climate_econometrics_toolkit/DragAndDropInterface.py
-src/climate_econometrics_toolkit/GcmSelectionPopup.py
+src/climate_econometrics_toolkit/RasterExtractionPopup.py
 src/climate_econometrics_toolkit/RegressionPlot.py
 src/climate_econometrics_toolkit/ResultPlot.py
 src/climate_econometrics_toolkit/StatPlot.py

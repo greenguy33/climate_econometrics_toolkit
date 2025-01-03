@@ -370,19 +370,20 @@ def test_burke_model():
 
 	utils.random_state = 123
 	model = cee.evaluate_model(test_data, model_input)
-	assert .1 < model.out_sample_mse_reduction < .15
+	assert .09 < model.out_sample_mse_reduction < .11
 	assert .949 < model.out_sample_pred_int_cov < .951
 	
-	# TODO: check random state 1
+	# TODO: random state 1 returns very different result
 	# utils.random_state = 1
 	# model = cee.evaluate_model(test_data, model_input)
+	# print(model.out_sample_mse_reduction)
 	# assert .1 < model.out_sample_mse_reduction < .15
 	# assert .949 < model.out_sample_pred_int_cov < .951
 
 	utils.random_state = 99
 	model = cee.evaluate_model(data, model_input)
-	assert .9 < model.out_sample_mse_reduction < .94
-	assert .947 < model.out_sample_pred_int_cov < .950
+	assert .09 < model.out_sample_mse_reduction < .11
+	assert .949 < model.out_sample_pred_int_cov < .951
 
 
 def test_ortiz_bobea_model():
@@ -401,18 +402,18 @@ def test_ortiz_bobea_model():
 
 	utils.random_state = 123
 	model = cee.evaluate_model(data, model_input)
-	# assert .0083 < model.out_sample_mse_reduction < .0097
-	# assert .947 < model.out_sample_pred_int_cov < .950
+	assert .007 < model.out_sample_mse_reduction < .009
+	assert .947 < model.out_sample_pred_int_cov < .950
 	
-	# utils.random_state = 1
-	# model = cee.evaluate_model(data, model_input)
-	# assert .0083 < model.out_sample_mse_reduction < .0097
-	# assert .947 < model.out_sample_pred_int_cov < .950
+	utils.random_state = 1
+	model = cee.evaluate_model(data, model_input)
+	assert .007 < model.out_sample_mse_reduction < .009
+	assert .947 < model.out_sample_pred_int_cov < .950
 
-	# utils.random_state = 99
-	# model = cee.evaluate_model(data, model_input)
-	# assert .0083 < model.out_sample_mse_reduction < .0097
-	# assert .947 < model.out_sample_pred_int_cov < .950
+	utils.random_state = 99
+	model = cee.evaluate_model(data, model_input)
+	assert .007 < model.out_sample_mse_reduction < .009
+	assert .947 < model.out_sample_pred_int_cov < .950
 
 	year_fe_red = model.out_sample_mse_reduction
 
@@ -426,18 +427,18 @@ def test_ortiz_bobea_model():
 
 	utils.random_state = 123
 	model = cee.evaluate_model(data, model_input)
-	# assert .0083 < model.out_sample_mse_reduction < .0097
-	# assert .947 < model.out_sample_pred_int_cov < .950
+	assert .011 < model.out_sample_mse_reduction < .012
+	assert .948 < model.out_sample_pred_int_cov < .950
 	
-	# utils.random_state = 1
-	# model = cee.evaluate_model(data, model_input)
-	# assert .0083 < model.out_sample_mse_reduction < .0097
-	# assert .947 < model.out_sample_pred_int_cov < .950
+	utils.random_state = 1
+	model = cee.evaluate_model(data, model_input)
+	assert .011 < model.out_sample_mse_reduction < .012
+	assert .948 < model.out_sample_pred_int_cov < .950
 
-	# utils.random_state = 99
-	# model = cee.evaluate_model(data, model_input)
-	# assert .0083 < model.out_sample_mse_reduction < .0097
-	# assert .947 < model.out_sample_pred_int_cov < .950
+	utils.random_state = 99
+	model = cee.evaluate_model(data, model_input)
+	assert .011 < model.out_sample_mse_reduction < .012
+	assert .948 < model.out_sample_pred_int_cov < .950
 
 	country_fe_red = model.out_sample_mse_reduction
 
@@ -451,18 +452,18 @@ def test_ortiz_bobea_model():
 
 	utils.random_state = 123
 	model = cee.evaluate_model(data, model_input)
-	# assert .0083 < model.out_sample_mse_reduction < .0097
-	# assert .947 < model.out_sample_pred_int_cov < .950
+	assert .008 < model.out_sample_mse_reduction < .010
+	assert .947 < model.out_sample_pred_int_cov < .950
 	
-	# utils.random_state = 1
-	# model = cee.evaluate_model(data, model_input)
-	# assert .0083 < model.out_sample_mse_reduction < .0097
-	# assert .947 < model.out_sample_pred_int_cov < .950
+	utils.random_state = 1
+	model = cee.evaluate_model(data, model_input)
+	assert .008 < model.out_sample_mse_reduction < .010
+	assert .947 < model.out_sample_pred_int_cov < .950
 
-	# utils.random_state = 99
-	# model = cee.evaluate_model(data, model_input)
-	# assert .0083 < model.out_sample_mse_reduction < .0097
-	# assert .947 < model.out_sample_pred_int_cov < .950
+	utils.random_state = 99
+	model = cee.evaluate_model(data, model_input)
+	assert .008 < model.out_sample_mse_reduction < .010
+	assert .947 < model.out_sample_pred_int_cov < .950
 
 	both_fe_red = model.out_sample_mse_reduction
 

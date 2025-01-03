@@ -34,7 +34,7 @@ def initial_checks():
 	env_var_name = "CETHOME"
 	if os.getenv(env_var_name) is None:
 		os.environ["CETHOME"] = "."
-	dirs_to_init = ["model_cache","bayes_samples","bootstrap_samples"]
+	dirs_to_init = ["model_cache","bayes_samples","bootstrap_samples","raster_output"]
 	for dir in dirs_to_init:
 		if not os.path.isdir(dir):
 			os.makedirs(dir)
@@ -255,6 +255,7 @@ def start_user_interface():
 	window.protocol("WM_DELETE_WINDOW", tk_utils.on_close)
 
 	# TODO: add frame for showing/changing the panel and time columns
+	btn_extract = tk.Button(lefthand_bar, text="Extract Raster Data", command=lambda : tk_utils.extract_raster_data(window))
 	btn_load = tk.Button(lefthand_bar, text="Load Dataset", command=tk_utils.add_data_columns_from_file)
 	btn_clear_canvas = tk.Button(lefthand_bar, text="Clear Canvas", command=tk_utils.clear_canvas)
 	btn_evaluate = tk.Button(lefthand_bar, text="Evaluate Model", command=tk_utils.evaluate_model)
@@ -262,38 +263,25 @@ def start_user_interface():
 	btn_clear_model_cache = tk.Button(lefthand_bar, text="Clear Model Cache", command=tk_utils.clear_model_cache)
 	btn_bootstrap = tk.Button(lefthand_bar, text="Run Block Bootstrap", command=tk_utils.run_block_bootstrap)
 	btn_bayesian_regression = tk.Button(lefthand_bar, text="Run Bayesian Inference", command=tk_utils.run_bayesian_inference)
-	btn_predict = tk.Button(lefthand_bar, text="Predict from GCMs", command=lambda : tk_utils.predict_from_gcms(window))
 	result_text = tk.Text(lefthand_bar, height=2)
 
-	btn_load.grid(row=0, column=0, sticky="nsew", padx=5, pady=5, columnspan=2)
-	btn_clear_canvas.grid(row=1, column=0, sticky="nsew", padx=5, columnspan=2)
-	btn_evaluate.grid(row=2, column=0, sticky="nsew", padx=5, columnspan=2)
-	btn_best_model.grid(row=3, column=0, sticky="nsew", padx=5, columnspan=2)
-	btn_clear_model_cache.grid(row=4, column=0, sticky="nsew", padx=5, columnspan=2)
-	btn_bootstrap.grid(row=5, column=0, sticky="nsew")
-	btn_bayesian_regression.grid(row=5, column=1, sticky="nsew")
-	btn_predict.grid(row=6, column=0, stick="nsew", columnspan=2)
+	btn_extract.grid(row=0, column=0, stick="nsew", columnspan=2)
+	btn_load.grid(row=1, column=0, sticky="nsew", padx=5, pady=5, columnspan=2)
+	btn_clear_canvas.grid(row=2, column=0, sticky="nsew", padx=5, columnspan=2)
+	btn_evaluate.grid(row=3, column=0, sticky="nsew", padx=5, columnspan=2)
+	btn_best_model.grid(row=4, column=0, sticky="nsew", padx=5, columnspan=2)
+	btn_clear_model_cache.grid(row=5, column=0, sticky="nsew", padx=5, columnspan=2)
+	btn_bootstrap.grid(row=6, column=0, sticky="nsew")
+	btn_bayesian_regression.grid(row=6, column=1, sticky="nsew")
 	result_text.grid(row=7, column=0, sticky="nsew", columnspan=2)
 	mse_canvas.grid(row=8, column=0, sticky="nsew")
-	pred_int_canvas.grid(row=8, column=1, sticky="nsew")
-	r2_canvas.grid(row=9, column=0, sticky="nsew")
-	rmse_canvas.grid(row=9, column=1, sticky="nsew")
-	regression_plot_frame.grid(row=10, column=0, sticky="ns", columnspan=2)
+	pred_int_canvas.grid(row=9, column=1, sticky="nsew")
+	r2_canvas.grid(row=10, column=0, sticky="nsew")
+	rmse_canvas.grid(row=11, column=1, sticky="nsew")
+	regression_plot_frame.grid(row=12, column=0, sticky="ns", columnspan=2)
 	lefthand_bar.grid(row=0, column=0, sticky="ns", rowspan=2)
 	canvas.grid(row=0, column=1, sticky="nsew")
 	result_plot_frame.grid(row=1, column=1, sticky="nsew")
 
 	dnd.canvas_print_out = result_text
 	window.mainloop()
-
-
-# def compare_to_last_model(model, data_file):
-# 	last_model_osmse = get_last_model_out_sample_mse(data_file)
-# 	if last_model_osmse == None:
-# 		return(f"This model has out-of-sample MSE of {str(model.out_sample_mse_reduction)[:7]}. There is no model in the cache to compare to this model.")
-# 	elif last_model_osmse < model.out_sample_mse_reduction:
-# 		return(f"This model has HIGHER OUT-OF-SAMPLE MSE {str(model.out_sample_mse_reduction)[:7]} than the last model {str(last_model_osmse)[:7]}")
-# 	elif last_model_osmse > model.out_sample_mse_reduction:
-# 		return(f"This model has LOWER OUT-OF-SAMPLE MSE {str(model.out_sample_mse_reduction)[:7]} than the last model {str(last_model_osmse)[:7]}")
-# 	elif last_model_osmse == model.out_sample_mse_reduction:
-# 		return(f"This model has THE SAME OUT-OF-SAMPLE MSE {str(model.out_sample_mse_reduction)[:7]} as the last model {str(last_model_osmse)[:7]}")

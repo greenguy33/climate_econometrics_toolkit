@@ -2,7 +2,6 @@ import os
 import pandas as pd
 import random
 import numpy as np
-import threading
 from exactextract import exact_extract
 import geopandas as gpd
 
@@ -11,15 +10,17 @@ import climate_econometrics_toolkit.regression as regression
 
 cet_home = os.getenv("CETHOME")
 
-def extract_raster_data(gcm_file, shape_file, aggregation_func, weights_file):
-	assert aggregation_func == "sum" or aggregation_func == "mean", "Argument aggregation_func must be 'sum' or 'mean'"
+def extract_raster_data(gcm_file, shape_file, weights_file):
+	aggregation_func = "weighted_mean"
 	if weights_file is None:
 		print("No weights file provided for extraction...using uniform weights...")
+		aggregation_func = "mean"
 	return exact_extract(gcm_file, shape_file, [aggregation_func], weights=weights_file)
 
-def aggregate_raster_data_to_country_year_level(
-		raster_data, shape_file, first_year_in_data, climate_var_name, aggregation_func, geo_identifier, months_to_use
+def aggregate_raster_data(
+		raster_data, shape_file, first_year_in_data, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use, 
 	):
+	assert isinstance(subperiods_per_time_unit, int)
 	assert aggregation_func == "sum" or aggregation_func == "mean", "Argument aggregation_func must be 'sum' or 'mean'"
 	data = []
 	geo_shapes = gpd.read_file(shape_file)
@@ -35,7 +36,7 @@ def aggregate_raster_data_to_country_year_level(
 			subperiod += 1
 			if months_to_use is None or (geo in months_to_use and subperiod in months_to_use[geo]):
 				agg_mean.append(new_dict[f"band_{str(obs+1)}"])
-			if subperiod == 12:
+			if subperiod == subperiods_per_time_unit:
 				if aggregation_func == "sum":
 					if len(agg_mean) > 0:
 						data.append([geo, period, np.nansum(agg_mean)])

@@ -7,7 +7,7 @@ import pandas as pd
 import climate_econometrics_toolkit.utils as utils
 import climate_econometrics_toolkit.regression as regression
 
-# TODO: Let the user pick which withholding method they woudl like to use
+# TODO: Let the user pick which withholding method they would like to use
 def split_data_by_column(data, column, splits=10):
 	random.seed(utils.random_state)
 	random_years = random.sample(list(set(data[column])), k=len(set(data[column])))
@@ -53,8 +53,9 @@ def evaluate_model(data, model):
 
 	in_sample_mse_list, out_sample_mse_list, out_sample_pred_int_cov_list, intercept_only_mse_list = [], [], [], []
 
-	# TODO: changing this mades HUGE difference in result of Burke model
 	demean_data = False
+	if len(model.fixed_effects) > 0 and len(model.time_trends) == 0:
+		demean_data = True
 	transformed_data = utils.transform_data(data, model, demean=demean_data)
 
 	for train_indices, test_indices in generate_withheld_data(transformed_data, model):

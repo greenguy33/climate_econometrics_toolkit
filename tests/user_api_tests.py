@@ -10,25 +10,85 @@ def test_user_api():
     api.set_time_column("year")
 
     api.set_target_variable("GDP_per_capita")
+    assert api.model.model_vars == ["GDP_per_capita"]
+
+    assert api.model.panel_column == "iso_id"
+    assert api.model.time_column == "year"
+    assert api.model.target_var == "GDP_per_capita"
+    assert api.model.data_file == "GDP_climate_test_data.csv"
+    assert api.model.dataset is not None
 	
-    api.add_covariate("Temp")
+    api.add_covariates("Temp")
+
+    assert api.model.covariates == ["Temp"]
+    assert api.model.model_vars == ["Temp","GDP_per_capita"]
+
     api.add_covariates(["Precip","Temp"])
 
+    assert api.model.covariates == ["Temp","Precip"]
+    assert api.model.model_vars == ["Temp","Precip","GDP_per_capita"]
+
+    api.add_fixed_effects("iso_id")
+
+    assert api.model.fixed_effects == ["iso_id"]
+
     api.add_fixed_effects(["iso_id","year"])
+
+    assert api.model.fixed_effects == ["iso_id","year"]
+
     api.add_time_trend("iso_id", 2)
 
+    assert api.model.time_trends == ["iso_id 2"]
+
     api.add_transformations("GDP_per_capita", ["ln","fd"])
-    api.add_transformation("Temp", "sq")
-    api.add_transformation("Precip", "sq")
 
-    api.view_current_model()
+    assert api.model.target_var == "fd(ln(GDP_per_capita))"
+    assert api.model.model_vars == ["Temp","Precip","fd(ln(GDP_per_capita))"]
 
+    api.add_transformations("Precip", "sq", keep_original_node=False)
+    assert api.model.covariates == ["Temp","sq(Precip)"]
+    assert api.model.model_vars == ["Temp","sq(Precip)","fd(ln(GDP_per_capita))"]
+
+    api.add_transformations("Temp", "sq")
+    assert api.model.covariates == ["Temp","sq(Precip)","sq(Temp)"]
+    assert api.model.model_vars == ["Temp","sq(Precip)","sq(Temp)","fd(ln(GDP_per_capita))"]
+
+    api.add_transformations("Precip", ["sq","fd"])
+    assert api.model.covariates == ["Temp","sq(Precip)","sq(Temp)"]
+    assert api.model.model_vars == ["Temp","sq(Precip)","sq(Temp)","fd(ln(GDP_per_capita))"]
+
+    api.add_covariates("Precip")
+    api.add_transformations("Precip", ["sq","fd"])
+    assert api.model.covariates == ["Temp","sq(Precip)","sq(Temp)","Precip","fd(sq(Precip))"]
+    assert api.model.model_vars == ["Temp","sq(Precip)","sq(Temp)","Precip","fd(sq(Precip))","fd(ln(GDP_per_capita))"]
+    
     model1_id = api.evaluate_model()
+    model1 = api.get_model_by_id(model1_id)
+    assert model1.regression_result is not None
 
     api.remove_time_trend("iso_id", 2)
-    api.remove_covariate("sq(Precip)")
 
-    api.view_current_model()
+    assert api.model.time_trends == []
+
+    api.remove_covariates("Temp")
+
+    assert api.model.covariates == ["sq(Precip)","sq(Temp)","Precip","fd(sq(Precip))"]
+    assert api.model.model_vars == ["sq(Precip)","sq(Temp)","Precip","fd(sq(Precip))","fd(ln(GDP_per_capita))"]
+
+    api.remove_transformation("Temp", "sq")
+
+    assert api.model.covariates == ["sq(Precip)","Precip","fd(sq(Precip))"]
+    assert api.model.model_vars == ["sq(Precip)","Precip","fd(sq(Precip))","fd(ln(GDP_per_capita))"]
+
+    api.remove_transformation("Precip", ["sq","fd"])
+
+    assert api.model.covariates == ["sq(Precip)","Precip"]
+    assert api.model.model_vars == ["sq(Precip)","Precip","fd(ln(GDP_per_capita))"]
+    
+    api.remove_transformation("GDP_per_capita", ["ln", "fd"])
+
+    assert api.model.target_var == "GDP_per_capita"
+    assert api.model.model_vars == ["sq(Precip)","Precip","GDP_per_capita"]
 
     model2_id = api.evaluate_model()
 
@@ -46,10 +106,4 @@ def test_user_api():
     best_mse_red_model = api.get_model_by_id(best_mse_red_model_id)
     best_pred_int_model = api.get_model_by_id(best_pred_int_model_id)
 
-    best_r2_model.print()
-
-    api.run_bayesian_regression(model1)
-    api.run_block_bootstrap(model2)
-
-    api.predict_from_gcms(model1, ["BCC-CSM2-MR"])
-    api.predict_from_gcms(model1, ["BCC-CSM2-MR","CanESM5","CNRM-CM6-1","HadGEM3-GC31-LL"])
+    assert not any(model is None for model in [model1,model2,best_rmse_model,best_r2_model,best_mse_model,best_mse_red_model,best_pred_int_model])
