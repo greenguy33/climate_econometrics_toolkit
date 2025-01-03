@@ -52,6 +52,10 @@ source climate_econometrics_toolkit.venv/bin/activate
 pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ climate-econometrics-toolkit==0.0.13
 ```
 
+#### Add environmental variable CET_HOME
+
+In order for all features to work properly, the environmental variable `CET_HOME` must be set. Exported files will be saved from this directory.
+
 # Quick Start
 
 ## User interface
