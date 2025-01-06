@@ -40,27 +40,33 @@ def test_user_api():
 
     assert api.model.time_trends == ["iso_id 2"]
 
-    api.add_transformations("GDP_per_capita", ["ln","fd"])
+    api.add_transformation("GDP_per_capita", ["ln","fd"])
 
     assert api.model.target_var == "fd(ln(GDP_per_capita))"
     assert api.model.model_vars == ["Temp","Precip","fd(ln(GDP_per_capita))"]
 
-    api.add_transformations("Precip", "sq", keep_original_node=False)
+    api.add_transformation("Precip", "sq", keep_original_node=False)
     assert api.model.covariates == ["Temp","sq(Precip)"]
     assert api.model.model_vars == ["Temp","sq(Precip)","fd(ln(GDP_per_capita))"]
 
-    api.add_transformations("Temp", "sq")
+    api.add_transformation("Temp", "sq")
     assert api.model.covariates == ["Temp","sq(Precip)","sq(Temp)"]
     assert api.model.model_vars == ["Temp","sq(Precip)","sq(Temp)","fd(ln(GDP_per_capita))"]
 
-    api.add_transformations("Precip", ["sq","fd"])
+    api.add_transformation("Precip", ["sq","fd"])
+    # doesn't add anything because Precip node doesn't exist
     assert api.model.covariates == ["Temp","sq(Precip)","sq(Temp)"]
     assert api.model.model_vars == ["Temp","sq(Precip)","sq(Temp)","fd(ln(GDP_per_capita))"]
 
     api.add_covariates("Precip")
-    api.add_transformations("Precip", ["sq","fd"])
-    assert api.model.covariates == ["Temp","sq(Precip)","sq(Temp)","Precip","fd(sq(Precip))"]
-    assert api.model.model_vars == ["Temp","sq(Precip)","sq(Temp)","Precip","fd(sq(Precip))","fd(ln(GDP_per_capita))"]
+    api.remove_transformation("Precip", "sq")
+    api.add_transformation("Precip", ["sq","fd"])
+    assert api.model.covariates == ["Temp","sq(Temp)","Precip","fd(sq(Precip))"]
+    assert api.model.model_vars == ["Temp","sq(Temp)","Precip","fd(sq(Precip))","fd(ln(GDP_per_capita))"]
+
+    api.add_transformation("Precip", "sq")
+    assert api.model.covariates == ["Temp","sq(Temp)","Precip","fd(sq(Precip))","sq(Precip)"]
+    assert api.model.model_vars == ["Temp","sq(Temp)","Precip","fd(sq(Precip))","sq(Precip)","fd(ln(GDP_per_capita))"]
     
     model1_id = api.evaluate_model()
     model1 = api.get_model_by_id(model1_id)
@@ -72,23 +78,23 @@ def test_user_api():
 
     api.remove_covariates("Temp")
 
-    assert api.model.covariates == ["sq(Precip)","sq(Temp)","Precip","fd(sq(Precip))"]
-    assert api.model.model_vars == ["sq(Precip)","sq(Temp)","Precip","fd(sq(Precip))","fd(ln(GDP_per_capita))"]
+    assert api.model.covariates == ["sq(Temp)","Precip","fd(sq(Precip))","sq(Precip)"]
+    assert api.model.model_vars == ["sq(Temp)","Precip","fd(sq(Precip))","sq(Precip)","fd(ln(GDP_per_capita))"]
 
     api.remove_transformation("Temp", "sq")
 
-    assert api.model.covariates == ["sq(Precip)","Precip","fd(sq(Precip))"]
-    assert api.model.model_vars == ["sq(Precip)","Precip","fd(sq(Precip))","fd(ln(GDP_per_capita))"]
+    assert api.model.covariates == ["Precip","fd(sq(Precip))","sq(Precip)"]
+    assert api.model.model_vars == ["Precip","fd(sq(Precip))","sq(Precip)","fd(ln(GDP_per_capita))"]
 
     api.remove_transformation("Precip", ["sq","fd"])
 
-    assert api.model.covariates == ["sq(Precip)","Precip"]
-    assert api.model.model_vars == ["sq(Precip)","Precip","fd(ln(GDP_per_capita))"]
+    assert api.model.covariates == ["Precip","sq(Precip)"]
+    assert api.model.model_vars == ["Precip","sq(Precip)","fd(ln(GDP_per_capita))"]
     
     api.remove_transformation("GDP_per_capita", ["ln", "fd"])
 
     assert api.model.target_var == "GDP_per_capita"
-    assert api.model.model_vars == ["sq(Precip)","Precip","GDP_per_capita"]
+    assert api.model.model_vars == ["Precip","sq(Precip)","GDP_per_capita"]
 
     model2_id = api.evaluate_model()
 
