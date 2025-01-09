@@ -48,27 +48,28 @@ def aggregate_raster_data(
 				agg_mean = []
 				subperiod = 0
 	return pd.DataFrame.from_records(data, columns=[geo_identifier,"time",climate_var_name])
-	
 
-def predict_out_of_sample(model, gcm_data, transform_data, gcm_to_model_var_map):
+
+def predict_out_of_sample(model, out_sample_data, transform_data, gcm_to_model_var_map):
 	
 	if transform_data:
-		gcm_data = utils.transform_data(gcm_data, include_target_var=False)
+		if not all(var in out_sample_data.columns for var in model.covariates):
+			out_sample_data = utils.transform_data(out_sample_data, model, include_target_var=False)
 
 	bayesian_results = os.path.isdir(f"{cet_home}/bayes_samples/coefficient_samples_{model.model_id}.csv")
 	bootstrap_results = os.path.exists(f"{cet_home}/bootstrap_samples/coefficient_samples_{model.model_id}.csv")
 
-	gcm_data = gcm_data.dropna().reset_index(drop=True)
+	out_sample_data = out_sample_data.dropna().reset_index(drop=True)
 	
 	pred_df = pd.DataFrame()
 	if gcm_to_model_var_map is None or model.time_column not in gcm_to_model_var_map.values():
-		pred_df[model.panel_column] = gcm_data[model.panel_column]
+		pred_df[model.panel_column] = out_sample_data[model.panel_column]
 	else:
-		pred_df[model.panel_column] = gcm_data[[key for key, value in gcm_to_model_var_map.items() if value == model.panel_column]]
+		pred_df[model.panel_column] = out_sample_data[[key for key, value in gcm_to_model_var_map.items() if value == model.panel_column]]
 	if gcm_to_model_var_map is None or model.time_column not in gcm_to_model_var_map.values():
-		pred_df[model.time_column] = gcm_data[model.time_column]
+		pred_df[model.time_column] = out_sample_data[model.time_column]
 	else:
-		pred_df[model.time_column] = gcm_data[[key for key, value in gcm_to_model_var_map.items() if value == model.time_column]]
+		pred_df[model.time_column] = out_sample_data[[key for key, value in gcm_to_model_var_map.items() if value == model.time_column]]
 
 	# TODO: these will never trigger if calling from the interface because a new model_is assigned
 	if bayesian_results or bootstrap_results:
@@ -80,7 +81,7 @@ def predict_out_of_sample(model, gcm_data, transform_data, gcm_to_model_var_map)
 			print("Using bootstrap samples to generate predictions...")
 		predictions = []
 		for i in range(len(coef_samples)):
-			pred = np.sum(gcm_data[model.covariates] * coef_samples.iloc[i][model.covariates], axis=1)
+			pred = np.sum(out_sample_data[model.covariates] * coef_samples.iloc[i][model.covariates], axis=1)
 			predictions.append(pred)
 		predictions = pd.DataFrame.from_records(np.transpose(predictions))
 		pred_df = pd.concat([pred_df, predictions], axis=1)
@@ -90,8 +91,8 @@ def predict_out_of_sample(model, gcm_data, transform_data, gcm_to_model_var_map)
 		reg_result = reg_result = model.regression_result.summary2().tables[1]
 		coef_map = {covar:[reg_result.loc[reg_result.index == covar]["Coef."].item()] for covar in reg_result.index}
 		coef_samples = pd.DataFrame.from_dict(coef_map)
-		coef_samples = pd.DataFrame(np.repeat(coef_samples.values, len(gcm_data), axis=0), columns=coef_samples.columns)
-		predictions = np.sum([gcm_data[covar] * coef_samples[covar] for covar in model.covariates], axis=0)
+		coef_samples = pd.DataFrame(np.repeat(coef_samples.values, len(out_sample_data), axis=0), columns=coef_samples.columns)
+		predictions = np.sum([out_sample_data[covar] * coef_samples[covar] for covar in model.covariates], axis=0)
 		pred_df[model.target_var] = predictions
 
 	return pred_df

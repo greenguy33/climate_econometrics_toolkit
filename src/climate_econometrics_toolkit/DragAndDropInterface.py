@@ -19,6 +19,7 @@ class DragAndDropInterface():
         self.drag_start_x = None
         self.drag_start_y = None
         self.left_clicked_object = None
+        self.left_clicked_object_tk = tk.StringVar(value=(""))
         self.right_clicked_object = None
         self.in_drag = False
         self.arrow_list = []
@@ -29,6 +30,8 @@ class DragAndDropInterface():
         self.canvas_print_out = None
         self.menu = None
         self.time_column = None
+        self.arrow_width = 3
+        self.fontsize = 18
         self.right_click_button = "<ButtonPress-3>"
         if sys.platform == "darwin":
             self.right_click_button = "<ButtonPress-2>"
@@ -38,39 +41,143 @@ class DragAndDropInterface():
     def get_menu(self, tag):
 
         main_menu = Menu(self.window, tearoff=0)
-        transformation_menu = Menu(main_menu, tearoff=0)
-        time_trends_menu = Menu(main_menu, tearoff=0)
 
-        if f"sq({tag})" not in self.transformation_list:
-            transformation_menu.add_command(label="Square",command=lambda : self.add_transformation("sq"))
-        if f"cu({tag})" not in self.transformation_list:
-            transformation_menu.add_command(label="Cube",command=lambda : self.add_transformation("cu"))
-        if f"fd({tag})" not in self.transformation_list:
-            transformation_menu.add_command(label="First Difference",command=lambda : self.add_transformation("fd"))
-        if f"ln({tag})" not in self.transformation_list:
-            transformation_menu.add_command(label="Natural Log",command=lambda : self.add_transformation("ln"))
-        if f"lag1({tag})" not in self.transformation_list:
-            transformation_menu.add_command(label="Lag 1",command=lambda : self.add_transformation("lag1"))
-        if f"lag2({tag})" not in self.transformation_list:
-            transformation_menu.add_command(label="Lag 2",command=lambda : self.add_transformation("lag2"))
-        if f"lag3({tag})" not in self.transformation_list:
-            transformation_menu.add_command(label="Lag 3",command=lambda : self.add_transformation("lag3"))
-        if not all(f"{func}({tag})" in self.transformation_list for func in utils.supported_functions):
-            main_menu.add_cascade(label="Duplicate with Transformation",menu=transformation_menu)
+        if not (tag.startswith("tt1(") or tag.startswith("tt2(") or tag.startswith("tt3(") or tag.startswith("fe(")):
 
-        if not any(tag.startswith(val) for val in utils.supported_functions) and f"fe({tag})" not in self.transformation_list:
-            main_menu.add_command(label="Add Fixed Effect",command=lambda : self.add_transformation("fe"))
+            transformation_menu = Menu(main_menu, tearoff=0)
+            time_trends_menu = Menu(main_menu, tearoff=0)
 
-        if not any(tag.startswith(val) for val in utils.supported_functions):
-            main_menu.add_cascade(label="Add Time Trend",menu=time_trends_menu)
-            if f"tt1({tag})" not in self.transformation_list:
-                time_trends_menu.add_command(label="X 1",command=lambda : self.add_transformation("tt1"))
-            if f"tt2({tag})" not in self.transformation_list:
-                time_trends_menu.add_command(label="X 2",command=lambda : self.add_transformation("tt2"))
-            if f"tt3({tag})" not in self.transformation_list:
-                time_trends_menu.add_command(label="X 3",command=lambda : self.add_transformation("tt3"))
+            if f"sq({tag})" not in self.transformation_list:
+                transformation_menu.add_command(label="Square",command=lambda : self.add_transformation("sq"))
+            if f"cu({tag})" not in self.transformation_list:
+                transformation_menu.add_command(label="Cube",command=lambda : self.add_transformation("cu"))
+            if f"fd({tag})" not in self.transformation_list:
+                transformation_menu.add_command(label="First Difference",command=lambda : self.add_transformation("fd"))
+            if f"ln({tag})" not in self.transformation_list:
+                transformation_menu.add_command(label="Natural Log",command=lambda : self.add_transformation("ln"))
+            if f"lag1({tag})" not in self.transformation_list:
+                transformation_menu.add_command(label="Lag 1",command=lambda : self.add_transformation("lag1"))
+            if f"lag2({tag})" not in self.transformation_list:
+                transformation_menu.add_command(label="Lag 2",command=lambda : self.add_transformation("lag2"))
+            if f"lag3({tag})" not in self.transformation_list:
+                transformation_menu.add_command(label="Lag 3",command=lambda : self.add_transformation("lag3"))
+            if not all(f"{func}({tag})" in self.transformation_list for func in utils.supported_functions):
+                main_menu.add_cascade(label="Duplicate with Transformation",menu=transformation_menu)
+
+            if not any(tag.startswith(val) for val in utils.supported_functions) and f"fe({tag})" not in self.transformation_list:
+                main_menu.add_command(label="Add Fixed Effect",command=lambda : self.add_transformation("fe"))
+
+            if not any(tag.startswith(val) for val in utils.supported_functions):
+                main_menu.add_cascade(label="Add Time Trend",menu=time_trends_menu)
+                if f"tt1({tag})" not in self.transformation_list:
+                    time_trends_menu.add_command(label="X 1",command=lambda : self.add_transformation("tt1"))
+                if f"tt2({tag})" not in self.transformation_list:
+                    time_trends_menu.add_command(label="X 2",command=lambda : self.add_transformation("tt2"))
+                if f"tt3({tag})" not in self.transformation_list:
+                    time_trends_menu.add_command(label="X 3",command=lambda : self.add_transformation("tt3"))
+
+        main_menu.add_command(label="Delete Variable", command=self.remove_node)
+        main_menu.add_command(label="Swap with Other Variable", command=self.swap_node)
 
         return main_menu
+    
+    def remove_node(self):
+        element_tag = self.canvas.gettags(self.right_clicked_object)[0]
+        rectangle = [elem for elem in self.canvas.find_withtag(element_tag) if self.canvas.type(elem) == "rectangle"][0]
+        arrow_source_tags = f"from_{element_tag}"
+        arrow_target_tags = f"to_{element_tag}"
+        for arrow in self.canvas.find_withtag(arrow_source_tags):
+            arrow_tags = self.canvas.gettags(arrow)
+            self.arrow_list.remove(self.get_arrow_source_and_target(arrow_tags))
+            self.canvas.delete(arrow)
+        for arrow in self.canvas.find_withtag(arrow_target_tags):
+            arrow_tags = self.canvas.gettags(arrow)
+            self.arrow_list.remove(self.get_arrow_source_and_target(arrow_tags))
+            self.canvas.delete(arrow)
+        if element_tag.replace("boxed_text_","") in self.transformation_list:
+            self.transformation_list.remove(element_tag.replace("boxed_text_",""))
+        self.canvas.delete(self.right_clicked_object)
+        self.canvas.delete(rectangle)
+
+    def bind_right_click_to_arrow_tag(self, arrow_tag):
+        self.canvas.tag_bind(arrow_tag, self.right_click_button, self.delete_arrow_from_click)
+        self.canvas.tag_bind(arrow_tag, "<Control-Button-1>", self.delete_arrow_from_click)
+        self.canvas.tag_bind(arrow_tag, "<Command-Button-1>", self.delete_arrow_from_click)
+
+    def update_arrow_list_in_node_swap(self, node1_text):
+        arrows_to_add = []
+        arrows_to_remove = []
+        for arrow_tuple in self.arrow_list:
+            if arrow_tuple[0] == node1_text and arrow_tuple[1] == self.left_clicked_object:
+                arrows_to_remove.append(arrow_tuple)
+                arrows_to_add((self.left_clicked_object, node1_text))
+            elif arrow_tuple[1] == node1_text and arrow_tuple[0] == self.left_clicked_object:
+                arrows_to_remove.append(arrow_tuple)
+                arrows_to_add.append((node1_text, self.left_clicked_object))
+            elif arrow_tuple[0] == node1_text:
+                arrows_to_remove.append(arrow_tuple)
+                arrows_to_add.append((self.left_clicked_object, arrow_tuple[1]))
+            elif arrow_tuple[0] == self.left_clicked_object:
+                arrows_to_remove.append(arrow_tuple)
+                arrows_to_add.append((node1_text, arrow_tuple[1]))
+            elif arrow_tuple[1] == node1_text:
+                arrows_to_remove.append(arrow_tuple)
+                arrows_to_add.append((arrow_tuple[0], self.left_clicked_object))
+            elif arrow_tuple[1] == self.left_clicked_object:
+                arrows_to_remove.append(arrow_tuple)
+                arrows_to_add.append((arrow_tuple[0], node1_text))
+        for tup in arrows_to_remove:
+            self.arrow_list.remove(tup)
+        for tup in arrows_to_add:
+            self.arrow_list.append(tup)
+
+    def update_arrows_for_node_swap(self, node1_text):
+        node1_source_arrows = self.canvas.find_withtag(f"from_{self.canvas.gettags(node1_text)[0]}")
+        node1_target_arrows = self.canvas.find_withtag(f"to_{self.canvas.gettags(node1_text)[0]}")
+        node2_source_arrows = self.canvas.find_withtag(f"from_{self.canvas.gettags(self.left_clicked_object)[0]}")
+        node2_target_arrows = self.canvas.find_withtag(f"to_{self.canvas.gettags(self.left_clicked_object)[0]}")
+        for arrow in node1_source_arrows:
+            self.canvas.dtag(arrow, f"from_{self.canvas.gettags(node1_text)[0]}")
+            self.canvas.addtag(f"from_{self.canvas.gettags(self.left_clicked_object)[0]}", "withtag", arrow)
+            self.bind_right_click_to_arrow_tag(f"from_{self.canvas.gettags(self.left_clicked_object)[0]}")
+        for arrow in node1_target_arrows:
+            self.canvas.dtag(arrow, f"to_{self.canvas.gettags(node1_text)[0]}")
+            self.canvas.addtag(f"to_{self.canvas.gettags(self.left_clicked_object)[0]}", "withtag", arrow)
+            self.bind_right_click_to_arrow_tag(f"to_{self.canvas.gettags(self.left_clicked_object)[0]}")
+        for arrow in node2_source_arrows:
+            self.canvas.dtag(arrow, f"from_{self.canvas.gettags(self.left_clicked_object)[0]}")
+            self.canvas.addtag(f"from_{self.canvas.gettags(node1_text)[0]}", "withtag", arrow)
+            self.bind_right_click_to_arrow_tag(f"from_{self.canvas.gettags(node1_text)[0]}")
+        for arrow in node2_target_arrows:
+            self.canvas.dtag(arrow, f"to_{self.canvas.gettags(self.left_clicked_object)[0]}")
+            self.canvas.addtag(f"to_{self.canvas.gettags(node1_text)[0]}", "withtag", arrow)
+            self.bind_right_click_to_arrow_tag(f"to_{self.canvas.gettags(node1_text)[0]}")
+        self.update_arrow_list_in_node_swap(node1_text)
+
+    def swap_node(self):
+        self.left_clicked_object = None
+        self.left_clicked_object_tk.set("")
+        element_tag = self.canvas.gettags(self.right_clicked_object)[0]
+        rectangle = [elem for elem in self.canvas.find_withtag(element_tag) if self.canvas.type(elem) == "rectangle"][0]
+        text = [elem for elem in self.canvas.find_withtag(element_tag) if self.canvas.type(elem) == "text"][0]
+        self.window.wait_variable(self.left_clicked_object_tk)
+        tags = self.canvas.gettags(self.left_clicked_object)
+        clicked_rectangle = [elem for elem in self.canvas.find_withtag(tags[0]) if self.canvas.type(elem) == "rectangle"][0]
+        source_coords = self.canvas.coords(text)
+        target_coords = self.canvas.coords(self.left_clicked_object)
+        self.canvas.coords(text, *target_coords)
+        self.canvas.coords(self.left_clicked_object, *source_coords)
+        node1_bbox = self.canvas.bbox(text)
+        node2_bbox = self.canvas.bbox(self.left_clicked_object)
+        self.update_arrows_for_node_swap(text)
+        rect1 = self.canvas.create_rectangle(node1_bbox, fill="orange", tags=self.canvas.gettags(rectangle))
+        rect2 = self.canvas.create_rectangle(node2_bbox, fill="orange", tags=self.canvas.gettags(clicked_rectangle))
+        self.canvas.lower(rect1)
+        self.canvas.lower(rect2)
+        self.canvas.delete(rectangle)
+        self.canvas.delete(clicked_rectangle)
+        self.left_clicked_object = None
+        self.left_clicked_object_tk.set("")
 
     def add_transformation(self, transformation):
         element_tag = self.canvas.gettags(self.right_clicked_object)[0]
@@ -111,17 +218,15 @@ class DragAndDropInterface():
             self.clear_canvas()
             for item in cached_canvas["canvas_data"]:
                 if item["type"] == "line":
-                    self.canvas.create_line(*item["coords"], arrow=tk.LAST, tags=item["tags"])
+                    self.canvas.create_line(*item["coords"], arrow=tk.LAST, tags=item["tags"], width=self.arrow_width)
                     arrow_source, arrow_target = self.get_arrow_source_and_target(item["tags"])
                     self.arrow_list.append((arrow_source, arrow_target))
-                    self.canvas.tag_bind(f"from_{self.canvas.gettags(arrow_source)[0]}", self.right_click_button, self.delete_arrow)
-                    self.canvas.tag_bind(f"from_{self.canvas.gettags(arrow_source)[0]}", "<Control-Button-1>", self.delete_arrow)
-                    self.canvas.tag_bind(f"from_{self.canvas.gettags(arrow_source)[0]}", "<Command-Button-1>", self.delete_arrow)
+                    self.bind_right_click_to_arrow_tag(f"from_{self.canvas.gettags(arrow_source)[0]}")
                 else:
                     if item["type"] == "rectangle":
                         rect = self.canvas.create_rectangle(*item["coords"], fill="orange", tags=item["tags"])
                     elif item["type"] == "text":
-                        self.canvas.create_text(*item["coords"], text=item["text"], fill="black", tags=item["tags"])
+                        self.canvas.create_text(*item["coords"], text=item["text"], fill="black", tags=item["tags"], font=("Helvetica", self.fontsize, "bold"))
                         text = item["text"]
                         column_box_tag = f"boxed_text_{text}".replace(" ","_")
                         self.add_tags_to_canvas_elements(column_box_tag, item["text"])
@@ -131,8 +236,8 @@ class DragAndDropInterface():
     def tags_are_arrow(self, element_tags):
         if (
             len(element_tags) >= 2 and 
-            element_tags[0].startswith("from_") and 
-            element_tags[1].startswith("to_")
+            (element_tags[0].startswith("from_") and element_tags[1].startswith("to_")) or 
+            (element_tags[0].startswith("to_") and element_tags[1].startswith("from_"))
         ):
             return True
         else:
@@ -144,8 +249,14 @@ class DragAndDropInterface():
         self.canvas.itemconfig(clicked_rectangle, fill=color)
 
     def get_arrow_source_and_target(self, arrow_tags):
-        arrow_source = [elem for elem in self.canvas.find_withtag(arrow_tags[0].split("from_")[1]) if self.canvas.type(elem) == "text"][0]
-        arrow_target = [elem for elem in self.canvas.find_withtag(arrow_tags[1].split("to_")[1]) if self.canvas.type(elem) == "text"][0]
+        if "from_" in arrow_tags[0]:
+            source_tag = arrow_tags[0]
+            target_tag = arrow_tags[1]
+        else:
+            source_tag = arrow_tags[1]
+            target_tag = arrow_tags[0]
+        arrow_source = [elem for elem in self.canvas.find_withtag(source_tag.split("from_")[1]) if self.canvas.type(elem) == "text"][0]
+        arrow_target = [elem for elem in self.canvas.find_withtag(target_tag.split("to_")[1]) if self.canvas.type(elem) == "text"][0]
         return (arrow_source, arrow_target)
     
     def popup_menu(self, event):
@@ -162,10 +273,9 @@ class DragAndDropInterface():
     def add_tags_to_canvas_elements(self, column_box_tag, column):
         self.canvas.tag_bind(column_box_tag, "<B1-Motion>", self.on_drag)
         self.canvas.tag_bind(column_box_tag, "<ButtonRelease-1>", self.end_drag)
-        if not (column.startswith("tt1(") or column.startswith("tt2(") or column.startswith("tt3(") or column.startswith("fe(")):
-            self.canvas.tag_bind(column_box_tag, self.right_click_button, self.popup_menu)
-            self.canvas.tag_bind(column_box_tag, "<Control-Button-1>", self.popup_menu)
-            self.canvas.tag_bind(column_box_tag, "<Command-Button-1>", self.popup_menu)
+        self.canvas.tag_bind(column_box_tag, self.right_click_button, self.popup_menu)
+        self.canvas.tag_bind(column_box_tag, "<Control-Button-1>", self.popup_menu)
+        self.canvas.tag_bind(column_box_tag, "<Command-Button-1>", self.popup_menu)
 
     def add_model_variables(self, variables, coords=None):
         last_rectangle_right_side = 0
@@ -179,7 +289,7 @@ class DragAndDropInterface():
                     last_rectangle_right_side = 0
                 var_coords = [last_rectangle_right_side + len(column)*5+50, row_count * 50 + 20]
             column_box_tag = f"boxed_text_{column}".replace(" ","_")
-            text = self.canvas.create_text(*var_coords, text=column, fill="black", tags=column_box_tag)
+            text = self.canvas.create_text(*var_coords, text=column, fill="black", tags=column_box_tag, font=("Helvetica", self.fontsize, "bold"))
             rect = self.canvas.create_rectangle(self.canvas.bbox(text), fill="orange", tags=column_box_tag)
             self.canvas.lower(rect)
             self.add_tags_to_canvas_elements(column_box_tag, column)
@@ -238,11 +348,10 @@ class DragAndDropInterface():
                 tags=[
                     f"from_{self.canvas.gettags(source_object)[0]}",
                     f"to_{self.canvas.gettags(target_object)[0]}"
-                ]
+                ],
+                width=self.arrow_width
             )
-            self.canvas.tag_bind(f"from_{self.canvas.gettags(source_object)[0]}", self.right_click_button, self.delete_arrow)
-            self.canvas.tag_bind(f"from_{self.canvas.gettags(source_object)[0]}", "<Control-Button-1>", self.delete_arrow)
-            self.canvas.tag_bind(f"from_{self.canvas.gettags(source_object)[0]}", "<Command-Button-1>", self.delete_arrow)
+            self.bind_right_click_to_arrow_tag(f"from_{self.canvas.gettags(source_object)[0]}")
             self.arrow_list.append((source_object,target_object))
             self.reset_click()
 
@@ -253,7 +362,7 @@ class DragAndDropInterface():
         self.variables_displayed = False
         self.transformation_list = []
 
-    def delete_arrow(self, event):
+    def delete_arrow_from_click(self, event):
         arrow = self.canvas.find_closest(event.x, event.y)[0]
         arrow_tags = self.canvas.gettags(arrow)
         if self.tags_are_arrow(arrow_tags): 
@@ -280,6 +389,7 @@ class DragAndDropInterface():
             tags = self.canvas.gettags(clicked_object)
             if not self.tags_are_arrow(tags):
                 self.left_clicked_object = clicked_object
+                self.left_clicked_object_tk.set(clicked_object)
                 self.drag_start_x = event.x
                 self.drag_start_y = event.y
                 self.color_clicked_rectangle(clicked_object, "red")

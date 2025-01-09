@@ -132,7 +132,7 @@ class TkInterfaceUtils():
 	def evaluate_model(self):
 		if self.dnd.variables_displayed:
 			# TODO: Improve the text displayed
-			model_id, regression_result, print_string = api.evaluate_model(self.dnd.filename, self.build_model_indices_lists(), self.panel_column, self.time_column)
+			model_id, regression_result, print_string, model = api.evaluate_model(self.dnd.filename, self.build_model_indices_lists(), self.panel_column, self.time_column)
 			self.dnd.canvas_print_out.insert(tk.END, print_string)
 			if model_id != None:
 				# best_model_mse = api.get_best_model_for_dataset(self.dnd.data_source)[0]
@@ -144,7 +144,7 @@ class TkInterfaceUtils():
 				self.bind_stat_canvases_to_result_plot(*canvases)
 		else:
 			self.dnd.canvas_print_out.insert(tk.END, "\nPlease load a dataset and create a model before evaluating model.")
-		return model_id
+		return model
 
 
 	def restore_model(self, model_id):
@@ -167,16 +167,16 @@ class TkInterfaceUtils():
 
 	def run_bayesian_inference(self):
 		# TODO: I don't like how we need to evaluate the model to get the model id
-		model_id = self.evaluate_model()
+		model = self.evaluate_model()
 		self.dnd.canvas_print_out.insert(tk.END, f"\nBayesian inference will run in background...see command line for progress. Output will be available in {cet_home}/bayes_samples")
-		api.run_bayesian_regression(self.dnd.filename, model_id, use_threading=True)
+		api.run_bayesian_regression(self.dnd.filename, model.model_id)
 
 
 	def run_block_bootstrap(self):
-		model_id = self.evaluate_model()
+		model = self.evaluate_model()
 		# TODO: I don't like how we need to evaluate the model to get the model id
 		self.dnd.canvas_print_out.insert(tk.END, f"\nBootstrapping will run in background...see command line for progress. Output will be available in {cet_home}/bootstrap_samples")
-		api.run_block_bootstrap(self.dnd.filename, model_id, use_threading=True)
+		api.run_block_bootstrap(self.dnd.filename, model.model_id)
 
 
 	def extract_raster_data(self, window):
@@ -239,6 +239,22 @@ class TkInterfaceUtils():
 			raster_datasets[0].to_csv(f"{cet_home}/raster_output/{raster_file_short}.csv")
 		else:
 			self.integrate_raster_datasets(raster_datasets, geo_identifier)
+
+
+	def predict_out_of_sample(self):
+		out_sample_data_files = filedialog.askopenfilenames(
+			initialdir = "/",
+			title = "Select One or More File(s) with Data to Predict",
+			filetypes = (("CSV files",
+						"*.csv*"),
+						("all files",
+						"*.*"))
+		)
+		if len(out_sample_data_files) > 0:
+			model = self.evaluate_model()
+			# TODO: I don't like how we need to evaluate the model to get the model id
+			self.dnd.canvas_print_out.insert(tk.END, f"\nPrediction will run in background...see command line for progress. Output will be available in {cet_home}/predictions")
+			api.predict_out_of_sample(model, out_sample_data_files)
 
 
 	def clear_canvas(self):

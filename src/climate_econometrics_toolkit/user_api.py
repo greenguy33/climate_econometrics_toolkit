@@ -3,6 +3,7 @@ from climate_econometrics_toolkit.ClimateEconometricsModel import ClimateEconome
 import climate_econometrics_toolkit.utils as utils
 from climate_econometrics_toolkit import regression as regression
 from climate_econometrics_toolkit import prediction as predict
+from climate_econometrics_toolkit import user_prediction_functions as user_predict
 
 import pandas as pd
 import os
@@ -32,7 +33,7 @@ def model_checks():
 
 def evaluate_model():
     if model_checks():
-        model_id, _, return_string = api.run_model_analysis(copy.deepcopy(model.dataset), model, save_to_cache=False)
+        model_id, _, return_string, _ = api.run_model_analysis(copy.deepcopy(model.dataset), model, save_to_cache=False)
         model.model_id = model_id
         if return_string != "": print(return_string)
         if model_id != None:
@@ -90,7 +91,7 @@ def set_panel_column(node):
     if basic_existence_check(node):
         model.panel_column = node
 
-def add_transformations(node, transformations, keep_original_node=True):
+def add_transformation(node, transformations, keep_original_node=True):
     if not isinstance(transformations, list):
         transformations = [transformations]
     all_transformations_valid = True
@@ -105,8 +106,8 @@ def add_transformations(node, transformations, keep_original_node=True):
             for transform in transformations:
                 if not keep_original_node:
                     remove_covariates(node)
-                add_covariates(f"{transform}({node})", existence_check=False)
                 node = f"{transform}({node})"
+            add_covariates(f"{node}", existence_check=False)
         elif node == model.target_var:
             for transform in transformations:
                 node = f"{transform}({node})"
@@ -185,3 +186,7 @@ def predict_out_of_sample(model, data, transform_data=False, var_map=None):
     if isinstance(model, str):
         model = get_model_by_id(model)
     return predict.predict_out_of_sample(model, data, transform_data, var_map)
+
+def call_user_prediction_function(function_name, args):
+    func = getattr(user_predict, function_name)
+    return func(*args)

@@ -7,6 +7,7 @@ import dateutil.parser as parser
 import copy
 import ast
 import tkinter as tk
+from tkinter import ttk
 
 from climate_econometrics_toolkit.TkInterfaceUtils import TkInterfaceUtils
 from climate_econometrics_toolkit.DragAndDropInterface import DragAndDropInterface
@@ -34,7 +35,7 @@ def initial_checks():
 	env_var_name = "CETHOME"
 	if os.getenv(env_var_name) is None:
 		os.environ["CETHOME"] = "."
-	dirs_to_init = ["model_cache","bayes_samples","bootstrap_samples","raster_output"]
+	dirs_to_init = ["model_cache","bayes_samples","bootstrap_samples","raster_output","predictions"]
 	for dir in dirs_to_init:
 		if not os.path.isdir(dir):
 			os.makedirs(dir)
@@ -221,67 +222,94 @@ def construct_model_input_from_cache(data_file, model_id):
 
 def start_user_interface():
 	initial_checks()
-	window = tk.Tk()
-	window.title("Climate Econometrics Modeling Toolkit")
 
-	window.rowconfigure(0, minsize=100, weight=1)
-	window.rowconfigure(1, minsize=100, weight=1)
-	window.columnconfigure(1, minsize=800, weight=1)
+	root = tk.Tk()
+	root.title("Climate Econometrics Modeling Toolkit")
 
+	window = ttk.PanedWindow(root, orient=tk.HORIZONTAL)
+	window.pack(fill=tk.BOTH, expand=True)
+
+	lefthand_bar = ttk.Frame(window, relief=tk.RAISED)
+	window.add(lefthand_bar, weight=3)
+
+	canvas_window = ttk.PanedWindow(window, orient=tk.VERTICAL)
+	canvas_frame = ttk.Frame(canvas_window)
 	canvas = tk.Canvas(
-		window, 
-		width=800, 
-		height=800, 
+		canvas_frame, 
 		highlightthickness=5,
 		highlightbackground="black",
 		highlightcolor="red"
 	)
+	window.add(canvas_window, weight=3)
+	canvas_window.add(canvas_frame, weight=7)
 
-	lefthand_bar = tk.Frame(window, relief=tk.RAISED, bd=2)
-
-	regression_plot_frame = tk.Frame(lefthand_bar, relief=tk.RAISED, bd=2)
-	result_plot_frame = tk.Frame(window, relief=tk.RAISED, bd=2)
+	regression_plot_frame = ttk.Frame(lefthand_bar, relief=tk.RAISED)
+	result_plot_frame = ttk.Frame(canvas_window, relief=tk.RAISED)
+	canvas_window.add(result_plot_frame, weight=3)
 
 	dnd = DragAndDropInterface(canvas, window)
 	regression_plot = RegressionPlot(regression_plot_frame)
 	result_plot = ResultPlot(result_plot_frame)
 
-	mse_canvas = tk.Canvas(lefthand_bar, width=100, height=75)
-	pred_int_canvas = tk.Canvas(lefthand_bar, width=100, height=75)
-	r2_canvas = tk.Canvas(lefthand_bar, width=100, height=75)
-	rmse_canvas = tk.Canvas(lefthand_bar, width=100, height=75)
+	metrics_row1 = ttk.Frame(lefthand_bar, relief=tk.RAISED)
+	mse_canvas = tk.Canvas(metrics_row1, width=100, height=100)
+	pred_int_canvas = tk.Canvas(metrics_row1, width=100, height=100)
+
+	metrics_row2 = ttk.Frame(lefthand_bar, relief=tk.RAISED)
+	r2_canvas = tk.Canvas(metrics_row2, width=100, height=100)
+	rmse_canvas = tk.Canvas(metrics_row2, width=100, height=100)
+
+	uncertainty_button_row = ttk.Frame(lefthand_bar, relief=tk.RAISED)
+
 	stat_plot = StatPlot(mse_canvas, pred_int_canvas, r2_canvas, rmse_canvas)
 	tk_utils = TkInterfaceUtils(window, canvas, dnd, regression_plot, result_plot, stat_plot)
-	window.protocol("WM_DELETE_WINDOW", tk_utils.on_close)
+
+	root.protocol("WM_DELETE_WINDOW", tk_utils.on_close)
 
 	# TODO: add frame for showing/changing the panel and time columns
+
+	step1_label = tk.Label(lefthand_bar, text="Step 1: Climate Data Aggregation", font=('Helvetica', 12, 'bold'))
 	btn_extract = tk.Button(lefthand_bar, text="Extract Raster Data", command=lambda : tk_utils.extract_raster_data(window))
+	step2_label = tk.Label(lefthand_bar, text="Step 2: Construct and Evaluate Model", font=('Helvetica', 12, 'bold'))
 	btn_load = tk.Button(lefthand_bar, text="Load Dataset", command=tk_utils.add_data_columns_from_file)
 	btn_clear_canvas = tk.Button(lefthand_bar, text="Clear Canvas", command=tk_utils.clear_canvas)
 	btn_evaluate = tk.Button(lefthand_bar, text="Evaluate Model", command=tk_utils.evaluate_model)
-	btn_best_model = tk.Button(lefthand_bar, text="Restore Best Model", command=tk_utils.restore_best_model)
 	btn_clear_model_cache = tk.Button(lefthand_bar, text="Clear Model Cache", command=tk_utils.clear_model_cache)
-	btn_bootstrap = tk.Button(lefthand_bar, text="Run Block Bootstrap", command=tk_utils.run_block_bootstrap)
-	btn_bayesian_regression = tk.Button(lefthand_bar, text="Run Bayesian Inference", command=tk_utils.run_bayesian_inference)
+	btn_bootstrap = tk.Button(uncertainty_button_row, text="Run Block Bootstrap", command=tk_utils.run_block_bootstrap)
+	btn_bayesian_regression = tk.Button(uncertainty_button_row, text="Run Bayesian Inference", command=tk_utils.run_bayesian_inference)
+	step3_label = tk.Label(lefthand_bar, text="Step 3: Predict Impacts", font=('Helvetica', 12, 'bold'))
+	btn_predict = tk.Button(lefthand_bar, text="Predict Out-of-Sample", command=tk_utils.predict_out_of_sample)
 	result_text = tk.Text(lefthand_bar, height=2)
 
-	btn_extract.grid(row=0, column=0, stick="nsew", columnspan=2)
-	btn_load.grid(row=1, column=0, sticky="nsew", padx=5, pady=5, columnspan=2)
-	btn_clear_canvas.grid(row=2, column=0, sticky="nsew", padx=5, columnspan=2)
-	btn_evaluate.grid(row=3, column=0, sticky="nsew", padx=5, columnspan=2)
-	btn_best_model.grid(row=4, column=0, sticky="nsew", padx=5, columnspan=2)
-	btn_clear_model_cache.grid(row=5, column=0, sticky="nsew", padx=5, columnspan=2)
-	btn_bootstrap.grid(row=6, column=0, sticky="nsew")
-	btn_bayesian_regression.grid(row=6, column=1, sticky="nsew")
-	result_text.grid(row=7, column=0, sticky="nsew", columnspan=2)
-	mse_canvas.grid(row=8, column=0, sticky="nsew")
-	pred_int_canvas.grid(row=9, column=1, sticky="nsew")
-	r2_canvas.grid(row=10, column=0, sticky="nsew")
-	rmse_canvas.grid(row=11, column=1, sticky="nsew")
-	regression_plot_frame.grid(row=12, column=0, sticky="ns", columnspan=2)
-	lefthand_bar.grid(row=0, column=0, sticky="ns", rowspan=2)
-	canvas.grid(row=0, column=1, sticky="nsew")
-	result_plot_frame.grid(row=1, column=1, sticky="nsew")
+	step1_label.pack(fill=tk.BOTH, expand=True)
+	btn_extract.pack(fill=tk.BOTH, expand=True)
+
+	step2_label.pack(fill=tk.BOTH, expand=True)
+	btn_load.pack(fill=tk.BOTH, expand=True)
+	btn_clear_canvas.pack(fill=tk.BOTH, expand=True)
+	btn_evaluate.pack(fill=tk.BOTH, expand=True)
+	btn_clear_model_cache.pack(fill=tk.BOTH, expand=True)
+
+	uncertainty_button_row.pack(fill=tk.BOTH, expand=True)
+	btn_bootstrap.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+	btn_bayesian_regression.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+	step3_label.pack(fill=tk.BOTH, expand=True)
+	btn_predict.pack(fill=tk.BOTH, expand=True)
+
+	result_text.pack(fill=tk.BOTH, expand=True)
+
+	metrics_row1.pack(fill=tk.X)
+	mse_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+	r2_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+	metrics_row2.pack(fill=tk.X)
+	pred_int_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+	rmse_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+	regression_plot_frame.pack(fill=tk.BOTH, expand=True)
+
+	canvas.pack(fill=tk.BOTH, expand=True)
 
 	dnd.canvas_print_out = result_text
+
 	window.mainloop()

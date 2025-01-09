@@ -2,12 +2,14 @@ import pandas as pd
 import shutil
 import os
 import time
+import threading
 
 import climate_econometrics_toolkit.evaluate_model as ce_eval
 import climate_econometrics_toolkit.model_builder as mb
 import climate_econometrics_toolkit.utils as utils
 import climate_econometrics_toolkit.regression as regression
 import climate_econometrics_toolkit.prediction as predict
+import climate_econometrics_toolkit.user_prediction_functions as user_predict
 
 pd.set_option('display.min_rows', 100)
 pd.set_option('display.max_rows', 100)
@@ -34,18 +36,17 @@ def run_model_analysis(data, model, save_to_cache=True):
 		regression_result = model.regression_result
 		# TODO: don't print out fixed effect/time trend coefficients
 		print(regression_result.summary2().tables[1])
-	return model_id, regression_result, return_string
+	return model_id, regression_result, return_string, model
 
 
 def evaluate_model(data_file, model, panel_column, time_column):
-	# model = mb.parse_cxl(model)
 	data = pd.read_csv(data_file)
 	model, unused_nodes = mb.parse_model_input(model, data_file, panel_column, time_column)
 	model.dataset = data
 	if len(unused_nodes) > 0:
 		return_string += "\nWARNING: The following nodes are unused in the regression. " + str(unused_nodes)
-	model_id, regression_result, return_string = run_model_analysis(data, model)
-	return model_id, regression_result, return_string
+	model_id, regression_result, return_string, model = run_model_analysis(data, model)
+	return model_id, regression_result, return_string, model
 
 
 def get_best_model_for_dataset(filename):
@@ -71,7 +72,7 @@ def clear_model_cache(dataset):
 			shutil.rmtree(f"{cet_home}/model_cache/{dataset}")
 
 
-def run_bayesian_regression(data_file, model_id, use_threading=False):
+def run_bayesian_regression(data_file, model_id, use_threading=True):
 	data_file_short = data_file.split("/")[-1]
 	model, panel_column, time_column = utils.construct_model_input_from_cache(data_file_short, model_id)
 	model, _ = mb.parse_model_input(model, data_file, panel_column, time_column)
@@ -80,7 +81,7 @@ def run_bayesian_regression(data_file, model_id, use_threading=False):
 	regression.run_bayesian_regression(model, use_threading)
 
 
-def run_block_bootstrap(data_file, model_id, use_threading=False):
+def run_block_bootstrap(data_file, model_id, use_threading=True):
 	data_file_short = data_file.split("/")[-1]
 	model, panel_column, time_column = utils.construct_model_input_from_cache(data_file_short, model_id)
 	model, _ = mb.parse_model_input(model, data_file, panel_column, time_column)
@@ -95,6 +96,23 @@ def extract_raster_data(raster_file, shape_file, weights_file=None):
 
 def aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, timescale, geo_identifier):
 	return predict.aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, timescale, months_to_use=None)
+
+
+def predict_out_of_sample(model, out_sample_data_file, use_threading=True):
+	if use_threading:
+		thread = threading.Thread(target=predict_function,name="prediction_thread",args=(model,out_sample_data_file))
+		thread.daemon = True
+		thread.start()
+	else:
+		predict_function(model, out_sample_data_file)
+	
+
+def predict_function(model, out_sample_data_files):
+	for out_sample_data_file in out_sample_data_files:
+		out_sample_data = pd.read_csv(out_sample_data_file)
+		predictions = predict.predict_out_of_sample(model, out_sample_data, True, None)
+		data_file_short = out_sample_data_file.split("/")[-1].rpartition('.')[0]
+		predictions.to_csv(f"{cet_home}/predictions/predictions_{model.model_id}_{data_file_short}.csv")
 
 
 def start_interface():
