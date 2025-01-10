@@ -98,21 +98,27 @@ def aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, 
 	return predict.aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, timescale, months_to_use=None)
 
 
-def predict_out_of_sample(model, out_sample_data_file, use_threading=True):
+def predict_out_of_sample(model, out_sample_data_file, function_name, use_threading=True):
 	if use_threading:
-		thread = threading.Thread(target=predict_function,name="prediction_thread",args=(model,out_sample_data_file))
+		thread = threading.Thread(target=predict_function,name="prediction_thread",args=(model,out_sample_data_file,function_name))
 		thread.daemon = True
 		thread.start()
 	else:
 		predict_function(model, out_sample_data_file)
 	
 
-def predict_function(model, out_sample_data_files):
+def predict_function(model, out_sample_data_files, function_name):
 	for out_sample_data_file in out_sample_data_files:
 		out_sample_data = pd.read_csv(out_sample_data_file)
 		predictions = predict.predict_out_of_sample(model, out_sample_data, True, None)
+		if function_name != "None":
+			func = getattr(user_predict, function_name)
+			predictions = func(model, predictions)
 		data_file_short = out_sample_data_file.split("/")[-1].rpartition('.')[0]
-		predictions.to_csv(f"{cet_home}/predictions/predictions_{model.model_id}_{data_file_short}.csv")
+		filename = f"{cet_home}/predictions/predictions_{model.model_id}_{data_file_short}"
+		if function_name != "None":
+			filename += f"_{function_name}"
+		predictions.to_csv(filename+".csv")
 
 
 def start_interface():

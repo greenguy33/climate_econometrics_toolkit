@@ -12,6 +12,7 @@ import matplotlib.transforms as transform
 import climate_econometrics_toolkit.interface_api as api
 import climate_econometrics_toolkit.utils as utils
 from climate_econometrics_toolkit.RasterExtractionPopup import RasterExtractionPopup
+from climate_econometrics_toolkit.PredictionFunctionPopup import PredictionFunctionPopup
 
 import xarray as xr
 import geopandas as gpd
@@ -251,10 +252,12 @@ class TkInterfaceUtils():
 						"*.*"))
 		)
 		if len(out_sample_data_files) > 0:
+			prediction_function_popup = PredictionFunctionPopup(self.window)
+			function = prediction_function_popup.function
 			model = self.evaluate_model()
 			# TODO: I don't like how we need to evaluate the model to get the model id
 			self.dnd.canvas_print_out.insert(tk.END, f"\nPrediction will run in background...see command line for progress. Output will be available in {cet_home}/predictions")
-			api.predict_out_of_sample(model, out_sample_data_files)
+			api.predict_out_of_sample(model, out_sample_data_files, function)
 
 
 	def clear_canvas(self):
