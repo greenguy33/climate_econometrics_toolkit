@@ -10,12 +10,12 @@ import climate_econometrics_toolkit.regression as regression
 
 cet_home = os.getenv("CETHOME")
 
-def extract_raster_data(gcm_file, shape_file, weights_file):
+def extract_raster_data(gcm_file, shape_file, weight_file):
 	aggregation_func = "weighted_mean"
-	if weights_file is None:
+	if weight_file is None:
 		print("No weights file provided for extraction...using uniform weights.")
 		aggregation_func = "mean"
-	return exact_extract(gcm_file, shape_file, [aggregation_func], weights=weights_file)
+	return exact_extract(gcm_file, shape_file, [aggregation_func], weights=weight_file)
 
 def aggregate_raster_data(
 		raster_data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use, 

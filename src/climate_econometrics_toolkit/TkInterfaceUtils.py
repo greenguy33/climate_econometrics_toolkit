@@ -10,7 +10,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.transforms as transform
 
 import climate_econometrics_toolkit.interface_api as api
-import climate_econometrics_toolkit.utils as utils
 from climate_econometrics_toolkit.RasterExtractionPopup import RasterExtractionPopup
 from climate_econometrics_toolkit.PredictionFunctionPopup import PredictionFunctionPopup
 
@@ -25,15 +24,28 @@ cet_home = os.getenv("CETHOME")
 
 class TkInterfaceUtils():
 
-	def __init__(self, window, canvas, dnd, regression_plot, result_plot, stat_plot):
+	def __init__(self, window, canvas, dnd, regression_plot, result_plot, result_plot_frame, stat_plot):
 		self.window = window
 		self.canvas = canvas
 		self.dnd = dnd
 		self.regression_plot = regression_plot
 		self.result_plot = result_plot
+		self.result_plot_frame = result_plot_frame
 		self.stat_plot = stat_plot
 		self.panel_column = None
 		self.time_column = None
+
+		# setup hover label on result plot
+		self.hover_label_text = tk.StringVar()
+		self.hover_label = tk.Label(self.result_plot_frame, textvariable=self.hover_label_text)
+		self.hover_label.pack()
+		self.hover_label.bind("<ButtonPress-1>", self.model_id_to_clipboard)
+
+
+	def model_id_to_clipboard(self, event):
+		df = pd.DataFrame([self.hover_label_text.get().split(" ")[2]])
+		df.to_clipboard(index=False, header=False, sep=None, excel=False)
+		self.hover_label_text.set("Copied!")
 
 
 	def add_data_columns_from_file(self):
@@ -85,7 +97,14 @@ class TkInterfaceUtils():
 			if circle.contains_points([[event.x, event.y]]):
 				self.restore_model(self.result_plot.models[index])
 				break
-		
+
+
+	def handle_hover_on_result_plot(self, event):
+		for index, circle in enumerate(self.result_plot.circles):
+			if circle.contains_point((event.x, event.y)):
+				self.hover_label_text.set("Model ID: " + self.result_plot.models[index] + " (click to copy to clipboard)")
+				break
+
 
 	def create_result_plot(self, metric):
 		fig, axis = plt.subplots(1)
@@ -100,27 +119,26 @@ class TkInterfaceUtils():
 		self.result_plot.plot_canvas.draw()
 		self.result_plot.plot_canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 		self.result_plot.plot_canvas.mpl_connect('button_press_event', self.handle_click_on_result_plot)
+		self.result_plot.plot_canvas.mpl_connect('motion_notify_event', self.handle_hover_on_result_plot)
 
 
 	def update_result_plot(self, dataset, metric):
 		if os.path.isdir(f"{cet_home}/model_cache/{dataset}"):
 			self.result_plot.clear_figure()
-			sorted_cache_files = sorted({val:float(val) for val in os.listdir(f"model_cache/{dataset}")}.items(), key=lambda item: item[1])
+			sorted_cache_files = sorted({val:float(val) for val in os.listdir(f"{cet_home}/model_cache/{dataset}")}.items(), key=lambda item: item[1])
 			for cache_file in sorted_cache_files:
-				values = float(utils.get_attribute_from_model_file(dataset, metric, str(cache_file[0])))
-				self.result_plot.plot_data.append(values)
-				self.result_plot.models.append(cache_file[0])
+				if os.path.exists(f"{cet_home}/model_cache/{dataset}/{cache_file[0]}/tkinter_canvas.pkl"):
+					model = pd.read_pickle(f"{cet_home}/model_cache/{dataset}/{str(cache_file[0])}/model.pkl")
+					self.result_plot.plot_data.append(getattr(model, metric))
+					self.result_plot.models.append(cache_file[0])
 			self.create_result_plot(metric)
-			cached_canvas = pd.read_pickle(f"{cet_home}/model_cache/{dataset}/{cache_file[0]}/tkinter_canvas.pkl")
-			return cached_canvas["panel_column"], cached_canvas["time_column"]
+			model = pd.read_pickle(f"{cet_home}/model_cache/{dataset}/{cache_file[0]}/model.pkl")
+			return model.panel_column, model.time_column
 
 
 	def get_regression_stats_from_model(self ,model_id):
-		out_sample_mse = float(utils.get_attribute_from_model_file(self.dnd.data_source, "out_sample_mse_reduction", str(model_id)))
-		pred_int_cov = float(utils.get_attribute_from_model_file(self.dnd.data_source, "out_sample_pred_int_cov", str(model_id)))
-		r2 = float(utils.get_attribute_from_model_file(self.dnd.data_source, "r2", str(model_id)))
-		rmse = float(utils.get_attribute_from_model_file(self.dnd.data_source, "rmse", str(model_id)))
-		return out_sample_mse, pred_int_cov, r2, rmse
+		model = pd.read_pickle(f"{cet_home}/model_cache/{self.dnd.data_source}/{model_id}/model.pkl")
+		return model.out_sample_mse_reduction, model.out_sample_pred_int_cov, model.r2, model.rmse
 	
 
 	def bind_stat_canvases_to_result_plot(self, mse_canvas, pred_int_canvas, r2_canvas, rmse_canvas):
@@ -133,15 +151,15 @@ class TkInterfaceUtils():
 	def evaluate_model(self):
 		if self.dnd.variables_displayed:
 			# TODO: Improve the text displayed
-			model_id, regression_result, print_string, model = api.evaluate_model(self.dnd.filename, self.build_model_indices_lists(), self.panel_column, self.time_column)
+			model, regression_result, print_string = api.evaluate_model(self.dnd.filename, self.build_model_indices_lists(), self.panel_column, self.time_column)
 			self.dnd.canvas_print_out.insert(tk.END, print_string)
-			if model_id != None:
+			if model != None:
 				# best_model_mse = api.get_best_model_for_dataset(self.dnd.data_source)[0]
 				# self.dnd.canvas_print_out.insert(tk.END, f"\nThe best model in the cache has MSE reduction of {str(best_model_mse*100)[:5]}%")
-				self.dnd.save_canvas_to_cache(str(model_id), self.panel_column, self.time_column)
-				self.regression_plot.plot_new_regression_result(regression_result.summary2().tables[1], self.dnd.data_source, model_id)
+				self.dnd.save_canvas_to_cache(str(model.model_id), self.panel_column, self.time_column)
+				self.regression_plot.plot_new_regression_result(regression_result.summary2().tables[1], self.dnd.data_source, model.model_id)
 				self.update_result_plot(self.dnd.data_source, "r2")
-				canvases = self.stat_plot.update_stat_plot(*self.get_regression_stats_from_model(model_id))
+				canvases = self.stat_plot.update_stat_plot(*self.get_regression_stats_from_model(model.model_id))
 				self.bind_stat_canvases_to_result_plot(*canvases)
 		else:
 			self.dnd.canvas_print_out.insert(tk.END, "\nPlease load a dataset and create a model before evaluating model.")
@@ -153,17 +171,6 @@ class TkInterfaceUtils():
 		self.regression_plot.restore_regression_result(self.dnd.data_source, str(model_id))
 		canvases = self.stat_plot.update_stat_plot(*self.get_regression_stats_from_model(model_id))
 		self.bind_stat_canvases_to_result_plot(*canvases)
-
-
-	def restore_best_model(self):
-		if self.dnd.data_source == None:
-			self.dnd.canvas_print_out.insert(tk.END, f"\nPlease load a dataset before restoring a model from cache.") 
-		else:
-			min_mse, model_id = api.get_best_model_for_dataset(self.dnd.data_source)
-			if model_id == None:
-				self.dnd.canvas_print_out.insert(tk.END, f"\nThere is no cached model for this dataset.")
-			else:
-				self.restore_model(model_id)
 
 
 	def run_bayesian_inference(self):

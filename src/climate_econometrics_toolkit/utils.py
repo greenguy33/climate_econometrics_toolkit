@@ -188,37 +188,19 @@ def get_model_vars(data, model, demeaned=False):
 	return model_vars
 
 
-def get_attribute_from_model_file(dataset, attribute, model_id):
-	model = pd.read_csv(f"{cet_home}/model_cache/{dataset}/{model_id}/model.csv")
-	return model["attribute_value"][model['model_attribute']==attribute].values[0]
-
-
-def get_last_model_out_sample_mse(data_file):
-	if not os.path.isdir(f"{cet_home}/model_cache/{data_file}"):
-		return None
-	dataset_cache_files = [float(file) for file in os.listdir(f"{cet_home}/model_cache/{data_file}")]
-	if len(dataset_cache_files) == 0:
-		return None
-	return float(get_attribute_from_model_file(data_file, "out_sample_mse_reduction", max(dataset_cache_files)))
-
-
 def construct_model_input_from_cache(data_file, model_id):
-	target_var = get_attribute_from_model_file(data_file, "target_var", model_id)
-	covariates = get_attribute_from_model_file(data_file, "covariates", model_id)
-	covariate_list = ast.literal_eval(covariates)
-	panel_column = get_attribute_from_model_file(data_file, "panel_column", model_id)
-	time_column = get_attribute_from_model_file(data_file, "time_column", model_id)
-	fixed_effects = get_attribute_from_model_file(data_file, "fixed_effects", model_id)
-	fixed_effect_list = [f"fe({val})" for val in ast.literal_eval(fixed_effects)]
-	time_trends = ast.literal_eval(get_attribute_from_model_file(data_file, "time_trends", model_id))
+	model = pd.read_pickle(f"{cet_home}/model_cache/{data_file}/{model_id}/model.pkl")
+	covariate_list = ast.literal_eval(model.covariates)
+	fixed_effect_list = [f"fe({val})" for val in ast.literal_eval(model.fixed_effects)]
+	time_trends = ast.literal_eval(model.time_trends)
 	time_trend_list = []
 	for tt in time_trends:
 		tt_split = tt.split(" ")
 		time_trend_list.append(f"tt{tt_split[1]}({tt_split[0]})")
 	covariate_list.extend(fixed_effect_list)
 	covariate_list.extend(time_trend_list)
-	target_var_list = [target_var] * len(covariate_list)
-	return [covariate_list, target_var_list], panel_column, time_column
+	target_var_list = [model.target_var] * len(covariate_list)
+	return [covariate_list, target_var_list], model.panel_column, model.time_column
 
 def start_user_interface():
 	initial_checks()
@@ -262,7 +244,7 @@ def start_user_interface():
 	uncertainty_button_row = ttk.Frame(lefthand_bar, relief=tk.RAISED)
 
 	stat_plot = StatPlot(mse_canvas, pred_int_canvas, r2_canvas, rmse_canvas)
-	tk_utils = TkInterfaceUtils(window, canvas, dnd, regression_plot, result_plot, stat_plot)
+	tk_utils = TkInterfaceUtils(window, canvas, dnd, regression_plot, result_plot, result_plot_frame, stat_plot)
 
 	root.protocol("WM_DELETE_WINDOW", tk_utils.on_close)
 

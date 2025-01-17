@@ -1,6 +1,6 @@
 import numpy as np
 import os
-import csv
+import pickle as pkl
 
 cet_home = os.getenv("CETHOME")
 
@@ -18,7 +18,7 @@ class ClimateEconometricsModel:
 		"out_sample_pred_int_cov",
 		"r2",
 		"rmse",
-		"model_id"
+		"model_id"	
 	]
 
 	def __init__(self):
@@ -52,12 +52,8 @@ class ClimateEconometricsModel:
 		else:
 			return False
 
-	def save_model_to_cache(self, model_id):
-		dir_name = f"{cet_home}/model_cache/{self.data_file}/{model_id}"
-		self.model_id = model_id
+	def save_model_to_cache(self):
+		dir_name = f"{cet_home}/model_cache/{self.data_file}/{self.model_id}"
 		os.makedirs(dir_name)
-		with open(f"{dir_name}/model.csv", "w") as write_file:
-			writer = csv.writer(write_file)
-			writer.writerow(["model_attribute","attribute_value"])
-			for val in self.attrib_list:
-				writer.writerow([val, getattr(self, val)])
+		with open(f"{dir_name}/model.pkl", "wb") as write_file:
+			pkl.dump(self, write_file)

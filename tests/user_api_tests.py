@@ -45,7 +45,7 @@ def test_user_api():
     assert api.model.target_var == "fd(ln(GDP_per_capita))"
     assert api.model.model_vars == ["Temp","Precip","fd(ln(GDP_per_capita))"]
 
-    api.add_transformation("Precip", "sq", keep_original_node=False)
+    api.add_transformation("Precip", "sq", keep_original_var=False)
     assert api.model.covariates == ["Temp","sq(Precip)"]
     assert api.model.model_vars == ["Temp","sq(Precip)","fd(ln(GDP_per_capita))"]
 
@@ -98,18 +98,27 @@ def test_user_api():
 
     model2_id = api.evaluate_model()
 
-    best_rmse_model_id = api.get_best_model("rmse")
-    best_r2_model_id = api.get_best_model("r2")
-    best_mse_model_id = api.get_best_model("out_sample_mse")
-    best_mse_red_model_id = api.get_best_model("out_sample_mse_reduction")
-    best_pred_int_model_id = api.get_best_model("out_sample_pred_int_cov")
+    best_rmse_model = api.get_best_model("rmse")
+    best_r2_model = api.get_best_model("r2")
+    best_mse_model = api.get_best_model("out_sample_mse")
+    best_mse_red_model = api.get_best_model("out_sample_mse_reduction")
+    best_pred_int_model = api.get_best_model("out_sample_pred_int_cov")
 
     model1 = api.get_model_by_id(model1_id)
+    assert model1 is not None
     model2 = api.get_model_by_id(model2_id)
-    best_rmse_model = api.get_model_by_id(best_rmse_model_id)
-    best_r2_model = api.get_model_by_id(best_r2_model_id)
-    best_mse_model = api.get_model_by_id(best_mse_model_id)
-    best_mse_red_model = api.get_model_by_id(best_mse_red_model_id)
-    best_pred_int_model = api.get_model_by_id(best_pred_int_model_id)
+    assert model2 is not None
+    best_rmse_model = api.get_model_by_id(best_rmse_model.model_id)
+    assert best_rmse_model is not None
+    best_r2_model = api.get_model_by_id(best_r2_model.model_id)
+    assert best_r2_model is not None
+    best_mse_model = api.get_model_by_id(best_mse_model.model_id)
+    assert best_mse_model is not None
+    best_mse_red_model = api.get_model_by_id(best_mse_red_model.model_id)
+    assert best_mse_red_model is not None
+    best_pred_int_model = api.get_model_by_id(best_pred_int_model.model_id)
+    assert best_pred_int_model is not None
 
     assert not any(model is None for model in [model1,model2,best_rmse_model,best_r2_model,best_mse_model,best_mse_red_model,best_pred_int_model])
+
+    assert len(api.get_all_model_ids()) > 1

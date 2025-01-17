@@ -10,11 +10,9 @@ import os
 import copy
 
 model = ClimateEconometricsModel()
-model_list = {}
 
 cet_home = os.getenv("CETHOME")
 
-# TODO: There should be a model cache for the user API
 # TODO: assert types for user input to each method
 
 def model_checks():
@@ -33,34 +31,58 @@ def model_checks():
 
 def evaluate_model():
     if model_checks():
-        model_id, _, return_string, _ = api.run_model_analysis(copy.deepcopy(model.dataset), model, save_to_cache=False)
-        model.model_id = model_id
+        _, _, return_string = api.run_model_analysis(copy.deepcopy(model.dataset), model, save_to_cache=False)
         if return_string != "": print(return_string)
-        if model_id != None:
-            print(f"Model ID: {model_id}")
-            model_list[str(model_id)] = copy.deepcopy(model)
-            return str(model_id)
+        if model != None:
+            model.save_model_to_cache()
+            print(f"Model ID: {model.model_id}")
+            return str(model.model_id)
+        
+
+def build_model_from_cache(model_id):
+    if model.data_file == None:
+        print("You must load a dataset before accessing the cache")
+        return None
+    else:
+        return pd.read_pickle((f"{cet_home}/model_cache/{model.data_file}/{model_id}/model.pkl"))
+        
+
+def get_all_models_from_cache():
+    if model.data_file == None:
+        print("You must load a dataset before accessing the cache")
+        return None
+    else:
+        model_list = []
+        model_ids = os.listdir(f"{cet_home}/model_cache/{model.data_file}")
+        for model_id in model_ids:
+            model_list.append(build_model_from_cache(model_id))
+        return model_list
+
 
 def get_best_model(metric="r2"):
+    model_list = get_all_models_from_cache()
     if metric not in utils.supported_metrics:
         print(f"Metric must be one of {utils.supported_metrics}")
     else:
         if metric in ["r2","out_sample_mse","rmse"]:
-            sorted_models = sorted(model_list.items(), key=lambda x : getattr(x[1], metric))
+            sorted_models = sorted(model_list, key=lambda x : getattr(x, metric))
         elif metric == "out_sample_mse_reduction":
-            sorted_models = sorted(model_list.items(), key=lambda x : getattr(x[1], metric), reverse=True)
+            sorted_models = sorted(model_list, key=lambda x : getattr(x, metric), reverse=True)
         elif metric == "out_sample_pred_int_cov":
-            sorted_models = sorted(model_list.items(), key=lambda x : abs(getattr(x[1], "out_sample_pred_int_cov")-.95))
-        for (key, model) in sorted_models:
-            print("Model ID", key)
-            print(model.print())
-            return key
+            sorted_models = sorted(model_list, key=lambda x : abs(getattr(x, "out_sample_pred_int_cov")-.95))
+        print("Model ID", sorted_models[0].model_id)
+        print(sorted_models[0].print())
+        return sorted_models[0]
         
 def get_all_model_ids():
-    return list(model_list.keys())
+    if model.data_file == None:
+        print("You must load a dataset before accessing the cache")
+        return None
+    else:
+        return list(os.listdir(f"{cet_home}/model_cache/{model.data_file}"))
 
 def get_model_by_id(model_id):
-    return model_list[model_id]
+    return build_model_from_cache(model_id)
 
 def load_dataset_from_file(datafile):
     model.data_file = datafile.split("/")[-1]
@@ -69,29 +91,29 @@ def load_dataset_from_file(datafile):
 def view_current_model():
     model.print()
 
-def basic_existence_check(node):
+def basic_existence_check(var):
     if model.dataset is None:
         print("Please load a dataset before setting variables.")
         return False
-    elif node not in model.dataset:
-        print(f"Element {node} not found in data")
+    elif var not in model.dataset:
+        print(f"Element {var} not found in data")
         return False
     return True
 
-def set_target_variable(node, existence_check=True):
-    if not existence_check or basic_existence_check(node):
-        model.target_var = node
+def set_target_variable(var, existence_check=True):
+    if not existence_check or basic_existence_check(var):
+        model.target_var = var
         model.model_vars = model.covariates + [model.target_var]
 
-def set_time_column(node):
-    if basic_existence_check(node):
-        model.time_column = node
+def set_time_column(var):
+    if basic_existence_check(var):
+        model.time_column = var
 
-def set_panel_column(node):
-    if basic_existence_check(node):
-        model.panel_column = node
+def set_panel_column(var):
+    if basic_existence_check(var):
+        model.panel_column = var
 
-def add_transformation(node, transformations, keep_original_node=True):
+def add_transformation(var, transformations, keep_original_var=True):
     if not isinstance(transformations, list):
         transformations = [transformations]
     all_transformations_valid = True
@@ -100,66 +122,66 @@ def add_transformation(node, transformations, keep_original_node=True):
             all_transformations_valid = False
             print(f"{transform}() not a supported function.")
     if all_transformations_valid:
-        if node not in model.covariates and node != model.target_var:
-            print(f"{node} not in covariates list and is not target variable.")
-        elif node in model.covariates:
+        if var not in model.covariates and var != model.target_var:
+            print(f"{var} not in covariates list and is not target variable.")
+        elif var in model.covariates:
             for transform in transformations:
-                if not keep_original_node:
-                    remove_covariates(node)
-                node = f"{transform}({node})"
-            add_covariates(f"{node}", existence_check=False)
-        elif node == model.target_var:
+                if not keep_original_var:
+                    remove_covariates(var)
+                var = f"{transform}({var})"
+            add_covariates(f"{var}", existence_check=False)
+        elif var == model.target_var:
             for transform in transformations:
-                node = f"{transform}({node})"
-            set_target_variable(node, existence_check=False)
+                var = f"{transform}({var})"
+            set_target_variable(var, existence_check=False)
 
-def add_covariates(nodes, existence_check=True):
-    if not isinstance(nodes, list):
-        nodes = [nodes]
-    if not existence_check or all(basic_existence_check(node) for node in nodes):
-        for node in nodes:
-            if node not in model.covariates:
-                model.covariates.append(node)
+def add_covariates(vars, existence_check=True):
+    if not isinstance(vars, list):
+        vars = [vars]
+    if not existence_check or all(basic_existence_check(var) for var in vars):
+        for var in vars:
+            if var not in model.covariates:
+                model.covariates.append(var)
         model.model_vars = model.covariates + [model.target_var]
 
-def add_fixed_effects(nodes):
-    if not isinstance(nodes, list):
-        nodes = [nodes]
-    if all(basic_existence_check(node) for node in nodes):
-        for fe in nodes:
+def add_fixed_effects(vars):
+    if not isinstance(vars, list):
+        vars = [vars]
+    if all(basic_existence_check(var) for var in vars):
+        for fe in vars:
             if fe not in model.fixed_effects:
                 model.fixed_effects.append(fe)
 
-def add_time_trend(node, exp):
-    if basic_existence_check(node):
-        time_trend = node + " " + str(exp)
+def add_time_trend(var, exp):
+    if basic_existence_check(var):
+        time_trend = var + " " + str(exp)
         if time_trend not in model.time_trends:
             model.time_trends.append(time_trend)
 
-def remove_covariates(nodes):
-    if not isinstance(nodes, list):
-        nodes = [nodes]
-    for node in nodes:
-        model.covariates = [var for var in model.covariates if var != node]
-        model.model_vars = [var for var in model.model_vars if var != node]
+def remove_covariates(vars):
+    if not isinstance(vars, list):
+        vars = [vars]
+    for var_to_remove in vars:
+        model.covariates = [var for var in model.covariates if var != var_to_remove]
+        model.model_vars = [var for var in model.model_vars if var != var_to_remove]
 
-def remove_time_trend(node, exp):
-    time_trend = node + " " + str(exp)
+def remove_time_trend(var, exp):
+    time_trend = var + " " + str(exp)
     model.time_trends = [var for var in model.time_trends if var != time_trend]
 
-def remove_transformation(node, transformations):
+def remove_transformation(var, transformations):
     if not isinstance(transformations, list):
         transformations = [transformations]
-    transformed_node = copy.deepcopy(node)
+    transformed_var = copy.deepcopy(var)
     for transform in transformations:
-        transformed_node = f"{transform}({transformed_node})"
-    if model.target_var == transformed_node:
-        set_target_variable(node)
-    elif transformed_node in model.covariates:
-        model.covariates = [node for node in model.covariates if node != transformed_node]
-        model.model_vars = [node for node in model.model_vars if node != transformed_node]
+        transformed_var = f"{transform}({transformed_var})"
+    if model.target_var == transformed_var:
+        set_target_variable(var)
+    elif transformed_var in model.covariates:
+        model.covariates = [var for var in model.covariates if var != transformed_var]
+        model.model_vars = [var for var in model.model_vars if var != transformed_var]
     else:
-        print(f"Transformed node f{transformed_node} not found")
+        print(f"Transformed var f{transformed_var} not found")
 
 def run_bayesian_regression(model):
     if isinstance(model, str):
@@ -171,13 +193,8 @@ def run_block_bootstrap(model, num_samples=1000):
         model = get_model_by_id(model)
     regression.run_block_bootstrap(model, num_samples)
 
-def predict_from_gcms(model, gcms_to_use="all", vars_to_use="all", groups_to_use="all"):
-    if isinstance(model, str):
-        model = get_model_by_id(model)
-    predict.predict_from_gcms(model, gcms_to_use, vars_to_use, groups_to_use)
-
-def extract_raster_data(gcm_file, shape_file, weights_file=None):
-    return predict.extract_raster_data(gcm_file, shape_file, weights_file)
+def extract_raster_data(gcm_file, shape_file, weight_file=None):
+    return predict.extract_raster_data(gcm_file, shape_file, weight_file)
 
 def aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use=None):
     return predict.aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use)
