@@ -56,7 +56,7 @@ def predict_out_of_sample(model, out_sample_data, transform_data, gcm_to_model_v
 		if not all(var in out_sample_data.columns for var in model.covariates):
 			out_sample_data = utils.transform_data(out_sample_data, model, include_target_var=False)
 
-	bayesian_results = os.path.isdir(f"{cet_home}/bayes_samples/coefficient_samples_{model.model_id}.csv")
+	bayesian_results = os.path.exists(f"{cet_home}/bayes_samples/coefficient_samples_{model.model_id}.csv")
 	bootstrap_results = os.path.exists(f"{cet_home}/bootstrap_samples/coefficient_samples_{model.model_id}.csv")
 
 	out_sample_data = out_sample_data.dropna().reset_index(drop=True)
@@ -71,7 +71,6 @@ def predict_out_of_sample(model, out_sample_data, transform_data, gcm_to_model_v
 	else:
 		pred_df[model.time_column] = out_sample_data[[key for key, value in gcm_to_model_var_map.items() if value == model.time_column]]
 
-	# TODO: these will never trigger if calling from the interface because a new model_is assigned
 	if bayesian_results or bootstrap_results:
 		if bayesian_results:
 			coef_samples = pd.read_csv(f"{cet_home}/bayes_samples/coefficient_samples_{model.model_id}.csv")
