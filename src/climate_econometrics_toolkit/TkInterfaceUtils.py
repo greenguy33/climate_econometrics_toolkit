@@ -142,10 +142,10 @@ class TkInterfaceUtils():
 	
 
 	def bind_stat_canvases_to_result_plot(self, mse_canvas, pred_int_canvas, r2_canvas, rmse_canvas):
-		mse_canvas.bind("<ButtonPress-1>", lambda x, data=self.dnd.data_source, metric="out_sample_mse_reduction" : self.update_result_plot(data, metric))
-		pred_int_canvas.bind("<ButtonPress-1>", lambda x, data=self.dnd.data_source, metric="out_sample_pred_int_cov" : self.update_result_plot(data, metric))
-		r2_canvas.bind("<ButtonPress-1>", lambda x, data=self.dnd.data_source, metric="r2" : self.update_result_plot(data, metric))
-		rmse_canvas.bind("<ButtonPress-1>", lambda x, data=self.dnd.data_source, metric="rmse": self.update_result_plot(data, metric))
+		mse_canvas.bind("<ButtonPress-1>", lambda _, data=self.dnd.data_source, metric="out_sample_mse_reduction" : self.update_result_plot(data, metric))
+		pred_int_canvas.bind("<ButtonPress-1>", lambda _, data=self.dnd.data_source, metric="out_sample_pred_int_cov" : self.update_result_plot(data, metric))
+		r2_canvas.bind("<ButtonPress-1>", lambda _, data=self.dnd.data_source, metric="r2" : self.update_result_plot(data, metric))
+		rmse_canvas.bind("<ButtonPress-1>", lambda _, data=self.dnd.data_source, metric="rmse": self.update_result_plot(data, metric))
 
 
 	def evaluate_model(self):
@@ -161,9 +161,10 @@ class TkInterfaceUtils():
 				self.update_result_plot(self.dnd.data_source, "r2")
 				canvases = self.stat_plot.update_stat_plot(*self.get_regression_stats_from_model(model.model_id))
 				self.bind_stat_canvases_to_result_plot(*canvases)
+			self.dnd.current_model = model
+			return model
 		else:
 			self.dnd.canvas_print_out.insert(tk.END, "\nPlease load a dataset and create a model before evaluating model.")
-		return model
 
 
 	def restore_model(self, model_id):
@@ -174,17 +175,19 @@ class TkInterfaceUtils():
 
 
 	def run_bayesian_inference(self):
-		# TODO: I don't like how we need to evaluate the model to get the model id
-		model = self.evaluate_model()
-		self.dnd.canvas_print_out.insert(tk.END, f"\nBayesian inference will run in background...see command line for progress. Output will be available in {cet_home}/bayes_samples")
-		api.run_bayesian_regression(self.dnd.filename, model.model_id)
+		if self.dnd.current_model is None:
+			self.dnd.canvas_print_out.insert(tk.END, f"\nPlease evaluate your model or select an existing model before running Bayesian inference.")
+		else:
+			self.dnd.canvas_print_out.insert(tk.END, f"\nBayesian inference will run in background...see command line for progress. Output will be available in {cet_home}/bayes_samples")
+			api.run_bayesian_regression(self.dnd.current_model)
 
 
 	def run_block_bootstrap(self):
-		model = self.evaluate_model()
-		# TODO: I don't like how we need to evaluate the model to get the model id
-		self.dnd.canvas_print_out.insert(tk.END, f"\nBootstrapping will run in background...see command line for progress. Output will be available in {cet_home}/bootstrap_samples")
-		api.run_block_bootstrap(self.dnd.filename, model.model_id)
+		if self.dnd.current_model is None:
+			self.dnd.canvas_print_out.insert(tk.END, f"\nPlease evaluate your model or select an existing model before running bootstrapping.")
+		else:
+			self.dnd.canvas_print_out.insert(tk.END, f"\nBootstrapping will run in background...see command line for progress. Output will be available in {cet_home}/bootstrap_samples")
+			api.run_block_bootstrap(self.dnd.current_model)
 
 
 	def extract_raster_data(self, window):
@@ -250,21 +253,22 @@ class TkInterfaceUtils():
 
 
 	def predict_out_of_sample(self):
-		out_sample_data_files = filedialog.askopenfilenames(
-			initialdir = "/",
-			title = "Select One or More File(s) with Data to Predict",
-			filetypes = (("CSV files",
-						"*.csv*"),
-						("all files",
-						"*.*"))
-		)
-		if len(out_sample_data_files) > 0:
-			prediction_function_popup = PredictionFunctionPopup(self.window)
-			function = prediction_function_popup.function
-			model = self.evaluate_model()
-			# TODO: I don't like how we need to evaluate the model to get the model id
-			self.dnd.canvas_print_out.insert(tk.END, f"\nPrediction will run in background...see command line for progress. Output will be available in {cet_home}/predictions")
-			api.predict_out_of_sample(model, out_sample_data_files, function)
+		if self.dnd.current_model is None:
+			self.dnd.canvas_print_out.insert(tk.END, f"\nPlease evaluate your model or select an existing model before running prediction.")
+		else:
+			out_sample_data_files = filedialog.askopenfilenames(
+				initialdir = "/",
+				title = "Select One or More File(s) with Data to Predict",
+				filetypes = (("CSV files",
+							"*.csv*"),
+							("all files",
+							"*.*"))
+			)
+			if len(out_sample_data_files) > 0:
+				prediction_function_popup = PredictionFunctionPopup(self.window)
+				function = prediction_function_popup.function
+				self.dnd.canvas_print_out.insert(tk.END, f"\nPrediction will run in background...see command line for progress. Output will be available in {cet_home}/predictions")
+				api.predict_out_of_sample(self.dnd.current_model, out_sample_data_files, function)
 
 
 	def clear_canvas(self):

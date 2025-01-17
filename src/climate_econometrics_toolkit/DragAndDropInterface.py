@@ -33,6 +33,7 @@ class DragAndDropInterface():
         self.arrow_width = 3
         self.fontsize = 18
         self.right_click_button = "<ButtonPress-3>"
+        self.current_model = None
         if sys.platform == "darwin":
             self.right_click_button = "<ButtonPress-2>"
 
@@ -232,6 +233,7 @@ class DragAndDropInterface():
                         self.add_tags_to_canvas_elements(column_box_tag, item["text"])
             self.transformation_list = cached_canvas["transformation_list"]
             self.variables_displayed = True
+            self.current_model = pd.read_pickle(f"{cet_home}/model_cache/{self.data_source}/{model_id}/model.pkl")
 
     def tags_are_arrow(self, element_tags):
         if (

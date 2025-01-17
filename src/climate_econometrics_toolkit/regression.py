@@ -44,6 +44,7 @@ def run_block_bootstrap(model, num_samples=1000, use_threading=False):
 
 def bootstrap(transformed_data, model, num_samples):
 	# TOOD: this is too slow
+	print(num_samples)
 	covar_coefs = {covar:[] for covar in model.covariates}
 	panel_ids = list(set(transformed_data[model.panel_column]))
 	for i in progressbar.progressbar(range(num_samples)):

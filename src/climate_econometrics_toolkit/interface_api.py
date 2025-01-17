@@ -43,6 +43,7 @@ def evaluate_model(data_file, model, panel_column, time_column):
 	model.dataset = data
 	if len(unused_nodes) > 0:
 		return_string += "\nWARNING: The following nodes are unused in the regression. " + str(unused_nodes)
+	# TODO: check to see if this model is already in cache, if so return that model rather than re-evaluating the same model
 	return run_model_analysis(data, model)
 
 
@@ -55,22 +56,14 @@ def clear_model_cache(dataset):
 			shutil.rmtree(f"{cet_home}/model_cache/{dataset}")
 
 
-def run_bayesian_regression(data_file, model_id, use_threading=True):
-	data_file_short = data_file.split("/")[-1]
-	model, panel_column, time_column = utils.construct_model_input_from_cache(data_file_short, model_id)
-	model, _ = mb.parse_model_input(model, data_file, panel_column, time_column)
-	model.dataset = pd.read_csv(data_file).sort_values([model.time_column, model.panel_column]).reset_index(drop=True)
-	model.model_id = model_id
-	regression.run_bayesian_regression(model, use_threading)
+def run_bayesian_regression(model, use_threading=True):
+	# TODO: check to see if bayesian inference already ran for this model
+	regression.run_bayesian_regression(model, use_threading=use_threading)
 
 
-def run_block_bootstrap(data_file, model_id, use_threading=True):
-	data_file_short = data_file.split("/")[-1]
-	model, panel_column, time_column = utils.construct_model_input_from_cache(data_file_short, model_id)
-	model, _ = mb.parse_model_input(model, data_file, panel_column, time_column)
-	model.dataset = pd.read_csv(data_file).sort_values([model.time_column, model.panel_column]).reset_index(drop=True)
-	model.model_id = model_id
-	regression.run_block_bootstrap(model, use_threading)
+def run_block_bootstrap(model, use_threading=True):
+	# TODO: check to see if bootstrap already ran for this model
+	regression.run_block_bootstrap(model, use_threading=use_threading)
 
 
 def extract_raster_data(raster_file, shape_file, weights_file=None):

@@ -30,6 +30,7 @@ def model_checks():
     return True
 
 def evaluate_model():
+    # TODO: check to see if this model is already in cache, if so return that model rather than re-evaluating the same model
     if model_checks():
         _, _, return_string = api.run_model_analysis(copy.deepcopy(model.dataset), model, save_to_cache=False)
         if return_string != "": print(return_string)
@@ -184,11 +185,13 @@ def remove_transformation(var, transformations):
         print(f"Transformed var f{transformed_var} not found")
 
 def run_bayesian_regression(model):
+    # TODO: check to see if bayesian inference already ran for this model
     if isinstance(model, str):
         model = get_model_by_id(model)
     regression.run_bayesian_regression(model)
 
 def run_block_bootstrap(model, num_samples=1000):
+    # TODO: check to see if bootstrap already ran for this model
     if isinstance(model, str):
         model = get_model_by_id(model)
     regression.run_block_bootstrap(model, num_samples)
