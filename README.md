@@ -68,3 +68,5 @@ api.start_interface()
 ```
 
 The interface should launch in a separate window.
+
+For further documentation, see the [Interface Quickstart Guide](docs/quickstart.md) and the [API Documentation](docs/api_documentation.pdf).
