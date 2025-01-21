@@ -210,3 +210,8 @@ def predict_out_of_sample(model, data, transform_data=False, var_map=None):
 def call_user_prediction_function(function_name, args):
     func = getattr(user_predict, function_name)
     return func(*args)
+
+# TODO: document below this line
+
+def transform_data(data, model, include_target_var=True, demean=False):
+    return utils.transform_data(data, model, include_target_var, demean)

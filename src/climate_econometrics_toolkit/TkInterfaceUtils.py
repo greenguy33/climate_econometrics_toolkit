@@ -51,7 +51,7 @@ class TkInterfaceUtils():
 	def add_data_columns_from_file(self):
 
 		if self.dnd.variables_displayed:
-			self.dnd.canvas_print_out.insert(tk.END, "\nPlease clear the canvas before loading another dataset.")
+			self.update_interface_window_output("Please clear the canvas before loading another dataset.")
 		else:
 			filename = filedialog.askopenfilename(
 				initialdir = "/",
@@ -68,7 +68,7 @@ class TkInterfaceUtils():
 			data = pd.read_csv(filename)
 			columns = data.columns
 			if len(columns) > 100:
-				self.dnd.canvas_print_out.insert(tk.END, f"\nERROR: This dataset exceeds the maximum number of columns(100)")
+				self.update_interface_window_output("ERROR: This dataset exceeds the maximum number of columns(100)")
 			else:
 				self.dnd.add_model_variables(columns)
 				user_identified_columns = self.update_result_plot(self.dnd.data_source, "r2")
@@ -152,10 +152,11 @@ class TkInterfaceUtils():
 		if self.dnd.variables_displayed:
 			# TODO: Improve the text displayed
 			model, regression_result, print_string = api.evaluate_model(self.dnd.filename, self.build_model_indices_lists(), self.panel_column, self.time_column)
-			self.dnd.canvas_print_out.insert(tk.END, print_string)
+			self.update_interface_window_output(print_string)
 			if model != None:
-				# best_model_mse = api.get_best_model_for_dataset(self.dnd.data_source)[0]
-				# self.dnd.canvas_print_out.insert(tk.END, f"\nThe best model in the cache has MSE reduction of {str(best_model_mse*100)[:5]}%")
+				self.update_interface_window_output(
+					f"Model results saved to {cet_home}/model_results/{model.model_id}.csv\nRegression script saved to {cet_home}/regression_scripts/{model.model_id}.csv"
+				)
 				self.dnd.save_canvas_to_cache(str(model.model_id), self.panel_column, self.time_column)
 				self.regression_plot.plot_new_regression_result(regression_result.summary2().tables[1], self.dnd.data_source, model.model_id)
 				self.update_result_plot(self.dnd.data_source, "r2")
@@ -164,7 +165,7 @@ class TkInterfaceUtils():
 			self.dnd.current_model = model
 			return model
 		else:
-			self.dnd.canvas_print_out.insert(tk.END, "\nPlease load a dataset and create a model before evaluating model.")
+			self.update_interface_window_output("Please load a dataset and create a model before evaluating model.")
 
 
 	def restore_model(self, model_id):
@@ -176,17 +177,17 @@ class TkInterfaceUtils():
 
 	def run_bayesian_inference(self):
 		if self.dnd.current_model is None:
-			self.dnd.canvas_print_out.insert(tk.END, f"\nPlease evaluate your model or select an existing model before running Bayesian inference.")
+			self.update_interface_window_output("Please evaluate your model or select an existing model before running Bayesian inference.")
 		else:
-			self.dnd.canvas_print_out.insert(tk.END, f"\nBayesian inference will run in background...see command line for progress. Output will be available in {cet_home}/bayes_samples")
+			self.update_interface_window_output("Bayesian inference will run in background...see command line for progress. Output will be available in {cet_home}/bayes_samples")
 			api.run_bayesian_regression(self.dnd.current_model)
 
 
 	def run_block_bootstrap(self):
 		if self.dnd.current_model is None:
-			self.dnd.canvas_print_out.insert(tk.END, f"\nPlease evaluate your model or select an existing model before running bootstrapping.")
+			self.update_interface_window_output("Please evaluate your model or select an existing model before running bootstrapping.")
 		else:
-			self.dnd.canvas_print_out.insert(tk.END, f"\nBootstrapping will run in background...see command line for progress. Output will be available in {cet_home}/bootstrap_samples")
+			self.update_interface_window_output("Bootstrapping will run in background...see command line for progress. Output will be available in {cet_home}/bootstrap_samples")
 			api.run_block_bootstrap(self.dnd.current_model)
 
 
@@ -196,12 +197,12 @@ class TkInterfaceUtils():
 		shape_file = raster_extract_popup.shape_file
 
 		if raster_files is None or shape_file is None:
-			self.dnd.canvas_print_out.insert(tk.END, "\nBoth a raster file and a shape file must be selected.")
+			self.update_interface_window_output("Both a raster file and a shape file must be selected.")
 		else:
 			time_interval = int(raster_extract_popup.time_interval)
 			weights_file = raster_extract_popup.weight_file
 			aggregation_func = raster_extract_popup.func
-			self.dnd.canvas_print_out.insert(tk.END, f"\nRaster aggregation will run in background. When complete file will be saved to {cet_home}/raster_output. Check command line for errors.")
+			self.update_interface_window_output(f"Raster aggregation will run in background. When complete file will be saved to {cet_home}/raster_output. Check command line for errors.")
 			thread = threading.Thread(target=self.raster_aggregation,name="bootstrap_thread",args=(raster_files, shape_file, aggregation_func, weights_file, time_interval))
 			thread.daemon = True
 			thread.start()
@@ -235,7 +236,6 @@ class TkInterfaceUtils():
 		df.to_csv(f"{cet_home}/raster_output/integrated_dataset_with_{len(raster_datasets)}_input_files.csv")
 
 
-
 	def raster_aggregation(self, raster_files, shape_file, aggregation_func, weights_file, time_interval):
 		raster_datasets = []
 		# TODO: for multiple rasters, since time index is set to 0 for all files, this will erroneously align time spans even if they are not aligned in original files
@@ -254,7 +254,7 @@ class TkInterfaceUtils():
 
 	def predict_out_of_sample(self):
 		if self.dnd.current_model is None:
-			self.dnd.canvas_print_out.insert(tk.END, f"\nPlease evaluate your model or select an existing model before running prediction.")
+			self.update_interface_window_output(f"Please evaluate your model or select an existing model before running prediction.")
 		else:
 			out_sample_data_files = filedialog.askopenfilenames(
 				initialdir = "/",
@@ -267,7 +267,7 @@ class TkInterfaceUtils():
 			if len(out_sample_data_files) > 0:
 				prediction_function_popup = PredictionFunctionPopup(self.window)
 				function = prediction_function_popup.function
-				self.dnd.canvas_print_out.insert(tk.END, f"\nPrediction will run in background...see command line for progress. Output will be available in {cet_home}/predictions")
+				self.update_interface_window_output(f"Prediction will run in background...see command line for progress. Output will be available in {cet_home}/predictions")
 				api.predict_out_of_sample(self.dnd.current_model, out_sample_data_files, function)
 
 
@@ -278,14 +278,21 @@ class TkInterfaceUtils():
 		self.stat_plot.clear_stat_plot()
 		self.panel_column = None
 		self.time_column = None
+		self.hover_label_text.set("")
 
 
 	def clear_model_cache(self):
 		api.clear_model_cache(self.dnd.data_source)
 		self.result_plot.clear_figure()
-		self.dnd.canvas_print_out.insert(tk.END, "\nModel cache cleared")
+		self.update_interface_window_output("Model cache cleared")
+		self.hover_label_text.set("")
 
 
 	def on_close(self):
 		self.window.quit()
 		self.window.destroy()
+
+
+	def update_interface_window_output(self, output_text):
+		self.dnd.canvas_print_out.delete(1.0, tk.END)
+		self.dnd.canvas_print_out.insert(tk.END, output_text)

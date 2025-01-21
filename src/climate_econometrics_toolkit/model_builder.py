@@ -24,6 +24,7 @@ def build_model_from_graph(graph, data_file, panel_column, time_column):
 	model.fixed_effects = fixed_effects
 	model.time_trends = time_trends
 	model.data_file = data_file.split("/")[-1]
+	model.full_data_path = data_file
 	model.time_column = time_column
 	model.panel_column = panel_column
 

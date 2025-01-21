@@ -214,23 +214,26 @@ class DragAndDropInterface():
     def restore_canvas_from_cache(self, model_id):
         cached_canvas = pd.read_pickle(f'{cet_home}/model_cache/{self.data_source}/{model_id}/tkinter_canvas.pkl')
         if cached_canvas["data_source"] != self.data_source:
-            self.canvas_print_out.insert(tk.END, f"\nCached model is for a different data source. Please clear cache to use new dataset.")  
+            self.canvas_print_out.delete(1.0, tk.END)
+            self.canvas_print_out.insert(tk.END, "Cached model is for a different data source. Please clear cache to use new dataset.")  
         else:
             self.clear_canvas()
             for item in cached_canvas["canvas_data"]:
+                # process all rectanges/text before arrows
+                if item["type"] == "rectangle":
+                    rect = self.canvas.create_rectangle(*item["coords"], fill="orange", tags=item["tags"])
+                elif item["type"] == "text":
+                    self.canvas.create_text(*item["coords"], text=item["text"], fill="black", tags=item["tags"], font=("Helvetica", self.fontsize, "bold"))
+                    text = item["text"]
+                    column_box_tag = f"boxed_text_{text}".replace(" ","_")
+                    self.add_tags_to_canvas_elements(column_box_tag, item["text"])
+            for item in cached_canvas["canvas_data"]:
+                # now process all arrows
                 if item["type"] == "line":
                     self.canvas.create_line(*item["coords"], arrow=tk.LAST, tags=item["tags"], width=self.arrow_width)
                     arrow_source, arrow_target = self.get_arrow_source_and_target(item["tags"])
                     self.arrow_list.append((arrow_source, arrow_target))
                     self.bind_right_click_to_arrow_tag(f"from_{self.canvas.gettags(arrow_source)[0]}")
-                else:
-                    if item["type"] == "rectangle":
-                        rect = self.canvas.create_rectangle(*item["coords"], fill="orange", tags=item["tags"])
-                    elif item["type"] == "text":
-                        self.canvas.create_text(*item["coords"], text=item["text"], fill="black", tags=item["tags"], font=("Helvetica", self.fontsize, "bold"))
-                        text = item["text"]
-                        column_box_tag = f"boxed_text_{text}".replace(" ","_")
-                        self.add_tags_to_canvas_elements(column_box_tag, item["text"])
             self.transformation_list = cached_canvas["transformation_list"]
             self.variables_displayed = True
             self.current_model = pd.read_pickle(f"{cet_home}/model_cache/{self.data_source}/{model_id}/model.pkl")
