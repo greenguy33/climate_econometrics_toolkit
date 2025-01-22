@@ -1,5 +1,7 @@
 # Climate Econometrics Toolkit
 
+![graphical abstract](figures/graphical_abstract.png)
+
 This project contains both a user interface and a Python API designed for helping researchers with climate impact modeling using econometric-style regression models. This project has been developed as part of my PhD research. It is a work in progress. Please reach out with any questions or make an issue.
 
 Developer contact: Hayden Freedman (hfreedma@uci.edu)
@@ -25,7 +27,7 @@ by Ortiz-Bobea et al. as an example. I based some of the implementations in this
 
 After analyzing the workflows of several climate econometric research papers, I identified a three-step workflow which many of these papers have in common.
 
-![three step workflow](docs/figures/readme_fig1.png "Three Step Climate Econometrics Workflow")
+![three step workflow](figures/cet_fig1.png "Three Step Climate Econometrics Workflow")
 
 There are functions available in this tool to help with each step of this workflow. Ideally, this can help reduce code duplication between papers, improve reproducibility of paper results, and reduce barriers to entry for researchers entering the field.
 
