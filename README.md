@@ -56,9 +56,7 @@ pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/
 
 In order for all features to work properly, the environmental variable `CET_HOME` must be set. Exported files will be saved to this directory.
 
-# Quick Start
-
-## User interface
+#### Start
 
 To start the interface, simply open a Python shell and execute the following commands:
 
