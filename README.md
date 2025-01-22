@@ -1,5 +1,3 @@
-# Climate Econometrics Toolkit
-
 ![graphical abstract](figures/graphical_abstract.png)
 
 This project contains both a user interface and a Python API designed for helping researchers with climate impact modeling using econometric-style regression models. This project has been developed as part of my PhD research. It is a work in progress. Please reach out with any questions or make an issue.
@@ -36,6 +34,20 @@ There are functions available in this tool to help with each step of this workfl
 **For Step 2**, you can use the user interface to visually construct and evaluate different models. Models are automatically evaluated on a withheld subset of your data and several metrics are available in the interface. There is also a model cache alongside a timeline feature that lets you easily return to previous models and see which models are the best performing. After choosing your best model, you can export the coefficients as a CSV file or you can run bootstrapping or Bayesian inference from within the interface to generate coefficient samples that can be used to seed your impact projections with uncertainty. All of these features are also available from the API if you prefer to programmatically construct and evaluate your model.
 
 **For Step 3**, you provide your counterfactual or climate projection data and you get predictions of your dependent variable based on your model. If you ran bootstrapping or Bayesian inference, a prediction for each sample will be calculated (so if you have, for example, 1,000 bootstrap samples, you'll get 1,000 predictions of the dependent variable for each row of climate data input).
+
+# Climate Econometrics Toolkit Interface
+
+The Climate Economterics Toolkit interface consists of 4 main sections.
+
+![Interface Overview](figures/overview_fig.png)
+
+1. **Point-and-click model construction:** Using the top right panel, variables from a loaded dataset can be dragged on the canvas. Arrows can be added by first clicking a source node, then clicking a target node. A regression model is built by adding arrows from all the model covariates and effects to a single dependent (target) variable. Arrows can be removed by right-clicking.
+2. **Data transformations:** Right clicking on a variable opens up a transformation menu, which enables automatic application of a set of pre-programmed transformations, such as squaring, log transforming, first differencing, and lagging a variable. Fixed effects and time trends can also be created from this menu.
+3. **Out-of-sample evaluation:** Once a model has been constructed on the canvas, the "Evaluate Model" button triggers an automatic evaluation of the model on a portion of the dataset that is automatically withheld. Once the evaluation is complete, the results of metrics such as $R^2$ and root mean squared error (RMSE), as well as p-values for each covariate, appear in the bottom left of the interface.
+4. **Model history timeline:** Once a model has been evaluated, it appears on the timeline panel in the bottom right as a blue dot. The timeline can be adjusted by clicking on any of the metrics boxes, which rebuilds the timeline to show how each model performed based on the selected metric. Clicking any blue dot restores the state of the corresponding model to the canvas.
+5. **Model cache (not pictured):** All aspects of the model, including coefficient values, metrics, timeline, and canvas state, are saved in a cache, which automatically reload when the same dataset is re-loaded, even if the program is closed and re-opened.
+
+See the [Interface Quickstart Guide](docs/quickstart.md) for more details.
 
 # Installation
 
