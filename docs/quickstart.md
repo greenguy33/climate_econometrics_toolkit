@@ -115,4 +115,12 @@ Note that both of these processes can be long-running, depending on the model; c
 <img src="../figures/step3.png" alt="raster" width="600" height="400" class="center">
 </p>
 
-The "Predict Out-of-Sample" button can be used to apply the constructed model to generate predictions on some other dataset. A typical use case would be predicting against aggregated General Circulation Model (GCM) data, which contains historical forcing or future projection data. This would allow for the computation of historical impacts or 
+The "Predict Out-of-Sample" button can be used to apply the constructed model to generate predictions on some other dataset. A typical use case would be predicting against aggregated General Circulation Model (GCM) data, which contains historical forcing or future projection data. This would allow for the computation of historical impacts or making predictions about the future. Note that the selected file must contain the same columns as the input dataset.
+
+After selecting a dataset, you will be prompted to apply a post-processing function to the data. These functions are found in `src/climate_econometrics_toolkit/user_prediction_functions.py`. Selecting "None" means that the raw predictions will be available. Selecting a function will apply the function to the predictions. Currently, the only function available is `geotemporal_cumulative_sum`, which takes the global cumulative sum of the predictions along the axis of time. More functions can be added to `src/climate_econometrics_toolkit/user_prediction_functions.py` and will appear on this list in the interface.
+
+<p align="center">
+<img src="../figures/step3_popup.png" alt="raster" width="300" class="center">
+</p>
+
+The output will be available in `{cet_home}/predictions`. If bootstrapping or Bayesian inference has been run for the selected model, the predictions will be of dimension MxN, where M is the number of coefficient samples and N is the number of rows in the out-of-sample data to be predicted on. If neither of these processes will be run, the predictions will be of dimension N.
