@@ -75,7 +75,7 @@ In order for all features to work properly, the environmental variable `CET_HOME
 To start the interface, simply open a Python shell and execute the following commands:
 
 ```
-from climate_econometrics_toolkit import climate_econometrics_api as api
+from climate_econometrics_toolkit import user_api as api
 api.start_interface()
 ```
 
