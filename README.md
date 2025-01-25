@@ -63,7 +63,7 @@ source climate_econometrics_toolkit.venv/bin/activate
 #### Install package and dependencies
 
 ```
-pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ climate-econometrics-toolkit==0.0.13
+pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ climate-econometrics-toolkit==0.0.14
 ```
 
 #### Add environmental variable CET_HOME
