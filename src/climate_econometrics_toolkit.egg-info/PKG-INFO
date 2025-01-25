@@ -1,6 +1,6 @@
 Metadata-Version: 2.2
 Name: climate_econometrics_toolkit
-Version: 0.0.15
+Version: 0.0.16
 Summary: An API and visual tool for building climate econometric models
 Author-email: Hayden Freedman <hfreedma@uci.edu>
 Classifier: Programming Language :: Python :: 3
@@ -18,7 +18,7 @@ Requires-Dist: scikit-learn>=1.4.0
 Requires-Dist: scipy>=1.12.0
 Requires-Dist: xarray>=2024.1.0
 Requires-Dist: geopandas>=0.14.3
-Requires-Dist: exactextract>=0.3.0.dev0
+Requires-Dist: exactextract>=0.2.0
 Requires-Dist: progressbar2>=4.5.0
 
 ![graphical abstract](figures/graphical_abstract.png)
@@ -86,7 +86,7 @@ source climate_econometrics_toolkit.venv/bin/activate
 #### Install package and dependencies
 
 ```
-pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ climate-econometrics-toolkit==0.0.14
+pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ climate-econometrics-toolkit==0.0.16
 ```
 
 #### Add environmental variable CET_HOME
