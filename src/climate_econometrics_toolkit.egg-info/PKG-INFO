@@ -8,18 +8,6 @@ Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
 Requires-Python: >=3.10
 Description-Content-Type: text/markdown
-Requires-Dist: networkx>=3.3
-Requires-Dist: numpy>=1.26.4
-Requires-Dist: statsmodels>=0.14.2
-Requires-Dist: pandas>=2.2.2
-Requires-Dist: pymc>=5.10.3
-Requires-Dist: pyfixest>=0.24.1
-Requires-Dist: scikit-learn>=1.4.0
-Requires-Dist: scipy>=1.12.0
-Requires-Dist: xarray>=2024.1.0
-Requires-Dist: geopandas>=0.14.3
-Requires-Dist: exactextract>=0.2.0
-Requires-Dist: progressbar2>=4.5.0
 
 ![graphical abstract](figures/graphical_abstract.png)
 
@@ -98,7 +86,7 @@ In order for all features to work properly, the environmental variable `CET_HOME
 To start the interface, simply open a Python shell and execute the following commands:
 
 ```
-from climate_econometrics_toolkit import user_api as api
+from climate_econometrics_toolkit import interface_api as api
 api.start_interface()
 ```
 

@@ -14,6 +14,9 @@ class StatPlot():
         self.r2_canvas.delete("all")
         self.rmse_canvas.delete("all")
 
+    def get_adjusted_box_coords(self, box_coords, x_offset=0, y_offset=0):
+        return (box_coords[0]+x_offset, box_coords[1]+y_offset, box_coords[2]+x_offset, box_coords[3]+y_offset)
+
     def update_stat_plot(self, mse, pred_int_cov, r2, rmse):
         self.clear_stat_plot()
         mse_string = '%.2f' % (mse * 100) + "%"
@@ -33,10 +36,16 @@ class StatPlot():
             pred_int_box_color = "yellow"
         if pred_int_cov < .951 and pred_int_cov > .949:
             pred_int_box_color = "green"
-        mse_rect = self.mse_canvas.create_rectangle(self.mse_canvas.bbox(mse_text), fill=mse_box_color)
-        pred_int_rect = self.pred_int_canvas.create_rectangle(self.pred_int_canvas.bbox(pred_int_text), fill=pred_int_box_color)
-        r2_rect = self.r2_canvas.create_rectangle(self.r2_canvas.bbox(r2_text), fill="gray")
-        rmse_rect = self.rmse_canvas.create_rectangle(self.rmse_canvas.bbox(rmse_text), fill="gray")
+        
+        mse_box_coords = self.get_adjusted_box_coords(self.mse_canvas.bbox(mse_text), y_offset=-4)
+        pred_int_box_coords = self.get_adjusted_box_coords(self.pred_int_canvas.bbox(pred_int_text), y_offset=-4)
+        r2_box_coords = self.get_adjusted_box_coords(self.r2_canvas.bbox(r2_text), y_offset=-4)
+        rmse_box_coords = self.get_adjusted_box_coords(self.rmse_canvas.bbox(rmse_text), y_offset=-4)
+        
+        mse_rect = self.mse_canvas.create_rectangle(mse_box_coords, fill=mse_box_color)
+        pred_int_rect = self.pred_int_canvas.create_rectangle(pred_int_box_coords, fill=pred_int_box_color)
+        r2_rect = self.r2_canvas.create_rectangle(r2_box_coords, fill="gray")
+        rmse_rect = self.rmse_canvas.create_rectangle(rmse_box_coords, fill="gray")
         self.mse_canvas.lower(mse_rect)
         self.pred_int_canvas.lower(pred_int_rect)
         self.r2_canvas.lower(r2_rect)
