@@ -18,10 +18,13 @@ def build_model_from_graph(graph, data_file, panel_column, time_column):
 	covars = [node for index, node in enumerate(input_nodes) if not any(function_split[index][0] == val for val in utils.supported_effects)]
 	fixed_effects = [node.split("(")[1].split(")")[0] for node in input_nodes if node[0:3] == "fe("]
 	time_trends = [node.split("(")[1].split(")")[0] + " " + node[2] for node in input_nodes if node[0:2] == "tt" and node[3] == "("]
+	random_effects = [node.split("(")[1].split(")")[0].split(",") for node in input_nodes if node[0:2] == "re" and node[2] == "("]
 	model.covariates = covars
 	model.target_var = target_var
 	model.model_vars = covars + [target_var]
 	model.fixed_effects = fixed_effects
+	if len(random_effects) > 0:
+		model.random_effects = random_effects[0]
 	model.time_trends = time_trends
 	model.data_file = data_file.split("/")[-1]
 	model.full_data_path = data_file

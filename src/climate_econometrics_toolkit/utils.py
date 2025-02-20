@@ -21,7 +21,7 @@ warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning
 cet_home = os.getenv("CETHOME")
 
 supported_functions = ["fd","sq","cu","ln","lag1","lag2","lag3"]
-supported_effects = ["fe", "tt1", "tt2", "tt3"]
+supported_effects = ["fe", "tt1", "tt2", "tt3","re"]
 # TODO: consider adjusted r2, as this accounts for different numbers of variables?
 # last line of https://www.nature.com/articles/s43016-024-01040-8#Sec8
 supported_metrics = ["out_sample_mse_reduction","out_sample_mse","out_sample_pred_int_cov","rmse","r2"]
@@ -143,22 +143,24 @@ def demean_fixed_effects(data, model):
 
 
 def transform_data(data, model, include_target_var=True, demean=False):
+	data = copy.deepcopy(data)
 	transformations = []
 	vars_to_transform = model.model_vars
 	if not include_target_var:
 		vars_to_transform = model.covariates
 	for node in vars_to_transform:
-		function_split = node.split("(")
-		if function_split[0] not in supported_functions and function_split[0] not in supported_effects:
-			assert node in data, f"Element {node} not found in data"
-		elif function_split[0] in supported_functions:
-			data_node = function_split[-1].replace(")","")
-			assert data_node in data, f"Element {data_node} not found in data"
-			for function in reversed(function_split[:-1]):
-				assert function in supported_functions, f"Invalid function call {function}"
-				transformations.append(function + f"({data_node})")
-				data = add_transformation_to_data(data, model, transformations[-1])
-				data_node = transformations[-1]
+		if not node.startswith("re("):
+			function_split = node.split("(")
+			if function_split[0] not in supported_functions and function_split[0] not in supported_effects:
+				assert node in data, f"Element {node} not found in data"
+			elif function_split[0] in supported_functions:
+				data_node = function_split[-1].replace(")","")
+				assert data_node in data, f"Element {data_node} not found in data"
+				for function in reversed(function_split[:-1]):
+					assert function in supported_functions, f"Invalid function call {function}"
+					transformations.append(function + f"({data_node})")
+					data = add_transformation_to_data(data, model, transformations[-1])
+					data_node = transformations[-1]
 	for ie in model.time_trends:
 		data = add_time_trends_to_data(ie, data, model.time_column)
 	# Note: removing nan's before demeaning fixed effects may slightly impact the results compared to other statistical packages.

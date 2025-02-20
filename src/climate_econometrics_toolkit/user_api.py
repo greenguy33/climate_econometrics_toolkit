@@ -184,6 +184,23 @@ def remove_transformation(var, transformations):
     else:
         print(f"Transformed var f{transformed_var} not found")
 
+def remove_fixed_effect(fe):
+    model.fixed_effects = [var for var in model.fixed_effects if var != fe]
+
+def add_random_effect(var, group):
+    if model.random_effects != None:
+        print("Only one random effect is supported. Please remove the previous random effect before adding another.")
+    else:
+        model.random_effects = [var, group]
+        if var in model.covariates:
+            remove_covariates(var)
+
+def remove_random_effect(add_to_covariate_list=True):
+    if model.random_effects is not None:
+        if add_to_covariate_list:
+            add_covariates(model.random_effects[0])
+        model.random_effects = None
+
 def run_bayesian_regression(model):
     # TODO: check to see if bayesian inference already ran for this model
     if isinstance(model, str):
@@ -205,7 +222,7 @@ def aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, 
 def predict_out_of_sample(model, data, transform_data=False, var_map=None):
     if isinstance(model, str):
         model = get_model_by_id(model)
-    return predict.predict_out_of_sample(model, data, transform_data, var_map)
+    return predict.predict_out_of_sample(model, copy.deepcopy(data), transform_data, var_map)
 
 def call_user_prediction_function(function_name, args):
     func = getattr(user_predict, function_name)
@@ -214,4 +231,4 @@ def call_user_prediction_function(function_name, args):
 # TODO: document below this line
 
 def transform_data(data, model, include_target_var=True, demean=False):
-    return utils.transform_data(data, model, include_target_var, demean)
+    return utils.transform_data(copy.deepcopy(data), model, include_target_var, demean)

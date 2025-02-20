@@ -33,7 +33,10 @@ def run_model_analysis(data, model, save_to_cache=True):
 			model.save_model_to_cache()
 		regression_result = model.regression_result
 		# TODO: don't print out fixed effect/time trend coefficients
-		print(regression_result.summary2().tables[1])
+		if model.random_effects is None:
+			print(regression_result.summary2().tables[1])
+		else:
+			print(regression_result.params)
 		model.save_regression_script()
 	return model, regression_result, return_string
 

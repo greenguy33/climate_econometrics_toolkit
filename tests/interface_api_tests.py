@@ -469,3 +469,24 @@ def test_ortiz_bobea_model():
 
 	assert year_fe_red < both_fe_red
 	assert both_fe_red < country_fe_red
+
+
+def test_random_slopes():
+
+	data = get_data()
+	from_indices = ['Precip', 'fd(Temp)', 'sq(Temp)', 'sq(Precip)', 'fd(Precip)', 're(Temp,iso_id)']
+	to_indices = ['fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))']
+	model = cet.parse_model_input([from_indices, to_indices], "file5.csv", "iso_id", "year")[0]
+	transformed_data = utils.transform_data(data, model)
+	assert(all(val in transformed_data for val in ['ln(GDP_per_capita)','fd(ln(GDP_per_capita))','sq(Temp)','fd(Temp)','sq(Precip)','fd(Precip)']))
+
+	res1 = cer.run_random_effects_regression(transformed_data, model).params
+	assert not any(np.isnan(val) for val in res1)
+
+	model = cee.evaluate_model(data, model)
+	assert not np.isnan(model.out_sample_mse)
+	assert not np.isnan(model.out_sample_mse_reduction)
+	assert not np.isnan(model.in_sample_mse)
+	assert np.isnan(model.out_sample_pred_int_cov)
+	assert not np.isnan(model.rmse)
+	pd.testing.assert_series_equal(res1.sort_index(), model.regression_result.params.sort_index())

@@ -1,4 +1,5 @@
 import statsmodels.api as sm
+import statsmodels.formula.api as smf
 import pymc as pm
 import os
 from pytensor import tensor as pt
@@ -18,9 +19,19 @@ def run_standard_regression(transformed_data, model, demeaned=False):
 	model_vars = utils.get_model_vars(transformed_data, model, demeaned)
 	regression_data = transformed_data[model_vars]
 	regression_data = sm.add_constant(regression_data)
-	reg = sm.OLS(transformed_data[model.target_var],regression_data,missing="drop")
-	regression_result = reg.fit()
-	return regression_result
+	reg = sm.OLS(transformed_data[model.target_var],regression_data,missing="drop").fit()
+	return reg
+
+
+def run_random_effects_regression(transformed_data, model, demeaned=False):
+	model_vars = utils.get_model_vars(transformed_data, model, demeaned)
+	transformed_data.columns = [col.replace("(","_").replace(")","_") for col in transformed_data.columns]
+	model_vars = [var.replace("(","_").replace(")","_") for var in model_vars]
+	mv_as_string = "+".join(model_vars)
+	target_var = model.target_var.replace("(","_").replace(")","_")
+	formula = f"{target_var} ~ {mv_as_string}"
+	reg = smf.mixedlm(formula, data=transformed_data, groups=model.random_effects[1], re_formula=f"0+{model.random_effects[0]}").fit()
+	return reg
 
 
 def run_intercept_only_regression(transformed_data, model):

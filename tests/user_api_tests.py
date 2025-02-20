@@ -98,6 +98,45 @@ def test_user_api():
 
     model2_id = api.evaluate_model()
 
+    api.remove_fixed_effect("iso_id")
+
+    assert api.model.fixed_effects == ["year"]
+
+    api.add_covariates("Temp")
+    assert api.model.covariates == ["Precip","sq(Precip)","Temp"]
+    assert api.model.model_vars == ["Precip","sq(Precip)","Temp","GDP_per_capita"]
+
+    api.add_random_effect("Temp", "iso_id")
+
+    assert api.model.random_effects == ["Temp","iso_id"]
+    assert api.model.covariates == ["Precip","sq(Precip)"]
+    assert api.model.model_vars == ["Precip","sq(Precip)","GDP_per_capita"]
+
+    # does nothing because there is already a random effect in the model
+    api.add_random_effect("Precip", "iso_id")
+
+    assert api.model.random_effects == ["Temp","iso_id"]
+    assert api.model.covariates == ["Precip","sq(Precip)"]
+    assert api.model.model_vars == ["Precip","sq(Precip)","GDP_per_capita"]
+
+    api.remove_random_effect()
+
+    assert api.model.random_effects is None
+    assert api.model.covariates == ["Precip","sq(Precip)","Temp"]
+    assert api.model.model_vars == ["Precip","sq(Precip)","Temp","GDP_per_capita"]
+
+    api.remove_covariates("Temp")
+    assert api.model.covariates == ["Precip","sq(Precip)"]
+    assert api.model.model_vars == ["Precip","sq(Precip)","GDP_per_capita"]
+
+    api.add_random_effect("Precip", "iso_id")
+
+    assert api.model.random_effects == ["Precip","iso_id"]
+    assert api.model.covariates == ["sq(Precip)"]
+    assert api.model.model_vars == ["sq(Precip)","GDP_per_capita"]
+
+    model3_id = api.evaluate_model()
+
     best_rmse_model = api.get_best_model("rmse")
     best_r2_model = api.get_best_model("r2")
     best_mse_model = api.get_best_model("out_sample_mse")
@@ -108,6 +147,9 @@ def test_user_api():
     assert model1 is not None
     model2 = api.get_model_by_id(model2_id)
     assert model2 is not None
+    model3 = api.get_model_by_id(model3_id)
+    assert model3 is not None
+
     best_rmse_model = api.get_model_by_id(best_rmse_model.model_id)
     assert best_rmse_model is not None
     best_r2_model = api.get_model_by_id(best_r2_model.model_id)
@@ -119,6 +161,6 @@ def test_user_api():
     best_pred_int_model = api.get_model_by_id(best_pred_int_model.model_id)
     assert best_pred_int_model is not None
 
-    assert not any(model is None for model in [model1,model2,best_rmse_model,best_r2_model,best_mse_model,best_mse_red_model,best_pred_int_model])
+    assert not any(model is None for model in [model1,model2,model3,best_rmse_model,best_r2_model,best_mse_model,best_mse_red_model,best_pred_int_model])
 
     assert len(api.get_all_model_ids()) > 1

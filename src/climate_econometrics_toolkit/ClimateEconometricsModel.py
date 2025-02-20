@@ -11,6 +11,7 @@ class ClimateEconometricsModel:
 		"target_var",
 		"covariates",
 		"fixed_effects",
+		"random_effects",
 		"time_trends",
 		"time_column",
 		"panel_column",
@@ -35,6 +36,7 @@ class ClimateEconometricsModel:
 		self.r2 = np.NaN
 		self.rmse = np.NaN
 		self.fixed_effects = []
+		self.random_effects = None
 		self.time_trends = []
 		self.data_file = None
 		self.full_data_path = None
@@ -59,10 +61,14 @@ class ClimateEconometricsModel:
 		os.makedirs(dir_name)
 		with open(f"{dir_name}/model.pkl", "wb") as write_file:
 			pkl.dump(self, write_file)
-		self.regression_result.summary2().tables[1].to_csv(f"model_results/{self.model_id}.csv")
+		if self.random_effects is None:
+			self.regression_result.summary2().tables[1].to_csv(f"model_results/{self.model_id}.csv")
+		else:
+			self.regression_result.summary().tables[1].to_csv(f"model_results/{self.model_id}.csv")
+		
 
 	def save_regression_script(self):
-
+		# TODO: add random effects
 		demean_data = False
 		if len(self.fixed_effects) > 0 and len(self.time_trends) == 0:
 			demean_data = True
