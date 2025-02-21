@@ -1,4 +1,5 @@
 import tkinter as tk
+import pandas as pd
 
 class StatPlot():
 
@@ -20,8 +21,14 @@ class StatPlot():
     def update_stat_plot(self, mse, pred_int_cov, r2, rmse):
         self.clear_stat_plot()
         mse_string = '%.2f' % (mse * 100) + "%"
-        pred_int_cov_string = '%.2f' % (pred_int_cov * 100) + "%"
-        rmse_string = '%.2f' % rmse
+        if not pd.isnull(pred_int_cov):
+            pred_int_cov_string = '%.2f' % (pred_int_cov * 100) + "%"
+        else:
+            pred_int_cov_string = "NaN"
+        if not pd.isnull(rmse):
+            rmse_string = '%.2f' % rmse
+        else:
+            rmse_string = "NaN"
         self.mse_canvas.create_text(self.mse_canvas.winfo_width()/2, self.mse_canvas.winfo_height()/2-20, text="Mean Squared Error Reduction %")
         self.pred_int_canvas.create_text(self.mse_canvas.winfo_width()/2, self.mse_canvas.winfo_height()/2-20, text="Prediction Interval Coverage %")
         self.r2_canvas.create_text(self.r2_canvas.winfo_width()/2, self.r2_canvas.winfo_height()/2-20, text="R^2")
@@ -31,11 +38,14 @@ class StatPlot():
         r2_text = self.r2_canvas.create_text(self.r2_canvas.winfo_width()/2, self.r2_canvas.winfo_height()/2+20, text=r2, font=("Helvetica", 25))
         rmse_text = self.rmse_canvas.create_text(self.rmse_canvas.winfo_width()/2, self.rmse_canvas.winfo_height()/2+20, text=rmse_string, font=("Helvetica", 25))
         mse_box_color = "green" if mse > 0 else "red"
-        pred_int_box_color = "red"
-        if pred_int_cov < .96 and pred_int_cov > .94:
-            pred_int_box_color = "yellow"
-        if pred_int_cov < .951 and pred_int_cov > .949:
-            pred_int_box_color = "green"
+        if pd.isnull(pred_int_cov):
+            pred_int_box_color = "gray"
+        else:
+            pred_int_box_color = "red"
+            if pred_int_cov < .96 and pred_int_cov > .94:
+                pred_int_box_color = "yellow"
+            if pred_int_cov < .951 and pred_int_cov > .949:
+                pred_int_box_color = "green"
         
         mse_box_coords = self.get_adjusted_box_coords(self.mse_canvas.bbox(mse_text), y_offset=-4)
         pred_int_box_coords = self.get_adjusted_box_coords(self.pred_int_canvas.bbox(pred_int_text), y_offset=-4)

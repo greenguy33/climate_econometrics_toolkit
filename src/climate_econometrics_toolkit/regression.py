@@ -23,11 +23,11 @@ def run_standard_regression(transformed_data, model, demeaned=False):
 	return reg
 
 
-def run_random_effects_regression(transformed_data, model, demeaned=False):
-	model_vars = utils.get_model_vars(transformed_data, model, demeaned)
+def run_random_effects_regression(transformed_data, model):
+	model_vars = utils.get_model_vars(transformed_data, model)
 	transformed_data.columns = [col.replace("(","_").replace(")","_") for col in transformed_data.columns]
 	model_vars = [var.replace("(","_").replace(")","_") for var in model_vars]
-	mv_as_string = "+".join(model_vars)
+	mv_as_string = "+".join(model_vars) if len(model_vars) > 0 else "0"
 	target_var = model.target_var.replace("(","_").replace(")","_")
 	formula = f"{target_var} ~ {mv_as_string}"
 	reg = smf.mixedlm(formula, data=transformed_data, groups=model.random_effects[1], re_formula=f"0+{model.random_effects[0]}").fit()

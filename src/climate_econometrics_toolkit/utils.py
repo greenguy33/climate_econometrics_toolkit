@@ -168,6 +168,8 @@ def transform_data(data, model, include_target_var=True, demean=False):
 	vars_to_include = model.covariates + model.fixed_effects
 	if include_target_var:
 		vars_to_include = vars_to_include + [model.target_var]
+	if model.random_effects is not None:
+		vars_to_include.append(model.random_effects[0])
 	data = remove_nan_rows(data, vars_to_include)
 	if not demean:
 		for fe in model.fixed_effects:
@@ -178,10 +180,9 @@ def transform_data(data, model, include_target_var=True, demean=False):
 	return data
 
 
-def get_model_vars(data, model, demeaned=False):
+def get_model_vars(data, model, include_fixed_effects=True):
 	model_vars = [var for var in model.covariates]
-	if demeaned:
-		# exclude fixed effects from demeaned data
+	if not include_fixed_effects:
 		for effect_col in [col for col in data if any(col.startswith(val) for val in supported_effects) and not col.startswith("fe_")]:
 			model_vars.append(effect_col)
 	else:
@@ -203,6 +204,7 @@ def construct_model_input_from_cache(data_file, model_id):
 	covariate_list.extend(time_trend_list)
 	target_var_list = [model.target_var] * len(covariate_list)
 	return [covariate_list, target_var_list], model.panel_column, model.time_column
+
 
 def start_user_interface():
 	initial_checks()

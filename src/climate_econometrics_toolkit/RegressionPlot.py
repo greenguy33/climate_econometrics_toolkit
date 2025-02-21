@@ -19,22 +19,24 @@ class RegressionPlot():
         self.plot_canvas = None
 
     def add_normal_distribution_to_axis(self, coef_name, reg_result, index, axis, num_plots):
-    
-        mean = reg_result["Coef."][index]
-        sd = reg_result["Std.Err."][index]
-        pval = reg_result["P>|t|"][index]
-        if pval < .00001:
-            pval = "< .00001"
-        elif pval < .0001:
-            pval = "< .0001"
-        elif pval < .001:
-            pval = "< .001"
-        elif pval < .01:
-            pval = "< .01"
-        elif pval < .05:
-            pval = "< .05"
-        else:
-            pval = '%.2f' % pval
+        mean = float(reg_result["Coef."][index])
+        sd = float(reg_result["Std.Err."][index])
+        # TODO: get pvals from random effect model result
+        if "P>|t|" in reg_result:
+            pval = reg_result["P>|t|"][index]
+            if pval < .00001:
+                pval = "< .00001"
+            elif pval < .0001:
+                pval = "< .0001"
+            elif pval < .001:
+                pval = "< .001"
+            elif pval < .01:
+                pval = "< .01"
+            elif pval < .05:
+                pval = "< .05"
+            else:
+                pval = '%.2f' % pval
+            axis.set_xlabel(f"P-value : {str(pval)}")
         x = np.linspace(mean - 3*sd, mean + 3*sd, 100)
         axis.plot(x, stats.norm.pdf(x, mean, sd))
         axis.set_title(coef_name)
@@ -43,7 +45,6 @@ class RegressionPlot():
         else:
             x_axis_label_size = 6
         axis.title.set_size(8)
-        axis.set_xlabel(f"P-value : {str(pval)}")
         axis.get_yaxis().set_visible(False)
         axis.xaxis.set_tick_params(labelsize=x_axis_label_size)
         axis.set_xticks(np.linspace(min(x), max(x), 3))
@@ -51,7 +52,12 @@ class RegressionPlot():
         return axis       
 
     def build_axes(self, reg_result):
-        num_plots = len([val for val in reg_result.index if val != "const" and not val.startswith("fe_") and not (val.startswith("tt") and val[3] == "_")])
+        num_plots = len([
+            val for val in reg_result.index if val != "const" 
+            and not val.startswith("fe_") 
+            and not (val.startswith("tt") and val[3] == "_")
+            and (reg_result["Std.Err."][val] != "")
+        ])
         if num_plots <= 4:
             fig, axes = plt.subplots(1,num_plots,figsize=(6,2))
         else:
@@ -62,23 +68,32 @@ class RegressionPlot():
         axis_count = 0
         for index in range(len(reg_result.index)):
             coef_name = reg_result.index[index]
-            if coef_name != "const" and not coef_name.startswith("fe_") and not (coef_name.startswith("tt") and coef_name[3] == "_"):
+            if (
+                (coef_name != "const" and not coef_name.startswith("fe_"))
+                and (not (coef_name.startswith("tt") and coef_name[3] == "_")) 
+                and (reg_result["Std.Err."][index] != "")
+            ):
                 if num_plots == 1:
-                    axis = self.add_normal_distribution_to_axis(coef_name, reg_result, index, axes, num_plots)
+                    self.add_normal_distribution_to_axis(coef_name, reg_result, index, axes, num_plots)
                 else:
                     if num_plots <= 4:
-                        axis = self.add_normal_distribution_to_axis(coef_name, reg_result, index, axes[axis_count], num_plots)
+                        self.add_normal_distribution_to_axis(coef_name, reg_result, index, axes[axis_count], num_plots)
                     else:
                         col_num = int(axis_count/4)
-                        axis = self.add_normal_distribution_to_axis(coef_name, reg_result, index, axes[col_num][axis_count-(4*col_num)], num_plots)
+                        self.add_normal_distribution_to_axis(coef_name, reg_result, index, axes[col_num][axis_count-(4*col_num)], num_plots)
                     axis_count += 1 
         return fig, axes
 
-    def plot_new_regression_result(self, reg_result, dataset, cache_dir):
+    def plot_new_regression_result(self, reg_result, model_type, dataset, cache_dir):
 
         if self.plot_canvas != None:
             self.plot_canvas.get_tk_widget().destroy()
 
+        if model_type == "random":
+            err_data = reg_result.bse.to_frame()
+            mean_data = reg_result.params.to_frame()
+            reg_result = pd.concat([mean_data, err_data], axis=1)
+            reg_result.columns = ["Coef.","Std.Err."]
         fig, axes = self.build_axes(reg_result)
 
         plt.tight_layout(h_pad = -.3)

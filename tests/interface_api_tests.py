@@ -470,15 +470,78 @@ def test_ortiz_bobea_model():
 	assert year_fe_red < both_fe_red
 	assert both_fe_red < country_fe_red
 
-
-def test_random_slopes():
+# TODO: doesn't seem to work with random effect on only covariate
+def test_single_covariates_random_slopes():
 
 	data = get_data()
-	from_indices = ['Precip', 'fd(Temp)', 'sq(Temp)', 'sq(Precip)', 'fd(Precip)', 're(Temp,iso_id)']
+	from_indices = ['re(Temp)']
+	to_indices = ['fd(ln(GDP_per_capita))']
+	model = cet.parse_model_input([from_indices, to_indices], "file5.csv", "iso_id", "year")[0]
+	transformed_data = utils.transform_data(data, model)
+	assert(all(val in transformed_data for val in ['ln(GDP_per_capita)','fd(ln(GDP_per_capita))']))
+
+	res1 = cer.run_random_effects_regression(transformed_data, model).params
+	assert not any(np.isnan(val) for val in res1)
+
+	model = cee.evaluate_model(data, model)
+	assert not np.isnan(model.out_sample_mse)
+	assert not np.isnan(model.out_sample_mse_reduction)
+	assert not np.isnan(model.in_sample_mse)
+	assert np.isnan(model.out_sample_pred_int_cov)
+	assert not np.isnan(model.rmse)
+	pd.testing.assert_series_equal(res1.sort_index(), model.regression_result.params.sort_index())
+
+
+def test_multiple_covariates_random_slopes():
+
+	data = get_data()
+	from_indices = ['Precip', 'fd(Temp)', 'sq(Temp)', 'sq(Precip)', 'fd(Precip)', 're(Temp)']
 	to_indices = ['fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))']
 	model = cet.parse_model_input([from_indices, to_indices], "file5.csv", "iso_id", "year")[0]
 	transformed_data = utils.transform_data(data, model)
 	assert(all(val in transformed_data for val in ['ln(GDP_per_capita)','fd(ln(GDP_per_capita))','sq(Temp)','fd(Temp)','sq(Precip)','fd(Precip)']))
+
+	res1 = cer.run_random_effects_regression(transformed_data, model).params
+	assert not any(np.isnan(val) for val in res1)
+
+	model = cee.evaluate_model(data, model)
+	assert not np.isnan(model.out_sample_mse)
+	assert not np.isnan(model.out_sample_mse_reduction)
+	assert not np.isnan(model.in_sample_mse)
+	assert np.isnan(model.out_sample_pred_int_cov)
+	assert not np.isnan(model.rmse)
+	pd.testing.assert_series_equal(res1.sort_index(), model.regression_result.params.sort_index())
+
+
+def test_fixed_intercepts_with_random_slopes():
+
+	data = get_data()
+	from_indices = ['Precip', 'fd(Temp)', 'sq(Temp)', 'sq(Precip)', 'fd(Precip)', 're(Temp)', 'fe(iso_id)']
+	to_indices = ['fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))']
+	model = cet.parse_model_input([from_indices, to_indices], "file5.csv", "iso_id", "year")[0]
+	transformed_data = utils.transform_data(data, model)
+	assert(all(val in transformed_data for val in ['ln(GDP_per_capita)','fd(ln(GDP_per_capita))','sq(Temp)','fd(Temp)','sq(Precip)','fd(Precip)','fe_AGO_iso_id']))
+
+	res1 = cer.run_random_effects_regression(transformed_data, model).params
+	assert not any(np.isnan(val) for val in res1)
+
+	model = cee.evaluate_model(data, model)
+	assert not np.isnan(model.out_sample_mse)
+	assert not np.isnan(model.out_sample_mse_reduction)
+	assert not np.isnan(model.in_sample_mse)
+	assert np.isnan(model.out_sample_pred_int_cov)
+	assert not np.isnan(model.rmse)
+	pd.testing.assert_series_equal(res1.sort_index(), model.regression_result.params.sort_index())
+
+# TODO: time trends and random effects leading to singular matrix error
+def test_time_trends_with_random_slopes():
+
+	data = get_data()
+	from_indices = ['Precip', 'fd(Temp)', 'sq(Temp)', 'sq(Precip)', 'fd(Precip)', 're(Temp)', 'tt2(iso_id)']
+	to_indices = ['fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))', 'fd(ln(GDP_per_capita))']
+	model = cet.parse_model_input([from_indices, to_indices], "file5.csv", "iso_id", "year")[0]
+	transformed_data = utils.transform_data(data, model)
+	assert(all(val in transformed_data for val in ['ln(GDP_per_capita)','fd(ln(GDP_per_capita))','sq(Temp)','fd(Temp)','sq(Precip)','fd(Precip)','tt2_AGO_iso_id']))
 
 	res1 = cer.run_random_effects_regression(transformed_data, model).params
 	assert not any(np.isnan(val) for val in res1)

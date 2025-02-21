@@ -158,7 +158,10 @@ class TkInterfaceUtils():
 					f"Model results saved to {cet_home}/model_results/{model.model_id}.csv\nRegression script saved to {cet_home}/regression_scripts/{model.model_id}.csv"
 				)
 				self.dnd.save_canvas_to_cache(str(model.model_id), self.panel_column, self.time_column)
-				self.regression_plot.plot_new_regression_result(regression_result.summary2().tables[1], self.dnd.data_source, model.model_id)
+				if model.random_effects is None:
+					self.regression_plot.plot_new_regression_result(regression_result.summary2().tables[1], "nonrandom", self.dnd.data_source, model.model_id)
+				else:
+					self.regression_plot.plot_new_regression_result(regression_result, "random", self.dnd.data_source, model.model_id)
 				self.update_result_plot(self.dnd.data_source, "r2")
 				canvases = self.stat_plot.update_stat_plot(*self.get_regression_stats_from_model(model.model_id))
 				self.bind_stat_canvases_to_result_plot(*canvases)

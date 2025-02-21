@@ -68,7 +68,9 @@ class DragAndDropInterface():
                 main_menu.add_cascade(label="Duplicate with Transformation",menu=transformation_menu)
 
             if not any(tag.startswith(val) for val in utils.supported_functions) and f"fe({tag})" not in self.transformation_list:
-                main_menu.add_command(label="Add Group-Level Fixed Intercept",command=lambda : self.add_transformation("fe"))
+                main_menu.add_command(label="Add Group-Level Fixed Intercepts",command=lambda : self.add_transformation("fe"))
+            if not any(tag.startswith(val) for val in utils.supported_functions) and not any(val.startswith("re(") for val in self.transformation_list):
+                main_menu.add_command(label="Add Group-Level Random Slopes",command=lambda : self.add_transformation("re"))
 
             if not any(tag.startswith(val) for val in utils.supported_functions):
                 main_menu.add_cascade(label="Add Time Trend",menu=time_trends_menu)

@@ -21,7 +21,7 @@ def split_data_by_column(data, column, splits=10):
 	return split_list
 
 
-def split_data_randomly(data, model, splits=10):
+def split_data_randomly(data, model, splits=2):
 	target_var = model.target_var
 	if any(target_var.startswith(func) for func in utils.supported_functions):
 		target_var = target_var.split("(")[-1].split(")")[0]
@@ -50,19 +50,15 @@ def calculate_prediction_interval_accuracy(y, predictions, in_sample_mse):
 
 
 def evaluate_model(data, model):
-
-	demean_data = False
-	if len(model.fixed_effects) > 0 and len(model.time_trends) == 0:
-		demean_data = True
-	transformed_data = utils.transform_data(data, model, demean=demean_data)
-
 	if model.random_effects is None:
-		return evaluate_non_random_effects_model(transformed_data, model, demean_data)
+		return evaluate_non_random_effects_model(data, model)
 	else:
-		return evaluate_random_effects_model(transformed_data, model)
+		return evaluate_random_effects_model(data, model)
 
 
-def evaluate_random_effects_model(transformed_data, model):
+def evaluate_random_effects_model(data, model):
+
+	transformed_data = utils.transform_data(data, model)
 
 	in_sample_mse_list, out_sample_mse_list, intercept_only_mse_list = [], [], []
 
@@ -98,7 +94,12 @@ def evaluate_random_effects_model(transformed_data, model):
 	return model
 
 
-def evaluate_non_random_effects_model(transformed_data, model, demean_data):
+def evaluate_non_random_effects_model(data, model):
+
+	demean_data = False
+	if len(model.fixed_effects) > 0 and len(model.time_trends) == 0:
+		demean_data = True
+	transformed_data = utils.transform_data(data, model, demean=demean_data)
 
 	in_sample_mse_list, out_sample_mse_list, out_sample_pred_int_cov_list, intercept_only_mse_list = [], [], [], []
 
@@ -109,9 +110,9 @@ def evaluate_non_random_effects_model(transformed_data, model, demean_data):
 	
 		reg_result = regression.run_standard_regression(train_data_transformed, model)
 		
-		train_regression_data = train_data_transformed[utils.get_model_vars(test_data_transformed, model, demeaned=demean_data)]
+		train_regression_data = train_data_transformed[utils.get_model_vars(test_data_transformed, model, include_fixed_effects=demean_data)]
 		train_regression_data = sm.add_constant(train_regression_data)
-		test_regression_data = test_data_transformed[utils.get_model_vars(test_data_transformed, model, demeaned=demean_data)]
+		test_regression_data = test_data_transformed[utils.get_model_vars(test_data_transformed, model, include_fixed_effects=demean_data)]
 		test_regression_data = sm.add_constant(test_regression_data)
 		
 		in_sample_predictions = reg_result.get_prediction(train_regression_data)

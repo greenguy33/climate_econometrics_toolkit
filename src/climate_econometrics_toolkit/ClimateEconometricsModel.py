@@ -99,7 +99,7 @@ class ClimateEconometricsModel:
 		else:
 			script_text += "demean=False)\n"
 
-		regression_vars = "\",\"".join(utils.get_model_vars(utils.transform_data(self.dataset, self), self, demeaned=demean_data))
+		regression_vars = "\",\"".join(utils.get_model_vars(utils.transform_data(self.dataset, self), self, include_fixed_effects=demean_data))
 
 		script_text += f"""
 regression_data = transformed_data[["{regression_vars}"]]
