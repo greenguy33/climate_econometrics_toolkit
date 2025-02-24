@@ -54,10 +54,9 @@ def run_block_bootstrap(model, num_samples=1000, use_threading=False):
 
 
 def bootstrap(transformed_data, model, num_samples):
-	# TOOD: this is too slow
-	print(num_samples)
 	covar_coefs = {covar:[] for covar in model.covariates}
 	panel_ids = list(set(transformed_data[model.panel_column]))
+	# TODO: support for random effects models
 	for i in progressbar.progressbar(range(num_samples)):
 		panel_id_resample = resample(panel_ids)
 		resampled_data = pd.DataFrame()
@@ -69,18 +68,18 @@ def bootstrap(transformed_data, model, num_samples):
 	pd.DataFrame.from_dict(covar_coefs).to_csv(f"{cet_home}/bootstrap_samples/coefficient_samples_{str(model.model_id)}.csv")
 
 
-def run_bayesian_regression(model, use_threading=False):
+def run_bayesian_regression(model, num_samples, use_threading=False):
 	data = model.dataset
 	transformed_data = utils.transform_data(data, model)
 	if use_threading:
-		thread = threading.Thread(target=run_bayesian_inference,name="bayes_sampling_thread",args=(transformed_data,model))
+		thread = threading.Thread(target=run_bayesian_inference,name="bayes_sampling_thread",args=(transformed_data,model,num_samples))
 		thread.daemon = True
 		thread.start()
 	else:
-		run_bayesian_inference(transformed_data,model)
+		run_bayesian_inference(transformed_data,model,num_samples)
 
 
-def run_bayesian_inference(transformed_data, model):
+def run_bayesian_inference(transformed_data, model, num_samples):
 
 	assert model.model_id is not None
 	model_vars = utils.get_model_vars(transformed_data, model)
@@ -106,14 +105,36 @@ def run_bayesian_inference(transformed_data, model):
 		covar_coefs = pm.Normal("covar_coefs", 0, 10, shape=(len(model_vars)))
 		covar_terms = pm.Deterministic("regressors", pt.sum(covar_coefs * scaled_df[model_vars], axis=1))
 		intercept = pm.Normal("intercept", 0, 10)
-		target_prior = pm.Deterministic("target_prior", covar_terms + intercept)
+
+		if model.random_effects is not None:
+
+			print("Using random effect: ", model.random_effects)
+
+			# add dummy variable for random effect if not already present
+			if model.random_effects[1] not in model.fixed_effects:
+				transformed_data = utils.add_dummy_variable_to_data(model.random_effects[1], transformed_data)
+			re_dummy_columns = [col for col in transformed_data.columns if col.startswith("fe_") and col.endswith(f"_{model.random_effects[1]}")]
+
+			global_rs_mean = pm.Normal("global_rs_mean",0,10)
+			global_rs_sd = pm.HalfNormal("global_rs_sd",10)
+			rs_means = pm.Normal("rs_means", global_rs_mean, global_rs_sd, shape=(1,len(set(transformed_data[model.random_effects[1]]))))
+			rs_sd = pm.HalfNormal("rs_sd", 10)
+			rs_coefs = pm.Normal("rs_coefs", rs_means, rs_sd)
+			rs_matrix = pm.Deterministic("rs_matrix", pt.sum(rs_coefs * transformed_data[model.random_effects[1]],axis=1))
+			rs_terms = pm.Deterministic("rs_terms", rs_matrix * transformed_data[model.random_effects[0]])
+	
+			target_prior = pm.Deterministic("target_prior", covar_terms + rs_terms + intercept)
+
+		else:
+		
+			target_prior = pm.Deterministic("target_prior", covar_terms + intercept)
 		
 		target_scale = pm.HalfNormal("target_scale", 10)
 		target_std = pm.HalfNormal("target_std", sigma=target_scale)
 		target_posterior = pm.Normal('target_posterior', mu=target_prior, sigma=target_std, observed=scaled_df[model.target_var])
 
 		prior = pm.sample_prior_predictive()
-		trace = pm.sample(target_accept=.99, cores=4, tune=1000, draws=1000)
+		trace = pm.sample(target_accept=.99, cores=4, tune=num_samples, draws=num_samples)
 		posterior = pm.sample_posterior_predictive(trace, extend_inferencedata=True)
 
 	with open (f'{cet_home}/bayes_samples/bayes_model_{str(model.model_id)}.pkl', 'wb') as buff:

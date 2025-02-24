@@ -80,9 +80,13 @@ def add_transformation_to_data(data, model, function):
 	return data
 
 
-def add_fixed_effect_to_data(node, data):
-	for element in sorted(list(set(data[node])))[1:]:
-		data[f"fe_{element}_{node}"] = np.where(data[node] == element, 1, 0)
+def add_dummy_variable_to_data(node, data, leave_out_first=True):
+	if leave_out_first:
+		for element in sorted(list(set(data[node])))[1:]:
+			data[f"fe_{element}_{node}"] = np.where(data[node] == element, 1, 0)
+	else:
+		for element in sorted(list(set(data[node]))):
+			data[f"fe_{element}_{node}"] = np.where(data[node] == element, 1, 0)
 	return data
 
 
@@ -173,7 +177,7 @@ def transform_data(data, model, include_target_var=True, demean=False):
 	data = remove_nan_rows(data, vars_to_include)
 	if not demean:
 		for fe in model.fixed_effects:
-			data = add_fixed_effect_to_data(fe, data)
+			data = add_dummy_variable_to_data(fe, data)
 	else:
 		if len(model.fixed_effects) > 0:
 			data = demean_fixed_effects(data, model)

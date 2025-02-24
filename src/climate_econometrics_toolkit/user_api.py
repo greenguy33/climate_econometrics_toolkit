@@ -86,6 +86,8 @@ def get_model_by_id(model_id):
     return build_model_from_cache(model_id)
 
 def load_dataset_from_file(datafile):
+    # resets model when new dataset is loaded
+    reset_model()
     model.data_file = datafile.split("/")[-1]
     model.dataset = pd.read_csv(datafile)
 
@@ -188,12 +190,13 @@ def remove_fixed_effect(fe):
     model.fixed_effects = [var for var in model.fixed_effects if var != fe]
 
 def add_random_effect(var, group):
-    if model.random_effects != None:
-        print("Only one random effect is supported. Please remove the previous random effect before adding another.")
-    else:
-        model.random_effects = [var, group]
-        if var in model.covariates:
-            remove_covariates(var)
+    if model.random_effects != [var, group]:
+        if model.random_effects != None:
+            print("Only one random effect is supported. Please remove the previous random effect before adding another.")
+        else:
+            model.random_effects = [var, group]
+            if var in model.covariates:
+                remove_covariates(var)
 
 def remove_random_effect(add_to_covariate_list=True):
     if model.random_effects is not None:
@@ -201,11 +204,11 @@ def remove_random_effect(add_to_covariate_list=True):
             add_covariates(model.random_effects[0])
         model.random_effects = None
 
-def run_bayesian_regression(model):
+def run_bayesian_regression(model, num_samples=1000):
     # TODO: check to see if bayesian inference already ran for this model
     if isinstance(model, str):
         model = get_model_by_id(model)
-    regression.run_bayesian_regression(model)
+    regression.run_bayesian_regression(model, num_samples)
 
 def run_block_bootstrap(model, num_samples=1000):
     # TODO: check to see if bootstrap already ran for this model
@@ -213,8 +216,8 @@ def run_block_bootstrap(model, num_samples=1000):
         model = get_model_by_id(model)
     regression.run_block_bootstrap(model, num_samples)
 
-def extract_raster_data(gcm_file, shape_file, weight_file=None):
-    return predict.extract_raster_data(gcm_file, shape_file, weight_file)
+def extract_raster_data(raster_file, shape_file, weight_file=None):
+    return predict.extract_raster_data(raster_file, shape_file, weight_file)
 
 def aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use=None):
     return predict.aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use)
@@ -232,3 +235,7 @@ def call_user_prediction_function(function_name, args):
 
 def transform_data(data, model, include_target_var=True, demean=False):
     return utils.transform_data(copy.deepcopy(data), model, include_target_var, demean)
+
+def reset_model():
+    global model
+    model = ClimateEconometricsModel()

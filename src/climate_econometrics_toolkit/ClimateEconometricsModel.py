@@ -62,9 +62,9 @@ class ClimateEconometricsModel:
 		with open(f"{dir_name}/model.pkl", "wb") as write_file:
 			pkl.dump(self, write_file)
 		if self.random_effects is None:
-			self.regression_result.summary2().tables[1].to_csv(f"model_results/{self.model_id}.csv")
+			self.regression_result.summary2().tables[1].to_csv(f"{cet_home}/model_results/{self.model_id}.csv")
 		else:
-			self.regression_result.summary().tables[1].to_csv(f"model_results/{self.model_id}.csv")
+			self.regression_result.summary().tables[1].to_csv(f"{cet_home}/model_results/{self.model_id}.csv")
 		
 
 	def save_regression_script(self):

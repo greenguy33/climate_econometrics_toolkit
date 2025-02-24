@@ -21,7 +21,7 @@ def split_data_by_column(data, column, splits=10):
 	return split_list
 
 
-def split_data_randomly(data, model, splits=2):
+def split_data_randomly(data, model, splits=10):
 	target_var = model.target_var
 	if any(target_var.startswith(func) for func in utils.supported_functions):
 		target_var = target_var.split("(")[-1].split(")")[0]
