@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import numpy as np
 
 import tkinter as tk
 from tkinter import filedialog
@@ -112,7 +113,7 @@ class TkInterfaceUtils():
 		axis.set_ylabel(metric + " value")
 		axis.plot(self.result_plot.plot_data, marker='o', color='r', zorder=1)
 		for index, point in enumerate(self.result_plot.plot_data):
-			circle = plt.Circle((0,0), 0.05, color='b', transform=(fig.dpi_scale_trans + transform.ScaledTranslation(index, point, axis.transData)), zorder=2)
+			circle = plt.Circle((0,0), 0.05, color=('b' if point != 0 else 'r'), transform=(fig.dpi_scale_trans + transform.ScaledTranslation(index, point, axis.transData)), zorder=2)
 			axis.add_patch(circle)
 			self.result_plot.circles.append(circle)
 		self.result_plot.plot_canvas = FigureCanvasTkAgg(fig, master=self.result_plot.plot_frame)
@@ -129,7 +130,7 @@ class TkInterfaceUtils():
 			for cache_file in sorted_cache_files:
 				if os.path.exists(f"{cet_home}/model_cache/{dataset}/{cache_file[0]}/tkinter_canvas.pkl"):
 					model = pd.read_pickle(f"{cet_home}/model_cache/{dataset}/{str(cache_file[0])}/model.pkl")
-					self.result_plot.plot_data.append(getattr(model, metric))
+					self.result_plot.plot_data.append(getattr(model, metric) if not np.isnan(getattr(model, metric)) else 0)
 					self.result_plot.models.append(cache_file[0])
 			self.create_result_plot(metric)
 			model = pd.read_pickle(f"{cet_home}/model_cache/{dataset}/{cache_file[0]}/model.pkl")

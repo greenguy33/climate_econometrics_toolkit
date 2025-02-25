@@ -41,7 +41,7 @@ def run_intercept_only_regression(transformed_data, model):
 	return regression_result
 
 
-def run_block_bootstrap(model, num_samples=1000, use_threading=False):
+def run_block_bootstrap(model, num_samples=5, use_threading=False):
 	print("Running bootstrap...this may take awhile")
 	data = model.dataset
 	transformed_data = utils.transform_data(data, model)
@@ -54,17 +54,32 @@ def run_block_bootstrap(model, num_samples=1000, use_threading=False):
 
 
 def bootstrap(transformed_data, model, num_samples):
-	covar_coefs = {covar:[] for covar in model.covariates}
+	covar_coefs = {}
 	panel_ids = list(set(transformed_data[model.panel_column]))
-	# TODO: support for random effects models
 	for i in progressbar.progressbar(range(num_samples)):
 		panel_id_resample = resample(panel_ids)
 		resampled_data = pd.DataFrame()
 		for panel_id in panel_id_resample:
 			resampled_data = pd.concat([resampled_data,transformed_data.loc[transformed_data[model.panel_column] == panel_id]])
-		reg_result = run_standard_regression(resampled_data, model).summary2().tables[1]
-		for covar in covar_coefs:
-			covar_coefs[covar].append(reg_result.loc[reg_result.index == covar]["Coef."].item())
+		if model.random_effects is not None:
+			reg_result = run_random_effects_regression(resampled_data, model)
+			for covar in model.covariates:
+				if covar not in covar_coefs:
+					covar_coefs[covar] = []
+				covar_coefs[covar].append(reg_result.params[covar.replace("(","_").replace(")","_")])
+			for entity in sorted(set(transformed_data[model.random_effects[1]])):
+				if model.random_effects[0] + "_" + entity not in covar_coefs:
+					covar_coefs[model.random_effects[0] + "_" + entity] = []
+				if entity in reg_result.random_effects:
+					covar_coefs[model.random_effects[0] + "_" + entity].append(reg_result.random_effects[entity].item())
+				else:
+					covar_coefs[model.random_effects[0] + "_" + entity].append(np.NaN)
+		else:
+			reg_result = run_standard_regression(resampled_data, model).summary2().tables[1]
+			for covar in model.covariates:
+				if covar not in covar_coefs:
+					covar_coefs[covar] = []
+				covar_coefs[covar].append(reg_result.loc[reg_result.index == covar]["Coef."].item())
 	pd.DataFrame.from_dict(covar_coefs).to_csv(f"{cet_home}/bootstrap_samples/coefficient_samples_{str(model.model_id)}.csv")
 
 
