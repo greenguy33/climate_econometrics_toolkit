@@ -77,6 +77,8 @@ class ClimateEconometricsModel:
 		fe_as_string = "\",\"".join(self.fixed_effects)
 
 		script_text = "from climate_econometrics_toolkit import user_api as api\n"
+		script_text += "from climate_econometrics_toolkit import utils as utils\n"
+		script_text += "import statsmodels.formula.api as smf\n"
 		script_text += "import statsmodels.api as sm\n\n"
 		script_text += f"api.load_dataset_from_file(\"{self.full_data_path}\")\n"
 		script_text += f"api.set_target_variable(\"{self.target_var}\", existence_check=False)\n"
@@ -90,6 +92,8 @@ class ClimateEconometricsModel:
 		for tt in self.time_trends:
 			tt_split = tt.split(" ")
 			script_text += f"api.add_time_trend(\"{tt_split[0]}\", {tt_split[1]})\n"
+		if self.random_effects is not None:
+			script_text += f"api.add_random_effect(\"{self.random_effects[0]}\", \"{self.random_effects[1]}\")\n"
 
 		script_text += ""
 
@@ -99,14 +103,24 @@ class ClimateEconometricsModel:
 		else:
 			script_text += "demean=False)\n"
 
-		regression_vars = "\",\"".join(utils.get_model_vars(utils.transform_data(self.dataset, self), self, include_fixed_effects=demean_data))
-
-		script_text += f"""
-regression_data = transformed_data[["{regression_vars}"]]
+		if self.random_effects is not None:
+			script_text += f"""
+model_vars = utils.get_model_vars(transformed_data, api.model)
+transformed_data.columns = [col.replace("(","_").replace(")","_") for col in transformed_data.columns]
+model_vars = [var.replace("(","_").replace(")","_") for var in model_vars]
+mv_as_string = "+".join(model_vars) if len(model_vars) > 0 else "0"
+target_var = api.model.target_var.replace("(","_").replace(")","_")
+formula = target_var + " ~ " + mv_as_string
+reg = smf.mixedlm(formula, data=transformed_data, groups=api.model.random_effects[1], re_formula=f"0+{self.random_effects[0]}").fit()
+print(reg.summary())
+		"""
+		else:
+			script_text += f"""
+model_vars = utils.get_model_vars(transformed_data, api.model)
+regression_data = transformed_data[model_vars]
 regression_data = sm.add_constant(regression_data)
-reg = sm.OLS(transformed_data["{self.target_var}"],regression_data,missing="drop")
-regression_result = reg.fit()
-print(regression_result.summary2().tables[1])
+reg = sm.OLS(transformed_data["{self.target_var}"],regression_data,missing="drop").fit()
+print(reg.summary2().tables[1])
 		"""
 
 		file = open(f"{cet_home}/regression_scripts/{self.model_id}.py", "w")
