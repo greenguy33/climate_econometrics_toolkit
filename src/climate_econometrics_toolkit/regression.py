@@ -88,8 +88,9 @@ def run_bayesian_inference(transformed_data, model, num_samples):
 	scalers[model.target_var] = StandardScaler()
 	scaled_data[model.target_var] = scalers[model.target_var].fit_transform(np.array(transformed_data[model.target_var]).reshape(-1,1)).flatten()
 	for var in model.covariates:
-		scalers[var] = StandardScaler()
-		scaled_data[var] = scalers[var].fit_transform(np.array(transformed_data[var]).reshape(-1,1)).flatten()
+		if transformed_data.dtypes[var] == "float64":
+			scalers[var] = StandardScaler()
+			scaled_data[var] = scalers[var].fit_transform(np.array(transformed_data[var]).reshape(-1,1)).flatten()
 
 	scaled_df = pd.DataFrame()
 	for var in scaled_data:
@@ -112,15 +113,15 @@ def run_bayesian_inference(transformed_data, model, num_samples):
 
 			# add dummy variable for random effect if not already present
 			if model.random_effects[1] not in model.fixed_effects:
-				transformed_data = utils.add_dummy_variable_to_data(model.random_effects[1], transformed_data)
-			re_dummy_columns = [col for col in transformed_data.columns if col.startswith("fe_") and col.endswith(f"_{model.random_effects[1]}")]
+				transformed_data = utils.add_dummy_variable_to_data(model.random_effects[1], transformed_data, leave_out_first=False)
+			re_dummy_cols = [col for col in transformed_data.columns if col.startswith("fe_") and col.endswith(f"_{model.random_effects[1]}")]
 
 			global_rs_mean = pm.Normal("global_rs_mean",0,10)
 			global_rs_sd = pm.HalfNormal("global_rs_sd",10)
 			rs_means = pm.Normal("rs_means", global_rs_mean, global_rs_sd, shape=(1,len(set(transformed_data[model.random_effects[1]]))))
 			rs_sd = pm.HalfNormal("rs_sd", 10)
 			rs_coefs = pm.Normal("rs_coefs", rs_means, rs_sd)
-			rs_matrix = pm.Deterministic("rs_matrix", pt.sum(rs_coefs * transformed_data[model.random_effects[1]],axis=1))
+			rs_matrix = pm.Deterministic("rs_matrix", pt.sum(rs_coefs * transformed_data[re_dummy_cols],axis=1))
 			rs_terms = pm.Deterministic("rs_terms", rs_matrix * transformed_data[model.random_effects[0]])
 	
 			target_prior = pm.Deterministic("target_prior", covar_terms + rs_terms + intercept)
@@ -147,6 +148,22 @@ def run_bayesian_inference(transformed_data, model, num_samples):
 		},buff)
 
 	unscaled_samples = pd.DataFrame()
-	for index, var in enumerate(model.covariates):
-		unscaled_samples[var] = trace.posterior.covar_coefs[:,:,index].data.flatten() * np.std(transformed_data[model.target_var]) / np.std(transformed_data[var])
+	for index, var_name in enumerate(model.covariates):
+		unscaled_samples = unscale_variable_list(scalers.keys(), var_name, trace.posterior.covar_coefs[:,:,index].data.flatten(), unscaled_samples, transformed_data, model.target_var)
+	if model.random_effects is not None:
+		for index, var_name in enumerate(re_dummy_cols):
+			var_name = var_name.replace("fe_",f"{model.random_effects[0]}_").replace(f"_{model.random_effects[1]}","") 
+			unscaled_samples = unscale_variable_list(scalers.keys(), var_name, trace.posterior.rs_coefs[:,:,:,index].data.flatten(), unscaled_samples, transformed_data, model.target_var)
 	unscaled_samples.to_csv(f'{cet_home}/bayes_samples/coefficient_samples_{str(model.model_id)}.csv')
+
+
+def unscale_variable_list(scaled_vars, var_name, var_values, unscaled_samples, data, target_var):
+	if var_name in scaled_vars and target_var in scaled_vars:
+		unscaled_samples[var_name] = var_values * np.std(data[target_var]) / np.std(data[var_name])
+	elif var_name not in scaled_vars and target_var in scaled_vars:
+		unscaled_samples[var_name] = var_values * np.std(data[target_var])
+	elif var_name in scaled_vars and target_var not in scaled_vars:
+		unscaled_samples[var_name] = var_values / np.std(data[var_name])
+	else:
+		unscaled_samples[var_name] = var_values
+	return unscaled_samples
