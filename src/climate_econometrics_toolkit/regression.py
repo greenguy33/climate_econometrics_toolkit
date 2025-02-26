@@ -96,6 +96,8 @@ def run_bayesian_regression(model, num_samples, use_threading=False):
 
 def run_bayesian_inference(transformed_data, model, num_samples):
 
+	print(f"Fitting Bayesian model to dataset of length {len(transformed_data)}")
+
 	assert model.model_id is not None
 	model_vars = utils.get_model_vars(transformed_data, model)
 
@@ -124,13 +126,13 @@ def run_bayesian_inference(transformed_data, model, num_samples):
 
 		if model.random_effects is not None:
 
-			print("Using random effect: ", model.random_effects)
-
 			# add dummy variable for random effect if not already present
 			if model.random_effects[1] not in model.fixed_effects:
 				transformed_data = utils.add_dummy_variable_to_data(model.random_effects[1], transformed_data, leave_out_first=False)
 			re_dummy_cols = [col for col in transformed_data.columns if col.startswith("fe_") and col.endswith(f"_{model.random_effects[1]}")]
 
+			transformed_data.to_csv("transformed_data.csv")
+			
 			global_rs_mean = pm.Normal("global_rs_mean",0,10)
 			global_rs_sd = pm.HalfNormal("global_rs_sd",10)
 			rs_means = pm.Normal("rs_means", global_rs_mean, global_rs_sd, shape=(1,len(set(transformed_data[model.random_effects[1]]))))
