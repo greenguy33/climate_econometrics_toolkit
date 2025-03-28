@@ -30,6 +30,7 @@ def run_random_effects_regression(transformed_data, model):
 	mv_as_string = "+".join(model_vars) if len(model_vars) > 0 else "0"
 	target_var = model.target_var.replace("(","_").replace(")","_")
 	formula = f"{target_var} ~ {mv_as_string}"
+	# TOOD: this may be using REML estimator...change to GLM to better align with literature?
 	reg = smf.mixedlm(formula, data=transformed_data, groups=model.random_effects[1], re_formula=f"0+{model.random_effects[0]}").fit()
 	return reg
 
@@ -96,8 +97,6 @@ def run_bayesian_regression(model, num_samples, use_threading=False):
 
 def run_bayesian_inference(transformed_data, model, num_samples):
 
-	print(f"Fitting Bayesian model to dataset of length {len(transformed_data)}")
-
 	assert model.model_id is not None
 	model_vars = utils.get_model_vars(transformed_data, model)
 
@@ -116,7 +115,7 @@ def run_bayesian_inference(transformed_data, model, num_samples):
 		if var not in scaled_df:
 			scaled_df[var] = transformed_data[var]
 
-	print("Fitting Bayesian model containing variables: ", model_vars)
+	print(f"Fitting Bayesian model to dataset of length {len(transformed_data)} containing variables: ", model_vars)
 
 	with pm.Model() as pymc_model:
 

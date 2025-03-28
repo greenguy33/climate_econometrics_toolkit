@@ -112,19 +112,10 @@ def is_inf(data):
 		return False
 
 
-def remove_nan_rows(data, no_nan_cols):
-	missing_indices = []
-	for index, row in enumerate(data.iterrows()):
-		if any(pd.isna(row[1][col]) or is_inf(row[1][col]) for col in no_nan_cols):
-			missing_indices.append(index)
-	data = data.drop(missing_indices).reset_index(drop=True)
-	return data
-
-
 def demean_fixed_effects(data, model):
 	fixed_effects = []
 	for fe in model.fixed_effects:
-		if not np.issubdtype(data[fe].dtype, np.number):
+		if not pd.api.types.is_integer_dtype(data[fe].dtype):
 			enc = OrdinalEncoder()
 			ordered_list = list(dict.fromkeys(data[fe]))
 			enc.fit(np.array(ordered_list).reshape(-1,1))
@@ -174,7 +165,7 @@ def transform_data(data, model, include_target_var=True, demean=False):
 		vars_to_include = vars_to_include + [model.target_var]
 	if model.random_effects is not None:
 		vars_to_include.append(model.random_effects[0])
-	data = remove_nan_rows(data, vars_to_include)
+	data = data = data.dropna(subset=vars_to_include)
 	if not demean:
 		for fe in model.fixed_effects:
 			data = add_dummy_variable_to_data(fe, data)
@@ -184,9 +175,9 @@ def transform_data(data, model, include_target_var=True, demean=False):
 	return data
 
 
-def get_model_vars(data, model, include_fixed_effects=True):
+def get_model_vars(data, model, exclude_fixed_effects=True):
 	model_vars = [var for var in model.covariates]
-	if not include_fixed_effects:
+	if exclude_fixed_effects:
 		for effect_col in [col for col in data if any(col.startswith(val) for val in supported_effects) and not col.startswith("fe_")]:
 			model_vars.append(effect_col)
 	else:

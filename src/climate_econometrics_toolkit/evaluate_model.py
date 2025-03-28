@@ -103,16 +103,19 @@ def evaluate_non_random_effects_model(data, model):
 
 	in_sample_mse_list, out_sample_mse_list, out_sample_pred_int_cov_list, intercept_only_mse_list = [], [], [], []
 
+	count = 0
+
 	for train_indices, test_indices in generate_withheld_data(transformed_data, model):
+		count += 1
 
 		train_data_transformed = transformed_data.iloc[train_indices]
 		test_data_transformed = transformed_data.iloc[test_indices] 
 	
 		reg_result = regression.run_standard_regression(train_data_transformed, model)
 		
-		train_regression_data = train_data_transformed[utils.get_model_vars(test_data_transformed, model, include_fixed_effects=demean_data)]
+		train_regression_data = train_data_transformed[utils.get_model_vars(test_data_transformed, model, exclude_fixed_effects=demean_data)]
 		train_regression_data = sm.add_constant(train_regression_data)
-		test_regression_data = test_data_transformed[utils.get_model_vars(test_data_transformed, model, include_fixed_effects=demean_data)]
+		test_regression_data = test_data_transformed[utils.get_model_vars(test_data_transformed, model, exclude_fixed_effects=demean_data)]
 		test_regression_data = sm.add_constant(test_regression_data)
 		
 		in_sample_predictions = reg_result.get_prediction(train_regression_data)

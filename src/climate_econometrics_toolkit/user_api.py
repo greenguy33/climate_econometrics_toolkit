@@ -74,7 +74,7 @@ def get_best_model(metric="r2"):
         print("Model ID", sorted_models[0].model_id)
         print(sorted_models[0].print())
         return sorted_models[0]
-        
+
 def get_all_model_ids():
     if model.data_file == None:
         print("You must load a dataset before accessing the cache")
@@ -90,6 +90,11 @@ def load_dataset_from_file(datafile):
     reset_model()
     model.data_file = datafile.split("/")[-1]
     model.dataset = pd.read_csv(datafile)
+
+def set_dataset(dataframe):
+    # resets model when new dataset is loaded
+    reset_model()
+    model.dataset = dataframe
 
 def view_current_model():
     model.print()
