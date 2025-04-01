@@ -167,7 +167,10 @@ class TkInterfaceUtils():
 				)
 				self.dnd.save_canvas_to_cache(str(model.model_id), self.panel_column, self.time_column)
 				if model.random_effects is None:
-					self.regression_plot.plot_new_regression_result(regression_result.summary2().tables[1], "nonrandom", self.dnd.data_source, model.model_id)
+					try:
+						self.regression_plot.plot_new_regression_result(regression_result.summary2().tables[1], "nonrandom", self.dnd.data_source, model.model_id)
+					except AttributeError:
+						self.regression_plot.plot_new_regression_result(regression_result, "driscollkraay", self.dnd.data_source, model.model_id)
 				else:
 					self.regression_plot.plot_new_regression_result(regression_result, "random", self.dnd.data_source, model.model_id)
 				self.update_result_plot(self.dnd.data_source, "r2")

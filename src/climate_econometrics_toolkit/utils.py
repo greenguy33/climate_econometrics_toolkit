@@ -167,7 +167,7 @@ def transform_data(data, model, include_target_var=True, demean=False):
 		vars_to_include = vars_to_include + [model.target_var]
 	if model.random_effects is not None:
 		vars_to_include.append(model.random_effects[0])
-	data = data = data.dropna(subset=vars_to_include)
+	data = data.dropna(subset=vars_to_include).reset_index(drop=True)
 	if not demean:
 		for fe in model.fixed_effects:
 			data = add_dummy_variable_to_data(fe, data)

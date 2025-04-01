@@ -94,6 +94,9 @@ class RegressionPlot():
             mean_data = reg_result.params.to_frame()
             reg_result = pd.concat([mean_data, err_data], axis=1)
             reg_result.columns = ["Coef.","Std.Err."]
+        elif model_type == "driscollkraay":
+            reg_result = pd.concat([reg_result.params, reg_result.std_errors], axis=1)
+            reg_result.columns = ["Coef.","Std.Err."]
         fig, axes = self.build_axes(reg_result)
 
         plt.tight_layout(h_pad = -.3)

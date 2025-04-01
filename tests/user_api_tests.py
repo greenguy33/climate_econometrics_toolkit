@@ -173,16 +173,19 @@ def test_user_api():
 
     assert len(api.get_all_model_ids()) > 1
 
-def test_regression_standard_error():
+def test_regression_standard_error_univariate():
 
     panel_data = pd.read_csv("data/ortiz_bobea_data.csv")
 
     api.set_dataset(panel_data)
     api.set_panel_column("ISO3")
     api.set_time_column("year")
-    api.set_target_variable("fd_log_tfp")
-    api.add_covariates(["fd_tmean","fd_tmean_sq","fd_prcp","fd_prcp_sq"])
-    api.add_fixed_effects(["ISO3","year"])
+    api.set_target_variable("tfp")
+    api.add_transformation("tfp", ["ln", "fd"])
+    api.set_time_column("year")
+    api.set_panel_column("ISO3")
+    api.add_covariates("tmean")
+    api.add_transformation("tmean", ["sq", "fd"], keep_original_var=False)
 
     api.evaluate_model()
     res1 = api.model.regression_result.summary2().tables[1]["Std.Err."]
@@ -192,10 +195,10 @@ def test_regression_standard_error():
     res3 = api.model.regression_result.summary2().tables[1]["Std.Err."]
     api.evaluate_model("clusteredtime")
     res4 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("clusteredpanel")
+    api.evaluate_model("clusteredspace")
     res5 = api.model.regression_result.summary2().tables[1]["Std.Err."]
     api.evaluate_model("driscollkraay")
-    res6 = api.model.regression_result.summary2().tables[1]["Std.Err."]
+    res6 = api.model.regression_result.std_errors
 
     assert_series_not_equal(res1, res2)
     assert_series_not_equal(res1, res3)
@@ -212,3 +215,78 @@ def test_regression_standard_error():
     assert_series_not_equal(res4, res5)
     assert_series_not_equal(res4, res6)
     assert_series_not_equal(res5, res6)
+
+
+def test_regression_standard_error_multivariate():
+
+    panel_data = pd.read_csv("data/ortiz_bobea_data.csv")
+
+    api.set_dataset(panel_data)
+    api.set_panel_column("ISO3")
+    api.set_time_column("year")
+    api.set_target_variable("tfp")
+    api.add_transformation("tfp", ["ln", "fd"])
+    api.set_time_column("year")
+    api.set_panel_column("ISO3")
+    api.add_covariates(["tmean", "prcp"])
+    api.add_transformation("tmean", "fd")
+    api.add_transformation("tmean", ["sq", "fd"], keep_original_var=False)
+    api.add_transformation("prcp", "fd")
+    api.add_transformation("prcp", ["sq", "fd"], keep_original_var=False)
+    api.add_fixed_effects(["year","ISO3"])
+
+    api.evaluate_model()
+    res1 = api.model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model("whitehuber")
+    res2 = api.model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model("neweywest")
+    res3 = api.model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model("clusteredtime")
+    res4 = api.model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model("clusteredspace")
+    res5 = api.model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model("driscollkraay")
+    res6 = api.model.regression_result.std_errors
+
+    assert_series_not_equal(res1, res2)
+    assert_series_not_equal(res1, res3)
+    assert_series_not_equal(res1, res4)
+    assert_series_not_equal(res1, res5)
+    assert_series_not_equal(res1, res6)
+    assert_series_not_equal(res2, res3)
+    assert_series_not_equal(res2, res4)
+    assert_series_not_equal(res2, res5)
+    assert_series_not_equal(res2, res6)
+    assert_series_not_equal(res3, res4)
+    assert_series_not_equal(res3, res5)
+    assert_series_not_equal(res3, res6)
+    assert_series_not_equal(res4, res5)
+    assert_series_not_equal(res4, res6)
+    assert_series_not_equal(res5, res6)
+
+def test_bootstrap():
+
+    panel_data = pd.read_csv("data/ortiz_bobea_data.csv")
+
+    api.set_dataset(panel_data, "ortiz_bobea_data")
+    api.set_panel_column("ISO3")
+    api.set_time_column("year")
+    api.set_target_variable("tfp")
+    api.add_transformation("tfp", ["ln", "fd"])
+    api.set_time_column("year")
+    api.set_panel_column("ISO3")
+    api.add_covariates(["tmean", "prcp"])
+    api.add_transformation("tmean", "fd")
+    api.add_transformation("tmean", ["sq", "fd"], keep_original_var=False)
+    api.add_transformation("prcp", "fd")
+    api.add_transformation("prcp", ["sq", "fd"], keep_original_var=False)
+    api.add_fixed_effects(["year","ISO3"])
+
+    model_id = api.evaluate_model()
+
+    api.run_block_bootstrap(model_id, "nonrobust", 2)
+    api.run_block_bootstrap(model_id, "whitehuber", 2)
+    api.run_block_bootstrap(model_id, "neweywest", 2)
+    api.run_block_bootstrap(model_id, "clusteredtime", 2)
+    api.run_block_bootstrap(model_id, "clusteredspace", 2)
+    api.run_block_bootstrap(model_id, "driscollkraay", 2)

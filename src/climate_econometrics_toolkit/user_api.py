@@ -91,9 +91,10 @@ def load_dataset_from_file(datafile):
     model.data_file = datafile.split("/")[-1]
     model.dataset = pd.read_csv(datafile)
 
-def set_dataset(dataframe):
+def set_dataset(dataframe, dataset_name):
     # resets model when new dataset is loaded
     reset_model()
+    model.data_file = dataset_name
     model.dataset = dataframe
 
 def view_current_model():
@@ -219,6 +220,7 @@ def run_block_bootstrap(model, std_error_type, num_samples=1000):
     # TODO: check to see if bootstrap already ran for this model
     if isinstance(model, str):
         model = get_model_by_id(model)
+    assert model != None, "NoneType passed as model object"
     regression.run_block_bootstrap(model, std_error_type, num_samples)
 
 def extract_raster_data(raster_file, shape_file, weight_file=None):

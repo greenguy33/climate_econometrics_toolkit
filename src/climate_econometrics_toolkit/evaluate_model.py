@@ -39,7 +39,7 @@ def generate_withheld_data(data, model):
 
 
 def calculate_prediction_interval_accuracy(y, predictions, in_sample_mse):
-	pred_data = pd.DataFrame(np.transpose([y, predictions.predicted_mean, predictions.var_pred_mean]), columns=["real_y", "pred_mean", "pred_var"])
+	pred_data = pd.DataFrame(np.transpose([y, predictions["predicted_mean"], predictions["var_pred_mean"]]), columns=["real_y", "pred_mean", "pred_var"])
 	pred_data["pred_int_acc"] = np.where(
 		(pred_data.pred_mean + np.sqrt(pred_data.pred_var + in_sample_mse) * 1.9603795 > pred_data.real_y) &
 		(pred_data.pred_mean - np.sqrt(pred_data.pred_var + in_sample_mse) * 1.9603795 < pred_data.real_y),
@@ -49,11 +49,81 @@ def calculate_prediction_interval_accuracy(y, predictions, in_sample_mse):
 	return np.mean(pred_data.pred_int_acc)
 
 
+def get_predictions_from_reg_results(model, model_vars, reg_result, predict_data, std_error_type):
+	if std_error_type != "driscollkraay":
+		if model_vars is not None:
+			predict_data = predict_data[model_vars]
+			predict_data = sm.add_constant(predict_data)
+		else:
+			predict_data = np.ones(len(predict_data))
+		predictions = reg_result.get_prediction(predict_data)
+		predicted_mean = predictions.predicted_mean
+		var_pred_mean = predictions.var_pred_mean
+	else:
+		predict_data = predict_data.set_index([model.panel_column, model.time_column])
+		if model_vars is not None:
+			predict_data = predict_data[model_vars]
+		predict_data = sm.add_constant(predict_data)
+		predicted_mean = list(reg_result.predict(predict_data)["predictions"])
+		var_pred_mean = np.diag(predict_data@reg_result.cov@np.transpose(predict_data))
+	return {
+		"predicted_mean":predicted_mean,
+		"var_pred_mean":var_pred_mean
+	}
+
+
 def evaluate_model(data, std_error_type, model):
 	if model.random_effects is None:
 		return evaluate_non_random_effects_model(data, std_error_type, model)
 	else:
 		return evaluate_random_effects_model(data, std_error_type, model)
+
+
+def evaluate_non_random_effects_model(data, std_error_type, model):
+
+	demean_data = False
+	if len(model.fixed_effects) > 0 and len(model.time_trends) == 0:
+		demean_data = True
+	transformed_data = utils.transform_data(data, model, demean=demean_data)
+
+	in_sample_mse_list, out_sample_mse_list, out_sample_pred_int_cov_list, intercept_only_mse_list = [], [], [], []
+
+	for train_indices, test_indices in generate_withheld_data(transformed_data, model):
+
+		train_data_transformed = transformed_data.iloc[train_indices]
+		test_data_transformed = transformed_data.iloc[test_indices]
+	
+		reg_result = regression.run_standard_regression(train_data_transformed, model, std_error_type, demean_data)
+		
+		model_vars = utils.get_model_vars(train_data_transformed, model, exclude_fixed_effects=demean_data)
+		in_sample_predictions = get_predictions_from_reg_results(model, model_vars, reg_result, train_data_transformed, std_error_type)
+		out_sample_predictions = get_predictions_from_reg_results(model, model_vars, reg_result, test_data_transformed, std_error_type)
+
+		in_sample_mse = np.mean(np.square(in_sample_predictions["predicted_mean"]-train_data_transformed[model.target_var]))
+		out_sample_mse = np.mean(np.square(out_sample_predictions["predicted_mean"]-test_data_transformed[model.target_var]))
+		
+		intercept_reg_result = regression.run_intercept_only_regression(train_data_transformed, model, std_error_type)
+		
+		intercept_only_predictions = get_predictions_from_reg_results(model, None, intercept_reg_result, test_data_transformed[[model.time_column,model.panel_column]], std_error_type)
+		intercept_only_mse = np.mean(np.square(intercept_only_predictions["predicted_mean"]-test_data_transformed[model.target_var]))
+
+		intercept_only_mse_list.append(intercept_only_mse)
+		in_sample_mse_list.append(in_sample_mse)
+		out_sample_mse_list.append(out_sample_mse)
+		out_sample_pred_int_cov_list.append(calculate_prediction_interval_accuracy(test_data_transformed[model.target_var], out_sample_predictions, in_sample_mse))
+
+	model.out_sample_mse = np.mean(out_sample_mse_list)
+	model.out_sample_mse_reduction = (np.mean(intercept_only_mse_list) - np.mean(out_sample_mse_list)) / np.mean(intercept_only_mse_list)
+	model.out_sample_pred_int_cov = np.mean(out_sample_pred_int_cov_list)
+	model.in_sample_mse = np.mean(in_sample_mse_list)
+	model.regression_result = regression.run_standard_regression(transformed_data, model, std_error_type, demeaned=demean_data)
+	if std_error_type != "driscollkraay":
+		model.r2 = round(float(model.regression_result.rsquared),2)
+	else:
+		model.r2 = round(float(model.regression_result._r2),2)
+	model.rmse = np.sqrt(model.out_sample_mse)
+
+	return model
 
 
 def evaluate_random_effects_model(data, std_error_type, model):
@@ -89,53 +159,6 @@ def evaluate_random_effects_model(data, std_error_type, model):
 	model.out_sample_mse_reduction = (np.mean(intercept_only_mse_list) - np.mean(out_sample_mse_list)) / np.mean(intercept_only_mse_list)
 	model.in_sample_mse = np.mean(in_sample_mse_list)
 	model.regression_result = regression.run_random_effects_regression(transformed_data, model, std_error_type)
-	model.rmse = np.sqrt(model.out_sample_mse)
-
-	return model
-
-
-def evaluate_non_random_effects_model(data, std_error_type, model):
-
-	demean_data = False
-	if len(model.fixed_effects) > 0 and len(model.time_trends) == 0:
-		demean_data = True
-	transformed_data = utils.transform_data(data, model, demean=demean_data)
-
-	in_sample_mse_list, out_sample_mse_list, out_sample_pred_int_cov_list, intercept_only_mse_list = [], [], [], []
-
-	for train_indices, test_indices in generate_withheld_data(transformed_data, model):
-
-		train_data_transformed = transformed_data.iloc[train_indices]
-		test_data_transformed = transformed_data.iloc[test_indices] 
-	
-		reg_result = regression.run_standard_regression(train_data_transformed, model, std_error_type)
-		
-		train_regression_data = train_data_transformed[utils.get_model_vars(test_data_transformed, model, exclude_fixed_effects=demean_data)]
-		train_regression_data = sm.add_constant(train_regression_data)
-		test_regression_data = test_data_transformed[utils.get_model_vars(test_data_transformed, model, exclude_fixed_effects=demean_data)]
-		test_regression_data = sm.add_constant(test_regression_data)
-		
-		in_sample_predictions = reg_result.get_prediction(train_regression_data)
-		out_sample_predictions = reg_result.get_prediction(test_regression_data)
-
-		in_sample_mse = np.mean(np.square(in_sample_predictions.predicted_mean-train_data_transformed[model.target_var]))
-		out_sample_mse = np.mean(np.square(out_sample_predictions.predicted_mean-test_data_transformed[model.target_var]))
-		
-		intercept_only_model = regression.run_intercept_only_regression(train_data_transformed, model, std_error_type)
-		intercept_only_predictions = intercept_only_model.predict(np.ones(len(test_data_transformed)))
-		intercept_only_mse = np.mean(np.square(intercept_only_predictions-test_data_transformed[model.target_var]))
-
-		intercept_only_mse_list.append(intercept_only_mse)
-		in_sample_mse_list.append(in_sample_mse)
-		out_sample_mse_list.append(out_sample_mse)
-		out_sample_pred_int_cov_list.append(calculate_prediction_interval_accuracy(test_data_transformed[model.target_var], out_sample_predictions, in_sample_mse))
-
-	model.out_sample_mse = np.mean(out_sample_mse_list)
-	model.out_sample_mse_reduction = (np.mean(intercept_only_mse_list) - np.mean(out_sample_mse_list)) / np.mean(intercept_only_mse_list)
-	model.out_sample_pred_int_cov = np.mean(out_sample_pred_int_cov_list)
-	model.in_sample_mse = np.mean(in_sample_mse_list)
-	model.regression_result = regression.run_standard_regression(transformed_data, model, std_error_type, demeaned=demean_data)
-	model.r2 = float(model.regression_result.summary2().tables[0].loc[model.regression_result.summary2().tables[0][0]=="R-squared:"][1].item())
 	model.rmse = np.sqrt(model.out_sample_mse)
 
 	return model

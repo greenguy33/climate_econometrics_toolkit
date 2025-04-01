@@ -38,7 +38,9 @@ def set_up_regression(transformed_data, model, std_error_type, demeaned=False):
 	return utils.get_model_vars(transformed_data, model, demeaned)
 
 
-def run_statsmodels_regression(transformed_data, regression_data, model, std_error_type):
+def run_statsmodels_regression(transformed_data, model_vars, model, std_error_type):
+	regression_data = transformed_data[model_vars]
+	regression_data = sm.add_constant(regression_data)
 	if std_error_type not in std_error_args:
 		return sm.OLS(transformed_data[model.target_var],regression_data,missing="drop").fit(cov_type=std_error_name_map[std_error_type])
 	else:
@@ -47,15 +49,16 @@ def run_statsmodels_regression(transformed_data, regression_data, model, std_err
 
 def run_linearmodels_regression(transformed_data, model_vars, model, std_error_type):
 	transformed_data = transformed_data.set_index([model.panel_column, model.time_column])
-	return PanelOLS(transformed_data[model.target_var], transformed_data[model_vars]).fit(cov_type=std_error_name_map[std_error_type])
+	regression_data = transformed_data[model_vars]
+	regression_data = sm.add_constant(regression_data)
+	# TODO: check_rank = False not the best long-term solution for bootstrap using driscoll-kraay std. error
+	return PanelOLS(transformed_data[model.target_var], regression_data, check_rank=False).fit(cov_type=std_error_name_map[std_error_type])
 
 
 def run_standard_regression(transformed_data, model, std_error_type, demeaned=False):
 	model_vars = set_up_regression(transformed_data, model, std_error_type, demeaned)
-	regression_data = transformed_data[model_vars]
-	regression_data = sm.add_constant(regression_data)
 	if std_error_type != "driscollkraay":
-		return run_statsmodels_regression(transformed_data, regression_data, model, std_error_type)
+		return run_statsmodels_regression(transformed_data, model_vars, model, std_error_type)
 	else:
 		return run_linearmodels_regression(transformed_data, model_vars, model, std_error_type)
 
@@ -76,12 +79,12 @@ def run_intercept_only_regression(transformed_data, model, std_error_type):
 	assert std_error_type in utils.supported_standard_errors, f"Standard error type most be in: {utils.std_type_string}"
 	transformed_data["const"] = np.ones(len(transformed_data))
 	if std_error_type != "driscollkraay":
-		return run_statsmodels_regression(transformed_data, transformed_data["const"], model, std_error_type)
+		return run_statsmodels_regression(transformed_data, ["const"], model, std_error_type)
 	else:
 		return run_linearmodels_regression(transformed_data, ["const"], model, std_error_type)
 
 
-def run_block_bootstrap(model, std_error_type, num_samples=5, use_threading=False):
+def run_block_bootstrap(model, std_error_type, num_samples, use_threading=False):
 	print("Running bootstrap...this may take awhile")
 	data = model.dataset
 	transformed_data = utils.transform_data(data, model)
@@ -90,7 +93,7 @@ def run_block_bootstrap(model, std_error_type, num_samples=5, use_threading=Fals
 		thread.daemon = True
 		thread.start()
 	else:
-		bootstrap(transformed_data,model,num_samples)
+		bootstrap(transformed_data,model,num_samples,std_error_type)
 
 
 def bootstrap(transformed_data, model, num_samples, std_error_type):
@@ -115,11 +118,11 @@ def bootstrap(transformed_data, model, num_samples, std_error_type):
 				else:
 					covar_coefs[model.random_effects[0] + "_" + entity].append(np.NaN)
 		else:
-			reg_result = run_standard_regression(resampled_data, model, std_error_type).summary2().tables[1]
+			reg_result = run_standard_regression(resampled_data, model, std_error_type)
 			for covar in model.covariates:
 				if covar not in covar_coefs:
 					covar_coefs[covar] = []
-				covar_coefs[covar].append(reg_result.loc[reg_result.index == covar]["Coef."].item())
+				covar_coefs[covar].append(reg_result.params[covar])
 	pd.DataFrame.from_dict(covar_coefs).to_csv(f"{cet_home}/bootstrap_samples/coefficient_samples_{str(model.model_id)}.csv")
 
 

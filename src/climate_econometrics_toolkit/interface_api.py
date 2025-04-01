@@ -42,9 +42,9 @@ def run_model_analysis(data, std_error_type, model, save_to_cache=True):
 			model.save_model_to_cache()
 		regression_result = model.regression_result
 		# TODO: don't print out fixed effect/time trend coefficients
-		if model.random_effects is None:
+		try:
 			print(regression_result.summary2().tables[1])
-		else:
+		except:
 			print(regression_result.params)
 		model.save_regression_script()
 	return model, regression_result, return_string
@@ -76,7 +76,7 @@ def run_bayesian_regression(model, use_threading=True):
 
 def run_block_bootstrap(model, std_error_type, use_threading=True):
 	# TODO: check to see if bootstrap already ran for this model
-	regression.run_block_bootstrap(model, std_error_name_map[std_error_type], use_threading=use_threading)
+	regression.run_block_bootstrap(model, std_error_name_map[std_error_type], 1000, use_threading=use_threading)
 
 
 def extract_raster_data(raster_file, shape_file, weights_file=None):

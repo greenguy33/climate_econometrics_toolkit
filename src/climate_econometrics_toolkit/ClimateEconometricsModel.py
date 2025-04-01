@@ -61,10 +61,10 @@ class ClimateEconometricsModel:
 		os.makedirs(dir_name)
 		with open(f"{dir_name}/model.pkl", "wb") as write_file:
 			pkl.dump(self, write_file)
-		if self.random_effects is None:
+		try:
 			self.regression_result.summary2().tables[1].to_csv(f"{cet_home}/model_results/{self.model_id}.csv")
-		else:
-			self.regression_result.summary().tables[1].to_csv(f"{cet_home}/model_results/{self.model_id}.csv")
+		except:
+			self.regression_result.params.to_csv(f"{cet_home}/model_results/{self.model_id}.csv")
 		
 
 	def save_regression_script(self):
