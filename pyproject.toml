@@ -30,5 +30,7 @@ dependencies = [
   # "geopandas>=0.14.3",
   # "exactextract>=0.2.0",
   # "progressbar2>=4.5.0",
-  # "linearmodels>=6.1"
+  # "linearmodels>=6.1",
+  # "pysal>=25.1",
+  # "spreg>=1.8.2"
 ]

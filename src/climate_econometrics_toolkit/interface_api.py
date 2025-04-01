@@ -79,6 +79,10 @@ def run_block_bootstrap(model, std_error_type, use_threading=True):
 	regression.run_block_bootstrap(model, std_error_name_map[std_error_type], 1000, use_threading=use_threading)
 
 
+def run_spatial_regression(model, reg_type, model_id, geometry_column):
+	regression.run_spatial_regression(model, reg_type, model_id, geometry_column)
+
+
 def extract_raster_data(raster_file, shape_file, weights_file=None):
 	return predict.extract_raster_data(raster_file, shape_file, weights_file)
 

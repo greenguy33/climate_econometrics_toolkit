@@ -37,7 +37,7 @@ def initial_checks():
 	env_var_name = "CETHOME"
 	if os.getenv(env_var_name) is None:
 		os.environ["CETHOME"] = "."
-	dirs_to_init = ["model_cache","bayes_samples","bootstrap_samples","raster_output","predictions","model_results","regression_scripts"]
+	dirs_to_init = ["model_cache","bayes_samples","bootstrap_samples","raster_output","predictions","model_results","regression_scripts","spatial_regression_output"]
 	for dir in dirs_to_init:
 		if not os.path.isdir(dir):
 			os.makedirs(dir)
@@ -256,10 +256,11 @@ def start_user_interface():
 	step2_label = tk.Label(lefthand_bar, text="Step 2: Construct and Evaluate Model", font=('Helvetica', 12, 'bold'))
 	btn_load = tk.Button(lefthand_bar, text="Load Dataset", command=tk_utils.add_data_columns_from_file)
 	btn_clear_canvas = tk.Button(lefthand_bar, text="Clear Canvas", command=tk_utils.clear_canvas)
-	btn_evaluate = tk.Button(lefthand_bar, text="Evaluate Model", command=tk_utils.evaluate_model)
+	btn_evaluate = tk.Button(lefthand_bar, text="Evaluate Model with OLS", command=tk_utils.evaluate_model)
 	btn_clear_model_cache = tk.Button(lefthand_bar, text="Clear Model Cache", command=tk_utils.clear_model_cache)
 	btn_bootstrap = tk.Button(uncertainty_button_row, text="Run Block Bootstrap", command=tk_utils.run_block_bootstrap)
 	btn_bayesian_regression = tk.Button(uncertainty_button_row, text="Run Bayesian Inference", command=tk_utils.run_bayesian_inference)
+	btn_spatial_regression = tk.Button(uncertainty_button_row, text="Run Spatial Regression", command=tk_utils.run_spatial_regression)
 	step3_label = tk.Label(lefthand_bar, text="Step 3: Predict Impacts", font=('Helvetica', 12, 'bold'))
 	btn_predict = tk.Button(lefthand_bar, text="Predict Out-of-Sample", command=tk_utils.predict_out_of_sample)
 	result_text = tk.Text(lefthand_bar, height=2)
@@ -276,6 +277,7 @@ def start_user_interface():
 	uncertainty_button_row.pack(fill=tk.BOTH, expand=True)
 	btn_bootstrap.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 	btn_bayesian_regression.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+	btn_spatial_regression.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
 	step3_label.pack(fill=tk.BOTH, expand=True)
 	btn_predict.pack(fill=tk.BOTH, expand=True)

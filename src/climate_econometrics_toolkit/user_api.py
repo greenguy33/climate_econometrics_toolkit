@@ -8,6 +8,7 @@ from climate_econometrics_toolkit import user_prediction_functions as user_predi
 import pandas as pd
 import os
 import copy
+import time
 
 model = ClimateEconometricsModel()
 
@@ -209,6 +210,14 @@ def remove_random_effect(add_to_covariate_list=True):
         if add_to_covariate_list:
             add_covariates(model.random_effects[0])
         model.random_effects = None
+
+def run_spatial_lag_regression(reg_type, geometry_column=None):
+    model_id = time.time()
+    regression.run_spatial_regression(model, reg_type, model_id, geometry_column)
+
+def run_spatial_error_regression(reg_type, geometry_column=None):
+    model_id = time.time()
+    regression.run_spatial_regression(model, reg_type, model_id, geometry_column)
 
 def run_bayesian_regression(model, num_samples=1000):
     # TODO: check to see if bayesian inference already ran for this model

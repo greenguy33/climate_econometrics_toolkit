@@ -11,6 +11,9 @@ from sklearn.utils import resample
 import pandas as pd
 import threading
 import progressbar
+import geopandas as gpd
+from spreg import GM_Lag, GM_Error
+from libpysal.weights import distance
 
 import climate_econometrics_toolkit.utils as utils
 
@@ -82,6 +85,44 @@ def run_intercept_only_regression(transformed_data, model, std_error_type):
 		return run_statsmodels_regression(transformed_data, ["const"], model, std_error_type)
 	else:
 		return run_linearmodels_regression(transformed_data, ["const"], model, std_error_type)
+	
+
+def run_spatial_regression(model, reg_type, model_id, geometry_column=None, k=5):
+	assert reg_type in ["lag","error"], "Spatial model type must be either 'lag' or 'error'."
+	demean_data = False
+	if len(model.fixed_effects) > 0 and len(model.time_trends) == 0:
+		demean_data = True
+	transformed_data = utils.transform_data(model.dataset, model, demean=demean_data)
+	model_vars = utils.get_model_vars(transformed_data, model, exclude_fixed_effects=demean_data)
+	if geometry_column is None or geometry_column == "":
+		print("Geometry column unspecified...defaulting to ISO3 geometry.")
+		# assume ISO3 if no geometry column specified
+		geometry_column = "geometry"
+		countries = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))[['iso_a3', 'geometry']]
+		countries = countries[countries['iso_a3'].isin(transformed_data[model.panel_column])]
+		transformed_data = transformed_data[transformed_data[model.panel_column].isin(countries.iso_a3)].reset_index(drop=True)
+		if len(transformed_data == 0):
+			raise Exception("No geometry column was specified and automatic application of ISO3 geometry failed. Please add a geometry column to your data or use ISO3 data.")
+		country_geo = map(lambda country: countries.loc[countries.iso_a3 == country].geometry.item(), transformed_data[model.panel_column])
+		transformed_data[geometry_column] = list(country_geo)
+		transformed_data.to_csv("geometry_data.csv")
+	W = distance.KNN.from_dataframe(transformed_data[[model.panel_column,geometry_column]], k=k)
+	regression_data = transformed_data[model_vars]
+	if reg_type == "error":
+		model = GM_Error(
+			y=transformed_data[model.target_var], 
+			x=regression_data,
+			w=W
+		)
+	else:
+		model = GM_Lag(
+			y=transformed_data[model.target_var], 
+			x=regression_data,
+			w=W
+		)
+	file = open(f"{cet_home}/spatial_regression_output/{model_id}", "w")
+	file.write(model.summary)
+	file.close()
 
 
 def run_block_bootstrap(model, std_error_type, num_samples, use_threading=False):

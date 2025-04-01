@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import numpy as np
+import time
 
 import tkinter as tk
 from tkinter import filedialog
@@ -11,9 +12,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.transforms as transform
 
 import climate_econometrics_toolkit.interface_api as api
-from climate_econometrics_toolkit.RasterExtractionPopup import RasterExtractionPopup
-from climate_econometrics_toolkit.PredictionFunctionPopup import PredictionFunctionPopup
-from climate_econometrics_toolkit.StandardErrorPopup import StandardErrorPopup
+from climate_econometrics_toolkit.Popups import RasterExtractionPopup, PredictionFunctionPopup, StandardErrorPopup, SpatialRegressionTypePopup
 
 import xarray as xr
 import geopandas as gpd
@@ -193,7 +192,7 @@ class TkInterfaceUtils():
 		if self.dnd.current_model is None:
 			self.update_interface_window_output("Please evaluate your model or select an existing model before running Bayesian inference.")
 		else:
-			self.update_interface_window_output("Bayesian inference will run in background...see command line for progress. Output will be available in {cet_home}/bayes_samples")
+			self.update_interface_window_output(f"Bayesian inference will run in background...see command line for progress. Output will be available in {cet_home}/bayes_samples")
 			api.run_bayesian_regression(self.dnd.current_model)
 
 
@@ -202,8 +201,15 @@ class TkInterfaceUtils():
 			self.update_interface_window_output("Please evaluate your model or select an existing model before running bootstrapping.")
 		else:
 			standard_error_popup = StandardErrorPopup(self.window)
-			self.update_interface_window_output("Bootstrapping will run in background...see command line for progress. Output will be available in {cet_home}/bootstrap_samples")
+			self.update_interface_window_output(f"Bootstrapping will run in background...see command line for progress. Output will be available in {cet_home}/bootstrap_samples")
 			api.run_block_bootstrap(self.dnd.current_model, standard_error_popup.std_error_type)
+
+
+	def run_spatial_regression(self):
+		spatial_regression_type_popup = SpatialRegressionTypePopup(self.window)
+		model_id = time.time()
+		self.update_interface_window_output(f"Spatial regression output is available in {cet_home}/spatial_regression_output/{model_id}")
+		api.run_spatial_regression(self.dnd.current_model, spatial_regression_type_popup.reg_type, model_id, spatial_regression_type_popup.geometry_column)
 
 
 	def extract_raster_data(self, window):
