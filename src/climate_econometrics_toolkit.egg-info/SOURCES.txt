@@ -6,6 +6,7 @@ src/climate_econometrics_toolkit/PredictionFunctionPopup.py
 src/climate_econometrics_toolkit/RasterExtractionPopup.py
 src/climate_econometrics_toolkit/RegressionPlot.py
 src/climate_econometrics_toolkit/ResultPlot.py
+src/climate_econometrics_toolkit/StandardErrorPopup.py
 src/climate_econometrics_toolkit/StatPlot.py
 src/climate_econometrics_toolkit/TkInterfaceUtils.py
 src/climate_econometrics_toolkit/__init__.py

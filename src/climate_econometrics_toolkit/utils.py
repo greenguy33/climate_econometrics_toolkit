@@ -26,6 +26,8 @@ supported_effects = ["fe", "tt1", "tt2", "tt3","re"]
 # last line of https://www.nature.com/articles/s43016-024-01040-8#Sec8
 supported_metrics = ["out_sample_mse_reduction","out_sample_mse","out_sample_pred_int_cov","rmse","r2"]
 supported_gcms = ["BCC-CSM2-MR","CanESM5","CNRM-CM6-1","HadGEM3-GC31-LL","IPSL-CM6A-LR","MIROC6","MRI-ESM2-0"]
+supported_standard_errors = ["nonrobust", "whitehuber", "driscollkraay", "neweywest", "clusteredtime","clusteredspace"]
+std_type_string = ",".join(supported_standard_errors)
 
 # TODO: understand how changing this can lead to undesirable results (e.g. in the Burke model)
 random_state = 123

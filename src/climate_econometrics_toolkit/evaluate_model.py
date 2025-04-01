@@ -49,14 +49,14 @@ def calculate_prediction_interval_accuracy(y, predictions, in_sample_mse):
 	return np.mean(pred_data.pred_int_acc)
 
 
-def evaluate_model(data, model):
+def evaluate_model(data, std_error_type, model):
 	if model.random_effects is None:
-		return evaluate_non_random_effects_model(data, model)
+		return evaluate_non_random_effects_model(data, std_error_type, model)
 	else:
-		return evaluate_random_effects_model(data, model)
+		return evaluate_random_effects_model(data, std_error_type, model)
 
 
-def evaluate_random_effects_model(data, model):
+def evaluate_random_effects_model(data, std_error_type, model):
 
 	transformed_data = utils.transform_data(data, model)
 
@@ -69,7 +69,7 @@ def evaluate_random_effects_model(data, model):
 		test_data_transformed.columns = [col.replace("(","_").replace(")","_") for col in test_data_transformed.columns]
 		modified_target_var = model.target_var.replace("(","_").replace(")","_")
 	
-		reg_result = regression.run_random_effects_regression(train_data_transformed, model)
+		reg_result = regression.run_random_effects_regression(train_data_transformed, model, std_error_type)
 
 		in_sample_predictions = reg_result.predict(train_data_transformed)
 		out_sample_predictions = reg_result.predict(test_data_transformed)
@@ -77,7 +77,7 @@ def evaluate_random_effects_model(data, model):
 		in_sample_mse = np.mean(np.square(in_sample_predictions-train_data_transformed[modified_target_var]))
 		out_sample_mse = np.mean(np.square(out_sample_predictions-test_data_transformed[modified_target_var]))
 
-		intercept_only_model = regression.run_intercept_only_regression(transformed_data, model)
+		intercept_only_model = regression.run_intercept_only_regression(transformed_data, model, std_error_type)
 		intercept_only_predictions = intercept_only_model.predict(np.ones(len(test_data_transformed)))
 		intercept_only_mse = np.mean(np.square(intercept_only_predictions-test_data_transformed[modified_target_var]))
 
@@ -88,13 +88,13 @@ def evaluate_random_effects_model(data, model):
 	model.out_sample_mse = np.mean(out_sample_mse_list)
 	model.out_sample_mse_reduction = (np.mean(intercept_only_mse_list) - np.mean(out_sample_mse_list)) / np.mean(intercept_only_mse_list)
 	model.in_sample_mse = np.mean(in_sample_mse_list)
-	model.regression_result = regression.run_random_effects_regression(transformed_data, model)
+	model.regression_result = regression.run_random_effects_regression(transformed_data, model, std_error_type)
 	model.rmse = np.sqrt(model.out_sample_mse)
 
 	return model
 
 
-def evaluate_non_random_effects_model(data, model):
+def evaluate_non_random_effects_model(data, std_error_type, model):
 
 	demean_data = False
 	if len(model.fixed_effects) > 0 and len(model.time_trends) == 0:
@@ -103,15 +103,12 @@ def evaluate_non_random_effects_model(data, model):
 
 	in_sample_mse_list, out_sample_mse_list, out_sample_pred_int_cov_list, intercept_only_mse_list = [], [], [], []
 
-	count = 0
-
 	for train_indices, test_indices in generate_withheld_data(transformed_data, model):
-		count += 1
 
 		train_data_transformed = transformed_data.iloc[train_indices]
 		test_data_transformed = transformed_data.iloc[test_indices] 
 	
-		reg_result = regression.run_standard_regression(train_data_transformed, model)
+		reg_result = regression.run_standard_regression(train_data_transformed, model, std_error_type)
 		
 		train_regression_data = train_data_transformed[utils.get_model_vars(test_data_transformed, model, exclude_fixed_effects=demean_data)]
 		train_regression_data = sm.add_constant(train_regression_data)
@@ -124,7 +121,7 @@ def evaluate_non_random_effects_model(data, model):
 		in_sample_mse = np.mean(np.square(in_sample_predictions.predicted_mean-train_data_transformed[model.target_var]))
 		out_sample_mse = np.mean(np.square(out_sample_predictions.predicted_mean-test_data_transformed[model.target_var]))
 		
-		intercept_only_model = regression.run_intercept_only_regression(transformed_data, model)
+		intercept_only_model = regression.run_intercept_only_regression(train_data_transformed, model, std_error_type)
 		intercept_only_predictions = intercept_only_model.predict(np.ones(len(test_data_transformed)))
 		intercept_only_mse = np.mean(np.square(intercept_only_predictions-test_data_transformed[model.target_var]))
 
@@ -137,7 +134,7 @@ def evaluate_non_random_effects_model(data, model):
 	model.out_sample_mse_reduction = (np.mean(intercept_only_mse_list) - np.mean(out_sample_mse_list)) / np.mean(intercept_only_mse_list)
 	model.out_sample_pred_int_cov = np.mean(out_sample_pred_int_cov_list)
 	model.in_sample_mse = np.mean(in_sample_mse_list)
-	model.regression_result = regression.run_standard_regression(transformed_data, model, demeaned=demean_data)
+	model.regression_result = regression.run_standard_regression(transformed_data, model, std_error_type, demeaned=demean_data)
 	model.r2 = float(model.regression_result.summary2().tables[0].loc[model.regression_result.summary2().tables[0][0]=="R-squared:"][1].item())
 	model.rmse = np.sqrt(model.out_sample_mse)
 

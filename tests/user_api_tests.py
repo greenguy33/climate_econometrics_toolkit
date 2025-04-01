@@ -2,6 +2,14 @@ from climate_econometrics_toolkit import user_api as api
 
 import pandas as pd
 
+def assert_series_not_equal(ser1, ser2):
+    try:
+        pd.testing.assert_series_equal(ser1, ser2)
+    except AssertionError:
+        pass
+    else:
+        raise AssertionError
+
 def test_user_api():
 
     api.load_dataset_from_file("data/GDP_climate_test_data.csv")
@@ -164,3 +172,43 @@ def test_user_api():
     assert not any(model is None for model in [model1,model2,model3,best_rmse_model,best_r2_model,best_mse_model,best_mse_red_model,best_pred_int_model])
 
     assert len(api.get_all_model_ids()) > 1
+
+def test_regression_standard_error():
+
+    panel_data = pd.read_csv("data/ortiz_bobea_data.csv")
+
+    api.set_dataset(panel_data)
+    api.set_panel_column("ISO3")
+    api.set_time_column("year")
+    api.set_target_variable("fd_log_tfp")
+    api.add_covariates(["fd_tmean","fd_tmean_sq","fd_prcp","fd_prcp_sq"])
+    api.add_fixed_effects(["ISO3","year"])
+
+    api.evaluate_model()
+    res1 = api.model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model("whitehuber")
+    res2 = api.model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model("neweywest")
+    res3 = api.model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model("clusteredtime")
+    res4 = api.model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model("clusteredpanel")
+    res5 = api.model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model("driscollkraay")
+    res6 = api.model.regression_result.summary2().tables[1]["Std.Err."]
+
+    assert_series_not_equal(res1, res2)
+    assert_series_not_equal(res1, res3)
+    assert_series_not_equal(res1, res4)
+    assert_series_not_equal(res1, res5)
+    assert_series_not_equal(res1, res6)
+    assert_series_not_equal(res2, res3)
+    assert_series_not_equal(res2, res4)
+    assert_series_not_equal(res2, res5)
+    assert_series_not_equal(res2, res6)
+    assert_series_not_equal(res3, res4)
+    assert_series_not_equal(res3, res5)
+    assert_series_not_equal(res3, res6)
+    assert_series_not_equal(res4, res5)
+    assert_series_not_equal(res4, res6)
+    assert_series_not_equal(res5, res6)

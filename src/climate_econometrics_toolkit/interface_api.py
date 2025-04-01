@@ -16,9 +16,18 @@ pd.set_option('display.max_rows', 100)
 
 cet_home = os.getenv("CETHOME")
 
+std_error_name_map = {
+	"Nonrobust":"nonrobust",
+	"White-Huber":"whitehuber",
+	"Driscoll-Kraay":"driscollkraay",
+	"Newey-West":"neweywest",
+	"Time-clustered":"clusteredtime",
+	"Space-clustered":"clusteredspace"
+}
+
 # TODO: refactor code into API and interface directories
 
-def run_model_analysis(data, model, save_to_cache=True):
+def run_model_analysis(data, std_error_type, model, save_to_cache=True):
 	regression_result = None
 	return_string = ""
 	data.sort_values([model.panel_column, model.time_column]).reset_index(drop=True)
@@ -27,7 +36,7 @@ def run_model_analysis(data, model, save_to_cache=True):
 		return_string += "\nTwo column names in dataset collide when spaces are removed. Please correct."
 		model = None
 	else:
-		model = ce_eval.evaluate_model(data, model)
+		model = ce_eval.evaluate_model(data, std_error_type, model)
 		model.model_id = time.time()
 		if save_to_cache:
 			model.save_model_to_cache()
@@ -41,14 +50,14 @@ def run_model_analysis(data, model, save_to_cache=True):
 	return model, regression_result, return_string
 
 
-def evaluate_model(data_file, model, panel_column, time_column):
+def evaluate_model(data_file, std_error_type, model, panel_column, time_column):
 	data = pd.read_csv(data_file)
 	model, unused_nodes = mb.parse_model_input(model, data_file, panel_column, time_column)
 	model.dataset = data
 	if len(unused_nodes) > 0:
 		return_string += "\nWARNING: The following nodes are unused in the regression. " + str(unused_nodes)
 	# TODO: check to see if this model is already in cache, if so return that model rather than re-evaluating the same model
-	return run_model_analysis(data, model)
+	return run_model_analysis(data, std_error_name_map[std_error_type], model)
 
 
 def clear_model_cache(dataset):
@@ -65,9 +74,9 @@ def run_bayesian_regression(model, use_threading=True):
 	regression.run_bayesian_regression(model, use_threading=use_threading)
 
 
-def run_block_bootstrap(model, use_threading=True):
+def run_block_bootstrap(model, std_error_type, use_threading=True):
 	# TODO: check to see if bootstrap already ran for this model
-	regression.run_block_bootstrap(model, use_threading=use_threading)
+	regression.run_block_bootstrap(model, std_error_name_map[std_error_type], use_threading=use_threading)
 
 
 def extract_raster_data(raster_file, shape_file, weights_file=None):

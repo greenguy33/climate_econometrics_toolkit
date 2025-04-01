@@ -68,7 +68,7 @@ class ClimateEconometricsModel:
 		
 
 	def save_regression_script(self):
-		# TODO: add random effects
+		# TODO: update according to new features: custom SEs, quantile, spatial, etc.
 		demean_data = False
 		if len(self.fixed_effects) > 0 and len(self.time_trends) == 0:
 			demean_data = True

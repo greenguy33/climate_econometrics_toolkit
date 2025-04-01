@@ -1,5 +1,6 @@
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
+from linearmodels import PanelOLS
 import pymc as pm
 import os
 from pytensor import tensor as pt
@@ -15,46 +16,84 @@ import climate_econometrics_toolkit.utils as utils
 
 cet_home = os.getenv("CETHOME")
 
-def run_standard_regression(transformed_data, model, demeaned=False):
-	model_vars = utils.get_model_vars(transformed_data, model, demeaned)
+std_error_name_map = {
+	"nonrobust":"nonrobust",
+	"whitehuber":"HC1",
+	"neweywest":"HAC",
+	"clusteredtime":"cluster",
+	"clusteredspace":"cluster",
+	"driscollkraay":"kernel"
+}
+
+std_error_args = {
+	"neweywest":{"maxlags":3},
+	"clusteredtime":{"groups":""},
+	"clusteredspace":{"groups":""}
+}
+
+def set_up_regression(transformed_data, model, std_error_type, demeaned=False):
+	assert std_error_type in utils.supported_standard_errors, f"Standard error type most be in: {utils.std_type_string}"
+	std_error_args["clusteredtime"]["groups"] = transformed_data[model.time_column]
+	std_error_args["clusteredspace"]["groups"] = transformed_data[model.panel_column]
+	return utils.get_model_vars(transformed_data, model, demeaned)
+
+
+def run_statsmodels_regression(transformed_data, regression_data, model, std_error_type):
+	if std_error_type not in std_error_args:
+		return sm.OLS(transformed_data[model.target_var],regression_data,missing="drop").fit(cov_type=std_error_name_map[std_error_type])
+	else:
+		return sm.OLS(transformed_data[model.target_var],regression_data,missing="drop").fit(cov_type=std_error_name_map[std_error_type], cov_kwds=std_error_args[std_error_type])
+
+
+def run_linearmodels_regression(transformed_data, model_vars, model, std_error_type):
+	transformed_data = transformed_data.set_index([model.panel_column, model.time_column])
+	return PanelOLS(transformed_data[model.target_var], transformed_data[model_vars]).fit(cov_type=std_error_name_map[std_error_type])
+
+
+def run_standard_regression(transformed_data, model, std_error_type, demeaned=False):
+	model_vars = set_up_regression(transformed_data, model, std_error_type, demeaned)
 	regression_data = transformed_data[model_vars]
 	regression_data = sm.add_constant(regression_data)
-	reg = sm.OLS(transformed_data[model.target_var],regression_data,missing="drop").fit()
-	return reg
+	if std_error_type != "driscollkraay":
+		return run_statsmodels_regression(transformed_data, regression_data, model, std_error_type)
+	else:
+		return run_linearmodels_regression(transformed_data, model_vars, model, std_error_type)
 
 
-def run_random_effects_regression(transformed_data, model):
-	model_vars = utils.get_model_vars(transformed_data, model)
+def run_random_effects_regression(transformed_data, model, std_error_type):
+	assert std_error_type == "nonrobust", "Specialized standard errors are not currently supported with random effects models"
+	model_vars = utils.get_model_vars(transformed_data, model, exclude_fixed_effects=False)
 	transformed_data.columns = [col.replace("(","_").replace(")","_") for col in transformed_data.columns]
 	model_vars = [var.replace("(","_").replace(")","_") for var in model_vars]
 	mv_as_string = "+".join(model_vars) if len(model_vars) > 0 else "0"
 	target_var = model.target_var.replace("(","_").replace(")","_")
 	formula = f"{target_var} ~ {mv_as_string}"
-	# TOOD: this may be using REML estimator...change to GLM to better align with literature?
 	reg = smf.mixedlm(formula, data=transformed_data, groups=model.random_effects[1], re_formula=f"0+{model.random_effects[0]}").fit()
 	return reg
 
 
-def run_intercept_only_regression(transformed_data, model):
-	intercept_col = np.ones(len(transformed_data))
-	reg = sm.OLS(transformed_data[model.target_var],intercept_col,missing="drop")
-	regression_result = reg.fit()
-	return regression_result
+def run_intercept_only_regression(transformed_data, model, std_error_type):
+	assert std_error_type in utils.supported_standard_errors, f"Standard error type most be in: {utils.std_type_string}"
+	transformed_data["const"] = np.ones(len(transformed_data))
+	if std_error_type != "driscollkraay":
+		return run_statsmodels_regression(transformed_data, transformed_data["const"], model, std_error_type)
+	else:
+		return run_linearmodels_regression(transformed_data, ["const"], model, std_error_type)
 
 
-def run_block_bootstrap(model, num_samples=5, use_threading=False):
+def run_block_bootstrap(model, std_error_type, num_samples=5, use_threading=False):
 	print("Running bootstrap...this may take awhile")
 	data = model.dataset
 	transformed_data = utils.transform_data(data, model)
 	if use_threading:
-		thread = threading.Thread(target=bootstrap,name="bootstrap_thread",args=(transformed_data,model,num_samples))
+		thread = threading.Thread(target=bootstrap,name="bootstrap_thread",args=(transformed_data,model,num_samples,std_error_type))
 		thread.daemon = True
 		thread.start()
 	else:
 		bootstrap(transformed_data,model,num_samples)
 
 
-def bootstrap(transformed_data, model, num_samples):
+def bootstrap(transformed_data, model, num_samples, std_error_type):
 	covar_coefs = {}
 	panel_ids = list(set(transformed_data[model.panel_column]))
 	for i in progressbar.progressbar(range(num_samples)):
@@ -63,7 +102,7 @@ def bootstrap(transformed_data, model, num_samples):
 		for panel_id in panel_id_resample:
 			resampled_data = pd.concat([resampled_data,transformed_data.loc[transformed_data[model.panel_column] == panel_id]])
 		if model.random_effects is not None:
-			reg_result = run_random_effects_regression(resampled_data, model)
+			reg_result = run_random_effects_regression(resampled_data, model, std_error_type)
 			for covar in model.covariates:
 				if covar not in covar_coefs:
 					covar_coefs[covar] = []
@@ -76,7 +115,7 @@ def bootstrap(transformed_data, model, num_samples):
 				else:
 					covar_coefs[model.random_effects[0] + "_" + entity].append(np.NaN)
 		else:
-			reg_result = run_standard_regression(resampled_data, model).summary2().tables[1]
+			reg_result = run_standard_regression(resampled_data, model, std_error_type).summary2().tables[1]
 			for covar in model.covariates:
 				if covar not in covar_coefs:
 					covar_coefs[covar] = []

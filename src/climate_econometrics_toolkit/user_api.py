@@ -29,10 +29,10 @@ def model_checks():
             return False
     return True
 
-def evaluate_model():
+def evaluate_model(std_error_type="nonrobust"):
     # TODO: check to see if this model is already in cache, if so return that model rather than re-evaluating the same model
     if model_checks():
-        _, _, return_string = api.run_model_analysis(copy.deepcopy(model.dataset), model, save_to_cache=False)
+        _, _, return_string = api.run_model_analysis(copy.deepcopy(model.dataset), std_error_type, model, save_to_cache=False)
         if return_string != "": print(return_string)
         if model != None:
             model.save_model_to_cache()
@@ -215,11 +215,11 @@ def run_bayesian_regression(model, num_samples=1000):
         model = get_model_by_id(model)
     regression.run_bayesian_regression(model, num_samples)
 
-def run_block_bootstrap(model, num_samples=1000):
+def run_block_bootstrap(model, std_error_type, num_samples=1000):
     # TODO: check to see if bootstrap already ran for this model
     if isinstance(model, str):
         model = get_model_by_id(model)
-    regression.run_block_bootstrap(model, num_samples)
+    regression.run_block_bootstrap(model, std_error_type, num_samples)
 
 def extract_raster_data(raster_file, shape_file, weight_file=None):
     return predict.extract_raster_data(raster_file, shape_file, weight_file)

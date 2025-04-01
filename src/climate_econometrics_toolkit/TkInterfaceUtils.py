@@ -13,6 +13,7 @@ import matplotlib.transforms as transform
 import climate_econometrics_toolkit.interface_api as api
 from climate_econometrics_toolkit.RasterExtractionPopup import RasterExtractionPopup
 from climate_econometrics_toolkit.PredictionFunctionPopup import PredictionFunctionPopup
+from climate_econometrics_toolkit.StandardErrorPopup import StandardErrorPopup
 
 import xarray as xr
 import geopandas as gpd
@@ -157,8 +158,8 @@ class TkInterfaceUtils():
 
 	def evaluate_model(self):
 		if self.dnd.variables_displayed:
-			# TODO: Improve the text displayed
-			model, regression_result, print_string = api.evaluate_model(self.dnd.filename, self.build_model_indices_lists(), self.panel_column, self.time_column)
+			standard_error_popup = StandardErrorPopup(self.window)
+			model, regression_result, print_string = api.evaluate_model(self.dnd.filename, standard_error_popup.std_error_type, self.build_model_indices_lists(), self.panel_column, self.time_column)
 			self.update_interface_window_output(print_string)
 			if model != None:
 				self.update_interface_window_output(
@@ -197,8 +198,9 @@ class TkInterfaceUtils():
 		if self.dnd.current_model is None:
 			self.update_interface_window_output("Please evaluate your model or select an existing model before running bootstrapping.")
 		else:
+			standard_error_popup = StandardErrorPopup(self.window)
 			self.update_interface_window_output("Bootstrapping will run in background...see command line for progress. Output will be available in {cet_home}/bootstrap_samples")
-			api.run_block_bootstrap(self.dnd.current_model)
+			api.run_block_bootstrap(self.dnd.current_model, standard_error_popup.std_error_type)
 
 
 	def extract_raster_data(self, window):
