@@ -37,7 +37,17 @@ def initial_checks():
 	env_var_name = "CETHOME"
 	if os.getenv(env_var_name) is None:
 		os.environ["CETHOME"] = "."
-	dirs_to_init = ["model_cache","bayes_samples","bootstrap_samples","raster_output","predictions","model_results","regression_scripts","spatial_regression_output"]
+	dirs_to_init = [
+		"model_cache",
+		"bayes_samples",
+		"bootstrap_samples",
+		"raster_output",
+		"predictions",
+		"model_results",
+		"regression_scripts",
+		"spatial_regression_output",
+		"quantile_regression_output"
+	]
 	for dir in dirs_to_init:
 		if not os.path.isdir(dir):
 			os.makedirs(dir)
@@ -261,6 +271,7 @@ def start_user_interface():
 	btn_bootstrap = tk.Button(uncertainty_button_row, text="Run Block Bootstrap", command=tk_utils.run_block_bootstrap)
 	btn_bayesian_regression = tk.Button(uncertainty_button_row, text="Run Bayesian Inference", command=tk_utils.run_bayesian_inference)
 	btn_spatial_regression = tk.Button(uncertainty_button_row, text="Run Spatial Regression", command=tk_utils.run_spatial_regression)
+	btn_quantile_regression = tk.Button(uncertainty_button_row, text="Run Quantile Regression", command=tk_utils.run_quantile_regression)
 	step3_label = tk.Label(lefthand_bar, text="Step 3: Predict Impacts", font=('Helvetica', 12, 'bold'))
 	btn_predict = tk.Button(lefthand_bar, text="Predict Out-of-Sample", command=tk_utils.predict_out_of_sample)
 	result_text = tk.Text(lefthand_bar, height=2)
@@ -278,6 +289,7 @@ def start_user_interface():
 	btn_bootstrap.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 	btn_bayesian_regression.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 	btn_spatial_regression.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+	btn_quantile_regression.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
 	step3_label.pack(fill=tk.BOTH, expand=True)
 	btn_predict.pack(fill=tk.BOTH, expand=True)

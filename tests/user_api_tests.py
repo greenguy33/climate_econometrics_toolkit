@@ -310,5 +310,34 @@ def test_spatial_regression():
     api.add_transformation("prcp", ["sq", "fd"], keep_original_var=False)
     api.add_fixed_effects(["year","ISO3"])
 
-    api.run_spatial_lag_regression("error")
-    api.run_spatial_lag_regression("lag")
+    model1 = api.run_spatial_lag_regression("error")
+    model2 = api.run_spatial_lag_regression("lag")
+
+    api.add_random_effect("tmean","ISO3")
+
+    model3 = api.run_spatial_lag_regression("lag")
+
+def test_quantile_regression():
+
+    panel_data = pd.read_csv("data/ortiz_bobea_data.csv")
+
+    api.set_dataset(panel_data, "ortiz_bobea_data")
+    api.set_panel_column("ISO3")
+    api.set_time_column("year")
+    api.set_target_variable("tfp")
+    api.add_transformation("tfp", ["ln", "fd"])
+    api.set_time_column("year")
+    api.set_panel_column("ISO3")
+    api.add_covariates(["tmean", "prcp"])
+    api.add_transformation("tmean", "fd")
+    api.add_transformation("tmean", ["sq", "fd"], keep_original_var=False)
+    api.add_transformation("prcp", "fd")
+    api.add_transformation("prcp", ["sq", "fd"], keep_original_var=False)
+    api.add_fixed_effects(["year","ISO3"])
+
+    model1 = api.run_quantile_regression(.1)
+    model2 = api.run_quantile_regression([.1,.3,.5,.99])
+
+    api.add_random_effect("tmean","ISO3")
+
+    model3 = api.run_quantile_regression(.5)

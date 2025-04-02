@@ -14,6 +14,7 @@ import progressbar
 import geopandas as gpd
 from spreg import GM_Lag, GM_Error
 from libpysal.weights import distance
+from shapely.wkt import loads
 
 import climate_econometrics_toolkit.utils as utils
 
@@ -85,10 +86,12 @@ def run_intercept_only_regression(transformed_data, model, std_error_type):
 		return run_statsmodels_regression(transformed_data, ["const"], model, std_error_type)
 	else:
 		return run_linearmodels_regression(transformed_data, ["const"], model, std_error_type)
-	
+
 
 def run_spatial_regression(model, reg_type, model_id, geometry_column=None, k=5):
 	assert reg_type in ["lag","error"], "Spatial model type must be either 'lag' or 'error'."
+	if model.random_effects != None:
+		print(f"WARNING: The specified Random effect {model.random_effects} is ignored in spatial regression model.")
 	demean_data = False
 	if len(model.fixed_effects) > 0 and len(model.time_trends) == 0:
 		demean_data = True
@@ -101,12 +104,15 @@ def run_spatial_regression(model, reg_type, model_id, geometry_column=None, k=5)
 		countries = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))[['iso_a3', 'geometry']]
 		countries = countries[countries['iso_a3'].isin(transformed_data[model.panel_column])]
 		transformed_data = transformed_data[transformed_data[model.panel_column].isin(countries.iso_a3)].reset_index(drop=True)
-		if len(transformed_data == 0):
+		if len(transformed_data) == 0:
 			raise Exception("No geometry column was specified and automatic application of ISO3 geometry failed. Please add a geometry column to your data or use ISO3 data.")
 		country_geo = map(lambda country: countries.loc[countries.iso_a3 == country].geometry.item(), transformed_data[model.panel_column])
 		transformed_data[geometry_column] = list(country_geo)
-		transformed_data.to_csv("geometry_data.csv")
-	W = distance.KNN.from_dataframe(transformed_data[[model.panel_column,geometry_column]], k=k)
+	try:
+		W = distance.KNN.from_dataframe(transformed_data[[model.panel_column,geometry_column]], k=k)
+	except ValueError:
+		transformed_data[geometry_column] = transformed_data[geometry_column].apply(loads)
+		W = distance.KNN.from_dataframe(transformed_data[[model.panel_column,geometry_column]], k=k)
 	regression_data = transformed_data[model_vars]
 	if reg_type == "error":
 		model = GM_Error(
@@ -120,9 +126,38 @@ def run_spatial_regression(model, reg_type, model_id, geometry_column=None, k=5)
 			x=regression_data,
 			w=W
 		)
-	file = open(f"{cet_home}/spatial_regression_output/{model_id}", "w")
+	save_dir = f"{cet_home}/spatial_regression_output/{model_id}"
+	if not os.path.exists(save_dir):
+		os.makedirs(save_dir)
+	file = open(f"{save_dir}/summary.txt", "w")
 	file.write(model.summary)
+	with open (f'{save_dir}/model.pkl', 'wb') as buff:
+		pkl.dump(model,buff)
 	file.close()
+	return model
+
+
+def run_quantile_regression(model, model_id, q):
+	print("Running quantile regression with quantile:", q)
+	if model.random_effects != None:
+		print(f"WARNING: The specified Random effect {model.random_effects} is ignored in quantile regression model.")
+	demean_data = False
+	if len(model.fixed_effects) > 0 and len(model.time_trends) == 0:
+		demean_data = True
+	transformed_data = utils.transform_data(model.dataset, model, demean=demean_data)
+	model_vars = utils.get_model_vars(transformed_data, model, exclude_fixed_effects=demean_data)
+	regression_data = transformed_data[model_vars]
+	regression_data = sm.add_constant(regression_data)
+	model = sm.QuantReg(transformed_data[model.target_var], regression_data).fit(q=q)
+	save_dir = f"{cet_home}/quantile_regression_output/{model_id}_q={q}"
+	if not os.path.exists(save_dir):
+		os.makedirs(save_dir)
+	file = open(f"{save_dir}/summary.txt", "w")
+	file.write(str(model.summary()))
+	with open (f'{save_dir}/model.pkl', 'wb') as buff:
+		pkl.dump(model,buff)
+	file.close()
+	return model
 
 
 def run_block_bootstrap(model, std_error_type, num_samples, use_threading=False):
@@ -212,8 +247,6 @@ def run_bayesian_inference(transformed_data, model, num_samples):
 			if model.random_effects[1] not in model.fixed_effects:
 				transformed_data = utils.add_dummy_variable_to_data(model.random_effects[1], transformed_data, leave_out_first=False)
 			re_dummy_cols = [col for col in transformed_data.columns if col.startswith("fe_") and col.endswith(f"_{model.random_effects[1]}")]
-
-			transformed_data.to_csv("transformed_data.csv")
 			
 			global_rs_mean = pm.Normal("global_rs_mean",0,10)
 			global_rs_sd = pm.HalfNormal("global_rs_sd",10)

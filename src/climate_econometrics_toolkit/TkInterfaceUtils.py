@@ -12,7 +12,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.transforms as transform
 
 import climate_econometrics_toolkit.interface_api as api
-from climate_econometrics_toolkit.Popups import RasterExtractionPopup, PredictionFunctionPopup, StandardErrorPopup, SpatialRegressionTypePopup
+from climate_econometrics_toolkit.Popups import RasterExtractionPopup, PredictionFunctionPopup, StandardErrorPopup, SpatialRegressionTypePopup, QuantileRegressionPopup
 
 import xarray as xr
 import geopandas as gpd
@@ -189,6 +189,7 @@ class TkInterfaceUtils():
 
 
 	def run_bayesian_inference(self):
+		# TODO shouldn't need to evaluate model with OLS before running Bayesian inference
 		if self.dnd.current_model is None:
 			self.update_interface_window_output("Please evaluate your model or select an existing model before running Bayesian inference.")
 		else:
@@ -197,6 +198,7 @@ class TkInterfaceUtils():
 
 
 	def run_block_bootstrap(self):
+		# TODO shouldn't need to evaluate model with OLS before running bootstrap
 		if self.dnd.current_model is None:
 			self.update_interface_window_output("Please evaluate your model or select an existing model before running bootstrapping.")
 		else:
@@ -206,10 +208,33 @@ class TkInterfaceUtils():
 
 
 	def run_spatial_regression(self):
-		spatial_regression_type_popup = SpatialRegressionTypePopup(self.window)
-		model_id = time.time()
-		self.update_interface_window_output(f"Spatial regression output is available in {cet_home}/spatial_regression_output/{model_id}")
-		api.run_spatial_regression(self.dnd.current_model, spatial_regression_type_popup.reg_type, model_id, spatial_regression_type_popup.geometry_column)
+		# TODO shouldn't need to evaluate model with OLS before running spatial regression
+		if self.dnd.current_model is None:
+			self.update_interface_window_output("Please evaluate your model or select an existing model before running spatial regression.")
+		else:
+			spatial_regression_type_popup = SpatialRegressionTypePopup(self.window)
+			model_id = time.time()
+			self.update_interface_window_output(f"Spatial regression output is available in {cet_home}/spatial_regression_output/{model_id}")
+			reg_type = spatial_regression_type_popup.reg_type.split(" ")[0]
+			api.run_spatial_regression(self.dnd.current_model, reg_type, model_id, spatial_regression_type_popup.geometry_column)
+
+
+	def run_quantile_regression(self):
+		# TODO shouldn't need to evaluate model with OLS before running spatial regression
+		if self.dnd.current_model is None:
+			self.update_interface_window_output("Please evaluate your model or select an existing model before running quantile regression.")
+		else:
+			quantile_popup = QuantileRegressionPopup(self.window)
+			model_id = time.time()
+			self.update_interface_window_output(f"Quantile regression output is available in {cet_home}/quantile_regression_output/{model_id}")
+			quantiles = quantile_popup.quantiles.strip()
+			if "," in quantiles:
+				if quantiles[-1] == ",":
+					quantiles = quantiles[:-1]
+				quantiles = [float(val) for val in quantiles.split(",")]
+			else:
+				quantiles = float(quantiles)
+			api.run_quantile_regression(self.dnd.current_model, model_id, quantiles)
 
 
 	def extract_raster_data(self, window):

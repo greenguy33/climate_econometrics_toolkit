@@ -51,7 +51,7 @@ class SpatialRegressionTypePopup(tk.Toplevel):
 
 		popup.protocol("WM_DELETE_WINDOW", on_close)
 
-		reg_type_list = ["lag","error"]
+		reg_type_list = ["lag (implementation: spreg.GM_Lag)","error (implementation: spreg.GM_Error)"]
 
 		reg_type = tk.StringVar(value=reg_type_list[0])
 		
@@ -171,4 +171,31 @@ class RasterExtractionPopup(tk.Toplevel):
 		mean_button.grid(row=6, column=0, padx=5, pady=1)
 		sum_button.grid(row=6, column=1, padx=5, pady=1)
 
+		window.wait_window(popup)
+
+
+class QuantileRegressionPopup(tk.Toplevel):
+
+	quantiles = None
+
+	def __init__(self, window):
+
+		popup = tk.Toplevel()
+		popup.geometry("500x300")
+		popup.transient(window)
+
+		def on_close():
+			self.quantiles = quantiles.get()
+			popup.destroy()
+
+		popup.protocol("WM_DELETE_WINDOW", on_close)
+		
+		text_entry_label = tk.Label(popup, text="Enter quantiles to run (must be between 0 and 1).\nIf multiple quantiles, separate with commas: e.g. .1,.2,.3,etc.")
+
+		quantiles = tk.StringVar()
+		quantile_entry = tk.Entry(popup, textvariable=quantiles)
+
+		text_entry_label.grid(row=1, column=0, padx=5, pady=1, columnspan=2)
+		quantile_entry.grid(row=2, column=0, padx=5, pady=1, columnspan=2)
+		
 		window.wait_window(popup)

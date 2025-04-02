@@ -71,7 +71,7 @@ def clear_model_cache(dataset):
 
 def run_bayesian_regression(model, use_threading=True):
 	# TODO: check to see if bayesian inference already ran for this model
-	regression.run_bayesian_regression(model, use_threading=use_threading)
+	regression.run_bayesian_regression(model, 1000, use_threading=use_threading)
 
 
 def run_block_bootstrap(model, std_error_type, use_threading=True):
@@ -81,6 +81,14 @@ def run_block_bootstrap(model, std_error_type, use_threading=True):
 
 def run_spatial_regression(model, reg_type, model_id, geometry_column):
 	regression.run_spatial_regression(model, reg_type, model_id, geometry_column)
+
+
+def run_quantile_regression(model, model_id, q):
+	if isinstance(q, list):
+		for val in q:
+			regression.run_quantile_regression(model, model_id, val)
+	else:
+		regression.run_quantile_regression(model, model_id, q)
 
 
 def extract_raster_data(raster_file, shape_file, weights_file=None):

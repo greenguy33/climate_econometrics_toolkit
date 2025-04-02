@@ -219,6 +219,14 @@ def run_spatial_error_regression(reg_type, geometry_column=None):
     model_id = time.time()
     regression.run_spatial_regression(model, reg_type, model_id, geometry_column)
 
+def run_quantile_regression(q):
+    model_id = time.time()
+    if isinstance(q, list):
+        for val in q:
+            regression.run_quantile_regression(model, model_id, val)
+    else:
+        regression.run_quantile_regression(model, model_id, q)
+
 def run_bayesian_regression(model, num_samples=1000):
     # TODO: check to see if bayesian inference already ran for this model
     if isinstance(model, str):
