@@ -4,6 +4,8 @@ import climate_econometrics_toolkit.utils as utils
 from climate_econometrics_toolkit import regression as regression
 from climate_econometrics_toolkit import prediction as predict
 from climate_econometrics_toolkit import user_prediction_functions as user_predict
+from climate_econometrics_toolkit import user_prediction_functions as user_predict
+from climate_econometrics_toolkit import stat_tests as stat_tests
 
 import pandas as pd
 import os
@@ -226,6 +228,34 @@ def run_quantile_regression(q):
             regression.run_quantile_regression(model, model_id, val)
     else:
         regression.run_quantile_regression(model, model_id, q)
+
+
+def run_stationarity_check():
+    assert model.dataset is not None, "Dataset must be set before running stationarity check."
+    assert model.target_var is not None, "Target variable must be set before running stationarity check."
+    assert model.target_var is not None, "Covariates must be set before running stationarity check."
+    assert model.time_column is not None, "Time column must be set before running stationarity check."
+    assert model.panel_column is not None, "Panel column must be set before running stationarity check."
+    return stat_tests.panel_unit_root_tests(model)
+
+
+def run_cointegration_check():
+    assert model.dataset is not None, "Dataset must be set before running cointegration check."
+    assert model.target_var is not None, "Target variable must be set before running cointegration check."
+    assert model.target_var is not None, "Covariates must be set before running cointegration check."
+    assert model.time_column is not None, "Time column must be set before running cointegration check."
+    assert model.panel_column is not None, "Panel column must be set before running cointegration check."
+    return stat_tests.cointegration_tests(model)
+
+
+def run_cross_sectional_dependence_check():
+    assert model.dataset is not None, "Dataset must be set before running cointegration check."
+    assert model.target_var is not None, "Target variable must be set before running cointegration check."
+    assert model.target_var is not None, "Covariates must be set before running cointegration check."
+    assert model.time_column is not None, "Time column must be set before running cointegration check."
+    assert model.panel_column is not None, "Panel column must be set before running cointegration check."
+    return stat_tests.cross_sectional_dependence_tests(model)
+
 
 def run_bayesian_regression(model, num_samples=1000):
     # TODO: check to see if bayesian inference already ran for this model

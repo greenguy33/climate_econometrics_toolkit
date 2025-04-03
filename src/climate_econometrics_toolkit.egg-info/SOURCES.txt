@@ -13,6 +13,7 @@ src/climate_econometrics_toolkit/interface_api.py
 src/climate_econometrics_toolkit/model_builder.py
 src/climate_econometrics_toolkit/prediction.py
 src/climate_econometrics_toolkit/regression.py
+src/climate_econometrics_toolkit/stat_tests.py
 src/climate_econometrics_toolkit/user_api.py
 src/climate_econometrics_toolkit/user_prediction_functions.py
 src/climate_econometrics_toolkit/utils.py

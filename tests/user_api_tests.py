@@ -9,8 +9,23 @@ def assert_series_not_equal(ser1, ser2):
         pass
     else:
         raise AssertionError
+    
+def build_example_model():
+    
+    panel_data = pd.read_csv("data/ortiz_bobea_data.csv")
 
-def test_user_api():
+    api.set_dataset(panel_data, "example")
+    api.set_panel_column("ISO3")
+    api.set_time_column("year")
+    api.set_target_variable("tfp")
+    api.add_transformation("tfp", ["ln", "fd"])
+    api.set_time_column("year")
+    api.set_panel_column("ISO3")
+    api.add_covariates("tmean")
+    api.add_transformation("tmean", ["sq", "fd"], keep_original_var=False)
+
+
+def test_model_construction():
 
     api.load_dataset_from_file("data/GDP_climate_test_data.csv")
 
@@ -175,17 +190,7 @@ def test_user_api():
 
 def test_regression_standard_error_univariate():
 
-    panel_data = pd.read_csv("data/ortiz_bobea_data.csv")
-
-    api.set_dataset(panel_data)
-    api.set_panel_column("ISO3")
-    api.set_time_column("year")
-    api.set_target_variable("tfp")
-    api.add_transformation("tfp", ["ln", "fd"])
-    api.set_time_column("year")
-    api.set_panel_column("ISO3")
-    api.add_covariates("tmean")
-    api.add_transformation("tmean", ["sq", "fd"], keep_original_var=False)
+    build_example_model()
 
     api.evaluate_model()
     res1 = api.model.regression_result.summary2().tables[1]["Std.Err."]
@@ -219,23 +224,10 @@ def test_regression_standard_error_univariate():
 
 def test_regression_standard_error_multivariate():
 
-    panel_data = pd.read_csv("data/ortiz_bobea_data.csv")
-
-    api.set_dataset(panel_data)
-    api.set_panel_column("ISO3")
-    api.set_time_column("year")
-    api.set_target_variable("tfp")
-    api.add_transformation("tfp", ["ln", "fd"])
-    api.set_time_column("year")
-    api.set_panel_column("ISO3")
-    api.add_covariates(["tmean", "prcp"])
-    api.add_transformation("tmean", "fd")
-    api.add_transformation("tmean", ["sq", "fd"], keep_original_var=False)
-    api.add_transformation("prcp", "fd")
-    api.add_transformation("prcp", ["sq", "fd"], keep_original_var=False)
-    api.add_fixed_effects(["year","ISO3"])
+    build_example_model()
 
     api.evaluate_model()
+
     res1 = api.model.regression_result.summary2().tables[1]["Std.Err."]
     api.evaluate_model("whitehuber")
     res2 = api.model.regression_result.summary2().tables[1]["Std.Err."]
@@ -266,21 +258,7 @@ def test_regression_standard_error_multivariate():
 
 def test_bootstrap():
 
-    panel_data = pd.read_csv("data/ortiz_bobea_data.csv")
-
-    api.set_dataset(panel_data, "ortiz_bobea_data")
-    api.set_panel_column("ISO3")
-    api.set_time_column("year")
-    api.set_target_variable("tfp")
-    api.add_transformation("tfp", ["ln", "fd"])
-    api.set_time_column("year")
-    api.set_panel_column("ISO3")
-    api.add_covariates(["tmean", "prcp"])
-    api.add_transformation("tmean", "fd")
-    api.add_transformation("tmean", ["sq", "fd"], keep_original_var=False)
-    api.add_transformation("prcp", "fd")
-    api.add_transformation("prcp", ["sq", "fd"], keep_original_var=False)
-    api.add_fixed_effects(["year","ISO3"])
+    build_example_model()
 
     model_id = api.evaluate_model()
 
@@ -291,53 +269,33 @@ def test_bootstrap():
     api.run_block_bootstrap(model_id, "clusteredspace", 2)
     api.run_block_bootstrap(model_id, "driscollkraay", 2)
 
-
 def test_spatial_regression():
 
-    panel_data = pd.read_csv("data/ortiz_bobea_data.csv")
-
-    api.set_dataset(panel_data, "ortiz_bobea_data")
-    api.set_panel_column("ISO3")
-    api.set_time_column("year")
-    api.set_target_variable("tfp")
-    api.add_transformation("tfp", ["ln", "fd"])
-    api.set_time_column("year")
-    api.set_panel_column("ISO3")
-    api.add_covariates(["tmean", "prcp"])
-    api.add_transformation("tmean", "fd")
-    api.add_transformation("tmean", ["sq", "fd"], keep_original_var=False)
-    api.add_transformation("prcp", "fd")
-    api.add_transformation("prcp", ["sq", "fd"], keep_original_var=False)
-    api.add_fixed_effects(["year","ISO3"])
-
-    model1 = api.run_spatial_lag_regression("error")
-    model2 = api.run_spatial_lag_regression("lag")
-
+    build_example_model()
+    api.run_spatial_lag_regression("error")
+    api.run_spatial_lag_regression("lag")
     api.add_random_effect("tmean","ISO3")
-
-    model3 = api.run_spatial_lag_regression("lag")
+    api.run_spatial_lag_regression("lag")
 
 def test_quantile_regression():
 
-    panel_data = pd.read_csv("data/ortiz_bobea_data.csv")
-
-    api.set_dataset(panel_data, "ortiz_bobea_data")
-    api.set_panel_column("ISO3")
-    api.set_time_column("year")
-    api.set_target_variable("tfp")
-    api.add_transformation("tfp", ["ln", "fd"])
-    api.set_time_column("year")
-    api.set_panel_column("ISO3")
-    api.add_covariates(["tmean", "prcp"])
-    api.add_transformation("tmean", "fd")
-    api.add_transformation("tmean", ["sq", "fd"], keep_original_var=False)
-    api.add_transformation("prcp", "fd")
-    api.add_transformation("prcp", ["sq", "fd"], keep_original_var=False)
-    api.add_fixed_effects(["year","ISO3"])
-
-    model1 = api.run_quantile_regression(.1)
-    model2 = api.run_quantile_regression([.1,.3,.5,.99])
-
+    build_example_model()
+    api.run_quantile_regression(.1)
+    api.run_quantile_regression([.1,.3,.5,.99])
     api.add_random_effect("tmean","ISO3")
+    api.run_quantile_regression(.5)
 
-    model3 = api.run_quantile_regression(.5)
+def test_panel_unit_root():
+
+    build_example_model()
+    api.run_stationarity_check()
+    
+def test_cointegration():
+
+    build_example_model()
+    print(api.run_cointegration_check())
+
+def test_csd():
+
+    build_example_model()
+    print(api.run_cross_sectional_dependence_check())
