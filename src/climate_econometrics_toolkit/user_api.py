@@ -230,12 +230,12 @@ def run_quantile_regression(q):
         regression.run_quantile_regression(model, model_id, q)
 
 
-def run_stationarity_check():
-    assert model.dataset is not None, "Dataset must be set before running stationarity check."
-    assert model.target_var is not None, "Target variable must be set before running stationarity check."
-    assert model.target_var is not None, "Covariates must be set before running stationarity check."
-    assert model.time_column is not None, "Time column must be set before running stationarity check."
-    assert model.panel_column is not None, "Panel column must be set before running stationarity check."
+def run_panel_unit_root_tests():
+    assert model.dataset is not None, "Dataset must be set before running panel unit root tests."
+    assert model.target_var is not None, "Target variable must be set before running panel unit root tests."
+    assert model.target_var is not None, "Covariates must be set before running panel unit root tests."
+    assert model.time_column is not None, "Time column must be set before running panel unit root tests."
+    assert model.panel_column is not None, "Panel column must be set before running panel unit root tests."
     return stat_tests.panel_unit_root_tests(model)
 
 

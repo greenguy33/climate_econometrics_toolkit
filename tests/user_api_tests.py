@@ -1,6 +1,7 @@
 from climate_econometrics_toolkit import user_api as api
 
 import pandas as pd
+import time
 
 def assert_series_not_equal(ser1, ser2):
     try:
@@ -19,10 +20,19 @@ def build_example_model():
     api.set_time_column("year")
     api.set_target_variable("tfp")
     api.add_transformation("tfp", ["ln", "fd"])
-    api.set_time_column("year")
-    api.set_panel_column("ISO3")
     api.add_covariates("tmean")
     api.add_transformation("tmean", ["sq", "fd"], keep_original_var=False)
+
+
+def build_high_degree_fe_example_model():
+    
+    panel_data = pd.read_csv("data/kotz_et_al_dataset.csv")
+
+    api.set_dataset(panel_data, "hd_fe_example")
+    api.set_panel_column("ID")
+    api.set_time_column("year")
+    api.set_target_variable("dlgdp_pc_usd")
+    api.add_covariates(["T5_varm","P5_totalpr"])
 
 
 def test_model_construction():
@@ -288,14 +298,32 @@ def test_quantile_regression():
 def test_panel_unit_root():
 
     build_example_model()
-    api.run_stationarity_check()
+    api.run_panel_unit_root_tests()
+
+    start = time.time()
+    build_high_degree_fe_example_model()
+    api.run_panel_unit_root_tests()
+    end = time.time()
+    assert end - start < 60
     
 def test_cointegration():
 
     build_example_model()
-    print(api.run_cointegration_check())
+    api.run_cointegration_check()
+
+    start = time.time()
+    build_high_degree_fe_example_model()
+    api.run_cointegration_check()
+    end = time.time()
+    assert end - start < 60
 
 def test_csd():
 
     build_example_model()
-    print(api.run_cross_sectional_dependence_check())
+    api.run_cross_sectional_dependence_check()
+
+    start = time.time()
+    build_high_degree_fe_example_model()
+    api.run_cross_sectional_dependence_check()
+    end = time.time()
+    assert end - start < 60

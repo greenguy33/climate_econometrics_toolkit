@@ -46,7 +46,11 @@ def initial_checks():
 		"model_results",
 		"regression_scripts",
 		"spatial_regression_output",
-		"quantile_regression_output"
+		"quantile_regression_output",
+		"statistical_tests_output",
+		"statistical_tests_output/panel_unit_root_tests/",
+		"statistical_tests_output/cointegration_tests/",
+		"statistical_tests_output/cross_sectional_dependence_tests/"
 	]
 	for dir in dirs_to_init:
 		if not os.path.isdir(dir):
@@ -253,6 +257,7 @@ def start_user_interface():
 	rmse_canvas = tk.Canvas(metrics_row2, width=100, height=100)
 
 	uncertainty_button_row = ttk.Frame(lefthand_bar, relief=tk.RAISED)
+	evaluation_button_row = ttk.Frame(lefthand_bar, relief=tk.RAISED)
 
 	stat_plot = StatPlot(mse_canvas, pred_int_canvas, r2_canvas, rmse_canvas)
 	tk_utils = TkInterfaceUtils(window, canvas, dnd, regression_plot, result_plot, result_plot_frame, stat_plot)
@@ -266,8 +271,11 @@ def start_user_interface():
 	step2_label = tk.Label(lefthand_bar, text="Step 2: Construct and Evaluate Model", font=('Helvetica', 12, 'bold'))
 	btn_load = tk.Button(lefthand_bar, text="Load Dataset", command=tk_utils.add_data_columns_from_file)
 	btn_clear_canvas = tk.Button(lefthand_bar, text="Clear Canvas", command=tk_utils.clear_canvas)
-	btn_evaluate = tk.Button(lefthand_bar, text="Evaluate Model with OLS", command=tk_utils.evaluate_model)
 	btn_clear_model_cache = tk.Button(lefthand_bar, text="Clear Model Cache", command=tk_utils.clear_model_cache)
+	btn_unit_root = tk.Button(evaluation_button_row, text="Run Panel Unit Root Tests", command=tk_utils.run_panel_unit_root_tests)
+	btn_cointegration = tk.Button(evaluation_button_row, text="Run Cointegration Tests", command=tk_utils.run_cointegration_tests)
+	btn_csd = tk.Button(evaluation_button_row, text="Run Cross-Sectional Dependence Tests", command=tk_utils.run_csd_tests)
+	btn_evaluate = tk.Button(evaluation_button_row, text="Evaluate Model with OLS", command=tk_utils.evaluate_model)
 	btn_bootstrap = tk.Button(uncertainty_button_row, text="Run Block Bootstrap", command=tk_utils.run_block_bootstrap)
 	btn_bayesian_regression = tk.Button(uncertainty_button_row, text="Run Bayesian Inference", command=tk_utils.run_bayesian_inference)
 	btn_spatial_regression = tk.Button(uncertainty_button_row, text="Run Spatial Regression", command=tk_utils.run_spatial_regression)
@@ -282,8 +290,13 @@ def start_user_interface():
 	step2_label.pack(fill=tk.BOTH, expand=True)
 	btn_load.pack(fill=tk.BOTH, expand=True)
 	btn_clear_canvas.pack(fill=tk.BOTH, expand=True)
-	btn_evaluate.pack(fill=tk.BOTH, expand=True)
 	btn_clear_model_cache.pack(fill=tk.BOTH, expand=True)
+
+	evaluation_button_row.pack(fill=tk.BOTH, expand=True)
+	btn_unit_root.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+	btn_cointegration.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+	btn_csd.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+	btn_evaluate.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
 	uncertainty_button_row.pack(fill=tk.BOTH, expand=True)
 	btn_bootstrap.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)

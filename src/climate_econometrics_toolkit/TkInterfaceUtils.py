@@ -35,6 +35,7 @@ class TkInterfaceUtils():
 		self.stat_plot = stat_plot
 		self.panel_column = None
 		self.time_column = None
+		self.dataset = None
 
 		# setup hover label on result plot
 		self.hover_label_text = tk.StringVar()
@@ -67,6 +68,7 @@ class TkInterfaceUtils():
 			self.dnd.data_source = filename.split("/")[-1]
 			self.dnd.filename = filename
 			data = pd.read_csv(filename)
+			self.dataset = data
 			columns = data.columns
 			if len(columns) > 100:
 				self.update_interface_window_output("ERROR: This dataset exceeds the maximum number of columns(100)")
@@ -235,6 +237,29 @@ class TkInterfaceUtils():
 			else:
 				quantiles = float(quantiles)
 			api.run_quantile_regression(self.dnd.current_model, model_id, quantiles)
+
+
+	def run_panel_unit_root_tests(self):
+		model = api.build_model_object_from_canvas(self.build_model_indices_lists(), self.dnd.filename, self.panel_column, self.time_column)[0]
+		model_id = time.time()
+		model.dataset = self.dataset
+		api.run_panel_unit_root_tests(model, model_id)
+		self.update_interface_window_output(f"Panel Unit Root test output is available in {cet_home}/statistical_tests_output/panel_unit_root_tests/{model_id}.csv")
+
+
+	def run_cointegration_tests(self):
+		model = api.build_model_object_from_canvas(self.build_model_indices_lists(), self.dnd.filename, self.panel_column, self.time_column)[0]
+		model_id = time.time()
+		model.dataset = self.dataset
+		api.run_cointegration_tests(model, model_id)
+		self.update_interface_window_output(f"Cointegration test output is available in {cet_home}/statistical_tests_output/cointegration_tests/{model_id}.csv")
+
+	def run_csd_tests(self):
+		model = api.build_model_object_from_canvas(self.build_model_indices_lists(), self.dnd.filename, self.panel_column, self.time_column)[0]
+		model_id = time.time()
+		model.dataset = self.dataset
+		api.run_cross_sectional_dependence_tests(model, model_id)
+		self.update_interface_window_output(f"Cross-Sectional Dependence test output is available in {cet_home}/statistical_tests_output/cross_sectional_dependence_tests/{model_id}.csv")
 
 
 	def extract_raster_data(self, window):

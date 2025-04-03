@@ -10,6 +10,7 @@ import climate_econometrics_toolkit.utils as utils
 import climate_econometrics_toolkit.regression as regression
 import climate_econometrics_toolkit.prediction as predict
 import climate_econometrics_toolkit.user_prediction_functions as user_predict
+import climate_econometrics_toolkit.stat_tests as stat_tests
 
 pd.set_option('display.min_rows', 100)
 pd.set_option('display.max_rows', 100)
@@ -50,9 +51,13 @@ def run_model_analysis(data, std_error_type, model, save_to_cache=True):
 	return model, regression_result, return_string
 
 
+def build_model_object_from_canvas(input_list, data_file, panel_column, time_column):
+	return mb.parse_model_input(input_list, data_file, panel_column, time_column)
+
+
 def evaluate_model(data_file, std_error_type, model, panel_column, time_column):
 	data = pd.read_csv(data_file)
-	model, unused_nodes = mb.parse_model_input(model, data_file, panel_column, time_column)
+	model, unused_nodes = build_model_object_from_canvas(model, data_file, panel_column, time_column)
 	model.dataset = data
 	if len(unused_nodes) > 0:
 		return_string += "\nWARNING: The following nodes are unused in the regression. " + str(unused_nodes)
@@ -89,6 +94,18 @@ def run_quantile_regression(model, model_id, q):
 			regression.run_quantile_regression(model, model_id, val)
 	else:
 		regression.run_quantile_regression(model, model_id, q)
+
+
+def run_panel_unit_root_tests(model, model_id):
+	stat_tests.panel_unit_root_tests(model).to_csv(f"{cet_home}/statistical_tests_output/panel_unit_root_tests/{model_id}.csv")
+
+
+def run_cointegration_tests(model, model_id):
+	stat_tests.cointegration_tests(model).to_csv(f"{cet_home}/statistical_tests_output/cointegration_tests/{model_id}.csv")
+
+
+def run_cross_sectional_dependence_tests(model, model_id):
+	stat_tests.cross_sectional_dependence_tests(model).to_csv(f"{cet_home}/statistical_tests_output/cross_sectional_dependence_tests/{model_id}.csv")
 
 
 def extract_raster_data(raster_file, shape_file, weights_file=None):

@@ -20,8 +20,12 @@ def run_panel_unit_root_test(res_dict, model, transformed_data, column):
 				res_dict["pval"].append(None)
 				res_dict["significant"].append(None)
 			else:
-				res_dict["pval"].append(adfuller(entity_data[var])[1])
-				res_dict["significant"].append(True if res_dict["pval"][-1] < .05 else False)
+				try:
+					res_dict["pval"].append(adfuller(entity_data[var])[1])
+					res_dict["significant"].append(True if res_dict["pval"][-1] < .05 else False)
+				except ValueError:
+					res_dict["pval"].append(None)
+					res_dict["significant"].append(None)
 	return res_dict
 
 
@@ -30,6 +34,8 @@ def panel_unit_root_tests(model):
 	res = {"entity":[],"var":[],"pval":[],"significant":[]}
 	res = run_panel_unit_root_test(res, model, transformed_data, model.panel_column)
 	res = run_panel_unit_root_test(res, model, transformed_data, model.time_column)
+	# format p-values with scientific notation
+	res["pval"] = [f"{val:.2e}" if val is not None else None for val in res["pval"]]
 	return pd.DataFrame.from_dict(res)
 
 
@@ -55,9 +61,11 @@ def cointegration_tests(model):
 	res = {"entity":[],"var1":[],"var2":[],"pval":[],"significant":[]}
 	res = run_cointegration_tests(res, model, transformed_data, model.panel_column)
 	res = run_cointegration_tests(res, model, transformed_data, model.time_column)
+	# format p-values with scientific notation
+	res["pval"] = [f"{val:.2e}" if val is not None else None for val in res["pval"]]
 	return pd.DataFrame.from_dict(res)
 
-
+# TODO: optimize this for time
 def run_cross_sectional_dependence_tests(res_dict, transformed_data, column, cross_section_column):
 	entity_data_dict = {}
 	for entity in set(transformed_data[column]):
@@ -76,6 +84,7 @@ def run_cross_sectional_dependence_tests(res_dict, transformed_data, column, cro
 
 
 def cross_sectional_dependence_tests(model):
+	# TODO: optimize code, these take awhile on high-dimension data
 	demean_data = False
 	if len(model.fixed_effects) > 0 and len(model.time_trends) == 0:
 		demean_data = True
@@ -84,4 +93,6 @@ def cross_sectional_dependence_tests(model):
 	res = {"entity1":[],"entity2":[],"pval":[],"significant":[]}
 	res = run_cross_sectional_dependence_tests(res, transformed_data, model.panel_column, model.time_column)
 	res = run_cross_sectional_dependence_tests(res, transformed_data, model.time_column, model.panel_column)
+	# format p-values with scientific notation
+	res["pval"] = [f"{val:.2e}" if val is not None else None for val in res["pval"]]
 	return pd.DataFrame.from_dict(res)
