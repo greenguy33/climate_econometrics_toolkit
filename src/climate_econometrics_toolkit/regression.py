@@ -42,7 +42,9 @@ def set_up_regression(transformed_data, model, std_error_type, demeaned=False):
 	return utils.get_model_vars(transformed_data, model, demeaned)
 
 
-def run_statsmodels_regression(transformed_data, model_vars, model, std_error_type):
+def run_statsmodels_regression(transformed_data, model_vars, model, std_error_type, use_panel_indexing=False):
+	if use_panel_indexing:
+		transformed_data = transformed_data.set_index([model.panel_column, model.time_column])
 	regression_data = transformed_data[model_vars]
 	regression_data = sm.add_constant(regression_data)
 	if std_error_type not in std_error_args:
@@ -59,11 +61,13 @@ def run_linearmodels_regression(transformed_data, model_vars, model, std_error_t
 	return PanelOLS(transformed_data[model.target_var], regression_data, check_rank=False).fit(cov_type=std_error_name_map[std_error_type])
 
 
-def run_standard_regression(transformed_data, model, std_error_type, demeaned=False):
+def run_standard_regression(transformed_data, model, std_error_type, demeaned=False, use_panel_indexing=False):
 	model_vars = set_up_regression(transformed_data, model, std_error_type, demeaned)
 	if std_error_type != "driscollkraay":
-		return run_statsmodels_regression(transformed_data, model_vars, model, std_error_type)
+		return run_statsmodels_regression(transformed_data, model_vars, model, std_error_type, use_panel_indexing)
 	else:
+		if not use_panel_indexing:
+			print("WARNING: use_panel_indexing user configuration is ignored. Panel indexing must be used with driscoll-kraay standard error.")
 		return run_linearmodels_regression(transformed_data, model_vars, model, std_error_type)
 
 

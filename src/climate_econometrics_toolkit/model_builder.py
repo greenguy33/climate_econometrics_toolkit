@@ -8,7 +8,7 @@ import climate_econometrics_toolkit.utils as utils
 import warnings
 warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 
-
+# TODO: it would be better to refactor the model to have a "transformations" dict and not have the transformations represented in the name of the covariates/target var
 def build_model_from_graph(graph, data_file, panel_column, time_column):
 	model = cem.ClimateEconometricsModel()
 	target_var = [node for node in graph.nodes() if len(list(graph.successors(node))) == 0][0]
@@ -46,38 +46,3 @@ def parse_model_input(model, data_file, panel_column, time_column):
 	assert len_target_vars == 1, f"There must be exactly one target variable: found {len_target_vars}"
 
 	return build_model_from_graph(graph, data_file, panel_column, time_column)
-
-
-def parse_cxl(filepath):
-
-	file = ET.parse(filepath)
-	root = file.getroot()
-
-	fromIds, toIds = [], []
-	nodeMap, edgeMap, finalMap = {}, {}, {}
-
-	for child in root.iter("{http://cmap.ihmc.us/xml/cmap/}map"):
-		for concept in child.iter("{http://cmap.ihmc.us/xml/cmap/}concept"):
-			nodeMap[concept.get("id")] = concept.get("label").strip()
-		for link in child.iter("{http://cmap.ihmc.us/xml/cmap/}connection"):
-			if link.get("from-id") not in edgeMap:
-				edgeMap[link.get("from-id")] = []
-			edgeMap[link.get("from-id")].append(link.get("to-id"))
-		
-	for node in nodeMap:
-		if node in edgeMap:
-			target_nodes = []
-			for edge in edgeMap[node]:
-				target_nodes.extend(edgeMap[edge])
-			finalMap[nodeMap[node]] = [nodeMap[node] for node in target_nodes]
-
-	graph = nx.DiGraph()
-	for source, targets in finalMap.items():
-		for target in targets:
-			graph.add_edge(source, target)
-
-	assert nx.is_directed_acyclic_graph(graph), "Graph is cyclical - please remove cycles"
-	len_target_vars = len([node for node in graph.nodes() if len(list(graph.successors(node))) == 0])
-	assert len_target_vars == 1, f"There must be exactly one target variable: found {len_target_vars}"
-
-	return build_model_from_graph(graph, filepath)

@@ -230,7 +230,7 @@ def run_quantile_regression(q):
         regression.run_quantile_regression(model, model_id, q)
 
 
-def run_panel_unit_root_tests():
+def run_adf_panel_unit_root_tests():
     assert model.dataset is not None, "Dataset must be set before running panel unit root tests."
     assert model.target_var is not None, "Target variable must be set before running panel unit root tests."
     assert model.target_var is not None, "Covariates must be set before running panel unit root tests."
@@ -239,7 +239,7 @@ def run_panel_unit_root_tests():
     return stat_tests.panel_unit_root_tests(model)
 
 
-def run_cointegration_check():
+def run_engle_granger_cointegration_check():
     assert model.dataset is not None, "Dataset must be set before running cointegration check."
     assert model.target_var is not None, "Target variable must be set before running cointegration check."
     assert model.target_var is not None, "Covariates must be set before running cointegration check."
@@ -248,7 +248,7 @@ def run_cointegration_check():
     return stat_tests.cointegration_tests(model)
 
 
-def run_cross_sectional_dependence_check():
+def run_pesaran_cross_sectional_dependence_check():
     assert model.dataset is not None, "Dataset must be set before running cointegration check."
     assert model.target_var is not None, "Target variable must be set before running cointegration check."
     assert model.target_var is not None, "Covariates must be set before running cointegration check."

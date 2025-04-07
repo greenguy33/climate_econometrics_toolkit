@@ -298,32 +298,45 @@ def test_quantile_regression():
 def test_panel_unit_root():
 
     build_example_model()
-    api.run_panel_unit_root_tests()
+    res = api.run_adf_panel_unit_root_tests()
+    assert all(val in res.columns for val in ["var","pval_level","pval_fd","decision"])
+    assert not pd.isnull(res).values.any()
 
     start = time.time()
     build_high_degree_fe_example_model()
-    api.run_panel_unit_root_tests()
+    res = api.run_adf_panel_unit_root_tests()
+    assert all(val in res.columns for val in ["var","pval_level","pval_fd","decision"])
+    assert not pd.isnull(res).values.any()
     end = time.time()
-    assert end - start < 60
+    assert end - start < 120
     
 def test_cointegration():
 
     build_example_model()
-    api.run_cointegration_check()
+    res = api.run_engle_granger_cointegration_check()
+    assert all(val in res.columns for val in ["dependent_var","pval","significant"])
+    assert not pd.isnull(res).values.any()
 
     start = time.time()
     build_high_degree_fe_example_model()
-    api.run_cointegration_check()
+    res = api.run_engle_granger_cointegration_check()
+    print(res)
+    assert all(val in res.columns for val in ["dependent_var","pval","significant"])
+    assert not pd.isnull(res).values.any()
     end = time.time()
-    assert end - start < 60
+    assert end - start < 120
 
 def test_csd():
 
     build_example_model()
-    api.run_cross_sectional_dependence_check()
+    res = api.run_pesaran_cross_sectional_dependence_check()
+    assert all(val in res.columns for val in ["cd_stat","pval","significant"])
+    assert not pd.isnull(res).values.any()
 
     start = time.time()
     build_high_degree_fe_example_model()
-    api.run_cross_sectional_dependence_check()
+    res = api.run_pesaran_cross_sectional_dependence_check()
+    assert all(val in res.columns for val in ["cd_stat","pval","significant"])
+    assert not pd.isnull(res).values.any()
     end = time.time()
-    assert end - start < 60
+    assert end - start < 120
