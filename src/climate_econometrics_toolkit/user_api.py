@@ -12,6 +12,9 @@ import os
 import copy
 import time
 
+from importlib.resources import files
+from functools import reduce
+
 model = ClimateEconometricsModel()
 
 cet_home = os.getenv("CETHOME")
@@ -31,6 +34,48 @@ def model_checks():
             print(f"{key} Please update your model.")
             return False
     return True
+
+
+def integrate(dataframes, keep_na=False, panel_column="ISO3", time_column="year"):
+    all_geolocations = set.intersection(*[set(df[panel_column]) for df in dataframes])
+    assert len(all_geolocations) > 0, f"No overlap found in column {panel_column} between datasets"
+    all_times = set.intersection(*[set(df[time_column]) for df in dataframes])
+    assert len(all_times) > 0, f"No overlap found in column {time_column} between datasets"
+    merge_method = "inner" if not keep_na else "outer"
+    integrated_df = reduce(lambda left,right: pd.merge(left,right,on=[panel_column,time_column], how=merge_method), dataframes)
+    return integrated_df[[col for col in integrated_df.columns if not col.startswith("Unnamed")]].reset_index(drop=True)
+
+
+def load_climate_data(weight="unweighted"):
+    assert weight in ["unweighted","popweighted","agweighted"], "Weight argument must be one of: unweighted, agweighted, popweighted."
+    file = files("climate_econometrics_toolkit.preprocessed_data").joinpath(f'NCEP_reanalaysis_climate_data_1948_2024_{weight}.csv')
+    return pd.read_csv(file)
+
+
+def load_ndvi_data():
+    file = files("climate_econometrics_toolkit.preprocessed_data").joinpath('PKU_GIMMS_NDVI_AVHRR_MODIS.csv')
+    return pd.read_csv(file)
+
+
+def load_emdat_data():
+    file = files("climate_econometrics_toolkit.preprocessed_data").joinpath('EMDAT_natural_disasters_1960_2024.csv')
+    return pd.read_csv(file)
+
+
+def load_faostat_data():
+    file = files("climate_econometrics_toolkit.preprocessed_data").joinpath('FAOSTAT_production_indices_1961_2023.csv')
+    return pd.read_csv(file)
+
+
+def load_usda_fda_data():
+    file = files("climate_econometrics_toolkit.preprocessed_data").joinpath('USDA_FDA_global_TFP_1961_2021.csv')
+    return pd.read_csv(file)
+
+
+def load_worldbank_gdp_data():
+    file = files("climate_econometrics_toolkit.preprocessed_data").joinpath('worldbank_global_GDP_1961_2023.csv')
+    return pd.read_csv(file)
+
 
 def evaluate_model(std_error_type="nonrobust"):
     # TODO: check to see if this model is already in cache, if so return that model rather than re-evaluating the same model

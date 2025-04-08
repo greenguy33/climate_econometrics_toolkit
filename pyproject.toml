@@ -17,6 +17,9 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[tool.setuptools.package-data]
+climate_econometrics_toolkit = ["preprocessed_data/**/*.csv"]
+
 dependencies = [
   # "networkx>=3.3",
   # "numpy>=1.26.4",
