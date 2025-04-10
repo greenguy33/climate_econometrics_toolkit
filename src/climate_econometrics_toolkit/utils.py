@@ -1,7 +1,9 @@
 import numpy as np
 import pandas as pd
 import os
-from sklearn.preprocessing import OrdinalEncoder
+import time
+import logging
+from sklearn.preprocessing import OrdinalEncoder, StandardScaler
 import pyfixest as pf
 import dateutil.parser as parser
 import copy
@@ -19,8 +21,10 @@ import warnings
 warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning)
 
 cet_home = os.getenv("CETHOME")
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename=f"{cet_home}/logs/{time.strftime('%m%d%y')}.log", level=logging.INFO, format='%(asctime)s %(levelname)s:%(name)s:%(message)s')
 
-supported_functions = ["fd","sq","cu","ln","lag1","lag2","lag3"]
+supported_functions = ["fd","sq","cu","ln","lag1","lag2","lag3","scale"]
 supported_effects = ["fe", "tt1", "tt2", "tt3","re"]
 # TODO: consider adjusted r2, as this accounts for different numbers of variables?
 # last line of https://www.nature.com/articles/s43016-024-01040-8#Sec8
@@ -38,6 +42,7 @@ def initial_checks():
 	if os.getenv(env_var_name) is None:
 		os.environ["CETHOME"] = "."
 	dirs_to_init = [
+		"logs",
 		"model_cache",
 		"bayes_samples",
 		"bootstrap_samples",
@@ -55,6 +60,24 @@ def initial_checks():
 	for dir in dirs_to_init:
 		if not os.path.isdir(dir):
 			os.makedirs(dir)
+
+
+def assert_with_log(clause, message):
+	try:
+		assert clause, message
+	except AssertionError:
+		logger.error(message)
+		raise
+
+
+def print_with_log(message, level):
+	assert level in ["warning","info","error"], "Invalid log-level passed. This is an internal application error."
+	if level == "info":
+		logger.info(message)
+	elif level == "warning":
+		logger.warning(message)
+	elif level == "error":
+		logger.error(message)
 
 
 def add_transformation_to_data(data, model, function):
@@ -93,6 +116,9 @@ def add_transformation_to_data(data, model, function):
 		data[function] = data.groupby(model.panel_column)[data_col].shift(num_lags)
 	elif function_split[0] == "cu":
 		data[function] = np.power(data[data_col], 3)
+	elif function_split[0] == "scale":
+		scaler = StandardScaler()
+		data[function] = scaler.fit_transform(np.array(data[data_col]).reshape(-1,1)).flatten()
 	return data
 
 
@@ -163,12 +189,12 @@ def transform_data(data, model, include_target_var=True, demean=False):
 		if not node.startswith("re("):
 			function_split = node.split("(")
 			if function_split[0] not in supported_functions and function_split[0] not in supported_effects:
-				assert node in data, f"Element {node} not found in data"
+				assert_with_log(node in data, f"Element {node} not found in data")
 			elif function_split[0] in supported_functions:
 				data_node = function_split[-1].replace(")","")
-				assert data_node in data, f"Element {data_node} not found in data"
+				assert_with_log(data_node in data, f"Element {data_node} not found in data")
 				for function in reversed(function_split[:-1]):
-					assert function in supported_functions, f"Invalid function call {function}"
+					assert_with_log(function in supported_functions, f"Invalid function call {function}")
 					transformations.append(function + f"({data_node})")
 					data = add_transformation_to_data(data, model, transformations[-1])
 					data_node = transformations[-1]
@@ -219,7 +245,8 @@ def construct_model_input_from_cache(data_file, model_id):
 
 def start_user_interface():
 	initial_checks()
-
+	logger.info('Started Interface')
+	
 	root = tk.Tk()
 	root.title("Climate Econometrics Modeling Toolkit")
 

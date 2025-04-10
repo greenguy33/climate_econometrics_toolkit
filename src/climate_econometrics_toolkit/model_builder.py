@@ -41,8 +41,8 @@ def parse_model_input(model, data_file, panel_column, time_column):
 	for index in range(len(from_indices)):
 		graph.add_edge(from_indices[index], to_indices[index])
 
-	assert nx.is_directed_acyclic_graph(graph), "Graph is cyclical - please remove cycles"
+	utils.assert_with_log(nx.is_directed_acyclic_graph(graph), "Cyclical graphs are not permitted.")
 	len_target_vars = len([node for node in graph.nodes() if len(list(graph.successors(node))) == 0])
-	assert len_target_vars == 1, f"There must be exactly one target variable: found {len_target_vars}"
+	utils.assert_with_log(len_target_vars == 1, f"There must be exactly one target variable: found {len_target_vars}")
 
 	return build_model_from_graph(graph, data_file, panel_column, time_column)

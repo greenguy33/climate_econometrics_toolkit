@@ -64,6 +64,8 @@ class DragAndDropInterface():
                 transformation_menu.add_command(label="Lag 2",command=lambda : self.add_transformation("lag2"))
             if f"lag3({tag})" not in self.transformation_list:
                 transformation_menu.add_command(label="Lag 3",command=lambda : self.add_transformation("lag3"))
+            if f"scale({tag})" not in self.transformation_list:
+                transformation_menu.add_command(label="Scale (Mean=0, SD=1)",command=lambda : self.add_transformation("scale"))
             if not all(f"{func}({tag})" in self.transformation_list for func in utils.supported_functions):
                 main_menu.add_cascade(label="Duplicate with Transformation",menu=transformation_menu)
 

@@ -1,3 +1,14 @@
+import pandas as pd
+import os
+import copy
+import time
+import logging
+
+from importlib.resources import files
+from functools import reduce
+from metpy.calc import heat_index
+from metpy.units import units
+
 from climate_econometrics_toolkit import interface_api as api
 from climate_econometrics_toolkit.ClimateEconometricsModel import ClimateEconometricsModel
 import climate_econometrics_toolkit.utils as utils
@@ -7,19 +18,11 @@ from climate_econometrics_toolkit import user_prediction_functions as user_predi
 from climate_econometrics_toolkit import user_prediction_functions as user_predict
 from climate_econometrics_toolkit import stat_tests as stat_tests
 
-import pandas as pd
-import os
-import copy
-import time
-
-from importlib.resources import files
-from functools import reduce
-
 model = ClimateEconometricsModel()
 
 cet_home = os.getenv("CETHOME")
 
-# TODO: assert types for user input to each method
+# TODO: utils.assert_with_log(types for user input to each method
 
 def model_checks():
     checks = {
@@ -31,24 +34,92 @@ def model_checks():
     }
     for key, check in checks.items():
         if not check:
-            print(f"{key} Please update your model.")
+            utils.print_with_log(f"{key} Please update your model.", "error")
             return False
     return True
 
 
+def compute_degree_days(years, countries, threshold, mode="above", weight="unweighted", panel_column_name="ISO3", time_column_name="year"):
+    utils.print_with_log("Computing degree days with mode '{above}', threshold '{threshold}', using panel column '{panel_column_name}' and time_column '{time_column_name}'", "info")
+    col_name = f"deg_days_{mode}_{str(threshold)}"
+    res = {panel_column_name:[], time_column_name:[], col_name:[]}
+    utils.assert_with_log(mode in ["above","below"], "Mode most be either 'above' or 'below' the supplied threshold.")
+    utils.assert_with_log(weight in ["unweighted","popweighted","agweighted"], "Weight argument must be one of: unweighted, agweighted, popweighted.")
+    for year in years:
+        try:
+            file = files(f"climate_econometrics_toolkit.preprocessed_data.daily_temp.{weight}").joinpath(f'temp.daily.bycountry.{weight}.{year}.csv')
+            daily_temp_data = pd.read_csv(file)
+            for country in countries:
+                if country in daily_temp_data:
+                    if mode == "above":
+                        degree_days = len([val for val in daily_temp_data[country] if val > threshold])
+                    else:
+                        degree_days = len([val for val in daily_temp_data[country] if val < threshold])
+                    res[panel_column_name].append(country)
+                    res[time_column_name].append(year)
+                    res[col_name].append(degree_days)
+                else:
+                    utils.print_with_log(f"No daily temperature data available for country {country}", "warning")
+        except FileNotFoundError:
+            utils.print_with_log(f"No daily temperature data available for year {year}", "warning")
+    return pd.DataFrame.from_dict(res)
+
+
+def add_degree_days_to_dataframe(dataframe, threshold, panel_column = "ISO3", time_column = "year", mode = "above", weight = "unweighted"):
+    utils.assert_with_log(panel_column in dataframe, f"Specified panel column {panel_column} not in supplied dataframe.")
+    utils.assert_with_log(time_column in dataframe, f"Specified time column {time_column} not in supplied dataframe.")
+    degree_days_df = compute_degree_days(set(dataframe[time_column]), set(dataframe[panel_column]), threshold, mode, weight)
+    utils.assert_with_log(len(degree_days_df) > 0, f"No daily temperature data available for supplied columns {panel_column}/{time_column}.")
+    merge_strategy = "outer"
+    utils.print_with_log(f"Merging supplied dataframe with degree days dataframe using threshold '{threshold}' and merge strategy '{merge_strategy}'", "info")
+    return pd.merge(dataframe, degree_days_df, on=[panel_column,time_column], how=merge_strategy)
+
+
 def integrate(dataframes, keep_na=False, panel_column="ISO3", time_column="year"):
     all_geolocations = set.intersection(*[set(df[panel_column]) for df in dataframes])
-    assert len(all_geolocations) > 0, f"No overlap found in column {panel_column} between datasets"
+    utils.assert_with_log(len(all_geolocations) > 0, f"No overlap found in column {panel_column} between datasets")
     all_times = set.intersection(*[set(df[time_column]) for df in dataframes])
-    assert len(all_times) > 0, f"No overlap found in column {time_column} between datasets"
+    utils.assert_with_log(len(all_times) > 0, f"No overlap found in column {time_column} between datasets")
     merge_method = "inner" if not keep_na else "outer"
     integrated_df = reduce(lambda left,right: pd.merge(left,right,on=[panel_column,time_column], how=merge_method), dataframes)
+    utils.print_with_log(f"Merging supplied dataframes using merge strategy '{merge_method}' and keep_na set to {keep_na}", "info")
     return integrated_df[[col for col in integrated_df.columns if not col.startswith("Unnamed")]].reset_index(drop=True)
 
 
+def convert_between_administrative_levels(data, from_code, to_code):
+    utils.assert_with_log(from_code in ["admin1","admin2"], "Argument 'from_code' must be one of: admin1, admin2.")
+    utils.assert_with_log(to_code in ["admin1","country"], "Argument 'to_code' must be one of: admin1, country.")
+    utils.assert_with_log(from_code != to_code, "Arguments 'from_code' and 'to_code' must be different.")
+    admin1_file = files("climate_econometrics_toolkit.preprocessed_data.admin_codes").joinpath(f'geonames_admin1.csv')
+    admin2_file = files("climate_econometrics_toolkit.preprocessed_data.admin_codes").joinpath(f'geonames_admin2.csv')
+    admin1_data = pd.read_csv(admin1_file)
+    admin2_data = pd.read_csv(admin2_file)
+    admin1_dict = dict(zip(admin1_data["admin1_name"], admin1_data["ISO3"]))
+    admin1_alt_dict = dict(zip(admin1_data["admin1_name_alt"], admin1_data["ISO3"]))
+    admin1_dict = dict(list(admin1_dict.items()) + list(admin1_alt_dict.items()))
+    admin2_data["country.admin1Id"] = admin2_data["country.admin1Id.admin2Id"].str.rsplit(".", n=1, expand=True)[0]
+    admin1id_to_admin1_dict = dict(zip(admin1_data["country.admin1Id"], admin1_data["admin1_name"]))
+    admin2_dict = dict(zip(admin2_data["admin2_name"], admin2_data["country.admin1Id"]))
+    admin2_alt_dict = dict(zip(admin2_data["admin2_name_alt"], admin2_data["country.admin1Id"]))
+    admin2_dict = dict(list(admin2_dict.items()) + list(admin2_alt_dict.items()))
+    utils.print_with_log(f"Converting supplied data from code system {from_code} to code system {to_code}", "info")
+    if from_code == "admin1" and to_code == "country":
+        return pd.Series(list(map(lambda x: admin1_dict[x] if x in admin1_dict else None, data)))
+    if from_code == "admin2" and to_code == "admin1":
+        return pd.Series(list(map(lambda x: admin1id_to_admin1_dict[admin2_dict[x]] if x in admin2_dict and admin2_dict[x] in admin1id_to_admin1_dict else None, data)))
+    if from_code == "admin2" and to_code == "country":
+        return pd.Series(list(map(lambda x: admin1_dict[admin1id_to_admin1_dict[admin2_dict[x]]] if x in admin2_dict and admin2_dict[x] in admin1id_to_admin1_dict and admin1id_to_admin1_dict[admin2_dict[x]] in admin1_dict else None, data)))
+
+
 def load_climate_data(weight="unweighted"):
-    assert weight in ["unweighted","popweighted","agweighted"], "Weight argument must be one of: unweighted, agweighted, popweighted."
-    file = files("climate_econometrics_toolkit.preprocessed_data").joinpath(f'NCEP_reanalaysis_climate_data_1948_2024_{weight}.csv')
+    utils.assert_with_log(weight in ["unweighted","popweighted","agweighted"], "Weight argument must be one of: unweighted, agweighted, popweighted.")
+    file = files("climate_econometrics_toolkit.preprocessed_data.weather_data").joinpath(f'NCEP_reanalaysis_climate_data_1948_2024_{weight}.csv')
+    return pd.read_csv(file)
+
+
+def load_temperature_humidity_index_data(weight="unweighted"):
+    utils.assert_with_log(weight in ["unweighted","popweighted","agweighted"], "Weight argument must be one of: unweighted, agweighted, popweighted.")
+    file = files("climate_econometrics_toolkit.preprocessed_data.temperature_humidity_index").joinpath(f'temperature_humidity_index_{weight}_1948_2024.csv')
     return pd.read_csv(file)
 
 
@@ -77,55 +148,64 @@ def load_worldbank_gdp_data():
     return pd.read_csv(file)
 
 
+def load_spei_data(weight="unweighted"):
+    utils.assert_with_log(weight in ["unweighted","popweighted","agweighted"], "Weight argument must be one of: unweighted, agweighted, popweighted.")
+    file = files("climate_econometrics_toolkit.preprocessed_data.SPEI").joinpath(f'spei_{weight}.csv')
+    return pd.read_csv(file)
+
+
+def get_temperature_humidity_index(temp_data, relative_humidity_data):
+    # requires temp data in celsius and relative humidity data (percentage) between 0 and 100
+    utils.print_with_log("Generating temperature/humidity index using supplied data")
+    return heat_index(
+        temp_data * units.degC, 
+        relative_humidity_data * units.percent,
+        mask_undefined=False
+    ).magnitude
+
+
 def evaluate_model(std_error_type="nonrobust"):
     # TODO: check to see if this model is already in cache, if so return that model rather than re-evaluating the same model
     if model_checks():
         _, _, return_string = api.run_model_analysis(copy.deepcopy(model.dataset), std_error_type, model, save_to_cache=False)
-        if return_string != "": print(return_string)
+        if return_string != "": utils.print_with_log(return_string, "error")
         if model != None:
             model.save_model_to_cache()
-            print(f"Model ID: {model.model_id}")
+            utils.print_with_log(f"Model assigned ID: {model.model_id}", "info")
             return str(model.model_id)
         
 
 def build_model_from_cache(model_id):
-    if model.data_file == None:
-        print("You must load a dataset before accessing the cache")
-        return None
-    else:
-        return pd.read_pickle((f"{cet_home}/model_cache/{model.data_file}/{model_id}/model.pkl"))
+    utils.assert_with_log(model.data_file == None, "Attempted to access cache with no dataset loaded")
+    utils.print_with_log(f"Loading model from cache with ID {model_id}", "info")
+    return pd.read_pickle((f"{cet_home}/model_cache/{model.data_file}/{model_id}/model.pkl"))
         
 
 def get_all_models_from_cache():
-    if model.data_file == None:
-        print("You must load a dataset before accessing the cache")
-        return None
-    else:
-        model_list = []
-        model_ids = os.listdir(f"{cet_home}/model_cache/{model.data_file}")
-        for model_id in model_ids:
-            model_list.append(build_model_from_cache(model_id))
-        return model_list
+    utils.assert_with_log(model.data_file == None, "Attempted to access cache with no dataset loaded")
+    model_list = []
+    model_ids = os.listdir(f"{cet_home}/model_cache/{model.data_file}")
+    for model_id in model_ids:
+        model_list.append(build_model_from_cache(model_id))
+    return model_list
 
 
 def get_best_model(metric="r2"):
     model_list = get_all_models_from_cache()
-    if metric not in utils.supported_metrics:
-        print(f"Metric must be one of {utils.supported_metrics}")
-    else:
-        if metric in ["r2","out_sample_mse","rmse"]:
-            sorted_models = sorted(model_list, key=lambda x : getattr(x, metric))
-        elif metric == "out_sample_mse_reduction":
-            sorted_models = sorted(model_list, key=lambda x : getattr(x, metric), reverse=True)
-        elif metric == "out_sample_pred_int_cov":
-            sorted_models = sorted(model_list, key=lambda x : abs(getattr(x, "out_sample_pred_int_cov")-.95))
-        print("Model ID", sorted_models[0].model_id)
-        print(sorted_models[0].print())
-        return sorted_models[0]
+    utils.assert_with_log(metric in utils.supported_metrics, f"Metric must be one of {utils.supported_metrics}")
+    if metric in ["r2","out_sample_mse","rmse"]:
+        sorted_models = sorted(model_list, key=lambda x : getattr(x, metric))
+    elif metric == "out_sample_mse_reduction":
+        sorted_models = sorted(model_list, key=lambda x : getattr(x, metric), reverse=True)
+    elif metric == "out_sample_pred_int_cov":
+        sorted_models = sorted(model_list, key=lambda x : abs(getattr(x, "out_sample_pred_int_cov")-.95))
+    utils.print_with_log(f"ID {sorted_models[0].model_id} assigned to model", "info")
+    print(sorted_models[0].print())
+    return sorted_models[0]
 
 def get_all_model_ids():
     if model.data_file == None:
-        print("You must load a dataset before accessing the cache")
+        utils.print_with_log("You must load a dataset before accessing the cache", "error")
         return None
     else:
         return list(os.listdir(f"{cet_home}/model_cache/{model.data_file}"))
@@ -134,12 +214,14 @@ def get_model_by_id(model_id):
     return build_model_from_cache(model_id)
 
 def load_dataset_from_file(datafile):
+    utils.print_with_log(f"Loading dataset {datafile} as active dataset and resetting current model.", "info")
     # resets model when new dataset is loaded
     reset_model()
     model.data_file = datafile.split("/")[-1]
     model.dataset = pd.read_csv(datafile)
 
 def set_dataset(dataframe, dataset_name):
+    utils.print_with_log(f"Setting dataset '{dataset_name}' as active dataset and resetting current model.", "info")
     # resets model when new dataset is loaded
     reset_model()
     model.data_file = dataset_name
@@ -150,10 +232,10 @@ def view_current_model():
 
 def basic_existence_check(var):
     if model.dataset is None:
-        print("Please load a dataset before setting variables.")
+        utils.print_with_log("Attempting to set variables before loading dataset", "error")
         return False
     elif var not in model.dataset:
-        print(f"Element {var} not found in data")
+        utils.print_with_log(f"Element {var} not found in data", "error")
         return False
     return True
 
@@ -170,17 +252,17 @@ def set_panel_column(var):
     if basic_existence_check(var):
         model.panel_column = var
 
-def add_transformation(var, transformations, keep_original_var=True):
+def add_transformation(var, transformations, keep_original_var=False):
     if not isinstance(transformations, list):
         transformations = [transformations]
     all_transformations_valid = True
     for transform in transformations:
         if transform not in utils.supported_functions:
             all_transformations_valid = False
-            print(f"{transform}() not a supported function.")
+            utils.print_with_log(f"{transform}() not a supported function.","error")
     if all_transformations_valid:
         if var not in model.covariates and var != model.target_var:
-            print(f"{var} not in covariates list and is not target variable.")
+            utils.print_with_log(f"{var} not in covariates list and is not target variable.", "error")
         elif var in model.covariates:
             for transform in transformations:
                 if not keep_original_var:
@@ -238,7 +320,7 @@ def remove_transformation(var, transformations):
         model.covariates = [var for var in model.covariates if var != transformed_var]
         model.model_vars = [var for var in model.model_vars if var != transformed_var]
     else:
-        print(f"Transformed var f{transformed_var} not found")
+        utils.print_with_log(f"Transformed var f{transformed_var} not found", "error")
 
 def remove_fixed_effect(fe):
     model.fixed_effects = [var for var in model.fixed_effects if var != fe]
@@ -246,7 +328,7 @@ def remove_fixed_effect(fe):
 def add_random_effect(var, group):
     if model.random_effects != [var, group]:
         if model.random_effects != None:
-            print("Only one random effect is supported. Please remove the previous random effect before adding another.")
+            utils.print_with_log("Attempted to set multiple random effects when only one is supported.", "error")
         else:
             model.random_effects = [var, group]
             if var in model.covariates:
@@ -276,29 +358,32 @@ def run_quantile_regression(q):
 
 
 def run_adf_panel_unit_root_tests():
-    assert model.dataset is not None, "Dataset must be set before running panel unit root tests."
-    assert model.target_var is not None, "Target variable must be set before running panel unit root tests."
-    assert model.target_var is not None, "Covariates must be set before running panel unit root tests."
-    assert model.time_column is not None, "Time column must be set before running panel unit root tests."
-    assert model.panel_column is not None, "Panel column must be set before running panel unit root tests."
+    utils.assert_with_log(model.dataset is not None, "Dataset must be set before running panel unit root tests.")
+    utils.assert_with_log(model.target_var is not None, "Target variable must be set before running panel unit root tests.")
+    utils.assert_with_log(model.target_var is not None, "Covariates must be set before running panel unit root tests.")
+    utils.assert_with_log(model.time_column is not None, "Time column must be set before running panel unit root tests.")
+    utils.assert_with_log(model.panel_column is not None, "Panel column must be set before running panel unit root tests.")
+    utils.print_with_log(f"Runing Panel Unit Root Tests against current model", "info")
     return stat_tests.panel_unit_root_tests(model)
 
 
 def run_engle_granger_cointegration_check():
-    assert model.dataset is not None, "Dataset must be set before running cointegration check."
-    assert model.target_var is not None, "Target variable must be set before running cointegration check."
-    assert model.target_var is not None, "Covariates must be set before running cointegration check."
-    assert model.time_column is not None, "Time column must be set before running cointegration check."
-    assert model.panel_column is not None, "Panel column must be set before running cointegration check."
+    utils.assert_with_log(model.dataset is not None, "Dataset must be set before running cointegration check.")
+    utils.assert_with_log(model.target_var is not None, "Target variable must be set before running cointegration check.")
+    utils.assert_with_log(model.target_var is not None, "Covariates must be set before running cointegration check.")
+    utils.assert_with_log(model.time_column is not None, "Time column must be set before running cointegration check.")
+    utils.assert_with_log(model.panel_column is not None, "Panel column must be set before running cointegration check.")
+    utils.print_with_log(f"Runing Cointegration Tests against current model", "info")
     return stat_tests.cointegration_tests(model)
 
 
 def run_pesaran_cross_sectional_dependence_check():
-    assert model.dataset is not None, "Dataset must be set before running cointegration check."
-    assert model.target_var is not None, "Target variable must be set before running cointegration check."
-    assert model.target_var is not None, "Covariates must be set before running cointegration check."
-    assert model.time_column is not None, "Time column must be set before running cointegration check."
-    assert model.panel_column is not None, "Panel column must be set before running cointegration check."
+    utils.assert_with_log(model.dataset is not None, "Dataset must be set before running cointegration check.")
+    utils.assert_with_log(model.target_var is not None, "Target variable must be set before running cointegration check.")
+    utils.assert_with_log(model.target_var is not None, "Covariates must be set before running cointegration check.")
+    utils.assert_with_log(model.time_column is not None, "Time column must be set before running cointegration check.")
+    utils.assert_with_log(model.panel_column is not None, "Panel column must be set before running cointegration check.")
+    utils.print_with_log(f"Runing Cross-Sectional Dependence Tests against current model", "info")
     return stat_tests.cross_sectional_dependence_tests(model)
 
 
@@ -312,27 +397,32 @@ def run_block_bootstrap(model, std_error_type, num_samples=1000):
     # TODO: check to see if bootstrap already ran for this model
     if isinstance(model, str):
         model = get_model_by_id(model)
-    assert model != None, "NoneType passed as model object"
+    utils.assert_with_log(model != None, "NoneType passed as model object")
     regression.run_block_bootstrap(model, std_error_type, num_samples)
 
 def extract_raster_data(raster_file, shape_file, weight_file=None):
+    utils.print_with_log(f"Extracting raster data using raster_file {raster_file}; shape_file {shape_file}; weights file {weight_file}.", "info")
     return predict.extract_raster_data(raster_file, shape_file, weight_file)
 
 def aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use=None):
+    utils.print_with_log(f"Aggregating raster data using function {aggregation_func}", "info")
     return predict.aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use)
 
 def predict_out_of_sample(model, data, transform_data=False, var_map=None):
     if isinstance(model, str):
         model = get_model_by_id(model)
+    utils.print_with_log(f"Generating out-of-sample predictions for Model with ID {model.model_id} using supplied data")
     return predict.predict_out_of_sample(model, copy.deepcopy(data), transform_data, var_map)
 
 def call_user_prediction_function(function_name, args):
+    utils.print_with_log(f"User prediction function '{function_name}' called with args: {args}")
     func = getattr(user_predict, function_name)
     return func(*args)
 
 # TODO: document below this line
 
 def transform_data(data, model, include_target_var=True, demean=False):
+    utils.print_with_log(f"Runing data transformation with the following settings: include_target_var: {include_target_var}, demean: {demean}", "info")
     return utils.transform_data(copy.deepcopy(data), model, include_target_var, demean)
 
 def reset_model():

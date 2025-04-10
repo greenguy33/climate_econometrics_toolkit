@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import random
 import numpy as np
+
 from exactextract import exact_extract
 import geopandas as gpd
 
@@ -10,18 +11,19 @@ import climate_econometrics_toolkit.regression as regression
 
 cet_home = os.getenv("CETHOME")
 
+
 def extract_raster_data(gcm_file, shape_file, weight_file):
 	aggregation_func = "weighted_mean"
 	if weight_file is None:
-		print("No weights file provided for extraction...using uniform weights.")
+		utils.print_with_log("No weights file provided for extraction. Using uniform weights.", "info")
 		aggregation_func = "mean"
 	return exact_extract(gcm_file, shape_file, [aggregation_func], weights=weight_file)
 
 def aggregate_raster_data(
 		raster_data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use, 
 	):
-	assert isinstance(subperiods_per_time_unit, int)
-	assert aggregation_func == "sum" or aggregation_func == "mean", "Argument aggregation_func must be 'sum' or 'mean'"
+	utils.assert_with_log(isinstance(subperiods_per_time_unit, int), f"Supplied subperiods per time unit value {subperiods_per_time_unit} is not an integer.")
+	utils.assert_with_log(aggregation_func in ["sum","mean"], "Argument aggregation_func must be 'sum' or 'mean'")
 	data = []
 	geo_shapes = gpd.read_file(shape_file)
 	for index, geo in enumerate(geo_shapes[geo_identifier]):
@@ -74,10 +76,10 @@ def predict_out_of_sample(model, out_sample_data, transform_data, gcm_to_model_v
 	if bayesian_results or bootstrap_results:
 		if bayesian_results:
 			coef_samples = pd.read_csv(f"{cet_home}/bayes_samples/coefficient_samples_{model.model_id}.csv")
-			print("Using Bayesian samples to generate predictions...")
+			utils.print_with_log("Using Bayesian samples to generate predictions", "info")
 		elif bootstrap_results:
 			coef_samples = pd.read_csv(f"{cet_home}/bootstrap_samples/coefficient_samples_{model.model_id}.csv")
-			print("Using bootstrap samples to generate predictions...")
+			utils.print_with_log("Using bootstrap samples to generate predictions", "info")
 		predictions = []
 		for i in range(len(coef_samples)):
 			pred = np.sum(out_sample_data[model.covariates] * coef_samples.iloc[i][model.covariates], axis=1)
@@ -86,7 +88,7 @@ def predict_out_of_sample(model, out_sample_data, transform_data, gcm_to_model_v
 		pred_df = pd.concat([pred_df, predictions], axis=1)
 		
 	else:
-		print("No Bayesian or bootstrap samples found...using point estimates to generate predictions...")
+		utils.print_with_log("No Bayesian or bootstrap samples found. Using point estimates to generate predictions.", "warning")
 		reg_result = reg_result = model.regression_result.summary2().tables[1]
 		coef_map = {covar:[reg_result.loc[reg_result.index == covar]["Coef."].item()] for covar in reg_result.index}
 		coef_samples = pd.DataFrame.from_dict(coef_map)

@@ -3,6 +3,8 @@ from climate_econometrics_toolkit import user_api as api
 import pandas as pd
 import time
 
+# TODO: ensure all methods in user_api are tested here.
+
 def assert_series_not_equal(ser1, ser2):
     try:
         pd.testing.assert_series_equal(ser1, ser2)

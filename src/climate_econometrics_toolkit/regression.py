@@ -6,6 +6,7 @@ import os
 from pytensor import tensor as pt
 import pickle as pkl
 import numpy as np
+
 from sklearn.preprocessing import StandardScaler
 from sklearn.utils import resample
 import pandas as pd
@@ -36,7 +37,7 @@ std_error_args = {
 }
 
 def set_up_regression(transformed_data, model, std_error_type, demeaned=False):
-	assert std_error_type in utils.supported_standard_errors, f"Standard error type most be in: {utils.std_type_string}"
+	utils.assert_with_log(std_error_type in utils.supported_standard_errors, f"Standard error type most be in: {utils.std_type_string}")
 	std_error_args["clusteredtime"]["groups"] = transformed_data[model.time_column]
 	std_error_args["clusteredspace"]["groups"] = transformed_data[model.panel_column]
 	return utils.get_model_vars(transformed_data, model, demeaned)
@@ -67,12 +68,12 @@ def run_standard_regression(transformed_data, model, std_error_type, demeaned=Fa
 		return run_statsmodels_regression(transformed_data, model_vars, model, std_error_type, use_panel_indexing)
 	else:
 		if not use_panel_indexing:
-			print("WARNING: use_panel_indexing user configuration is ignored. Panel indexing must be used with driscoll-kraay standard error.")
+			utils.print_with_log("Argument 'use_panel_indexing' is ignored. Panel indexing must be used with Driscoll-Kraay standard error.", "warning")
 		return run_linearmodels_regression(transformed_data, model_vars, model, std_error_type)
 
 
 def run_random_effects_regression(transformed_data, model, std_error_type):
-	assert std_error_type == "nonrobust", "Specialized standard errors are not currently supported with random effects models"
+	utils.assert_with_log(std_error_type == "nonrobust", "Specialized standard errors are not currently supported with random effects models")
 	model_vars = utils.get_model_vars(transformed_data, model, exclude_fixed_effects=False)
 	transformed_data.columns = [col.replace("(","_").replace(")","_") for col in transformed_data.columns]
 	model_vars = [var.replace("(","_").replace(")","_") for var in model_vars]
@@ -84,7 +85,7 @@ def run_random_effects_regression(transformed_data, model, std_error_type):
 
 
 def run_intercept_only_regression(transformed_data, model, std_error_type):
-	assert std_error_type in utils.supported_standard_errors, f"Standard error type most be in: {utils.std_type_string}"
+	utils.assert_with_log(std_error_type in utils.supported_standard_errors, f"Standard error type most be in: {utils.std_type_string}")
 	transformed_data["const"] = np.ones(len(transformed_data))
 	if std_error_type != "driscollkraay":
 		return run_statsmodels_regression(transformed_data, ["const"], model, std_error_type)
@@ -93,16 +94,16 @@ def run_intercept_only_regression(transformed_data, model, std_error_type):
 
 
 def run_spatial_regression(model, reg_type, model_id, geometry_column=None, k=5):
-	assert reg_type in ["lag","error"], "Spatial model type must be either 'lag' or 'error'."
+	utils.assert_with_log(reg_type in ["lag","error"], "Spatial model type must be either 'lag' or 'error'.")
 	if model.random_effects != None:
-		print(f"WARNING: The specified Random effect {model.random_effects} is ignored in spatial regression model.")
+		utils.print_with_log(f"The specified random-effect {model.random_effects} is ignored in spatial regression model.", "warning")
 	demean_data = False
 	if len(model.fixed_effects) > 0 and len(model.time_trends) == 0:
 		demean_data = True
 	transformed_data = utils.transform_data(model.dataset, model, demean=demean_data)
 	model_vars = utils.get_model_vars(transformed_data, model, exclude_fixed_effects=demean_data)
 	if geometry_column is None or geometry_column == "":
-		print("Geometry column unspecified...defaulting to ISO3 geometry.")
+		utils.print_with_log("Geometry column unspecified. Defaulting to ISO3 geometry.", "warning")
 		# assume ISO3 if no geometry column specified
 		geometry_column = "geometry"
 		countries = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))[['iso_a3', 'geometry']]
@@ -142,9 +143,9 @@ def run_spatial_regression(model, reg_type, model_id, geometry_column=None, k=5)
 
 
 def run_quantile_regression(model, model_id, q):
-	print("Running quantile regression with quantile:", q)
+	utils.print_with_log(f"Using quantiles {q} for quantile regression.", "info")
 	if model.random_effects != None:
-		print(f"WARNING: The specified Random effect {model.random_effects} is ignored in quantile regression model.")
+		utils.print_with_log(f"The specified random-effect {model.random_effects} is ignored in quantile regression model.", "warning")
 	demean_data = False
 	if len(model.fixed_effects) > 0 and len(model.time_trends) == 0:
 		demean_data = True
@@ -165,7 +166,7 @@ def run_quantile_regression(model, model_id, q):
 
 
 def run_block_bootstrap(model, std_error_type, num_samples, use_threading=False):
-	print("Running bootstrap...this may take awhile")
+	utils.print_with_log("Bootstrapping may run for awhile. See progress bar on command line for updates.", "info")
 	data = model.dataset
 	transformed_data = utils.transform_data(data, model)
 	if use_threading:
@@ -219,7 +220,9 @@ def run_bayesian_regression(model, num_samples, use_threading=False):
 
 def run_bayesian_inference(transformed_data, model, num_samples):
 
-	assert model.model_id is not None
+	utils.print_with_log("Bayesian inference may run for awhile. See progress bar on command line for updates.", "info")
+
+	utils.assert_with_log(model.model_id is not None, "No ID assigned to the model.")
 	model_vars = utils.get_model_vars(transformed_data, model)
 
 	scalers, scaled_data = {}, {}
@@ -237,7 +240,7 @@ def run_bayesian_inference(transformed_data, model, num_samples):
 		if var not in scaled_df:
 			scaled_df[var] = transformed_data[var]
 
-	print(f"Fitting Bayesian model to dataset of length {len(transformed_data)} containing variables: ", model_vars)
+	utils.print_with_log(f"Fitting Bayesian model to dataset of length {len(transformed_data)} containing variables: {model_vars}", "info")
 
 	with pm.Model() as pymc_model:
 

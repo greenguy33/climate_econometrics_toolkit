@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import numpy as np
 import time
+import logging
 
 import tkinter as tk
 from tkinter import filedialog
@@ -22,6 +23,8 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 cet_home = os.getenv("CETHOME")
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename=f"{cet_home}/logs/{time.strftime('%m%d%y')}.log", level=logging.INFO, format='%(asctime)s %(levelname)s:%(name)s:%(message)s')
 
 class TkInterfaceUtils():
 
@@ -83,6 +86,7 @@ class TkInterfaceUtils():
 				else:
 					self.panel_column = user_identified_columns[0]
 					self.time_column = user_identified_columns[1]
+			logger.info(f"Loaded data from file {filename}")
 
 
 	def build_model_indices_lists(self):
@@ -163,9 +167,8 @@ class TkInterfaceUtils():
 			model, regression_result, print_string = api.evaluate_model(self.dnd.filename, standard_error_popup.std_error_type, self.build_model_indices_lists(), self.panel_column, self.time_column)
 			self.update_interface_window_output(print_string)
 			if model != None:
-				self.update_interface_window_output(
-					f"Model results saved to {cet_home}/model_results/{model.model_id}.csv\nRegression script saved to {cet_home}/regression_scripts/{model.model_id}.csv"
-				)
+				logger.info(f"Evaluating Model with ID {model.model_id}")
+				self.update_interface_window_output(f"Model results saved to {cet_home}/model_results/{model.model_id}.csv. Regression script saved to {cet_home}/regression_scripts/{model.model_id}.csv")
 				self.dnd.save_canvas_to_cache(str(model.model_id), self.panel_column, self.time_column)
 				if model.random_effects is None:
 					try:
@@ -188,6 +191,7 @@ class TkInterfaceUtils():
 		self.regression_plot.restore_regression_result(self.dnd.data_source, str(model_id))
 		canvases = self.stat_plot.update_stat_plot(*self.get_regression_stats_from_model(model_id))
 		self.bind_stat_canvases_to_result_plot(*canvases)
+		logger.info(f"Model with ID {model_id} restored from cache.")
 
 
 	def run_bayesian_inference(self):
@@ -195,6 +199,7 @@ class TkInterfaceUtils():
 		if self.dnd.current_model is None:
 			self.update_interface_window_output("Please evaluate your model or select an existing model before running Bayesian inference.")
 		else:
+			logger.info(f"Running Bayesian Inference against Model with ID {self.dnd.current_model.model_id}")
 			self.update_interface_window_output(f"Bayesian inference will run in background...see command line for progress. Output will be available in {cet_home}/bayes_samples")
 			api.run_bayesian_regression(self.dnd.current_model)
 
@@ -205,6 +210,7 @@ class TkInterfaceUtils():
 			self.update_interface_window_output("Please evaluate your model or select an existing model before running bootstrapping.")
 		else:
 			standard_error_popup = StandardErrorPopup(self.window)
+			logger.info(f"Running Bootstrapping against Model with ID {self.dnd.current_model.model_id}")
 			self.update_interface_window_output(f"Bootstrapping will run in background...see command line for progress. Output will be available in {cet_home}/bootstrap_samples")
 			api.run_block_bootstrap(self.dnd.current_model, standard_error_popup.std_error_type)
 
@@ -216,19 +222,20 @@ class TkInterfaceUtils():
 		else:
 			spatial_regression_type_popup = SpatialRegressionTypePopup(self.window)
 			model_id = time.time()
-			self.update_interface_window_output(f"Spatial regression output is available in {cet_home}/spatial_regression_output/{model_id}")
+			logger.info(f"Running Spatial Regression against Model with ID {model_id}")
 			reg_type = spatial_regression_type_popup.reg_type.split(" ")[0]
 			api.run_spatial_regression(self.dnd.current_model, reg_type, model_id, spatial_regression_type_popup.geometry_column)
+			self.update_interface_window_output(f"Spatial regression output is available in {cet_home}/spatial_regression_output/{model_id}")
 
 
 	def run_quantile_regression(self):
-		# TODO shouldn't need to evaluate model with OLS before running spatial regression
+		# TODO shouldn't need to evaluate model with OLS before running quantile regression
 		if self.dnd.current_model is None:
 			self.update_interface_window_output("Please evaluate your model or select an existing model before running quantile regression.")
 		else:
 			quantile_popup = QuantileRegressionPopup(self.window)
 			model_id = time.time()
-			self.update_interface_window_output(f"Quantile regression output is available in {cet_home}/quantile_regression_output/{model_id}")
+			logger.info(f"Running Quantile Regression against Model with ID {model_id}")
 			quantiles = quantile_popup.quantiles.strip()
 			if "," in quantiles:
 				if quantiles[-1] == ",":
@@ -237,11 +244,13 @@ class TkInterfaceUtils():
 			else:
 				quantiles = float(quantiles)
 			api.run_quantile_regression(self.dnd.current_model, model_id, quantiles)
+			self.update_interface_window_output(f"Quantile regression output is available in {cet_home}/quantile_regression_output/{model_id}")
 
 
 	def run_panel_unit_root_tests(self):
 		model = api.build_model_object_from_canvas(self.build_model_indices_lists(), self.dnd.filename, self.panel_column, self.time_column)[0]
 		model_id = time.time()
+		logger.info(f"Running Panel Unit Root Tests against Model with ID {model_id}")
 		model.dataset = self.dataset
 		api.run_panel_unit_root_tests(model, model_id)
 		self.update_interface_window_output(f"Panel Unit Root test output is available in {cet_home}/statistical_tests_output/panel_unit_root_tests/{model_id}.csv")
@@ -250,6 +259,7 @@ class TkInterfaceUtils():
 	def run_cointegration_tests(self):
 		model = api.build_model_object_from_canvas(self.build_model_indices_lists(), self.dnd.filename, self.panel_column, self.time_column)[0]
 		model_id = time.time()
+		logger.info(f"Running Cointegration Tests against Model with ID {model_id}")
 		model.dataset = self.dataset
 		api.run_cointegration_tests(model, model_id)
 		self.update_interface_window_output(f"Cointegration test output is available in {cet_home}/statistical_tests_output/cointegration_tests/{model_id}.csv")
@@ -257,6 +267,7 @@ class TkInterfaceUtils():
 	def run_csd_tests(self):
 		model = api.build_model_object_from_canvas(self.build_model_indices_lists(), self.dnd.filename, self.panel_column, self.time_column)[0]
 		model_id = time.time()
+		logger.info(f"Running Cross-Sectional Dependence Tests against Model with ID {model_id}")
 		model.dataset = self.dataset
 		api.run_cross_sectional_dependence_tests(model, model_id)
 		self.update_interface_window_output(f"Cross-Sectional Dependence test output is available in {cet_home}/statistical_tests_output/cross_sectional_dependence_tests/{model_id}.csv")
@@ -273,6 +284,7 @@ class TkInterfaceUtils():
 			time_interval = int(raster_extract_popup.time_interval)
 			weights_file = raster_extract_popup.weight_file
 			aggregation_func = raster_extract_popup.func
+			logger.info(f"Extracting raster data using function {aggregation_func}; raster_file(s) {raster_files}; shape_file {shape_file}; weights file {weights_file}.")
 			self.update_interface_window_output(f"Raster aggregation will run in background. When complete file will be saved to {cet_home}/raster_output. Check command line for errors.")
 			thread = threading.Thread(target=self.raster_aggregation,name="bootstrap_thread",args=(raster_files, shape_file, aggregation_func, weights_file, time_interval))
 			thread.daemon = True
@@ -340,6 +352,7 @@ class TkInterfaceUtils():
 				function = prediction_function_popup.function
 				self.update_interface_window_output(f"Prediction will run in background...see command line for progress. Output will be available in {cet_home}/predictions")
 				api.predict_out_of_sample(self.dnd.current_model, out_sample_data_files, function)
+				logger.info("Out-of-sample predictions generated for Model with ID {self.dnd.current_model.model_id} for data file(s) {out_sample_data_files}")
 
 
 	def clear_canvas(self):
@@ -350,6 +363,7 @@ class TkInterfaceUtils():
 		self.panel_column = None
 		self.time_column = None
 		self.hover_label_text.set("")
+		logger.info("Canvas cleared.")
 
 
 	def clear_model_cache(self):
@@ -357,13 +371,16 @@ class TkInterfaceUtils():
 		self.result_plot.clear_figure()
 		self.update_interface_window_output("Model cache cleared")
 		self.hover_label_text.set("")
+		logger.info("Model cache cleared.")
 
 
 	def on_close(self):
 		self.window.quit()
 		self.window.destroy()
+		logger.info("Interface window closed.")
 
 
 	def update_interface_window_output(self, output_text):
+		logger.info(output_text)
 		self.dnd.canvas_print_out.delete(1.0, tk.END)
 		self.dnd.canvas_print_out.insert(tk.END, output_text)

@@ -1,0 +1,3894 @@
+,country.admin1Id,admin1_name,admin1_name_alt,admin1_code,ISO3
+0,AD.06,Sant Julià de Loria,Sant Julia de Loria,06,AND
+1,AD.05,Ordino,Ordino,05,AND
+2,AD.04,La Massana,La Massana,04,AND
+3,AD.03,Encamp,Encamp,03,AND
+4,AD.02,Canillo,Canillo,02,AND
+5,AD.07,Andorra la Vella,Andorra la Vella,07,AND
+6,AD.08,Escaldes-Engordany,Escaldes-Engordany,08,AND
+7,AE.07,Imārat Umm al Qaywayn,Imarat Umm al Qaywayn,07,ARE
+8,AE.05,Raʼs al Khaymah,Imarat Ra's al Khaymah,05,ARE
+9,AE.03,Dubai,Dubai,03,ARE
+10,AE.06,Sharjah,Sharjah,06,ARE
+11,AE.04,Fujairah,Fujairah,04,ARE
+12,AE.02,Ajman,Ajman,02,ARE
+13,AE.01,Abu Dhabi,Abu Dhabi,01,ARE
+14,AF.28,Zabul,Zabul,28,AFG
+15,AF.27,Maidan Wardak Province,Maidan Wardak Province,27,AFG
+16,AF.26,Takhar,Takhar,26,AFG
+17,AF.33,Sar-e Pol Province,Sar-e Pol Province,33,AFG
+18,AF.32,Samangan,Samangan,32,AFG
+19,AF.40,Parwan,Parwan,40,AFG
+20,AF.29,Paktika,Paktika,29,AFG
+21,AF.36,Paktia,Paktia,36,AFG
+22,AF.39,Oruzgan,Oruzgan,39,AFG
+23,AF.19,Nimroz,Nimroz,19,AFG
+24,AF.18,Nangarhar,Nangarhar,18,AFG
+25,AF.17,Logar,Logar,17,AFG
+26,AF.35,Laghman,Laghman,35,AFG
+27,AF.24,Kunduz,Kunduz,24,AFG
+28,AF.34,Kunar,Kunar,34,AFG
+29,AF.14,Kapisa,Kapisa,14,AFG
+30,AF.23,Kandahar,Kandahar,23,AFG
+31,AF.13,Kabul,Kabul,13,AFG
+32,AF.31,Jowzjan,Jowzjan,31,AFG
+33,AF.11,Herat,Herat,11,AFG
+34,AF.10,Helmand,Helmand,10,AFG
+35,AF.09,Ghowr,Ghowr,09,AFG
+36,AF.08,Ghazni,Ghazni,08,AFG
+37,AF.07,Faryab,Faryab,07,AFG
+38,AF.06,Farah,Farah,06,AFG
+39,AF.05,Bamyan,Bamyan,05,AFG
+40,AF.30,Balkh,Balkh,30,AFG
+41,AF.03,Baghlan,Baghlan,03,AFG
+42,AF.02,Badghis,Badghis,02,AFG
+43,AF.01,Badakhshan,Badakhshan,01,AFG
+44,AF.37,Khowst,Khowst,37,AFG
+45,AF.38,Nuristan,Nuristan,38,AFG
+46,AF.41,Daykundi,Daykundi,41,AFG
+47,AF.42,Panjshir,Panjshir,42,AFG
+48,AG.08,Saint Philip Parish,Saint Philip Parish,08,ATG
+49,AG.07,Saint Peter Parish,Saint Peter Parish,07,ATG
+50,AG.06,Saint Paul Parish,Saint Paul Parish,06,ATG
+51,AG.05,Saint Mary Parish,Saint Mary Parish,05,ATG
+52,AG.04,Saint John Parish,Saint John Parish,04,ATG
+53,AG.03,Saint George Parish,Saint George Parish,03,ATG
+54,AG.09,Redonda,Redonda,09,ATG
+55,AG.01,Barbuda,Barbuda,01,ATG
+56,AI.11205389,Blowing Point,Blowing Point,11205389,AIA
+57,AI.11205392,Sandy Ground,Sandy Ground,11205392,AIA
+58,AI.11205393,Sandy Hill,Sandy Hill,11205393,AIA
+59,AI.11205396,The Valley,The Valley,11205396,AIA
+60,AI.11205433,East End,East End,11205433,AIA
+61,AI.11205436,North Hill,North Hill,11205436,AIA
+62,AI.11205437,West End,West End,11205437,AIA
+63,AI.11205438,South Hill,South Hill,11205438,AIA
+64,AI.11205439,The Quarter,The Quarter,11205439,AIA
+65,AI.11205440,North Side,North Side,11205440,AIA
+66,AI.11205441,Island Harbour,Island Harbour,11205441,AIA
+67,AI.11205442,George Hill,George Hill,11205442,AIA
+68,AI.11205443,Stoney Ground,Stoney Ground,11205443,AIA
+69,AI.11205444,The Farrington,The Farrington,11205444,AIA
+70,AL.40,Berat County,Berat County,40,ALB
+71,AL.41,Dibër County,Diber County,41,ALB
+72,AL.43,Elbasan County,Elbasan County,43,ALB
+73,AL.45,Gjirokastër County,Gjirokaster County,45,ALB
+74,AL.46,Korçë County,Korce County,46,ALB
+75,AL.47,Kukës County,Kukes County,47,ALB
+76,AL.42,Durrës County,Durres County,42,ALB
+77,AL.44,Fier County,Fier County,44,ALB
+78,AL.48,Lezhë County,Lezhe County,48,ALB
+79,AL.49,Shkodër County,Shkoder County,49,ALB
+80,AL.50,Tirana,Tirana,50,ALB
+81,AL.51,Vlorë County,Vlore County,51,ALB
+82,AM.02,Ararat,Ararat,02,ARM
+83,AM.08,Syunik,Syunik,08,ARM
+84,AM.10,Vayots Dzor,Vayots Dzor,10,ARM
+85,AM.11,Yerevan,Yerevan,11,ARM
+86,AM.01,Aragatsotn,Aragatsotn,01,ARM
+87,AM.03,Armavir,Armavir,03,ARM
+88,AM.04,Gegharkunik,Gegharkunik,04,ARM
+89,AM.05,Kotayk,Kotayk,05,ARM
+90,AM.06,Lori,Lori,06,ARM
+91,AM.07,Shirak,Shirak,07,ARM
+92,AM.09,Tavush,Tavush,09,ARM
+93,AO.18,Lunda Sul,Lunda Sul,18,AGO
+94,AO.17,Luanda Norte,Luanda Norte,17,AGO
+95,AO.14,Moxico,Moxico,14,AGO
+96,AO.04,Cuando Cobango,Cuando Cobango,04,AGO
+97,AO.16,Zaire,Zaire,16,AGO
+98,AO.15,Uíge,Uige,15,AGO
+99,AO.12,Malanje,Malanje,12,AGO
+100,AO.20,Luanda,Luanda,20,AGO
+101,AO.05,Cuanza Norte,Cuanza Norte,05,AGO
+102,AO.03,Cabinda,Cabinda,03,AGO
+103,AO.19,Bengo,Bengo,19,AGO
+104,AO.13,Namibe,Namibe,13,AGO
+105,AO.09,Huíla,Huila,09,AGO
+106,AO.08,Huambo,Huambo,08,AGO
+107,AO.07,Cunene,Cunene,07,AGO
+108,AO.06,Kwanza Sul,Kwanza Sul,06,AGO
+109,AO.02,Bíe,Bie,02,AGO
+110,AO.01,Benguela,Benguela,01,AGO
+111,AR.14,Misiones,Misiones,14,ARG
+112,AR.09,Formosa,Formosa,09,ARG
+113,AR.07,Buenos Aires F.D.,Buenos Aires F.D.,07,ARG
+114,AR.08,Entre Rios,Entre Rios,08,ARG
+115,AR.06,Corrientes,Corrientes,06,ARG
+116,AR.01,Buenos Aires,Buenos Aires,01,ARG
+117,AR.24,Tucuman,Tucuman,24,ARG
+118,AR.23,Tierra del Fuego,Tierra del Fuego,23,ARG
+119,AR.22,Santiago del Estero,Santiago del Estero,22,ARG
+120,AR.21,Santa Fe,Santa Fe,21,ARG
+121,AR.20,Santa Cruz,Santa Cruz,20,ARG
+122,AR.19,San Luis,San Luis,19,ARG
+123,AR.18,San Juan,San Juan,18,ARG
+124,AR.17,Salta,Salta,17,ARG
+125,AR.16,Rio Negro,Rio Negro,16,ARG
+126,AR.15,Neuquen,Neuquen,15,ARG
+127,AR.13,Mendoza,Mendoza,13,ARG
+128,AR.12,La Rioja,La Rioja,12,ARG
+129,AR.11,La Pampa,La Pampa,11,ARG
+130,AR.10,Jujuy,Jujuy,10,ARG
+131,AR.05,Cordoba,Cordoba,05,ARG
+132,AR.04,Chubut,Chubut,04,ARG
+133,AR.03,Chaco,Chaco,03,ARG
+134,AR.02,Catamarca,Catamarca,02,ARG
+135,AS.050,Western District,Western District,050,ASM
+136,AS.040,Swains Island,Swains Island,040,ASM
+137,AS.010,Eastern District,Eastern District,010,ASM
+138,AS.020,Manu'a,Manu'a,020,ASM
+139,AS.030,Rose Island,Rose Island,030,ASM
+140,AT.09,Vienna,Vienna,09,AUT
+141,AT.08,Vorarlberg,Vorarlberg,08,AUT
+142,AT.07,Tyrol,Tyrol,07,AUT
+143,AT.06,Styria,Styria,06,AUT
+144,AT.05,Salzburg,Salzburg,05,AUT
+145,AT.04,Upper Austria,Upper Austria,04,AUT
+146,AT.03,Lower Austria,Lower Austria,03,AUT
+147,AT.02,Carinthia,Carinthia,02,AUT
+148,AT.01,Burgenland,Burgenland,01,AUT
+149,AU.08,Western Australia,Western Australia,08,AUS
+150,AU.05,South Australia,South Australia,05,AUS
+151,AU.03,Northern Territory,Northern Territory,03,AUS
+152,AU.07,Victoria,Victoria,07,AUS
+153,AU.06,Tasmania,Tasmania,06,AUS
+154,AU.04,Queensland,Queensland,04,AUS
+155,AU.02,New South Wales,New South Wales,02,AUS
+156,AU.01,Australian Capital Territory,Australian Capital Territory,01,AUS
+157,AX.211,Mariehamns stad,Mariehamns stad,211,ALA
+158,AX.212,Ålands landsbygd,Alands landsbygd,212,ALA
+159,AX.213,Ålands skärgård,Alands skaergard,213,ALA
+160,AZ.12,Beyləqan,Beylaqan,12,AZE
+161,AZ.69,Zangilan District,Zangilan District,69,AZE
+162,AZ.66,Yardimli District,Yardimli District,66,AZE
+163,AZ.55,Shusha,Shusha,55,AZE
+164,AZ.49,Salyan District,Salyan District,49,AZE
+165,AZ.46,Sabirabad District,Sabirabad District,46,AZE
+166,AZ.45,Saatlı,Saatli,45,AZE
+167,AZ.13,Bilasuvar District,Bilasuvar District,13,AZE
+168,AZ.36,Neftçala,Neftcala,36,AZE
+169,AZ.35,Nakhichevan ASSR,Nakhichevan ASSR,35,AZE
+170,AZ.32,Masally,Masally,32,AZE
+171,AZ.31,Lerik District,Lerik District,31,AZE
+172,AZ.29,Lənkəran,Lankaran,29,AZE
+173,AZ.28,Laçın,Lacin,28,AZE
+174,AZ.43,Qubadlı,Qubadli,43,AZE
+175,AZ.24,İmişli,Imisli,24,AZE
+176,AZ.18,Fuzuli District,Fuzuli District,18,AZE
+177,AZ.14,Jabrayil,Jabrayil,14,AZE
+178,AZ.15,Jalilabad,Jalilabad,15,AZE
+179,AZ.08,Astara,Astara,08,AZE
+180,AZ.64,Xocalı,Xocali,64,AZE
+181,AZ.02,Ağcabǝdi,Aghjabadi Rayon,02,AZE
+182,AZ.03,Ağdam,Agdam,03,AZE
+183,AZ.07,Shirvan,Shirvan,07,AZE
+184,AZ.30,Lankaran Sahari,Lankaran Sahari,30,AZE
+185,AZ.56,Shusha City,Shusha City,56,AZE
+186,AZ.57,Tartar District,Tartar District,57,AZE
+187,AZ.61,Xankǝndi,Xankandi Sahari,61,AZE
+188,AZ.65,Khojavend,Khojavend,65,AZE
+189,AZ.71,Zərdab,Zardab,71,AZE
+190,AZ.70,Zaqatala District,Zaqatala District,70,AZE
+191,AZ.67,Yevlax,Yevlax,67,AZE
+192,AZ.37,Oğuz,Oguz,37,AZE
+193,AZ.59,Ucar,Ucar,59,AZE
+194,AZ.58,Tovuz District,Tovuz District,58,AZE
+195,AZ.50,Şamaxı,Samaxi,50,AZE
+196,AZ.47,Shaki,Shaki,47,AZE
+197,AZ.51,Şǝmkir,Shamkir Rayon,51,AZE
+198,AZ.27,Kurdamir District,Kurdamir District,27,AZE
+199,AZ.38,Qabala District,Qabala District,38,AZE
+200,AZ.44,Qusar District,Qusar District,44,AZE
+201,AZ.42,Quba,Quba,42,AZE
+202,AZ.62,Goygol Rayon,Goygol Rayon,62,AZE
+203,AZ.60,Xaçmaz,Xacmaz,60,AZE
+204,AZ.26,Kalbajar,Kalbajar,26,AZE
+205,AZ.40,Qazax,Qazax,40,AZE
+206,AZ.21,Goranboy District,Goranboy District,21,AZE
+207,AZ.39,Qax,Qax,39,AZE
+208,AZ.25,Ismayilli District,Ismayilli District,25,AZE
+209,AZ.22,Göyçay,Goeycay,22,AZE
+210,AZ.17,Shabran,Shabran,17,AZE
+211,AZ.16,Daşkǝsǝn,Dashkasan Rayon,16,AZE
+212,AZ.10,Balakan District,Balakan District,10,AZE
+213,AZ.11,Barda,Barda,11,AZE
+214,AZ.09,Baki,Baki,09,AZE
+215,AZ.01,Abşeron,Abseron,01,AZE
+216,AZ.06,Agsu District,Agsu District,06,AZE
+217,AZ.04,Ağdaş,Agdas,04,AZE
+218,AZ.19,Gadabay District,Gadabay District,19,AZE
+219,AZ.05,Ağstafa,Agstafa,05,AZE
+220,AZ.20,Gǝncǝ,Ganja City,20,AZE
+221,AZ.33,Mingǝcevir,Mingacevir City,33,AZE
+222,AZ.34,Naftalan,Naftalan,34,AZE
+223,AZ.41,Qobustan,Qobustan,41,AZE
+224,AZ.52,Samux,Samux,52,AZE
+225,AZ.48,Shaki City,Shaki City,48,AZE
+226,AZ.53,Siyǝzǝn,Siazan Rayon,53,AZE
+227,AZ.54,Sumqayit,Sumqayit,54,AZE
+228,AZ.63,Xızı,Xizi,63,AZE
+229,AZ.68,Yevlax City,Yevlax City,68,AZE
+230,AZ.23,Hacıqabul,Haciqabul,23,AZE
+231,BA.01,Federation of B&H,Federation of B&H,01,BIH
+232,BA.02,Srpska,Srpska,02,BIH
+233,BA.BRC,Brčko,Brcko,BRC,BIH
+234,BB.11,Saint Thomas,Saint Thomas,11,BRB
+235,BB.10,Saint Philip,Saint Philip,10,BRB
+236,BB.09,Saint Peter,Saint Peter,09,BRB
+237,BB.08,Saint Michael,Saint Michael,08,BRB
+238,BB.07,Saint Lucy,Saint Lucy,07,BRB
+239,BB.06,Saint Joseph,Saint Joseph,06,BRB
+240,BB.05,Saint John,Saint John,05,BRB
+241,BB.04,Saint James,Saint James,04,BRB
+242,BB.03,Saint George,Saint George,03,BRB
+243,BB.02,Saint Andrew,Saint Andrew,02,BRB
+244,BB.01,Christ Church,Christ Church,01,BRB
+245,BD.83,Rajshahi Division,Rajshahi Division,83,BGD
+246,BD.81,Dhaka Division,Dhaka Division,81,BGD
+247,BD.84,Chittagong,Chittagong,84,BGD
+248,BD.82,Khulna Division,Khulna Division,82,BGD
+249,BD.85,Barisal Division,Barisal Division,85,BGD
+250,BD.86,Sylhet Division,Sylhet Division,86,BGD
+251,BD.87,Rangpur Division,Rangpur Division,87,BGD
+252,BD.H,Mymensingh Division,Mymensingh Division,H,BGD
+253,BE.BRU,Brussels Capital,Brussels Capital,BRU,BEL
+254,BE.WAL,Wallonia,Wallonia,WAL,BEL
+255,BE.VLG,Flanders,Flanders,VLG,BEL
+256,BF.01,Boucle du Mouhoun,Boucle du Mouhoun,01,BFA
+257,BF.02,Cascades Region,Cascades Region,02,BFA
+258,BF.03,Centre,Centre,03,BFA
+259,BF.04,Centre-Est,Centre-Est,04,BFA
+260,BF.05,Centre-Nord,Centre-Nord,05,BFA
+261,BF.06,Centre-Ouest,Centre-Ouest,06,BFA
+262,BF.07,Centre-Sud,Centre-Sud,07,BFA
+263,BF.08,Est,Est,08,BFA
+264,BF.09,Hauts-Bassins,Hauts-Bassins,09,BFA
+265,BF.10,Nord,Nord,10,BFA
+266,BF.11,Plateau-Central,Plateau-Central,11,BFA
+267,BF.12,Sahel,Sahel,12,BFA
+268,BF.13,Sud-Ouest,Sud-Ouest,13,BFA
+269,BG.52,Razgrad,Razgrad,52,BGR
+270,BG.47,Montana,Montana,47,BGR
+271,BG.64,Vratsa,Vratsa,64,BGR
+272,BG.61,Varna,Varna,61,BGR
+273,BG.40,Dobrich,Dobrich,40,BGR
+274,BG.58,Sofia,Sofia,58,BGR
+275,BG.53,Ruse,Ruse,53,BGR
+276,BG.51,Plovdiv,Plovdiv,51,BGR
+277,BG.50,Pleven,Pleven,50,BGR
+278,BG.49,Pernik,Pernik,49,BGR
+279,BG.48,Pazardzhik,Pazardzhik,48,BGR
+280,BG.46,Lovech,Lovech,46,BGR
+281,BG.43,Haskovo,Haskovo,43,BGR
+282,BG.42,Sofia-Capital,Sofia-Capital,42,BGR
+283,BG.39,Burgas,Burgas,39,BGR
+284,BG.38,Blagoevgrad,Blagoevgrad,38,BGR
+285,BG.41,Gabrovo,Gabrovo,41,BGR
+286,BG.44,Kardzhali,Kardzhali,44,BGR
+287,BG.45,Kyustendil,Kyustendil,45,BGR
+288,BG.54,Shumen,Shumen,54,BGR
+289,BG.55,Silistra,Silistra,55,BGR
+290,BG.56,Sliven,Sliven,56,BGR
+291,BG.57,Smolyan,Smolyan,57,BGR
+292,BG.59,Stara Zagora,Stara Zagora,59,BGR
+293,BG.60,Targovishte,Targovishte,60,BGR
+294,BG.62,Veliko Tarnovo,Veliko Tarnovo,62,BGR
+295,BG.63,Vidin,Vidin,63,BGR
+296,BG.65,Yambol,Yambol,65,BGR
+297,BH.15,Muharraq,Muharraq,15,BHR
+298,BH.16,Manama,Manama,16,BHR
+299,BH.17,Southern Governorate,Southern Governorate,17,BHR
+300,BH.19,Northern,Northern,19,BHR
+301,BI.17,Makamba,Makamba,17,BDI
+302,BI.10,Bururi,Bururi,10,BDI
+303,BI.22,Muramvya,Muramvya,22,BDI
+304,BI.13,Gitega,Gitega,13,BDI
+305,BI.21,Ruyigi,Ruyigi,21,BDI
+306,BI.11,Cankuzo,Cankuzo,11,BDI
+307,BI.14,Karuzi,Karuzi,14,BDI
+308,BI.09,Bubanza,Bubanza,09,BDI
+309,BI.12,Cibitoke,Cibitoke,12,BDI
+310,BI.19,Ngozi,Ngozi,19,BDI
+311,BI.15,Kayanza,Kayanza,15,BDI
+312,BI.18,Muyinga,Muyinga,18,BDI
+313,BI.16,Kirundo,Kirundo,16,BDI
+314,BI.20,Rutana,Rutana,20,BDI
+315,BI.23,Mwaro,Mwaro,23,BDI
+316,BI.24,Bujumbura Mairie,Bujumbura Mairie,24,BDI
+317,BI.25,Bujumbura Rural,Bujumbura Rural,25,BDI
+318,BI.26,Rumonge,Rumonge,26,BDI
+319,BJ.18,Zou,Zou,18,BEN
+320,BJ.16,Ouémé,Oueme,16,BEN
+321,BJ.15,Mono,Mono,15,BEN
+322,BJ.10,Borgou,Borgou,10,BEN
+323,BJ.09,Atlantique,Atlantique,09,BEN
+324,BJ.08,Atakora,Atakora,08,BEN
+325,BJ.07,Alibori,Alibori,07,BEN
+326,BJ.11,Collines,Collines,11,BEN
+327,BJ.12,Kouffo,Kouffo,12,BEN
+328,BJ.13,Donga,Donga,13,BEN
+329,BJ.14,Littoral,Littoral,14,BEN
+330,BJ.17,Plateau,Plateau,17,BEN
+331,BM.11,Warwick,Warwick,11,BMU
+332,BM.10,Southampton,Southampton,10,BMU
+333,BM.09,Smithʼs,Smith's Parish,09,BMU
+334,BM.08,Sandys,Sandys,08,BMU
+335,BM.07,Saint Georgeʼs,Saint George's Parish,07,BMU
+336,BM.06,Saint George,Saint George,06,BMU
+337,BM.05,Pembroke,Pembroke,05,BMU
+338,BM.04,Paget,Paget,04,BMU
+339,BM.02,Hamilton,Hamilton,02,BMU
+340,BM.03,Hamilton city,Hamilton city,03,BMU
+341,BM.01,Devonshire,Devonshire,01,BMU
+342,BN.04,Tutong,Tutong,04,BRN
+343,BN.03,Temburong,Temburong,03,BRN
+344,BN.02,Brunei-Muara District,Brunei-Muara District,02,BRN
+345,BN.01,Belait,Belait,01,BRN
+346,BO.09,Tarija Department,Tarija Department,09,BOL
+347,BO.08,Santa Cruz Department,Santa Cruz Department,08,BOL
+348,BO.07,Potosí Department,Potosi Department,07,BOL
+349,BO.06,Pando,Pando,06,BOL
+350,BO.05,Oruro,Oruro,05,BOL
+351,BO.04,La Paz Department,La Paz Department,04,BOL
+352,BO.02,Cochabamba,Cochabamba,02,BOL
+353,BO.01,Chuquisaca Department,Chuquisaca Department,01,BOL
+354,BO.03,Beni Department,Beni Department,03,BOL
+355,BQ.BO,Bonaire,Bonaire,BO,BES
+356,BQ.SB,Saba,Saba,SB,BES
+357,BQ.SE,Sint Eustatius,Sint Eustatius,SE,BES
+358,BR.22,Rio Grande do Norte,Rio Grande do Norte,22,BRA
+359,BR.20,Piauí,Piaui,20,BRA
+360,BR.30,Pernambuco,Pernambuco,30,BRA
+361,BR.17,Paraíba,Paraiba,17,BRA
+362,BR.16,Pará,Para,16,BRA
+363,BR.13,Maranhão,Maranhao,13,BRA
+364,BR.06,Ceará,Ceara,06,BRA
+365,BR.03,Amapá,Amapa,03,BRA
+366,BR.02,Alagoas,Alagoas,02,BRA
+367,BR.28,Sergipe,Sergipe,28,BRA
+368,BR.27,São Paulo,Sao Paulo,27,BRA
+369,BR.26,Santa Catarina,Santa Catarina,26,BRA
+370,BR.23,Rio Grande do Sul,Rio Grande do Sul,23,BRA
+371,BR.21,Rio de Janeiro,Rio de Janeiro,21,BRA
+372,BR.18,Paraná,Parana,18,BRA
+373,BR.15,Minas Gerais,Minas Gerais,15,BRA
+374,BR.11,Mato Grosso do Sul,Mato Grosso do Sul,11,BRA
+375,BR.14,Mato Grosso,Mato Grosso,14,BRA
+376,BR.29,Goiás,Goias,29,BRA
+377,BR.07,Federal District,Federal District,07,BRA
+378,BR.08,Espírito Santo,Espirito Santo,08,BRA
+379,BR.05,Bahia,Bahia,05,BRA
+380,BR.31,Tocantins,Tocantins,31,BRA
+381,BR.25,Roraima,Roraima,25,BRA
+382,BR.04,Amazonas,Amazonas,04,BRA
+383,BR.01,Acre,Acre,01,BRA
+384,BR.24,Rondônia,Rondonia,24,BRA
+385,BS.35,San Salvador,San Salvador,35,BHS
+386,BS.18,Ragged Island,Ragged Island,18,BHS
+387,BS.32,Berry Islands,Berry Islands,32,BHS
+388,BS.23,New Providence,New Providence,23,BHS
+389,BS.16,Mayaguana,Mayaguana,16,BHS
+390,BS.15,Long Island,Long Island,15,BHS
+391,BS.13,Inagua,Inagua,13,BHS
+392,BS.22,Harbour Island,Harbour Island,22,BHS
+393,BS.25,Freeport,Freeport,25,BHS
+394,BS.10,Exuma,Exuma,10,BHS
+395,BS.06,Cat Island,Cat Island,06,BHS
+396,BS.05,Bimini,Bimini,05,BHS
+397,BS.24,Acklins,Acklins,24,BHS
+398,BS.36,Black Point,Black Point,36,BHS
+399,BS.37,Central Abaco,Central Abaco,37,BHS
+400,BS.38,Central Andros,Central Andros,38,BHS
+401,BS.39,Central Eleuthera,Central Eleuthera,39,BHS
+402,BS.40,Crooked Island and Long Cay,Crooked Island and Long Cay,40,BHS
+403,BS.41,East Grand Bahama,East Grand Bahama,41,BHS
+404,BS.42,Grand Cay,Grand Cay,42,BHS
+405,BS.43,Hope Town,Hope Town,43,BHS
+406,BS.44,Mangrove Cay,Mangrove Cay,44,BHS
+407,BS.45,Moore’s Island,Moore's Island,45,BHS
+408,BS.46,North Abaco,North Abaco,46,BHS
+409,BS.47,North Andros,North Andros,47,BHS
+410,BS.48,North Eleuthera,North Eleuthera,48,BHS
+411,BS.49,Rum Cay,Rum Cay,49,BHS
+412,BS.50,South Abaco,South Abaco,50,BHS
+413,BS.51,South Andros,South Andros,51,BHS
+414,BS.52,South Eleuthera,South Eleuthera,52,BHS
+415,BS.53,Spanish Wells,Spanish Wells,53,BHS
+416,BS.54,West Grand Bahama,West Grand Bahama,54,BHS
+417,BT.05,Bumthang District,Bumthang District,05,BTN
+418,BT.06,Chukha,Chukha,06,BTN
+419,BT.08,Dagana,Dagana,08,BTN
+420,BT.07,Tsirang District,Tsirang District,07,BTN
+421,BT.09,Sarpang District,Sarpang District,09,BTN
+422,BT.10,Haa,Haa,10,BTN
+423,BT.11,Lhuntse,Lhuntse,11,BTN
+424,BT.12,Mongar,Mongar,12,BTN
+425,BT.13,Paro,Paro,13,BTN
+426,BT.14,Pemagatshel,Pemagatshel,14,BTN
+427,BT.15,Punakha,Punakha,15,BTN
+428,BT.16,Samtse District,Samtse District,16,BTN
+429,BT.17,Samdrup Jongkhar,Samdrup Jongkhar,17,BTN
+430,BT.18,Zhemgang District,Zhemgang District,18,BTN
+431,BT.19,Trashigang District,Trashigang District,19,BTN
+432,BT.20,Thimphu District,Thimphu District,20,BTN
+433,BT.21,Tongsa,Tongsa,21,BTN
+434,BT.22,Wangdi Phodrang,Wangdi Phodrang,22,BTN
+435,BT.23,Gasa,Gasa,23,BTN
+436,BT.24,Trashi Yangste,Trashi Yangste,24,BTN
+437,BW.10,Ngwaketsi,Ngwaketsi,10,BWA
+438,BW.09,South-East,South-East,09,BWA
+439,BW.08,North-East,North-East,08,BWA
+440,BW.11,North-West,North-West,11,BWA
+441,BW.06,Kweneng,Kweneng,06,BWA
+442,BW.05,Kgatleng,Kgatleng,05,BWA
+443,BW.04,Kgalagadi,Kgalagadi,04,BWA
+444,BW.03,Ghanzi,Ghanzi,03,BWA
+445,BW.12,Chobe,Chobe,12,BWA
+446,BW.01,Central,Central,01,BWA
+447,BW.13,City of Francistown,City of Francistown,13,BWA
+448,BW.14,Gaborone,Gaborone,14,BWA
+449,BW.15,Jwaneng,Jwaneng,15,BWA
+450,BW.16,Lobatse,Lobatse,16,BWA
+451,BW.17,Selibe Phikwe,Selibe Phikwe,17,BWA
+452,BW.18,Sowa Town,Sowa Town,18,BWA
+453,BY.07,Vitebsk,Vitebsk,07,BLR
+454,BY.06,Mogilev,Mogilev,06,BLR
+455,BY.05,Minsk,Minsk,05,BLR
+456,BY.04,Minsk City,Minsk City,04,BLR
+457,BY.03,Grodnenskaya,Grodnenskaya,03,BLR
+458,BY.02,Gomel Oblast,Gomel Oblast,02,BLR
+459,BY.01,Brest,Brest,01,BLR
+460,BZ.06,Toledo District,Toledo District,06,BLZ
+461,BZ.05,Southern District,Southern District,05,BLZ
+462,BZ.04,Orange Walk District,Orange Walk District,04,BLZ
+463,BZ.03,Corozal District,Corozal District,03,BLZ
+464,BZ.02,Cayo District,Cayo District,02,BLZ
+465,BZ.01,Belize District,Belize District,01,BLZ
+466,CA.01,Alberta,Alberta,01,CAN
+467,CA.02,British Columbia,British Columbia,02,CAN
+468,CA.03,Manitoba,Manitoba,03,CAN
+469,CA.04,New Brunswick,New Brunswick,04,CAN
+470,CA.13,Northwest Territories,Northwest Territories,13,CAN
+471,CA.07,Nova Scotia,Nova Scotia,07,CAN
+472,CA.14,Nunavut,Nunavut,14,CAN
+473,CA.08,Ontario,Ontario,08,CAN
+474,CA.09,Prince Edward Island,Prince Edward Island,09,CAN
+475,CA.10,Quebec,Quebec,10,CAN
+476,CA.11,Saskatchewan,Saskatchewan,11,CAN
+477,CA.12,Yukon,Yukon,12,CAN
+478,CA.05,Newfoundland and Labrador,Newfoundland and Labrador,05,CAN
+479,CD.31,Tshuapa,Tshuapa,31,COD
+480,CD.30,Tshopo,Tshopo,30,COD
+481,CD.29,Tanganyika,Tanganyika,29,COD
+482,CD.12,South Kivu,South Kivu,12,COD
+483,CD.27,Sankuru,Sankuru,27,COD
+484,CD.11,Nord Kivu,Nord Kivu,11,COD
+485,CD.25,Mongala,Mongala,25,COD
+486,CD.10,Maniema,Maniema,10,COD
+487,CD.23,Kasai-Central,Kasai-Central,23,COD
+488,CD.04,Kasaï-Oriental,Kasai-Oriental,04,COD
+489,CD.18,Kasai,Kasai,18,COD
+490,CD.17,Ituri,Ituri,17,COD
+491,CD.16,Haut-Uele,Haut-Uele,16,COD
+492,CD.15,Haut-Lomami,Haut-Lomami,15,COD
+493,CD.02,Équateur,Equateur,02,COD
+494,CD.13,Bas-Uele,Bas-Uele,13,COD
+495,CD.22,Lualaba,Lualaba,22,COD
+496,CD.24,Mai-Ndombe,Mai-Ndombe,24,COD
+497,CD.20,Kwilu,Kwilu,20,COD
+498,CD.19,Kwango,Kwango,19,COD
+499,CD.06,Kinshasa,Kinshasa,06,COD
+500,CD.08,Bas-Congo,Bas-Congo,08,COD
+501,CD.14,Haut-Katanga,Haut-Katanga,14,COD
+502,CD.21,Lomami,Lomami,21,COD
+503,CD.26,Nord-Ubangi,Nord-Ubangi,26,COD
+504,CD.28,Sud-Ubangi,Sud-Ubangi,28,COD
+505,CF.14,Vakaga,Vakaga,14,CAF
+506,CF.11,Ouaka,Ouaka,11,CAF
+507,CF.08,Mbomou,Mbomou,08,CAF
+508,CF.05,Haut-Mbomou,Haut-Mbomou,05,CAF
+509,CF.03,Haute-Kotto,Haute-Kotto,03,CAF
+510,CF.02,Basse-Kotto,Basse-Kotto,02,CAF
+511,CF.01,Bamingui-Bangoran,Bamingui-Bangoran,01,CAF
+512,CF.16,Sangha-Mbaéré,Sangha-Mbaere,16,CAF
+513,CF.13,Ouham-Pendé,Ouham-Pende,13,CAF
+514,CF.12,Ouham,Ouham,12,CAF
+515,CF.17,Ombella-M'Poko,Ombella-M'Poko,17,CAF
+516,CF.09,Nana-Mambéré,Nana-Mambere,09,CAF
+517,CF.07,Lobaye,Lobaye,07,CAF
+518,CF.06,Kémo,Kemo,06,CAF
+519,CF.04,Mambéré-Kadéï,Mambere-Kadei,04,CAF
+520,CF.15,Nana-Grébizi,Nana-Grebizi,15,CAF
+521,CF.18,Bangui,Bangui,18,CAF
+522,CF.19,Mambéré,Mambere,19,CAF
+523,CF.20,Ouham-Fafa,Ouham-Fafa,20,CAF
+524,CF.21,Lim-Pendé,Lim-Pende,21,CAF
+525,CG.10,Sangha,Sangha,10,COG
+526,CG.11,Pool,Pool,11,COG
+527,CG.08,Plateaux,Plateaux,08,COG
+528,CG.07,Niari,Niari,07,COG
+529,CG.06,Likouala,Likouala,06,COG
+530,CG.05,Lékoumou,Lekoumou,05,COG
+531,CG.04,Kouilou,Kouilou,04,COG
+532,CG.13,Cuvette,Cuvette,13,COG
+533,CG.01,Bouenza,Bouenza,01,COG
+534,CG.12,Brazzaville,Brazzaville,12,COG
+535,CG.14,Cuvette-Ouest,Cuvette-Ouest,14,COG
+536,CG.15,Pointe-Noire,Pointe-Noire,15,COG
+537,CH.ZH,Zurich,Zurich,ZH,CHE
+538,CH.ZG,Zug,Zug,ZG,CHE
+539,CH.VD,Vaud,Vaud,VD,CHE
+540,CH.VS,Valais,Valais,VS,CHE
+541,CH.UR,Uri,Uri,UR,CHE
+542,CH.TI,Ticino,Ticino,TI,CHE
+543,CH.TG,Thurgau,Thurgau,TG,CHE
+544,CH.SO,Solothurn,Solothurn,SO,CHE
+545,CH.SZ,Schwyz,Schwyz,SZ,CHE
+546,CH.SH,Schaffhausen,Schaffhausen,SH,CHE
+547,CH.SG,Saint Gallen,Saint Gallen,SG,CHE
+548,CH.OW,Obwalden,Obwalden,OW,CHE
+549,CH.NW,Nidwalden,Nidwalden,NW,CHE
+550,CH.NE,Neuchâtel,Neuchatel,NE,CHE
+551,CH.LU,Lucerne,Lucerne,LU,CHE
+552,CH.JU,Jura,Jura,JU,CHE
+553,CH.GR,Grisons,Grisons,GR,CHE
+554,CH.GL,Glarus,Glarus,GL,CHE
+555,CH.GE,Geneva,Geneva,GE,CHE
+556,CH.FR,Fribourg,Fribourg,FR,CHE
+557,CH.BE,Bern,Bern,BE,CHE
+558,CH.BS,Basel-City,Basel-City,BS,CHE
+559,CH.BL,Basel-Landschaft,Basel-Landschaft,BL,CHE
+560,CH.AR,Appenzell Ausserrhoden,Appenzell Ausserrhoden,AR,CHE
+561,CH.AI,Appenzell Innerrhoden,Appenzell Innerrhoden,AI,CHE
+562,CH.AG,Aargau,Aargau,AG,CHE
+563,CI.98,Yamoussoukro,Yamoussoukro,98,CIV
+564,CI.76,Bas-Sassandra District,Bas-Sassandra District,76,CIV
+565,CI.94,Comoé District,Comoe District,94,CIV
+566,CI.77,Denguélé District,Denguele District,77,CIV
+567,CI.95,Gôh-Djiboua,Goh-Djiboua,95,CIV
+568,CI.81,Lacs District,Lacs District,81,CIV
+569,CI.82,Lagunes District,Lagunes District,82,CIV
+570,CI.78,Montagnes,Montagnes,78,CIV
+571,CI.96,Sassandra-Marahoué,Sassandra-Marahoue,96,CIV
+572,CI.87,Savanes District,Savanes District,87,CIV
+573,CI.90,Vallée du Bandama District,Vallee du Bandama District,90,CIV
+574,CI.97,Woroba,Woroba,97,CIV
+575,CI.92,Zanzan District,Zanzan District,92,CIV
+576,CI.93,Abidjan Autonomous District,Abidjan Autonomous District,93,CIV
+577,CK.11695124,Aitutaki,Aitutaki,11695124,COK
+578,CK.11695126,Atiu,Atiu,11695126,COK
+579,CK.11695127,Mangaia,Mangaia,11695127,COK
+580,CK.11695384,Manihiki,Manihiki,11695384,COK
+581,CK.11695385,Ma'uke,Ma'uke,11695385,COK
+582,CK.11695386,Mitiaro,Mitiaro,11695386,COK
+583,CK.11695387,Palmerston,Palmerston,11695387,COK
+584,CK.11695388,Penrhyn,Penrhyn,11695388,COK
+585,CK.11695389,Pukapuka,Pukapuka,11695389,COK
+586,CK.11695390,Rakahanga,Rakahanga,11695390,COK
+587,CK.11695425,Rarotonga,Rarotonga,11695425,COK
+588,CL.01,Valparaíso,Valparaiso,01,CHL
+589,CL.15,Tarapacá,Tarapaca,15,CHL
+590,CL.12,Santiago Metropolitan,Santiago Metropolitan,12,CHL
+591,CL.11,Maule Region,Maule Region,11,CHL
+592,CL.14,Los Lagos Region,Los Lagos Region,14,CHL
+593,CL.08,O'Higgins Region,O'Higgins Region,08,CHL
+594,CL.07,Coquimbo Region,Coquimbo Region,07,CHL
+595,CL.06,Biobío,Biobio,06,CHL
+596,CL.05,Atacama,Atacama,05,CHL
+597,CL.04,Araucanía,Araucania,04,CHL
+598,CL.03,Antofagasta,Antofagasta,03,CHL
+599,CL.02,Aysén,Aysen,02,CHL
+600,CL.10,Region of Magallanes,Region of Magallanes,10,CHL
+601,CL.16,Arica y Parinacota Region,Arica y Parinacota Region,16,CHL
+602,CL.17,Los Ríos Region,Los Rios Region,17,CHL
+603,CL.18,Ñuble,Nuble,18,CHL
+604,CM.09,South-West,South-West,09,CMR
+605,CM.14,South,South,14,CMR
+606,CM.08,West,West,08,CMR
+607,CM.07,North-West,North-West,07,CMR
+608,CM.13,North,North,13,CMR
+609,CM.05,Littoral,Littoral,05,CMR
+610,CM.12,Far North,Far North,12,CMR
+611,CM.04,East,East,04,CMR
+612,CM.11,Centre,Centre,11,CMR
+613,CM.10,Adamaoua,Adamaoua,10,CMR
+614,CN.14,Tibet,Tibet,14,CHN
+615,CN.06,Qinghai,Qinghai,06,CHN
+616,CN.13,Xinjiang,Xinjiang,13,CHN
+617,CN.02,Zhejiang,Zhejiang,02,CHN
+618,CN.29,Yunnan,Yunnan,29,CHN
+619,CN.28,Tianjin,Tianjin,28,CHN
+620,CN.32,Sichuan,Sichuan,32,CHN
+621,CN.24,Shanxi,Shanxi,24,CHN
+622,CN.23,Shanghai,Shanghai,23,CHN
+623,CN.25,Shandong,Shandong,25,CHN
+624,CN.26,Shaanxi,Shaanxi,26,CHN
+625,CN.21,Ningxia,Ningxia,21,CHN
+626,CN.03,Jiangxi,Jiangxi,03,CHN
+627,CN.04,Jiangsu,Jiangsu,04,CHN
+628,CN.11,Hunan,Hunan,11,CHN
+629,CN.12,Hubei,Hubei,12,CHN
+630,CN.09,Henan,Henan,09,CHN
+631,CN.10,Hebei,Hebei,10,CHN
+632,CN.31,Hainan,Hainan,31,CHN
+633,CN.18,Guizhou,Guizhou,18,CHN
+634,CN.16,Guangxi,Guangxi,16,CHN
+635,CN.30,Guangdong,Guangdong,30,CHN
+636,CN.15,Gansu,Gansu,15,CHN
+637,CN.07,Fujian,Fujian,07,CHN
+638,CN.33,Chongqing,Chongqing,33,CHN
+639,CN.01,Anhui,Anhui,01,CHN
+640,CN.20,Inner Mongolia,Inner Mongolia,20,CHN
+641,CN.19,Liaoning,Liaoning,19,CHN
+642,CN.05,Jilin,Jilin,05,CHN
+643,CN.08,Heilongjiang,Heilongjiang,08,CHN
+644,CN.22,Beijing,Beijing,22,CHN
+645,CO.31,Vichada Department,Vichada Department,31,COL
+646,CO.30,Vaupés,Vaupes,30,COL
+647,CO.29,Valle del Cauca Department,Valle del Cauca Department,29,COL
+648,CO.28,Tolima Department,Tolima Department,28,COL
+649,CO.27,Sucre Department,Sucre Department,27,COL
+650,CO.26,Santander Department,Santander Department,26,COL
+651,CO.25,San Andres y Providencia,San Andres y Providencia,25,COL
+652,CO.24,Risaralda Department,Risaralda Department,24,COL
+653,CO.23,Quindío Department,Quindio Department,23,COL
+654,CO.22,Putumayo Department,Putumayo Department,22,COL
+655,CO.21,Norte de Santander Department,Norte de Santander Department,21,COL
+656,CO.20,Nariño,Narino,20,COL
+657,CO.19,Meta Department,Meta Department,19,COL
+658,CO.38,Magdalena Department,Magdalena Department,38,COL
+659,CO.17,La Guajira Department,La Guajira Department,17,COL
+660,CO.16,Huila Department,Huila Department,16,COL
+661,CO.14,Guaviare Department,Guaviare Department,14,COL
+662,CO.15,Guainía Department,Guainia Department,15,COL
+663,CO.33,Cundinamarca,Cundinamarca,33,COL
+664,CO.12,Córdoba,Cordoba,12,COL
+665,CO.11,Chocó,Choco,11,COL
+666,CO.10,Cesar Department,Cesar Department,10,COL
+667,CO.09,Cauca Department,Cauca Department,09,COL
+668,CO.32,Casanare Department,Casanare Department,32,COL
+669,CO.08,Caquetá,Caqueta,08,COL
+670,CO.37,Caldas Department,Caldas Department,37,COL
+671,CO.36,Boyacá,Boyaca,36,COL
+672,CO.35,Bolívar,Bolivar,35,COL
+673,CO.34,Bogota D.C.,Bogota D.C.,34,COL
+674,CO.04,Atlántico,Atlantico,04,COL
+675,CO.03,Arauca Department,Arauca Department,03,COL
+676,CO.02,Antioquia,Antioquia,02,COL
+677,CO.01,Amazonas Department,Amazonas Department,01,COL
+678,CR.08,San José,San Jose,08,CRI
+679,CR.07,Puntarenas Province,Puntarenas Province,07,CRI
+680,CR.06,Limón Province,Limon Province,06,CRI
+681,CR.04,Heredia Province,Heredia Province,04,CRI
+682,CR.03,Guanacaste Province,Guanacaste Province,03,CRI
+683,CR.02,Cartago Province,Cartago Province,02,CRI
+684,CR.01,Alajuela Province,Alajuela Province,01,CRI
+685,CU.16,Villa Clara Province,Villa Clara Province,16,CUB
+686,CU.15,Santiago de Cuba Province,Santiago de Cuba Province,15,CUB
+687,CU.14,Sancti Spíritus Province,Sancti Spiritus Province,14,CUB
+688,CU.01,Pinar del Río,Pinar del Rio,01,CUB
+689,CU.03,Matanzas Province,Matanzas Province,03,CUB
+690,CU.13,Las Tunas Province,Las Tunas Province,13,CUB
+691,CU.04,Isla de la Juventud,Isla de la Juventud,04,CUB
+692,CU.12,Holguín Province,Holguin Province,12,CUB
+693,CU.10,Guantánamo Province,Guantanamo Province,10,CUB
+694,CU.09,Granma Province,Granma Province,09,CUB
+695,CU.02,Havana,Havana,02,CUB
+696,CU.08,Cienfuegos Province,Cienfuegos Province,08,CUB
+697,CU.07,Ciego de Ávila Province,Ciego de Avila Province,07,CUB
+698,CU.05,Camagüey,Camaguey,05,CUB
+699,CU.AR,Artemisa,Artemisa,AR,CUB
+700,CU.MA,Mayabeque,Mayabeque,MA,CUB
+701,CV.20,Tarrafal,Tarrafal,20,CPV
+702,CV.11,São Vicente,Sao Vicente,11,CPV
+703,CV.15,Santa Catarina,Santa Catarina,15,CPV
+704,CV.08,Sal,Sal,08,CPV
+705,CV.07,Ribeira Grande,Ribeira Grande,07,CPV
+706,CV.14,Praia,Praia,14,CPV
+707,CV.05,Paul,Paul,05,CPV
+708,CV.04,Maio,Maio,04,CPV
+709,CV.02,Brava,Brava,02,CPV
+710,CV.01,Boa Vista,Boa Vista,01,CPV
+711,CV.13,Mosteiros,Mosteiros,13,CPV
+712,CV.16,Santa Cruz,Santa Cruz,16,CPV
+713,CV.17,São Domingos,Sao Domingos,17,CPV
+714,CV.18,São Filipe,Sao Filipe,18,CPV
+715,CV.19,São Miguel,Sao Miguel,19,CPV
+716,CV.21,Porto Novo,Porto Novo,21,CPV
+717,CV.22,Ribeira Brava,Ribeira Brava,22,CPV
+718,CV.24,Santa Catarina do Fogo,Santa Catarina do Fogo,24,CPV
+719,CV.26,São Salvador do Mundo,Sao Salvador do Mundo,26,CPV
+720,CV.27,Tarrafal de São Nicolau,Tarrafal de Sao Nicolau,27,CPV
+721,CV.25,São Lourenço dos Órgãos,Sao Lourenco dos Orgaos,25,CPV
+722,CV.23,Ribeira Grande de Santiago,Ribeira Grande de Santiago,23,CPV
+723,CY.06,Pafos,Pafos,06,CYP
+724,CY.04,Nicosia,Nicosia,04,CYP
+725,CY.05,Limassol,Limassol,05,CYP
+726,CY.03,Larnaka,Larnaka,03,CYP
+727,CY.02,Keryneia,Keryneia,02,CYP
+728,CY.01,Ammochostos,Ammochostos,01,CYP
+729,CZ.52,Prague,Prague,52,CZE
+730,CZ.78,South Moravian,South Moravian,78,CZE
+731,CZ.79,Jihočeský kraj,Jihocesky kraj,79,CZE
+732,CZ.80,Vysočina,Vysocina,80,CZE
+733,CZ.81,Karlovarský kraj,Karlovarsky kraj,81,CZE
+734,CZ.82,Královéhradecký kraj,Kralovehradecky kraj,82,CZE
+735,CZ.83,Liberecký kraj,Liberecky kraj,83,CZE
+736,CZ.84,Olomoucký,Olomoucky,84,CZE
+737,CZ.85,Moravskoslezský,Moravskoslezsky,85,CZE
+738,CZ.86,Pardubický,Pardubicky,86,CZE
+739,CZ.87,Plzeň Region,Plzen Region,87,CZE
+740,CZ.88,Central Bohemia,Central Bohemia,88,CZE
+741,CZ.89,Ústecký kraj,Ustecky kraj,89,CZE
+742,CZ.90,Zlín,Zlin,90,CZE
+743,DE.15,Thuringia,Thuringia,15,DEU
+744,DE.10,Schleswig-Holstein,Schleswig-Holstein,10,DEU
+745,DE.14,Saxony-Anhalt,Saxony-Anhalt,14,DEU
+746,DE.13,Saxony,Saxony,13,DEU
+747,DE.09,Saarland,Saarland,09,DEU
+748,DE.08,Rheinland-Pfalz,Rheinland-Pfalz,08,DEU
+749,DE.07,North Rhine-Westphalia,North Rhine-Westphalia,07,DEU
+750,DE.06,Lower Saxony,Lower Saxony,06,DEU
+751,DE.12,Mecklenburg-Vorpommern,Mecklenburg-Vorpommern,12,DEU
+752,DE.05,Hesse,Hesse,05,DEU
+753,DE.04,Hamburg,Hamburg,04,DEU
+754,DE.03,City state Bremen,City state Bremen,03,DEU
+755,DE.11,Brandenburg,Brandenburg,11,DEU
+756,DE.16,State of Berlin,State of Berlin,16,DEU
+757,DE.02,Bavaria,Bavaria,02,DEU
+758,DE.01,Baden-Wurttemberg,Baden-Wurttemberg,01,DEU
+759,DJ.05,Tadjourah,Tadjourah,05,DJI
+760,DJ.04,Obock,Obock,04,DJI
+761,DJ.07,Djibouti,Djibouti,07,DJI
+762,DJ.06,Dikhil,Dikhil,06,DJI
+763,DJ.01,Ali Sabieh,Ali Sabieh,01,DJI
+764,DJ.08,Arta,Arta,08,DJI
+765,DK.17,Capital Region,Capital Region,17,DNK
+766,DK.18,Central Jutland,Central Jutland,18,DNK
+767,DK.19,North Denmark,North Denmark,19,DNK
+768,DK.20,Zealand,Zealand,20,DNK
+769,DK.21,South Denmark,South Denmark,21,DNK
+770,DM.11,Saint Peter Parish,Saint Peter Parish,11,DMA
+771,DM.10,Saint Paul Parish,Saint Paul Parish,10,DMA
+772,DM.09,Saint Patrick Parish,Saint Patrick Parish,09,DMA
+773,DM.08,Saint Mark Parish,Saint Mark Parish,08,DMA
+774,DM.07,Saint Luke Parish,Saint Luke Parish,07,DMA
+775,DM.06,Saint Joseph Parish,Saint Joseph Parish,06,DMA
+776,DM.05,Saint John Parish,Saint John Parish,05,DMA
+777,DM.04,Saint George Parish,Saint George Parish,04,DMA
+778,DM.03,Saint David Parish,Saint David Parish,03,DMA
+779,DM.02,Saint Andrew Parish,Saint Andrew Parish,02,DMA
+780,DO.27,Valverde Province,Valverde Province,27,DOM
+781,DO.26,Santiago Rodríguez,Santiago Rodriguez,26,DOM
+782,DO.25,Santiago Province,Santiago Province,25,DOM
+783,DO.24,San Pedro de Macorís,San Pedro de Macoris,24,DOM
+784,DO.23,San Juan Province,San Juan Province,23,DOM
+785,DO.33,San Cristóbal,San Cristobal,33,DOM
+786,DO.21,Sánchez Ramírez,Sanchez Ramirez,21,DOM
+787,DO.20,Samaná,Samana,20,DOM
+788,DO.19,Hermanas Mirabal,Hermanas Mirabal,19,DOM
+789,DO.18,Puerto Plata,Puerto Plata,18,DOM
+790,DO.35,Peravia,Peravia,35,DOM
+791,DO.16,Pedernales Province,Pedernales Province,16,DOM
+792,DO.34,Nacional,Nacional,34,DOM
+793,DO.32,Monte Plata Province,Monte Plata Province,32,DOM
+794,DO.15,Monte Cristi Province,Monte Cristi Province,15,DOM
+795,DO.31,Monseñor Nouel,Monsenor Nouel,31,DOM
+796,DO.14,María Trinidad Sánchez,Maria Trinidad Sanchez,14,DOM
+797,DO.30,La Vega,La Vega,30,DOM
+798,DO.12,La Romana,La Romana,12,DOM
+799,DO.10,La Altagracia Province,La Altagracia Province,10,DOM
+800,DO.09,Independencia,Independencia,09,DOM
+801,DO.29,Hato Mayor Province,Hato Mayor Province,29,DOM
+802,DO.08,Espaillat Province,Espaillat Province,08,DOM
+803,DO.28,El Seíbo,El Seibo,28,DOM
+804,DO.11,Elías Piña,Elias Pina,11,DOM
+805,DO.06,Duarte Province,Duarte Province,06,DOM
+806,DO.04,Dajabón,Dajabon,04,DOM
+807,DO.03,Barahona Province,Barahona Province,03,DOM
+808,DO.02,Baoruco Province,Baoruco Province,02,DOM
+809,DO.01,Azua Province,Azua Province,01,DOM
+810,DO.36,San José de Ocoa,San Jose de Ocoa,36,DOM
+811,DO.37,Santo Domingo Province,Santo Domingo Province,37,DOM
+812,DZ.15,Tlemcen,Tlemcen,15,DZA
+813,DZ.14,Tizi Ouzou,Tizi Ouzou,14,DZA
+814,DZ.56,Tissemsilt,Tissemsilt,56,DZA
+815,DZ.55,Tipaza,Tipaza,55,DZA
+816,DZ.54,Tindouf,Tindouf,54,DZA
+817,DZ.13,Tiaret,Tiaret,13,DZA
+818,DZ.33,Tébessa,Tebessa,33,DZA
+819,DZ.53,Tamanrasset,Tamanrasset,53,DZA
+820,DZ.52,Souk Ahras,Souk Ahras,52,DZA
+821,DZ.31,Skikda,Skikda,31,DZA
+822,DZ.30,Sidi Bel Abbès,Sidi Bel Abbes,30,DZA
+823,DZ.12,Sétif,Setif,12,DZA
+824,DZ.10,Saida,Saida,10,DZA
+825,DZ.51,Relizane,Relizane,51,DZA
+826,DZ.29,Oum el Bouaghi,Oum el Bouaghi,29,DZA
+827,DZ.50,Ouargla,Ouargla,50,DZA
+828,DZ.09,Oran,Oran,09,DZA
+829,DZ.49,Naama,Naama,49,DZA
+830,DZ.27,M'Sila,M'Sila,27,DZA
+831,DZ.07,Mostaganem,Mostaganem,07,DZA
+832,DZ.48,Mila,Mila,48,DZA
+833,DZ.06,Medea,Medea,06,DZA
+834,DZ.26,Mascara,Mascara,26,DZA
+835,DZ.25,Laghouat,Laghouat,25,DZA
+836,DZ.47,Khenchela,Khenchela,47,DZA
+837,DZ.24,Jijel,Jijel,24,DZA
+838,DZ.46,Illizi,Illizi,46,DZA
+839,DZ.23,Guelma,Guelma,23,DZA
+840,DZ.45,Ghardaia,Ghardaia,45,DZA
+841,DZ.44,El Tarf,El Tarf,44,DZA
+842,DZ.43,El Oued,El Oued,43,DZA
+843,DZ.42,El Bayadh,El Bayadh,42,DZA
+844,DZ.22,Djelfa,Djelfa,22,DZA
+845,DZ.04,Constantine,Constantine,04,DZA
+846,DZ.41,Chlef,Chlef,41,DZA
+847,DZ.40,Boumerdes,Boumerdes,40,DZA
+848,DZ.21,Bouira,Bouira,21,DZA
+849,DZ.39,Bordj Bou Arréridj,Bordj Bou Arreridj,39,DZA
+850,DZ.20,Blida,Blida,20,DZA
+851,DZ.19,Biskra,Biskra,19,DZA
+852,DZ.18,Béjaïa,Bejaia,18,DZA
+853,DZ.38,Béchar,Bechar,38,DZA
+854,DZ.03,Batna,Batna,03,DZA
+855,DZ.37,Annaba,Annaba,37,DZA
+856,DZ.01,Algiers,Algiers,01,DZA
+857,DZ.36,Aïn Témouchent,Ain Temouchent,36,DZA
+858,DZ.35,Aïn Defla,Ain Defla,35,DZA
+859,DZ.34,Adrar,Adrar,34,DZA
+860,DZ.BB,Bordj Badji Mokhtar,Bordj Badji Mokhtar,BB,DZA
+861,DZ.TM,Timimoun,Timimoun,TM,DZA
+862,DZ.BA,Beni Abbes,Beni Abbes,BA,DZA
+863,DZ.IG,In Guezzam,In Guezzam,IG,DZA
+864,DZ.IS,In Salah,In Salah,IS,DZA
+865,DZ.DJ,Djanet,Djanet,DJ,DZA
+866,DZ.EM,El Menia,El Menia,EM,DZA
+867,DZ.TG,Touggourt,Touggourt,TG,DZA
+868,DZ.MG,El Mghair,El Mghair,MG,DZA
+869,DZ.OD,Ouled Djellal,Ouled Djellal,OD,DZA
+870,EC.20,Zamora Chinchipe,Zamora Chinchipe,20,ECU
+871,EC.19,Tungurahua Province,Tungurahua Province,19,ECU
+872,EC.18,Pichincha,Pichincha,18,ECU
+873,EC.17,Pastaza Province,Pastaza Province,17,ECU
+874,EC.23,Napo,Napo,23,ECU
+875,EC.15,Morona-Santiago Province,Morona-Santiago Province,15,ECU
+876,EC.14,Manabí,Manabi,14,ECU
+877,EC.13,Los Ríos,Los Rios,13,ECU
+878,EC.12,Loja,Loja,12,ECU
+879,EC.11,Imbabura,Imbabura,11,ECU
+880,EC.10,Guayas,Guayas,10,ECU
+881,EC.01,Galápagos,Galapagos,01,ECU
+882,EC.09,Esmeraldas,Esmeraldas,09,ECU
+883,EC.08,El Oro,El Oro,08,ECU
+884,EC.07,Cotopaxi,Cotopaxi,07,ECU
+885,EC.06,Chimborazo Province,Chimborazo Province,06,ECU
+886,EC.05,Carchi,Carchi,05,ECU
+887,EC.04,Cañar,Canar,04,ECU
+888,EC.03,Bolívar,Bolivar,03,ECU
+889,EC.02,Azuay,Azuay,02,ECU
+890,EC.22,Sucumbíos,Sucumbios,22,ECU
+891,EC.24,Orellana Province,Orellana Province,24,ECU
+892,EC.26,Santo Domingo de los Tsáchilas,Santo Domingo de los Tsachilas,26,ECU
+893,EC.25,Santa Elena,Santa Elena,25,ECU
+894,EE.21,Võrumaa,Vorumaa,21,EST
+895,EE.20,Viljandimaa,Viljandimaa,20,EST
+896,EE.19,Valgamaa,Valgamaa,19,EST
+897,EE.18,Tartu,Tartu,18,EST
+898,EE.14,Saare,Saare,14,EST
+899,EE.13,Raplamaa,Raplamaa,13,EST
+900,EE.12,Põlvamaa,Polvamaa,12,EST
+901,EE.11,Pärnumaa,Paernumaa,11,EST
+902,EE.08,Lääne-Virumaa,Laeaene-Virumaa,08,EST
+903,EE.07,Lääne,Laeaene,07,EST
+904,EE.05,Jõgevamaa,Jogevamaa,05,EST
+905,EE.04,Järvamaa,Jaervamaa,04,EST
+906,EE.03,Ida-Virumaa,Ida-Virumaa,03,EST
+907,EE.02,Hiiumaa,Hiiumaa,02,EST
+908,EE.01,Harjumaa,Harjumaa,01,EST
+909,EG.24,Sohag,Sohag,24,EGY
+910,EG.27,North Sinai,North Sinai,27,EGY
+911,EG.23,Qena,Qena,23,EGY
+912,EG.22,Matruh,Matruh,22,EGY
+913,EG.21,Kafr el-Sheikh,Kafr el-Sheikh,21,EGY
+914,EG.26,South Sinai,South Sinai,26,EGY
+915,EG.20,Damietta,Damietta,20,EGY
+916,EG.19,Port Said,Port Said,19,EGY
+917,EG.18,Beni Suweif,Beni Suweif,18,EGY
+918,EG.17,Asyut,Asyut,17,EGY
+919,EG.16,Aswan,Aswan,16,EGY
+920,EG.15,Suez,Suez,15,EGY
+921,EG.14,Sharqia,Sharqia,14,EGY
+922,EG.13,New Valley,New Valley,13,EGY
+923,EG.12,Qalyubia,Qalyubia,12,EGY
+924,EG.11,Cairo,Cairo,11,EGY
+925,EG.10,Minya,Minya,10,EGY
+926,EG.09,Monufia,Monufia,09,EGY
+927,EG.08,Giza,Giza,08,EGY
+928,EG.07,Ismailia,Ismailia,07,EGY
+929,EG.06,Alexandria,Alexandria,06,EGY
+930,EG.05,Gharbia,Gharbia,05,EGY
+931,EG.04,Faiyum,Faiyum,04,EGY
+932,EG.03,Beheira,Beheira,03,EGY
+933,EG.02,Red Sea,Red Sea,02,EGY
+934,EG.01,Dakahlia,Dakahlia,01,EGY
+935,EG.28,Luxor,Luxor,28,EGY
+936,ER.01,Anseba,Anseba,01,ERI
+937,ER.02,Debub,Debub,02,ERI
+938,ER.03,Southern Red Sea,Southern Red Sea,03,ERI
+939,ER.04,Gash-Barka,Gash-Barka,04,ERI
+940,ER.05,Maekel,Maekel,05,ERI
+941,ER.06,Northern Red Sea,Northern Red Sea,06,ERI
+942,ES.31,Murcia,Murcia,31,ESP
+943,ES.CE,Ceuta,Ceuta,CE,ESP
+944,ES.07,Balearic Islands,Balearic Islands,07,ESP
+945,ES.51,Andalusia,Andalusia,51,ESP
+946,ES.53,Canary Islands,Canary Islands,53,ESP
+947,ES.54,Castille-La Mancha,Castille-La Mancha,54,ESP
+948,ES.57,Extremadura,Extremadura,57,ESP
+949,ES.60,Valencia,Valencia,60,ESP
+950,ES.34,Asturias,Asturias,34,ESP
+951,ES.32,Navarre,Navarre,32,ESP
+952,ES.29,Madrid,Madrid,29,ESP
+953,ES.27,La Rioja,La Rioja,27,ESP
+954,ES.39,Cantabria,Cantabria,39,ESP
+955,ES.52,Aragon,Aragon,52,ESP
+956,ES.55,Castille and León,Castille and Leon,55,ESP
+957,ES.56,Catalonia,Catalonia,56,ESP
+958,ES.58,Galicia,Galicia,58,ESP
+959,ES.59,Basque Country,Basque Country,59,ESP
+960,ES.ML,Melilla,Melilla,ML,ESP
+961,ET.44,Addis Ababa,Addis Ababa,44,ETH
+962,ET.45,Āfar,Afar,45,ETH
+963,ET.46,Amhara,Amhara,46,ETH
+964,ET.47,Bīnshangul Gumuz,Binshangul Gumuz,47,ETH
+965,ET.48,Dire Dawa,Dire Dawa,48,ETH
+966,ET.49,Gambela,Gambela,49,ETH
+967,ET.50,Harari,Harari,50,ETH
+968,ET.51,Oromiya,Oromiya,51,ETH
+969,ET.52,Somali,Somali,52,ETH
+970,ET.53,Tigray,Tigray,53,ETH
+971,ET.SI,Sidama Region,Sidama Region,SI,ETH
+972,ET.55,Central Ethiopia Regional State,Central Ethiopia Regional State,55,ETH
+973,ET.56,South Ethiopia Regional State,South Ethiopia Regional State,56,ETH
+974,ET.SW,South West Ethiopia Peoples' Region,South West Ethiopia Peoples' Region,SW,ETH
+975,FI.19,Lapland,Lapland,19,FIN
+976,FI.18,Kainuu,Kainuu,18,FIN
+977,FI.17,North Ostrobothnia,North Ostrobothnia,17,FIN
+978,FI.16,Central Ostrobothnia,Central Ostrobothnia,16,FIN
+979,FI.15,Ostrobothnia,Ostrobothnia,15,FIN
+980,FI.14,South Ostrobothnia,South Ostrobothnia,14,FIN
+981,FI.13,Central Finland,Central Finland,13,FIN
+982,FI.12,North Karelia,North Karelia,12,FIN
+983,FI.11,North Savo,North Savo,11,FIN
+984,FI.10,South Savo,South Savo,10,FIN
+985,FI.09,South Karelia,South Karelia,09,FIN
+986,FI.08,Kymenlaakso,Kymenlaakso,08,FIN
+987,FI.06,Pirkanmaa,Pirkanmaa,06,FIN
+988,FI.05,Kanta-Häme,Kanta-Haeme,05,FIN
+989,FI.02,Southwest Finland,Southwest Finland,02,FIN
+990,FI.01,Uusimaa,Uusimaa,01,FIN
+991,FI.07,Paijat-Hame,Paijat-Hame,07,FIN
+992,FI.04,Satakunta,Satakunta,04,FIN
+993,FJ.05,Western,Western,05,FJI
+994,FJ.03,Northern,Northern,03,FJI
+995,FJ.01,Central,Central,01,FJI
+996,FJ.02,Eastern,Eastern,02,FJI
+997,FJ.04,Rotuma,Rotuma,04,FJI
+998,FM.04,Yap State,Yap State,04,FSM
+999,FM.02,Pohnpei State,Pohnpei State,02,FSM
+1000,FM.01,Kosrae,Kosrae,01,FSM
+1001,FM.03,Chuuk,Chuuk,03,FSM
+1002,FO.VG,Vágar,Vagar,VG,FRO
+1003,FO.SU,Suðuroy,Suduroy,SU,FRO
+1004,FO.ST,Streymoy,Streymoy,ST,FRO
+1005,FO.SA,Sandoy,Sandoy,SA,FRO
+1006,FO.NO,Norðoyar,Nordoyar,NO,FRO
+1007,FO.OS,Eysturoy,Eysturoy,OS,FRO
+1008,FR.93,Provence-Alpes-Côte d'Azur,Provence-Alpes-Cote d'Azur,93,FRA
+1009,FR.52,Pays de la Loire,Pays de la Loire,52,FRA
+1010,FR.11,Île-de-France,Ile-de-France,11,FRA
+1011,FR.94,Corsica,Corsica,94,FRA
+1012,FR.24,Centre,Centre,24,FRA
+1013,FR.53,Brittany,Brittany,53,FRA
+1014,FR.27,Bourgogne-Franche-Comté,Bourgogne-Franche-Comte,27,FRA
+1015,FR.75,Nouvelle-Aquitaine,Nouvelle-Aquitaine,75,FRA
+1016,FR.28,Normandy,Normandy,28,FRA
+1017,FR.44,Grand Est,Grand Est,44,FRA
+1018,FR.76,Occitanie,Occitanie,76,FRA
+1019,FR.32,Hauts-de-France,Hauts-de-France,32,FRA
+1020,FR.84,Auvergne-Rhône-Alpes,Auvergne-Rhone-Alpes,84,FRA
+1021,GA.09,Woleu-Ntem,Woleu-Ntem,09,GAB
+1022,GA.08,Ogooué-Maritime,Ogooue-Maritime,08,GAB
+1023,GA.07,Ogooué-Lolo,Ogooue-Lolo,07,GAB
+1024,GA.06,Ogooué-Ivindo,Ogooue-Ivindo,06,GAB
+1025,GA.05,Nyanga,Nyanga,05,GAB
+1026,GA.04,Ngouni,Ngouni,04,GAB
+1027,GA.03,Moyen-Ogooué,Moyen-Ogooue,03,GAB
+1028,GA.02,Haut-Ogooué,Haut-Ogooue,02,GAB
+1029,GA.01,Estuaire,Estuaire,01,GAB
+1030,GB.WLS,Wales,Wales,WLS,GBR
+1031,GB.SCT,Scotland,Scotland,SCT,GBR
+1032,GB.NIR,Northern Ireland,Northern Ireland,NIR,GBR
+1033,GB.ENG,England,England,ENG,GBR
+1034,GD.06,Saint Patrick Parish,Saint Patrick Parish,06,GRD
+1035,GD.05,Saint Mark Parish,Saint Mark Parish,05,GRD
+1036,GD.04,Saint John Parish,Saint John Parish,04,GRD
+1037,GD.03,Saint George Parish,Saint George Parish,03,GRD
+1038,GD.02,Saint David Parish,Saint David Parish,02,GRD
+1039,GD.01,Saint Andrew Parish,Saint Andrew Parish,01,GRD
+1040,GD.10,Carriacou and Petite Martinique,Carriacou and Petite Martinique,10,GRD
+1041,GE.51,Tbilisi,Tbilisi,51,GEO
+1042,GE.04,Adjara,Adjara,04,GEO
+1043,GE.68,Kvemo Kartli,Kvemo Kartli,68,GEO
+1044,GE.67,Kakheti,Kakheti,67,GEO
+1045,GE.65,Guria,Guria,65,GEO
+1046,GE.66,Imereti,Imereti,66,GEO
+1047,GE.73,Shida Kartli,Shida Kartli,73,GEO
+1048,GE.69,Mtskheta-Mtianeti,Mtskheta-Mtianeti,69,GEO
+1049,GE.70,Racha-Lechkhumi and Kvemo Svaneti,Racha-Lechkhumi and Kvemo Svaneti,70,GEO
+1050,GE.71,Samegrelo and Zemo Svaneti,Samegrelo and Zemo Svaneti,71,GEO
+1051,GE.72,Samtskhe-Javakheti,Samtskhe-Javakheti,72,GEO
+1052,GE.02,Abkhazia,Abkhazia,02,GEO
+1053,GF.GF,Guyane,Guyane,GF,GUF
+1054,GG.6417213,St Pierre du Bois,St Pierre du Bois,6417213,GGY
+1055,GG.6417214,Torteval,Torteval,6417214,GGY
+1056,GG.6417215,Saint Saviour,Saint Saviour,6417215,GGY
+1057,GG.6417223,Forest,Forest,6417223,GGY
+1058,GG.6417224,St Martin,St Martin,6417224,GGY
+1059,GG.6417226,Saint Andrew,Saint Andrew,6417226,GGY
+1060,GG.6417228,St Peter Port,St Peter Port,6417228,GGY
+1061,GG.6417229,Castel,Castel,6417229,GGY
+1062,GG.6417230,Vale,Vale,6417230,GGY
+1063,GG.6417233,St Sampson,St Sampson,6417233,GGY
+1064,GG.8989934,Alderney,Alderney,8989934,GGY
+1065,GH.09,Western,Western,09,GHA
+1066,GH.08,Volta,Volta,08,GHA
+1067,GH.11,Upper West,Upper West,11,GHA
+1068,GH.10,Upper East,Upper East,10,GHA
+1069,GH.06,Northern,Northern,06,GHA
+1070,GH.01,Greater Accra,Greater Accra,01,GHA
+1071,GH.05,Eastern,Eastern,05,GHA
+1072,GH.04,Central,Central,04,GHA
+1073,GH.02,Ashanti,Ashanti,02,GHA
+1074,GH.13,Bono,Bono,13,GHA
+1075,GH.16,Oti,Oti,16,GHA
+1076,GH.15,North East,North East,15,GHA
+1077,GH.12,Ahafo,Ahafo,12,GHA
+1078,GH.14,Bono East,Bono East,14,GHA
+1079,GH.17,Savannah,Savannah,17,GHA
+1080,GH.18,Western North,Western North,18,GHA
+1081,GL.04,Kujalleq,Kujalleq,04,GRL
+1082,GL.06,Qeqqata,Qeqqata,06,GRL
+1083,GL.07,Sermersooq,Sermersooq,07,GRL
+1084,GL.11839534,Qeqertalik,Qeqertalik,11839534,GRL
+1085,GL.11839537,Avannaata,Avannaata,11839537,GRL
+1086,GM.05,Western,Western,05,GMB
+1087,GM.04,Upper River,Upper River,04,GMB
+1088,GM.07,North Bank,North Bank,07,GMB
+1089,GM.03,Central River,Central River,03,GMB
+1090,GM.02,Lower River,Lower River,02,GMB
+1091,GM.01,Banjul,Banjul,01,GMB
+1092,GN.04,Conakry,Conakry,04,GIN
+1093,GN.B,Boké Region,Boke Region,B,GIN
+1094,GN.F,Faranah,Faranah,F,GIN
+1095,GN.K,Kankan Region,Kankan Region,K,GIN
+1096,GN.D,Kindia,Kindia,D,GIN
+1097,GN.L,Labé Region,Labe Region,L,GIN
+1098,GN.M,Mamou Region,Mamou Region,M,GIN
+1099,GN.N,Nzérékoré Region,Nzerekore Region,N,GIN
+1100,GP.GP,Guadeloupe,Guadeloupe,GP,GLP
+1101,GQ.03,Annobon,Annobon,03,GNQ
+1102,GQ.04,Bioko Norte,Bioko Norte,04,GNQ
+1103,GQ.05,Bioko Sur,Bioko Sur,05,GNQ
+1104,GQ.06,Centro Sur,Centro Sur,06,GNQ
+1105,GQ.07,Kié-Ntem,Kie-Ntem,07,GNQ
+1106,GQ.08,Litoral,Litoral,08,GNQ
+1107,GQ.09,Wele-Nzas,Wele-Nzas,09,GNQ
+1108,GQ.10,Djibloho,Djibloho,10,GNQ
+1109,GR.736572,Mount Athos,Mount Athos,736572,GRC
+1110,GR.ESYE31,Attica,Attica,ESYE31,GRC
+1111,GR.ESYE24,Central Greece,Central Greece,ESYE24,GRC
+1112,GR.ESYE12,Central Macedonia,Central Macedonia,ESYE12,GRC
+1113,GR.ESYE43,Crete,Crete,ESYE43,GRC
+1114,GR.ESYE11,East Macedonia and Thrace,East Macedonia and Thrace,ESYE11,GRC
+1115,GR.ESYE21,Epirus,Epirus,ESYE21,GRC
+1116,GR.ESYE22,Ionian Islands,Ionian Islands,ESYE22,GRC
+1117,GR.ESYE41,North Aegean,North Aegean,ESYE41,GRC
+1118,GR.ESYE25,Peloponnese,Peloponnese,ESYE25,GRC
+1119,GR.ESYE42,South Aegean,South Aegean,ESYE42,GRC
+1120,GR.ESYE14,Thessaly,Thessaly,ESYE14,GRC
+1121,GR.ESYE23,West Greece,West Greece,ESYE23,GRC
+1122,GR.ESYE13,West Macedonia,West Macedonia,ESYE13,GRC
+1123,GT.22,Zacapa,Zacapa,22,GTM
+1124,GT.21,Totonicapán,Totonicapan,21,GTM
+1125,GT.20,Suchitepeque,Suchitepeque,20,GTM
+1126,GT.19,Sololá,Solola,19,GTM
+1127,GT.18,Santa Rosa Department,Santa Rosa Department,18,GTM
+1128,GT.17,San Marcos,San Marcos,17,GTM
+1129,GT.16,Sacatepéquez,Sacatepequez,16,GTM
+1130,GT.15,Retalhuleu,Retalhuleu,15,GTM
+1131,GT.14,Quiché,Quiche,14,GTM
+1132,GT.13,Quetzaltenango,Quetzaltenango,13,GTM
+1133,GT.12,Petén,Peten,12,GTM
+1134,GT.11,Jutiapa,Jutiapa,11,GTM
+1135,GT.10,Jalapa,Jalapa,10,GTM
+1136,GT.09,Izabal Department,Izabal Department,09,GTM
+1137,GT.08,Huehuetenango,Huehuetenango,08,GTM
+1138,GT.07,Guatemala,Guatemala,07,GTM
+1139,GT.06,Escuintla,Escuintla,06,GTM
+1140,GT.05,El Progreso,El Progreso,05,GTM
+1141,GT.04,Chiquimula,Chiquimula,04,GTM
+1142,GT.03,Chimaltenango,Chimaltenango,03,GTM
+1143,GT.02,Baja Verapaz,Baja Verapaz,02,GTM
+1144,GT.01,Alta Verapaz,Alta Verapaz,01,GTM
+1145,GU.PI,Piti,Piti,PI,GUM
+1146,GU.SR,Santa Rita,Santa Rita,SR,GUM
+1147,GU.SJ,Sinajana,Sinajana,SJ,GUM
+1148,GU.TF,Talofofo,Talofofo,TF,GUM
+1149,GU.TM,Tamuning,Tamuning,TM,GUM
+1150,GU.UM,Umatac,Umatac,UM,GUM
+1151,GU.YG,Yigo,Yigo,YG,GUM
+1152,GU.YN,Yona,Yona,YN,GUM
+1153,GU.ME,Merizo,Merizo,ME,GUM
+1154,GU.MA,Mangilao,Mangilao,MA,GUM
+1155,GU.AH,Agana Heights,Agana Heights,AH,GUM
+1156,GU.CP,Chalan Pago-Ordot,Chalan Pago-Ordot,CP,GUM
+1157,GU.AS,Asan,Asan,AS,GUM
+1158,GU.AT,Agat,Agat,AT,GUM
+1159,GU.DD,Dededo,Dededo,DD,GUM
+1160,GU.BA,Barrigada,Barrigada,BA,GUM
+1161,GU.AN,Hagatna,Hagatna,AN,GUM
+1162,GU.IN,Inarajan,Inarajan,IN,GUM
+1163,GU.MT,Mongmong-Toto-Maite,Mongmong-Toto-Maite,MT,GUM
+1164,GW.07,Tombali,Tombali,07,GNB
+1165,GW.02,Quinara,Quinara,02,GNB
+1166,GW.04,Oio,Oio,04,GNB
+1167,GW.10,Gabú,Gabu,10,GNB
+1168,GW.06,Cacheu,Cacheu,06,GNB
+1169,GW.05,Bolama,Bolama,05,GNB
+1170,GW.11,Bissau,Bissau,11,GNB
+1171,GW.12,Biombo,Biombo,12,GNB
+1172,GW.01,Bafatá,Bafata,01,GNB
+1173,GY.19,Upper Takutu-Upper Essequibo,Upper Takutu-Upper Essequibo,19,GUY
+1174,GY.18,Upper Demerara-Berbice,Upper Demerara-Berbice,18,GUY
+1175,GY.17,Potaro-Siparuni,Potaro-Siparuni,17,GUY
+1176,GY.16,Pomeroon-Supenaam,Pomeroon-Supenaam,16,GUY
+1177,GY.15,Mahaica-Berbice,Mahaica-Berbice,15,GUY
+1178,GY.14,Essequibo Islands-West Demerara,Essequibo Islands-West Demerara,14,GUY
+1179,GY.13,East Berbice-Corentyne,East Berbice-Corentyne,13,GUY
+1180,GY.12,Demerara-Mahaica,Demerara-Mahaica,12,GUY
+1181,GY.11,Cuyuni-Mazaruni,Cuyuni-Mazaruni,11,GUY
+1182,GY.10,Barima-Waini,Barima-Waini,10,GUY
+1183,HK.NYL,Yuen Long,Yuen Long,NYL,HKG
+1184,HK.NTW,Tsuen Wan,Tsuen Wan,NTW,HKG
+1185,HK.NTP,Tai Po,Tai Po,NTP,HKG
+1186,HK.NSK,Sai Kung,Sai Kung,NSK,HKG
+1187,HK.NIS,Islands,Islands,NIS,HKG
+1188,HK.HCW,Central and Western,Central and Western,HCW,HKG
+1189,HK.HWC,Wan Chai,Wan Chai,HWC,HKG
+1190,HK.HEA,Eastern,Eastern,HEA,HKG
+1191,HK.HSO,Southern,Southern,HSO,HKG
+1192,HK.KYT,Yau Tsim Mong,Yau Tsim Mong,KYT,HKG
+1193,HK.KSS,Sham Shui Po,Sham Shui Po,KSS,HKG
+1194,HK.KKC,Kowloon City,Kowloon City,KKC,HKG
+1195,HK.KWT,Wong Tai Sin,Wong Tai Sin,KWT,HKG
+1196,HK.KKT,Kwun Tong,Kwun Tong,KKT,HKG
+1197,HK.NKT,Kwai Tsing,Kwai Tsing,NKT,HKG
+1198,HK.NTM,Tuen Mun,Tuen Mun,NTM,HKG
+1199,HK.NNO,North,North,NNO,HKG
+1200,HK.NST,Sha Tin,Sha Tin,NST,HKG
+1201,HN.18,Yoro Department,Yoro Department,18,HND
+1202,HN.17,Valle Department,Valle Department,17,HND
+1203,HN.16,Santa Bárbara Department,Santa Barbara Department,16,HND
+1204,HN.15,Olancho Department,Olancho Department,15,HND
+1205,HN.14,Ocotepeque Department,Ocotepeque Department,14,HND
+1206,HN.13,Lempira Department,Lempira Department,13,HND
+1207,HN.12,La Paz Department,La Paz Department,12,HND
+1208,HN.11,Bay Islands,Bay Islands,11,HND
+1209,HN.10,Intibucá Department,Intibuca Department,10,HND
+1210,HN.09,Gracias a Dios Department,Gracias a Dios Department,09,HND
+1211,HN.08,Francisco Morazán Department,Francisco Morazan Department,08,HND
+1212,HN.07,El Paraíso Department,El Paraiso Department,07,HND
+1213,HN.06,Cortés Department,Cortes Department,06,HND
+1214,HN.05,Copán Department,Copan Department,05,HND
+1215,HN.04,Comayagua Department,Comayagua Department,04,HND
+1216,HN.03,Colón Department,Colon Department,03,HND
+1217,HN.02,Choluteca Department,Choluteca Department,02,HND
+1218,HN.01,Atlántida Department,Atlantida Department,01,HND
+1219,HR.01,Bjelovar-Bilogora,Bjelovar-Bilogora,01,HRV
+1220,HR.02,Brod-Posavina,Brod-Posavina,02,HRV
+1221,HR.03,Dubrovnik-Neretva,Dubrovnik-Neretva,03,HRV
+1222,HR.04,Istria,Istria,04,HRV
+1223,HR.05,Karlovac,Karlovac,05,HRV
+1224,HR.06,Koprivnica-Križevci,Koprivnica-Krizevci,06,HRV
+1225,HR.07,Krapina-Zagorje,Krapina-Zagorje,07,HRV
+1226,HR.08,Lika-Senj,Lika-Senj,08,HRV
+1227,HR.09,Međimurje,Megimurje,09,HRV
+1228,HR.10,County of Osijek-Baranja,County of Osijek-Baranja,10,HRV
+1229,HR.11,Požega-Slavonia,Pozega-Slavonia,11,HRV
+1230,HR.12,Primorje-Gorski Kotar,Primorje-Gorski Kotar,12,HRV
+1231,HR.13,Šibenik-Knin,Sibenik-Knin,13,HRV
+1232,HR.14,Sisak-Moslavina,Sisak-Moslavina,14,HRV
+1233,HR.15,Split-Dalmatia,Split-Dalmatia,15,HRV
+1234,HR.16,Varaždin,Varazdin,16,HRV
+1235,HR.18,Vukovar-Srijem,Vukovar-Srijem,18,HRV
+1236,HR.19,Zadar,Zadar,19,HRV
+1237,HR.20,Zagreb County,Zagreb County,20,HRV
+1238,HR.21,Zagreb,Zagreb,21,HRV
+1239,HR.17,Virovitica-Podravina,Virovitica-Podravina,17,HRV
+1240,HT.13,Sud-Est,Sud-Est,13,HTI
+1241,HT.12,Sud,Sud,12,HTI
+1242,HT.11,Ouest,Ouest,11,HTI
+1243,HT.03,Nord-Ouest,Nord-Ouest,03,HTI
+1244,HT.10,Nord-Est,Nord-Est,10,HTI
+1245,HT.09,Nord,Nord,09,HTI
+1246,HT.14,Grand'Anse,Grand'Anse,14,HTI
+1247,HT.07,Centre,Centre,07,HTI
+1248,HT.06,Artibonite,Artibonite,06,HTI
+1249,HT.15,Nippes,Nippes,15,HTI
+1250,HU.18,Szabolcs-Szatmár-Bereg,Szabolcs-Szatmar-Bereg,18,HUN
+1251,HU.20,Jász-Nagykun-Szolnok,Jasz-Nagykun-Szolnok,20,HUN
+1252,HU.11,Heves County,Heves County,11,HUN
+1253,HU.10,Hajdú-Bihar,Hajdu-Bihar,10,HUN
+1254,HU.06,Csongrád,Csongrad,06,HUN
+1255,HU.04,Borsod-Abaúj-Zemplén,Borsod-Abauj-Zemplen,04,HUN
+1256,HU.03,Bekes County,Bekes County,03,HUN
+1257,HU.24,Zala County,Zala County,24,HUN
+1258,HU.23,Veszprém,Veszprem,23,HUN
+1259,HU.22,Vas County,Vas County,22,HUN
+1260,HU.21,Tolna County,Tolna County,21,HUN
+1261,HU.17,Somogy County,Somogy County,17,HUN
+1262,HU.16,Pest County,Pest County,16,HUN
+1263,HU.14,Nógrád,Nograd,14,HUN
+1264,HU.12,Komárom-Esztergom,Komarom-Esztergom,12,HUN
+1265,HU.09,Győr-Moson-Sopron,Gyor-Moson-Sopron,09,HUN
+1266,HU.08,Fejér,Fejer,08,HUN
+1267,HU.05,Budapest,Budapest,05,HUN
+1268,HU.02,Baranya,Baranya,02,HUN
+1269,HU.01,Bács-Kiskun,Bacs-Kiskun,01,HUN
+1270,ID.26,North Sumatra,North Sumatra,26,IDN
+1271,ID.01,Aceh,Aceh,01,IDN
+1272,ID.10,Yogyakarta,Yogyakarta,10,IDN
+1273,ID.32,South Sumatra,South Sumatra,32,IDN
+1274,ID.24,West Sumatra,West Sumatra,24,IDN
+1275,ID.31,North Sulawesi,North Sulawesi,31,IDN
+1276,ID.22,Southeast Sulawesi,Southeast Sulawesi,22,IDN
+1277,ID.21,Central Sulawesi,Central Sulawesi,21,IDN
+1278,ID.38,South Sulawesi,South Sulawesi,38,IDN
+1279,ID.37,Riau,Riau,37,IDN
+1280,ID.18,East Nusa Tenggara,East Nusa Tenggara,18,IDN
+1281,ID.17,West Nusa Tenggara,West Nusa Tenggara,17,IDN
+1282,ID.28,Maluku,Maluku,28,IDN
+1283,ID.15,Lampung,Lampung,15,IDN
+1284,ID.14,East Kalimantan,East Kalimantan,14,IDN
+1285,ID.13,Central Kalimantan,Central Kalimantan,13,IDN
+1286,ID.12,South Kalimantan,South Kalimantan,12,IDN
+1287,ID.11,West Kalimantan,West Kalimantan,11,IDN
+1288,ID.08,East Java,East Java,08,IDN
+1289,ID.07,Central Java,Central Java,07,IDN
+1290,ID.30,West Java,West Java,30,IDN
+1291,ID.05,Jambi,Jambi,05,IDN
+1292,ID.04,Jakarta,Jakarta,04,IDN
+1293,ID.36,Papua,Papua,36,IDN
+1294,ID.03,Bengkulu,Bengkulu,03,IDN
+1295,ID.02,Bali,Bali,02,IDN
+1296,ID.33,Banten,Banten,33,IDN
+1297,ID.34,Gorontalo,Gorontalo,34,IDN
+1298,ID.35,Bangka–Belitung Islands,Bangka-Belitung Islands,35,IDN
+1299,ID.29,North Maluku,North Maluku,29,IDN
+1300,ID.39,West Papua,West Papua,39,IDN
+1301,ID.41,West Sulawesi,West Sulawesi,41,IDN
+1302,ID.40,Riau Islands,Riau Islands,40,IDN
+1303,ID.42,North Kalimantan,North Kalimantan,42,IDN
+1304,ID.PD,Southwest Papua,Southwest Papua,PD,IDN
+1305,ID.PT,Central Papua,Central Papua,PT,IDN
+1306,ID.PE,Highland Papua,Highland Papua,PE,IDN
+1307,ID.PS,South Papua,South Papua,PS,IDN
+1308,IE.C,Connacht,Connacht,C,IRL
+1309,IE.L,Leinster,Leinster,L,IRL
+1310,IE.M,Munster,Munster,M,IRL
+1311,IE.U,Ulster,Ulster,U,IRL
+1312,IL.06,Jerusalem,Jerusalem,06,ISR
+1313,IL.05,Tel Aviv,Tel Aviv,05,ISR
+1314,IL.04,Haifa,Haifa,04,ISR
+1315,IL.03,Northern District,Northern District,03,ISR
+1316,IL.02,Central District,Central District,02,ISR
+1317,IL.01,Southern District,Southern District,01,ISR
+1318,IL.WE,Judea and Samaria Area,Judea and Samaria Area,WE,ISR
+1319,IM.9782164,Andreas,Andreas,9782164,IMN
+1320,IM.9782165,Arbory,Arbory,9782165,IMN
+1321,IM.9782166,Ballaugh,Ballaugh,9782166,IMN
+1322,IM.9782167,Braddan,Braddan,9782167,IMN
+1323,IM.9782168,Bride,Bride,9782168,IMN
+1324,IM.9782169,Castletown,Castletown,9782169,IMN
+1325,IM.9782170,Douglas,Douglas,9782170,IMN
+1326,IM.9782171,German,German,9782171,IMN
+1327,IM.9782172,Jurby,Jurby,9782172,IMN
+1328,IM.9782173,Laxey,Laxey,9782173,IMN
+1329,IM.9782176,Lezayre,Lezayre,9782176,IMN
+1330,IM.9782180,Lonan,Lonan,9782180,IMN
+1331,IM.9782182,Malew,Malew,9782182,IMN
+1332,IM.9782183,Marown,Marown,9782183,IMN
+1333,IM.9782184,Maughold,Maughold,9782184,IMN
+1334,IM.9782185,Michael,Michael,9782185,IMN
+1335,IM.9782186,Onchan,Onchan,9782186,IMN
+1336,IM.9782187,Patrick,Patrick,9782187,IMN
+1337,IM.9782188,Peel,Peel,9782188,IMN
+1338,IM.9782189,Port Erin,Port Erin,9782189,IMN
+1339,IM.9782190,Port St Mary,Port St Mary,9782190,IMN
+1340,IM.9782191,Ramsey,Ramsey,9782191,IMN
+1341,IM.9782192,Rushen,Rushen,9782192,IMN
+1342,IM.9782193,Santon,Santon,9782193,IMN
+1343,IN.28,West Bengal,West Bengal,28,IND
+1344,IN.36,Uttar Pradesh,Uttar Pradesh,36,IND
+1345,IN.26,Tripura,Tripura,26,IND
+1346,IN.40,Telangana,Telangana,40,IND
+1347,IN.25,Tamil Nadu,Tamil Nadu,25,IND
+1348,IN.29,Sikkim,Sikkim,29,IND
+1349,IN.24,Rajasthan,Rajasthan,24,IND
+1350,IN.23,Punjab,Punjab,23,IND
+1351,IN.22,Puducherry,Puducherry,22,IND
+1352,IN.21,Odisha,Odisha,21,IND
+1353,IN.20,Nagaland,Nagaland,20,IND
+1354,IN.31,Mizoram,Mizoram,31,IND
+1355,IN.18,Meghalaya,Meghalaya,18,IND
+1356,IN.17,Manipur,Manipur,17,IND
+1357,IN.16,Maharashtra,Maharashtra,16,IND
+1358,IN.35,Madhya Pradesh,Madhya Pradesh,35,IND
+1359,IN.14,Laccadives,Laccadives,14,IND
+1360,IN.13,Kerala,Kerala,13,IND
+1361,IN.19,Karnataka,Karnataka,19,IND
+1362,IN.12,Jammu and Kashmir,Jammu and Kashmir,12,IND
+1363,IN.11,Himachal Pradesh,Himachal Pradesh,11,IND
+1364,IN.10,Haryana,Haryana,10,IND
+1365,IN.09,Gujarat,Gujarat,09,IND
+1366,IN.33,Goa,Goa,33,IND
+1367,IN.07,Delhi,Delhi,07,IND
+1368,IN.05,Chandigarh,Chandigarh,05,IND
+1369,IN.34,Bihar,Bihar,34,IND
+1370,IN.03,Assam,Assam,03,IND
+1371,IN.30,Arunachal Pradesh,Arunachal Pradesh,30,IND
+1372,IN.02,Andhra Pradesh,Andhra Pradesh,02,IND
+1373,IN.01,Andaman and Nicobar,Andaman and Nicobar,01,IND
+1374,IN.37,Chhattisgarh,Chhattisgarh,37,IND
+1375,IN.38,Jharkhand,Jharkhand,38,IND
+1376,IN.39,Uttarakhand,Uttarakhand,39,IND
+1377,IN.41,Ladakh,Ladakh,41,IND
+1378,IN.52,Dadra and Nagar Haveli and Daman and Diu,Dadra and Nagar Haveli and Daman and Diu,52,IND
+1379,IQ.02,Basra,Basra,02,IRQ
+1380,IQ.16,Wāsiţ,Wasit,16,IRQ
+1381,IQ.18,Salah ad Din,Salah ad Din,18,IRQ
+1382,IQ.15,Nineveh,Nineveh,15,IRQ
+1383,IQ.14,Maysan,Maysan,14,IRQ
+1384,IQ.12,Karbalāʼ,Muhafazat Karbala',12,IRQ
+1385,IQ.11,Erbil,Erbil,11,IRQ
+1386,IQ.10,Diyālá,Diyala,10,IRQ
+1387,IQ.09,Dhi Qar,Dhi Qar,09,IRQ
+1388,IQ.08,Duhok,Duhok,08,IRQ
+1389,IQ.07,Baghdad,Baghdad,07,IRQ
+1390,IQ.06,Bābil,Babil,06,IRQ
+1391,IQ.13,Kirkuk,Kirkuk,13,IRQ
+1392,IQ.05,Sulaymaniyah,Sulaymaniyah,05,IRQ
+1393,IQ.17,An Najaf,An Najaf,17,IRQ
+1394,IQ.04,Al Qādisīyah,Al Qadisiyah,04,IRQ
+1395,IQ.03,Al Muthanna Governorate,Al Muthanna Governorate,03,IRQ
+1396,IQ.01,Al Anbar,Al Anbar,01,IRQ
+1397,IQ.19,Halabja Governorate,Halabja Governorate,19,IRQ
+1398,IR.26,Tehran,Tehran,26,IRN
+1399,IR.36,Zanjan,Zanjan,36,IRN
+1400,IR.40,Yazd Province,Yazd Province,40,IRN
+1401,IR.25,Semnan,Semnan,25,IRN
+1402,IR.35,Māzandarān,Mazandaran,35,IRN
+1403,IR.34,Markazi,Markazi,34,IRN
+1404,IR.23,Lorestan Province,Lorestan Province,23,IRN
+1405,IR.16,Kurdistan Province,Kurdistan Province,16,IRN
+1406,IR.05,Kohgiluyeh and Boyer-Ahmad,Kohgiluyeh and Boyer-Ahmad,05,IRN
+1407,IR.15,Khuzestan,Khuzestan,15,IRN
+1408,IR.13,Kermanshah Province,Kermanshah Province,13,IRN
+1409,IR.29,Kerman,Kerman,29,IRN
+1410,IR.10,Ilam Province,Ilam Province,10,IRN
+1411,IR.11,Hormozgan,Hormozgan,11,IRN
+1412,IR.09,Hamadan Province,Hamadan Province,09,IRN
+1413,IR.08,Gilan Province,Gilan Province,08,IRN
+1414,IR.07,Fars,Fars,07,IRN
+1415,IR.03,Chaharmahal and Bakhtiari,Chaharmahal and Bakhtiari,03,IRN
+1416,IR.22,Bushehr,Bushehr,22,IRN
+1417,IR.33,East Azerbaijan,East Azerbaijan,33,IRN
+1418,IR.01,West Azerbaijan,West Azerbaijan,01,IRN
+1419,IR.32,Ardabil Province,Ardabil Province,32,IRN
+1420,IR.28,Isfahan,Isfahan,28,IRN
+1421,IR.37,Golestan,Golestan,37,IRN
+1422,IR.38,Qazvin Province,Qazvin Province,38,IRN
+1423,IR.39,Qom Province,Qom Province,39,IRN
+1424,IR.04,Sistan and Baluchestan,Sistan and Baluchestan,04,IRN
+1425,IR.41,South Khorasan Province,South Khorasan Province,41,IRN
+1426,IR.42,Razavi Khorasan,Razavi Khorasan,42,IRN
+1427,IR.43,North Khorasan,North Khorasan,43,IRN
+1428,IR.44,Alborz Province,Alborz Province,44,IRN
+1429,IS.41,Northwest,Northwest,41,ISL
+1430,IS.40,Northeast,Northeast,40,ISL
+1431,IS.38,East,East,38,ISL
+1432,IS.42,South,South,42,ISL
+1433,IS.39,Capital Region,Capital Region,39,ISL
+1434,IS.43,Southern Peninsula,Southern Peninsula,43,ISL
+1435,IS.45,West,West,45,ISL
+1436,IS.44,Westfjords,Westfjords,44,ISL
+1437,IT.15,Sicily,Sicily,15,ITA
+1438,IT.14,Sardinia,Sardinia,14,ITA
+1439,IT.03,Calabria,Calabria,03,ITA
+1440,IT.20,Veneto,Veneto,20,ITA
+1441,IT.19,Aosta Valley,Aosta Valley,19,ITA
+1442,IT.18,Umbria,Umbria,18,ITA
+1443,IT.17,Trentino-Alto Adige,Trentino-Alto Adige,17,ITA
+1444,IT.16,Tuscany,Tuscany,16,ITA
+1445,IT.13,Apulia,Apulia,13,ITA
+1446,IT.12,Piedmont,Piedmont,12,ITA
+1447,IT.11,Molise,Molise,11,ITA
+1448,IT.10,The Marches,The Marches,10,ITA
+1449,IT.09,Lombardy,Lombardy,09,ITA
+1450,IT.08,Liguria,Liguria,08,ITA
+1451,IT.07,Lazio,Lazio,07,ITA
+1452,IT.06,Friuli Venezia Giulia,Friuli Venezia Giulia,06,ITA
+1453,IT.05,Emilia-Romagna,Emilia-Romagna,05,ITA
+1454,IT.04,Campania,Campania,04,ITA
+1455,IT.02,Basilicate,Basilicate,02,ITA
+1456,IT.01,Abruzzo,Abruzzo,01,ITA
+1457,JE.3237072,St Clement,St Clement,3237072,JEY
+1458,JE.3237073,St Saviour,St Saviour,3237073,JEY
+1459,JE.3237200,St. Brelade,St. Brelade,3237200,JEY
+1460,JE.3237203,Grouville,Grouville,3237203,JEY
+1461,JE.3237212,St Mary,St Mary,3237212,JEY
+1462,JE.3237214,St Lawrence,St Lawrence,3237214,JEY
+1463,JE.3237221,St Peter,St Peter,3237221,JEY
+1464,JE.3237229,St Ouen,St Ouen,3237229,JEY
+1465,JE.3237497,St John,St John,3237497,JEY
+1466,JE.3237530,Trinity,Trinity,3237530,JEY
+1467,JE.3237716,St Martîn,St Martin,3237716,JEY
+1468,JE.3237864,St Helier,St Helier,3237864,JEY
+1469,JM.16,Westmoreland,Westmoreland,16,JAM
+1470,JM.15,Trelawny Parish,Trelawny Parish,15,JAM
+1471,JM.14,Saint Thomas Parish,Saint Thomas Parish,14,JAM
+1472,JM.13,Saint Mary Parish,Saint Mary Parish,13,JAM
+1473,JM.12,Saint James Parish,Saint James Parish,12,JAM
+1474,JM.11,St. Elizabeth,St. Elizabeth,11,JAM
+1475,JM.10,Saint Catherine Parish,Saint Catherine Parish,10,JAM
+1476,JM.09,Saint Ann Parish,Saint Ann Parish,09,JAM
+1477,JM.08,Saint Andrew Parish,Saint Andrew Parish,08,JAM
+1478,JM.07,Portland Parish,Portland Parish,07,JAM
+1479,JM.04,Manchester,Manchester,04,JAM
+1480,JM.17,Kingston,Kingston,17,JAM
+1481,JM.02,Hanover,Hanover,02,JAM
+1482,JM.01,Clarendon,Clarendon,01,JAM
+1483,JO.19,Ma’an,Ma'an,19,JOR
+1484,JO.18,Irbid,Irbid,18,JOR
+1485,JO.17,Zarqa,Zarqa,17,JOR
+1486,JO.12,Tafielah,Tafielah,12,JOR
+1487,JO.16,Amman,Amman,16,JOR
+1488,JO.15,Mafraq,Mafraq,15,JOR
+1489,JO.09,Karak,Karak,09,JOR
+1490,JO.02,Balqa,Balqa,02,JOR
+1491,JO.20,Ajlun,Ajlun,20,JOR
+1492,JO.22,Jerash,Jerash,22,JOR
+1493,JO.21,Aqaba,Aqaba,21,JOR
+1494,JO.23,Madaba,Madaba,23,JOR
+1495,JP.46,Yamanashi,Yamanashi,46,JPN
+1496,JP.45,Yamaguchi,Yamaguchi,45,JPN
+1497,JP.43,Wakayama,Wakayama,43,JPN
+1498,JP.42,Toyama,Toyama,42,JPN
+1499,JP.41,Tottori,Tottori,41,JPN
+1500,JP.40,Tokyo,Tokyo,40,JPN
+1501,JP.39,Tokushima,Tokushima,39,JPN
+1502,JP.38,Tochigi,Tochigi,38,JPN
+1503,JP.37,Shizuoka,Shizuoka,37,JPN
+1504,JP.36,Shimane,Shimane,36,JPN
+1505,JP.35,Shiga,Shiga,35,JPN
+1506,JP.34,Saitama,Saitama,34,JPN
+1507,JP.33,Saga,Saga,33,JPN
+1508,JP.32,Osaka,Osaka,32,JPN
+1509,JP.47,Okinawa,Okinawa,47,JPN
+1510,JP.31,Okayama,Okayama,31,JPN
+1511,JP.30,Oita,Oita,30,JPN
+1512,JP.29,Niigata,Niigata,29,JPN
+1513,JP.28,Nara,Nara,28,JPN
+1514,JP.27,Nagasaki,Nagasaki,27,JPN
+1515,JP.26,Nagano,Nagano,26,JPN
+1516,JP.25,Miyazaki,Miyazaki,25,JPN
+1517,JP.23,Mie,Mie,23,JPN
+1518,JP.22,Kyoto,Kyoto,22,JPN
+1519,JP.21,Kumamoto,Kumamoto,21,JPN
+1520,JP.20,Kochi,Kochi,20,JPN
+1521,JP.19,Kanagawa,Kanagawa,19,JPN
+1522,JP.18,Kagoshima,Kagoshima,18,JPN
+1523,JP.17,Kagawa,Kagawa,17,JPN
+1524,JP.15,Ishikawa,Ishikawa,15,JPN
+1525,JP.13,Hyōgo,Hyogo,13,JPN
+1526,JP.11,Hiroshima,Hiroshima,11,JPN
+1527,JP.10,Gunma,Gunma,10,JPN
+1528,JP.09,Gifu,Gifu,09,JPN
+1529,JP.07,Fukuoka,Fukuoka,07,JPN
+1530,JP.06,Fukui,Fukui,06,JPN
+1531,JP.05,Ehime,Ehime,05,JPN
+1532,JP.01,Aichi,Aichi,01,JPN
+1533,JP.44,Yamagata,Yamagata,44,JPN
+1534,JP.24,Miyagi,Miyagi,24,JPN
+1535,JP.16,Iwate,Iwate,16,JPN
+1536,JP.14,Ibaraki,Ibaraki,14,JPN
+1537,JP.08,Fukushima,Fukushima,08,JPN
+1538,JP.04,Chiba,Chiba,04,JPN
+1539,JP.02,Akita,Akita,02,JPN
+1540,JP.12,Hokkaido,Hokkaido,12,JPN
+1541,JP.03,Aomori,Aomori,03,JPN
+1542,KE.55,West Pokot County,West Pokot County,55,KEN
+1543,KE.54,Wajir County,Wajir County,54,KEN
+1544,KE.52,Uasin Gishu County,Uasin Gishu County,52,KEN
+1545,KE.51,Turkana County,Turkana County,51,KEN
+1546,KE.50,Trans Nzoia,Trans Nzoia,50,KEN
+1547,KE.49,Tharaka - Nithi,Tharaka - Nithi,49,KEN
+1548,KE.48,Tana River County,Tana River County,48,KEN
+1549,KE.46,Siaya County,Siaya County,46,KEN
+1550,KE.45,Samburu County,Samburu County,45,KEN
+1551,KE.05,Nairobi County,Nairobi County,05,KEN
+1552,KE.38,Murang'A,Murang'A,38,KEN
+1553,KE.37,Mombasa County,Mombasa County,37,KEN
+1554,KE.35,Meru County,Meru County,35,KEN
+1555,KE.34,Marsabit County,Marsabit County,34,KEN
+1556,KE.33,Mandera County,Mandera County,33,KEN
+1557,KE.29,Laikipia,Laikipia,29,KEN
+1558,KE.28,Kwale County,Kwale County,28,KEN
+1559,KE.27,Kitui County,Kitui County,27,KEN
+1560,KE.26,Kisumu County,Kisumu County,26,KEN
+1561,KE.25,Kisii County,Kisii County,25,KEN
+1562,KE.24,Kirinyaga County,Kirinyaga County,24,KEN
+1563,KE.23,Kilifi County,Kilifi County,23,KEN
+1564,KE.22,Kiambu County,Kiambu County,22,KEN
+1565,KE.21,Kericho County,Kericho County,21,KEN
+1566,KE.20,Kakamega County,Kakamega County,20,KEN
+1567,KE.18,Isiolo County,Isiolo County,18,KEN
+1568,KE.16,Garissa County,Garissa County,16,KEN
+1569,KE.15,Embu County,Embu County,15,KEN
+1570,KE.13,Busia County,Busia County,13,KEN
+1571,KE.12,Bungoma County,Bungoma County,12,KEN
+1572,KE.10,Baringo,Baringo,10,KEN
+1573,KE.43,Nyandarua County,Nyandarua County,43,KEN
+1574,KE.53,Vihiga County,Vihiga County,53,KEN
+1575,KE.30,Lamu,Lamu,30,KEN
+1576,KE.31,Machakos County,Machakos County,31,KEN
+1577,KE.32,Makueni County,Makueni County,32,KEN
+1578,KE.14,Elegeyo-Marakwet,Marakwet District,14,KEN
+1579,KE.47,Taita Taveta,Taita Taveta,47,KEN
+1580,KE.19,Kajiado County,Kajiado County,19,KEN
+1581,KE.44,Nyeri County,Nyeri County,44,KEN
+1582,KE.17,Homa Bay County,Homa Bay County,17,KEN
+1583,KE.11,Bomet County,Bomet County,11,KEN
+1584,KE.36,Migori County,Migori County,36,KEN
+1585,KE.39,Nakuru County,Nakuru County,39,KEN
+1586,KE.41,Narok County,Narok County,41,KEN
+1587,KE.42,Nyamira county,Nyamira county,42,KEN
+1588,KE.40,Nandi,Nandi,40,KEN
+1589,KG.08,Osh Region,Osh Region,08,KGZ
+1590,KG.09,Batken,Batken,09,KGZ
+1591,KG.06,Talas Region,Talas Region,06,KGZ
+1592,KG.04,Naryn Region,Naryn Region,04,KGZ
+1593,KG.07,Issyk-Kul,Issyk-Kul,07,KGZ
+1594,KG.01,Bishkek,Bishkek,01,KGZ
+1595,KG.03,Jalal-Abad Region,Jalal-Abad Region,03,KGZ
+1596,KG.02,Chuy Region,Chuy Region,02,KGZ
+1597,KG.10,Osh City,Osh City,10,KGZ
+1598,KH.12,Pursat,Pursat,12,KHM
+1599,KH.29,Battambang,Battambang,29,KHM
+1600,KH.19,Takeo,Takeo,19,KHM
+1601,KH.18,Svay Rieng,Svay Rieng,18,KHM
+1602,KH.17,Stung Treng,Stung Treng,17,KHM
+1603,KH.27,Ŏtâr Méanchey,Otar Meanchey,27,KHM
+1604,KH.24,Siem Reap,Siem Reap,24,KHM
+1605,KH.23,Ratanakiri,Ratanakiri,23,KHM
+1606,KH.14,Prey Veng,Prey Veng,14,KHM
+1607,KH.13,Preah Vihear,Preah Vihear,13,KHM
+1608,KH.22,Phnom Penh,Phnom Penh,22,KHM
+1609,KH.30,Pailin,Pailin,30,KHM
+1610,KH.10,Mondolkiri,Mondolkiri,10,KHM
+1611,KH.09,Kratie,Kratie,09,KHM
+1612,KH.26,Kep,Kep,26,KHM
+1613,KH.08,Koh Kong,Koh Kong,08,KHM
+1614,KH.07,Kandal,Kandal,07,KHM
+1615,KH.21,Kampot,Kampot,21,KHM
+1616,KH.05,Kampong Thom,Kampong Thom,05,KHM
+1617,KH.04,Kampong Speu Province,Kampong Speu Province,04,KHM
+1618,KH.03,Kampong Chhnang,Kampong Chhnang,03,KHM
+1619,KH.02,Kampong Cham,Kampong Cham,02,KHM
+1620,KH.28,Preah Sihanouk,Preah Sihanouk,28,KHM
+1621,KH.25,Banteay Meanchey,Banteay Meanchey,25,KHM
+1622,KH.31,Tboung Khmum,Tboung Khmum,31,KHM
+1623,KI.01,Gilbert Islands,Gilbert Islands,01,KIR
+1624,KI.02,Line Islands,Line Islands,02,KIR
+1625,KI.03,Phoenix Islands,Phoenix Islands,03,KIR
+1626,KM.03,Mohéli,Moheli,03,COM
+1627,KM.02,Grande Comore,Grande Comore,02,COM
+1628,KM.01,Anjouan,Anjouan,01,COM
+1629,KN.15,Trinity Palmetto Point,Trinity Palmetto Point,15,KNA
+1630,KN.13,Middle Island,Middle Island,13,KNA
+1631,KN.12,Saint Thomas Lowland,Saint Thomas Lowland,12,KNA
+1632,KN.11,Saint Peter Basseterre,Saint Peter Basseterre,11,KNA
+1633,KN.10,Saint Paul Charlestown,Saint Paul Charlestown,10,KNA
+1634,KN.09,Saint Paul Capesterre,Saint Paul Capesterre,09,KNA
+1635,KN.08,Saint Mary Cayon,Saint Mary Cayon,08,KNA
+1636,KN.07,Saint John Figtree,Saint John Figtree,07,KNA
+1637,KN.06,Saint John Capesterre,Saint John Capesterre,06,KNA
+1638,KN.05,Saint James Windwa,Saint James Windwa,05,KNA
+1639,KN.04,Saint George Gingerland,Saint George Gingerland,04,KNA
+1640,KN.03,Saint George Basseterre,Saint George Basseterre,03,KNA
+1641,KN.02,Saint Anne Sandy Point,Saint Anne Sandy Point,02,KNA
+1642,KN.01,Christ Church Nichola Town,Christ Church Nichola Town,01,KNA
+1643,KP.12,Pyongyang,Pyongyang,12,PRK
+1644,KP.15,South Pyongan,South Pyongan,15,PRK
+1645,KP.11,P'yŏngan-bukto,P'yongan-bukto,11,PRK
+1646,KP.09,Kangwŏn-do,Kangwon-do,09,PRK
+1647,KP.06,South Hwanghae,South Hwanghae,06,PRK
+1648,KP.07,North Hwanghae,North Hwanghae,07,PRK
+1649,KP.03,South Hamgyong,South Hamgyong,03,PRK
+1650,KP.13,Yanggang-do,Yanggang-do,13,PRK
+1651,KP.17,North Hamgyong,North Hamgyong,17,PRK
+1652,KP.01,Chagang,Chagang,01,PRK
+1653,KP.18,Rason,Rason,18,PRK
+1654,KP.14,Nampo,Nampo,14,PRK
+1655,KP.19,Kaesong,Kaesong,19,PRK
+1656,KR.21,Ulsan,Ulsan,21,KOR
+1657,KR.19,Daejeon,Daejeon,19,KOR
+1658,KR.15,Daegu,Daegu,15,KOR
+1659,KR.11,Seoul,Seoul,11,KOR
+1660,KR.10,Busan,Busan,10,KOR
+1661,KR.14,Gyeongsangbuk-do,Gyeongsangbuk-do,14,KOR
+1662,KR.13,Gyeonggi-do,Gyeonggi-do,13,KOR
+1663,KR.18,Gwangju,Gwangju,18,KOR
+1664,KR.06,Gangwon-do,Gangwon-do,06,KOR
+1665,KR.12,Incheon,Incheon,12,KOR
+1666,KR.17,Chungcheongnam-do,Chungcheongnam-do,17,KOR
+1667,KR.05,North Chungcheong,North Chungcheong,05,KOR
+1668,KR.16,Jeollanam-do,Jeollanam-do,16,KOR
+1669,KR.03,Jeollabuk-do,Jeollabuk-do,03,KOR
+1670,KR.01,Jeju-do,Jeju-do,01,KOR
+1671,KR.20,Gyeongsangnam-do,Gyeongsangnam-do,20,KOR
+1672,KR.22,Sejong-si,Sejong-si,22,KOR
+1673,KW.08,Hawalli,Hawalli,08,KWT
+1674,KW.02,Al Asimah,Al Asimah,02,KWT
+1675,KW.05,Al Jahra Governorate,Al Jahra Governorate,05,KWT
+1676,KW.07,Al Farwaniyah,Al Farwaniyah,07,KWT
+1677,KW.04,Al Aḩmadī,Al Ahmadi,04,KWT
+1678,KW.09,Mubārak al Kabīr,Mubarak al Kabir,09,KWT
+1679,KY.10346796,George Town,George Town,10346796,CYM
+1680,KY.10375968,West Bay,West Bay,10375968,CYM
+1681,KY.10375969,Bodden Town,Bodden Town,10375969,CYM
+1682,KY.10375970,North Side,North Side,10375970,CYM
+1683,KY.10375971,East End,East End,10375971,CYM
+1684,KY.10375972,Sister Island,Sister Island,10375972,CYM
+1685,KZ.07,Batys Qazaqstan,Batys Qazaqstan,07,KAZ
+1686,KZ.09,Mangghystaū,Mangghystau,09,KAZ
+1687,KZ.06,Atyrau Oblisi,Atyrau Oblisi,06,KAZ
+1688,KZ.04,Aktyubinskaya Oblast’,Aktyubinskaya Oblast',04,KAZ
+1689,KZ.15,East Kazakhstan,East Kazakhstan,15,KAZ
+1690,KZ.03,Aqmola,Aqmola,03,KAZ
+1691,KZ.16,North Kazakhstan,North Kazakhstan,16,KAZ
+1692,KZ.11,Pavlodar Region,Pavlodar Region,11,KAZ
+1693,KZ.14,Qyzylorda,Qyzylorda,14,KAZ
+1694,KZ.13,Qostanay,Qostanay,13,KAZ
+1695,KZ.12,Karaganda,Karaganda,12,KAZ
+1696,KZ.17,Zhambyl,Zhambyl,17,KAZ
+1697,KZ.10,Turkistan,Turkistan,10,KAZ
+1698,KZ.02,Almaty,Almaty,02,KAZ
+1699,KZ.01,Almaty Oblysy,Almaty Oblysy,01,KAZ
+1700,KZ.1537272,Shymkent,Shymkent,1537272,KAZ
+1701,KZ.08,Baikonur,Baikonur,08,KAZ
+1702,KZ.05,Astana,Astana,05,KAZ
+1703,KZ.12510143,Abai Region,Abai Region,12510143,KAZ
+1704,KZ.12510144,Jetisu Region,Jetisu Region,12510144,KAZ
+1705,KZ.12510145,Ulytau Region,Ulytau Region,12510145,KAZ
+1706,LA.14,Xiangkhoang,Xiangkhoang,14,LAO
+1707,LA.13,Xiagnabouli,Xiagnabouli,13,LAO
+1708,LA.27,Vientiane,Vientiane,27,LAO
+1709,LA.20,Savannakhet Province,Savannakhet Province,20,LAO
+1710,LA.19,Salavan Province,Salavan Province,19,LAO
+1711,LA.18,Phôngsali,Phongsali,18,LAO
+1712,LA.07,Oudômxai,Oudomxai,07,LAO
+1713,LA.17,Luang Prabang Province,Luang Prabang Province,17,LAO
+1714,LA.16,Loungnamtha,Loungnamtha,16,LAO
+1715,LA.15,Khammouane Province,Khammouane Province,15,LAO
+1716,LA.03,Houaphan,Houaphan,03,LAO
+1717,LA.02,Champasak Province,Champasak Province,02,LAO
+1718,LA.01,Attapu,Attapu,01,LAO
+1719,LA.26,Xékong,Xekong,26,LAO
+1720,LA.22,Bokeo,Bokeo,22,LAO
+1721,LA.23,Bolikhamsai,Bolikhamsai,23,LAO
+1722,LA.24,Vientiane Prefecture,Vientiane Prefecture,24,LAO
+1723,LA.28,Xaisomboun,Xaisomboun,28,LAO
+1724,LB.05,Mont-Liban,Mont-Liban,05,LBN
+1725,LB.04,Beyrouth,Beyrouth,04,LBN
+1726,LB.09,Liban-Nord,Liban-Nord,09,LBN
+1727,LB.06,South Governorate,South Governorate,06,LBN
+1728,LB.08,Béqaa,Beqaa,08,LBN
+1729,LB.07,Nabatîyé,Nabatiye,07,LBN
+1730,LB.10,Aakkâr,Aakkar,10,LBN
+1731,LB.11,Baalbek-Hermel Governorate,Baalbek-Hermel Governorate,11,LBN
+1732,LC.10,Vieux-Fort,Vieux-Fort,10,LCA
+1733,LC.09,Soufrière,Soufriere,09,LCA
+1734,LC.08,Micoud,Micoud,08,LCA
+1735,LC.07,Laborie,Laborie,07,LCA
+1736,LC.06,Gros-Islet,Gros-Islet,06,LCA
+1737,LC.05,Dennery,Dennery,05,LCA
+1738,LC.04,Choiseul,Choiseul,04,LCA
+1739,LC.03,Castries,Castries,03,LCA
+1740,LC.01,Anse-la-Raye,Anse-la-Raye,01,LCA
+1741,LC.12,Canaries,Canaries,12,LCA
+1742,LI.11,Vaduz,Vaduz,11,LIE
+1743,LI.10,Triesenberg,Triesenberg,10,LIE
+1744,LI.09,Triesen,Triesen,09,LIE
+1745,LI.08,Schellenberg,Schellenberg,08,LIE
+1746,LI.07,Schaan,Schaan,07,LIE
+1747,LI.06,Ruggell,Ruggell,06,LIE
+1748,LI.05,Planken,Planken,05,LIE
+1749,LI.04,Mauren,Mauren,04,LIE
+1750,LI.03,Gamprin,Gamprin,03,LIE
+1751,LI.02,Eschen,Eschen,02,LIE
+1752,LI.01,Balzers,Balzers,01,LIE
+1753,LK.36,Western Province,Western Province,36,LKA
+1754,LK.35,Uva Province,Uva Province,35,LKA
+1755,LK.34,Southern Province,Southern Province,34,LKA
+1756,LK.33,Sabaragamuwa Province,Sabaragamuwa Province,33,LKA
+1757,LK.32,North Western Province,North Western Province,32,LKA
+1758,LK.30,North Central Province,North Central Province,30,LKA
+1759,LK.29,Central Province,Central Province,29,LKA
+1760,LK.38,Northern Province,Northern Province,38,LKA
+1761,LK.37,Eastern Province,Eastern Province,37,LKA
+1762,LR.10,Sinoe County,Sinoe County,10,LBR
+1763,LR.09,Nimba,Nimba,09,LBR
+1764,LR.14,Montserrado County,Montserrado County,14,LBR
+1765,LR.13,Maryland County,Maryland County,13,LBR
+1766,LR.20,Lofa County,Lofa County,20,LBR
+1767,LR.19,Grand Gedeh County,Grand Gedeh County,19,LBR
+1768,LR.12,Grand Cape Mount County,Grand Cape Mount County,12,LBR
+1769,LR.11,Grand Bassa County,Grand Bassa County,11,LBR
+1770,LR.01,Bong County,Bong County,01,LBR
+1771,LR.15,Bomi County,Bomi County,15,LBR
+1772,LR.16,Grand Kru County,Grand Kru County,16,LBR
+1773,LR.17,Margibi County,Margibi County,17,LBR
+1774,LR.18,River Cess County,River Cess County,18,LBR
+1775,LR.21,Gbarpolu County,Gbarpolu County,21,LBR
+1776,LR.22,River Gee County,River Gee County,22,LBR
+1777,LS.19,Thaba-Tseka,Thaba-Tseka,19,LSO
+1778,LS.18,Quthing,Quthing,18,LSO
+1779,LS.17,Qacha's Nek District,Qacha's Nek District,17,LSO
+1780,LS.16,Mokhotlong District,Mokhotlong District,16,LSO
+1781,LS.15,Mohale's Hoek District,Mohale's Hoek District,15,LSO
+1782,LS.14,Maseru District,Maseru District,14,LSO
+1783,LS.13,Mafeteng District,Mafeteng District,13,LSO
+1784,LS.12,Leribe,Leribe,12,LSO
+1785,LS.11,Butha-Buthe,Butha-Buthe,11,LSO
+1786,LS.10,Berea,Berea,10,LSO
+1787,LT.56,Alytus,Alytus,56,LTU
+1788,LT.57,Kaunas,Kaunas,57,LTU
+1789,LT.58,Klaipėda County,Klaipeda County,58,LTU
+1790,LT.59,Marijampolė County,Marijampole County,59,LTU
+1791,LT.60,Panevėžys,Panevezys,60,LTU
+1792,LT.61,Siauliai,Siauliai,61,LTU
+1793,LT.62,Tauragė County,Taurage County,62,LTU
+1794,LT.63,Telsiai,Telsiai,63,LTU
+1795,LT.64,Utena,Utena,64,LTU
+1796,LT.65,Vilnius,Vilnius,65,LTU
+1797,LU.WI,Wiltz,Wiltz,WI,LUX
+1798,LU.VD,Vianden,Vianden,VD,LUX
+1799,LU.RM,Remich,Remich,RM,LUX
+1800,LU.RD,Redange,Redange,RD,LUX
+1801,LU.ME,Mersch,Mersch,ME,LUX
+1802,LU.LU,Luxembourg,Luxembourg,LU,LUX
+1803,LU.GR,Grevenmacher,Grevenmacher,GR,LUX
+1804,LU.ES,Esch-sur-Alzette,Esch-sur-Alzette,ES,LUX
+1805,LU.EC,Echternach,Echternach,EC,LUX
+1806,LU.DI,Diekirch,Diekirch,DI,LUX
+1807,LU.CL,Clervaux,Clervaux,CL,LUX
+1808,LU.CA,Capellen,Capellen,CA,LUX
+1809,LV.33,Ventspils Municipality,Ventspils Municipality,33,LVA
+1810,LV.32,Ventspils,Ventspils,32,LVA
+1811,LV.31,Valmiera,Valmiera,31,LVA
+1812,LV.30,Valka,Valka,30,LVA
+1813,LV.29,Tukums Municipality,Tukums Municipality,29,LVA
+1814,LV.28,Talsi Municipality,Talsi Municipality,28,LVA
+1815,LV.27,Saldus Rajons,Saldus Rajons,27,LVA
+1816,LV.25,Riga,Riga,25,LVA
+1817,LV.24,Rēzekne Municipality,Rezekne Municipality,24,LVA
+1818,LV.23,Rēzekne,Rezekne,23,LVA
+1819,LV.22,Preiļu novads,Preilu novads,22,LVA
+1820,LV.21,Ogre,Ogre,21,LVA
+1821,LV.20,Madona Municipality,Madona Municipality,20,LVA
+1822,LV.19,Ludza Municipality,Ludza Municipality,19,LVA
+1823,LV.18,Limbaži Municipality,Limbazi Municipality,18,LVA
+1824,LV.16,Liepāja,Liepaja,16,LVA
+1825,LV.15,Kuldīga Municipality,Kuldiga Municipality,15,LVA
+1826,LV.14,Krāslava Municipality,Kraslava Municipality,14,LVA
+1827,LV.13,Jūrmala,Jurmala,13,LVA
+1828,LV.12,Jelgava Municipality,Jelgava Municipality,12,LVA
+1829,LV.11,Jelgava,Jelgava,11,LVA
+1830,LV.10,Jēkabpils Municipality,Jekabpils Municipality,10,LVA
+1831,LV.09,Gulbene Municipality,Gulbene Municipality,09,LVA
+1832,LV.08,Dobele Municipality,Dobele Municipality,08,LVA
+1833,LV.06,Daugavpils,Daugavpils,06,LVA
+1834,LV.05,Cēsis Municipality,Cesis Municipality,05,LVA
+1835,LV.04,Bauska Municipality,Bauska Municipality,04,LVA
+1836,LV.03,Balvi Municipality,Balvi Municipality,03,LVA
+1837,LV.02,Alūksne Municipality,Aluksne Municipality,02,LVA
+1838,LV.01,Aizkraukle Municipality,Aizkraukle Municipality,01,LVA
+1839,LV.95,Mārupe,Marupe,95,LVA
+1840,LV.A2,Olaine,Olaine,A2,LVA
+1841,LV.80,Ķekava,Kekava,80,LVA
+1842,LV.C3,Salaspils Municipality,Salaspils Municipality,C3,LVA
+1843,LV.34,Ādaži,Adazi,34,LVA
+1844,LV.90,Līvāni,Livani,90,LVA
+1845,LV.E1,Varakļāni Municipality,Varaklani Municipality,E1,LVA
+1846,LV.B5,Ropaži Municipality,Ropazi Municipality,B5,LVA
+1847,LV.C7,Sigulda Municipality,Sigulda Municipality,C7,LVA
+1848,LV.C5,Saulkrasti Municipality,Saulkrasti Municipality,C5,LVA
+1849,LV.D1,Smiltene Municipality,Smiltene Municipality,D1,LVA
+1850,LV.DN,South Kurzeme Municipality,South Kurzeme Municipality,DN,LVA
+1851,LV.AN,Augšdaugava Municipality,Augsdaugava Municipality,AN,LVA
+1852,LY.70,Darnah,Darnah,70,LBY
+1853,LY.69,Banghāzī,Banghazi,69,LBY
+1854,LY.66,Al Marj,Al Marj,66,LBY
+1855,LY.65,Al Kufrah,Al Kufrah,65,LBY
+1856,LY.63,Al Jabal al Akhḑar,Al Jabal al Akhdar,63,LBY
+1857,LY.77,Tripoli,Tripoli,77,LBY
+1858,LY.76,Surt,Surt,76,LBY
+1859,LY.75,Sabha District,Sabha District,75,LBY
+1860,LY.74,Nālūt,Nalut,74,LBY
+1861,LY.73,Murzuq District,Murzuq District,73,LBY
+1862,LY.72,Mişrātah,Misratah,72,LBY
+1863,LY.71,Ghāt,Ghat,71,LBY
+1864,LY.68,Az Zāwiyah,Az Zawiyah,68,LBY
+1865,LY.78,Ash Shāţiʼ,Wadi ash Shati',78,LBY
+1866,LY.64,Al Jufrah,Al Jufrah,64,LBY
+1867,LY.67,An Nuqāţ al Khams,An Nuqat al Khams,67,LBY
+1868,LY.79,Al Buţnān,Al Butnan,79,LBY
+1869,LY.80,Jabal al Gharbi,Jabal al Gharbi,80,LBY
+1870,LY.81,Al Jafārah,Al Jafarah,81,LBY
+1871,LY.82,Al Marqab,Al Marqab,82,LBY
+1872,LY.83,Al Wāḩāt,Al Wahat,83,LBY
+1873,LY.84,Wādī al Ḩayāt,Wadi al Hayat,84,LBY
+1874,MA.01,Tanger-Tetouan-Al Hoceima,Tanger-Tetouan-Al Hoceima,01,MAR
+1875,MA.02,Oriental,Oriental,02,MAR
+1876,MA.03,Fès-Meknès,Fes-Meknes,03,MAR
+1877,MA.04,Rabat-Salé-Kénitra,Rabat-Sale-Kenitra,04,MAR
+1878,MA.05,Béni Mellal-Khénifra,Beni Mellal-Khenifra,05,MAR
+1879,MA.06,Casablanca-Settat,Casablanca-Settat,06,MAR
+1880,MA.07,Marrakesh-Safi,Marrakesh-Safi,07,MAR
+1881,MA.08,Drâa-Tafilalet,Draa-Tafilalet,08,MAR
+1882,MA.09,Souss-Massa,Souss-Massa,09,MAR
+1883,MA.10,Guelmim-Oued Noun,Guelmim-Oued Noun,10,MAR
+1884,MA.11,Laâyoune-Sakia El Hamra,Laayoune-Sakia El Hamra,11,MAR
+1885,MA.12,Dakhla-Oued Ed-Dahab,Dakhla-Oued Ed-Dahab,12,MAR
+1886,MC.00,Municipality of Monaco,Municipality of Monaco,00,MCO
+1887,MD.73,Raionul Edineţ,Raionul Edinet,73,MDA
+1888,MD.92,Ungheni,Ungheni,92,MDA
+1889,MD.91,Teleneşti,Telenesti,91,MDA
+1890,MD.90,Taraclia,Taraclia,90,MDA
+1891,MD.88,Ştefan-Vodă,Stefan-Voda,88,MDA
+1892,MD.89,Strășeni,Straseni,89,MDA
+1893,MD.87,Soroca District,Soroca District,87,MDA
+1894,MD.84,Rîşcani,Riscani,84,MDA
+1895,MD.83,Rezina,Rezina,83,MDA
+1896,MD.82,Orhei,Orhei,82,MDA
+1897,MD.81,Raionul Ocniţa,Raionul Ocnita,81,MDA
+1898,MD.59,Anenii Noi,Anenii Noi,59,MDA
+1899,MD.80,Nisporeni,Nisporeni,80,MDA
+1900,MD.79,Leova,Leova,79,MDA
+1901,MD.85,Sîngerei,Singerei,85,MDA
+1902,MD.69,Criuleni,Criuleni,69,MDA
+1903,MD.78,Ialoveni,Ialoveni,78,MDA
+1904,MD.57,Chișinău Municipality,Chisinau Municipality,57,MDA
+1905,MD.67,Căuşeni,Causeni,67,MDA
+1906,MD.65,Cantemir,Cantemir,65,MDA
+1907,MD.66,Călăraşi,Calarasi,66,MDA
+1908,MD.64,Cahul,Cahul,64,MDA
+1909,MD.76,Glodeni,Glodeni,76,MDA
+1910,MD.75,Floreşti,Floresti,75,MDA
+1911,MD.74,Fălești,Falesti,74,MDA
+1912,MD.72,Dubăsari District,Dubasari District,72,MDA
+1913,MD.71,Drochia,Drochia,71,MDA
+1914,MD.70,Donduşeni,Donduseni,70,MDA
+1915,MD.68,Cimişlia,Cimislia,68,MDA
+1916,MD.63,Briceni,Briceni,63,MDA
+1917,MD.61,Basarabeasca,Basarabeasca,61,MDA
+1918,MD.77,Hînceşti,Hincesti,77,MDA
+1919,MD.86,Şoldăneşti,Soldanesti,86,MDA
+1920,MD.58,Transnistria,Transnistria,58,MDA
+1921,MD.51,Gagauzia,Gagauzia,51,MDA
+1922,MD.62,Bender Municipality,Bender Municipality,62,MDA
+1923,MD.60,Bălţi,Balti,60,MDA
+1924,ME.17,Rožaje Municipality,Rozaje Municipality,17,MNE
+1925,ME.21,Opština Žabljak,Opstina Zabljak,21,MNE
+1926,ME.20,Ulcinj,Ulcinj,20,MNE
+1927,ME.19,Tivat,Tivat,19,MNE
+1928,ME.16,Podgorica,Podgorica,16,MNE
+1929,ME.18,Opština Šavnik,Opstina Savnik,18,MNE
+1930,ME.15,Opština Plužine,Opstina Pluzine,15,MNE
+1931,ME.14,Pljevlja,Pljevlja,14,MNE
+1932,ME.13,Opština Plav,Opstina Plav,13,MNE
+1933,ME.12,Opština Nikšić,Opstina Niksic,12,MNE
+1934,ME.11,Mojkovac,Mojkovac,11,MNE
+1935,ME.10,Kotor,Kotor,10,MNE
+1936,ME.09,Opština Kolašin,Opstina Kolasin,09,MNE
+1937,ME.03,Berane,Berane,03,MNE
+1938,ME.08,Herceg Novi,Herceg Novi,08,MNE
+1939,ME.07,Danilovgrad,Danilovgrad,07,MNE
+1940,ME.06,Cetinje,Cetinje,06,MNE
+1941,ME.05,Budva,Budva,05,MNE
+1942,ME.04,Bijelo Polje,Bijelo Polje,04,MNE
+1943,ME.02,Bar,Bar,02,MNE
+1944,ME.01,Andrijevica,Andrijevica,01,MNE
+1945,ME.22,Gusinje Municipality,Gusinje Municipality,22,MNE
+1946,ME.23,Petnjica Municipality,Petnjica Municipality,23,MNE
+1947,ME.24,Tuzi Municipality,Tuzi Municipality,24,MNE
+1948,ME.25,Zeta,Zeta,25,MNE
+1949,MG.71,Diana,Diana,71,MDG
+1950,MG.72,Sava,Sava,72,MDG
+1951,MG.42,Sofia,Sofia,42,MDG
+1952,MG.32,Analanjirofo,Analanjirofo,32,MDG
+1953,MG.41,Boeny,Boeny,41,MDG
+1954,MG.43,Betsiboka,Betsiboka,43,MDG
+1955,MG.33,Alaotra Mangoro,Alaotra Mangoro,33,MDG
+1956,MG.44,Melaky,Melaky,44,MDG
+1957,MG.14,Bongolava,Bongolava,14,MDG
+1958,MG.12,Vakinankaratra,Vakinankaratra,12,MDG
+1959,MG.13,Itasy,Itasy,13,MDG
+1960,MG.11,Analamanga,Analamanga,11,MDG
+1961,MG.31,Atsinanana,Atsinanana,31,MDG
+1962,MG.54,Menabe,Menabe,54,MDG
+1963,MG.22,Amoron'i Mania,Amoron'i Mania,22,MDG
+1964,MG.21,Upper Matsiatra,Upper Matsiatra,21,MDG
+1965,MG.24,Ihorombe,Ihorombe,24,MDG
+1966,MG.25,Atsimo-Atsinanana,Atsimo-Atsinanana,25,MDG
+1967,MG.53,Anosy,Anosy,53,MDG
+1968,MG.52,Androy,Androy,52,MDG
+1969,MG.51,Atsimo-Andrefana,Atsimo-Andrefana,51,MDG
+1970,MG.26,Fitovinany Region,Fitovinany Region,26,MDG
+1971,MG.27,Vatovavy Region,Vatovavy Region,27,MDG
+1972,MH.007,Ailinginae Atoll,Ailinginae Atoll,007,MHL
+1973,MH.010,Ailinglaplap Atoll,Ailinglaplap Atoll,010,MHL
+1974,MH.030,Ailuk Atoll,Ailuk Atoll,030,MHL
+1975,MH.040,Arno Atoll,Arno Atoll,040,MHL
+1976,MH.050,Aur Atoll,Aur Atoll,050,MHL
+1977,MH.060,Bikar Atoll,Bikar Atoll,060,MHL
+1978,MH.070,Bikini Atoll,Bikini Atoll,070,MHL
+1979,MH.080,Ebon Atoll,Ebon Atoll,080,MHL
+1980,MH.090,Enewetak Atoll,Enewetak Atoll,090,MHL
+1981,MH.100,Erikub Atoll,Erikub Atoll,100,MHL
+1982,MH.120,Jaluit Atoll,Jaluit Atoll,120,MHL
+1983,MH.150,Kwajalein Atoll,Kwajalein Atoll,150,MHL
+1984,MH.160,Lae Atoll,Lae Atoll,160,MHL
+1985,MH.180,Likiep Atoll,Likiep Atoll,180,MHL
+1986,MH.190,Majuro Atoll,Majuro Atoll,190,MHL
+1987,MH.300,Maloelap Atoll,Maloelap Atoll,300,MHL
+1988,MH.320,Mili Atoll,Mili Atoll,320,MHL
+1989,MH.330,Namdrik Atoll,Namdrik Atoll,330,MHL
+1990,MH.340,Namu Atoll,Namu Atoll,340,MHL
+1991,MH.350,Rongelap Atoll,Rongelap Atoll,350,MHL
+1992,MH.360,Rongrik Atoll,Rongrik Atoll,360,MHL
+1993,MH.385,Taka Atoll,Taka Atoll,385,MHL
+1994,MH.073,Bokak Atoll,Bokak Atoll,073,MHL
+1995,MH.390,Ujae Atoll,Ujae Atoll,390,MHL
+1996,MH.400,Ujelang,Ujelang,400,MHL
+1997,MH.410,Utrik Atoll,Utrik Atoll,410,MHL
+1998,MH.420,Wotho Atoll,Wotho Atoll,420,MHL
+1999,MH.430,Wotje Atoll,Wotje Atoll,430,MHL
+2000,MH.110,Jabat Island,Jabat Island,110,MHL
+2001,MH.130,Jemo Island,Jemo Island,130,MHL
+2002,MH.140,Kili Island,Kili Island,140,MHL
+2003,MH.170,Lib Island,Lib Island,170,MHL
+2004,MH.310,Mejit Island,Mejit Island,310,MHL
+2005,MK.E9,Valandovo,Valandovo,E9,MKD
+2006,MK.86,Resen,Resen,86,MKD
+2007,MK.51,Kratovo,Kratovo,51,MKD
+2008,MK.78,Pehchevo,Pehchevo,78,MKD
+2009,MK.72,Novo Selo,Novo Selo,72,MKD
+2010,MK.11,Bosilovo,Bosilovo,11,MKD
+2011,MK.A9,Vasilevo,Vasilevo,A9,MKD
+2012,MK.E5,Dojran,Dojran,E5,MKD
+2013,MK.08,Bogdanci,Bogdanci,08,MKD
+2014,MK.47,Konche,Konche,47,MKD
+2015,MK.62,Makedonska Kamenica,Makedonska Kamenica,62,MKD
+2016,MK.C6,Zrnovci,Zrnovci,C6,MKD
+2017,MK.40,Karbinci,Karbinci,40,MKD
+2018,MK.25,Demir Kapija,Demir Kapija,25,MKD
+2019,MK.87,Rosoman,Rosoman,87,MKD
+2020,MK.35,Gradsko,Gradsko,35,MKD
+2021,MK.60,Lozovo,Lozovo,60,MKD
+2022,MK.19,Češinovo-Obleševo,Cesinovo-Oblesevo,19,MKD
+2023,MK.E1,Novaci,Novaci,E1,MKD
+2024,MK.04,Berovo,Berovo,04,MKD
+2025,MK.06,Bitola,Bitola,06,MKD
+2026,MK.D9,Mogila,Mogila,D9,MKD
+2027,MK.01,Arachinovo,Arachinovo,01,MKD
+2028,MK.C7,Bogovinje,Bogovinje,C7,MKD
+2029,MK.12,Brvenica,Brvenica,12,MKD
+2030,MK.C9,Chashka,Chashka,C9,MKD
+2031,MK.18,Centar Zhupa,Centar Zhupa,18,MKD
+2032,MK.20,Chucher Sandevo,Chucher Sandevo,20,MKD
+2033,MK.D2,Debar,Debar,D2,MKD
+2034,MK.22,Delchevo,Delchevo,22,MKD
+2035,MK.D3,Demir Hisar,Demir Hisar,D3,MKD
+2036,MK.28,Dolneni,Dolneni,28,MKD
+2037,MK.33,Gevgelija,Gevgelija,33,MKD
+2038,MK.D4,Gostivar,Gostivar,D4,MKD
+2039,MK.36,Ilinden,Ilinden,36,MKD
+2040,MK.D5,Jegunovce,Jegunovce,D5,MKD
+2041,MK.D6,Kavadarci,Kavadarci,D6,MKD
+2042,MK.43,Kichevo,Kichevo,43,MKD
+2043,MK.46,Kochani,Kochani,46,MKD
+2044,MK.52,Kriva Palanka,Kriva Palanka,52,MKD
+2045,MK.53,Krivogashtani,Krivogashtani,53,MKD
+2046,MK.54,Krushevo,Krushevo,54,MKD
+2047,MK.D7,Kumanovo,Kumanovo,D7,MKD
+2048,MK.59,Lipkovo,Lipkovo,59,MKD
+2049,MK.D8,Makedonski Brod,Makedonski Brod,D8,MKD
+2050,MK.69,Negotino,Negotino,69,MKD
+2051,MK.E2,Ohrid,Ohrid,E2,MKD
+2052,MK.79,Petrovec,Petrovec,79,MKD
+2053,MK.80,Plasnica,Plasnica,80,MKD
+2054,MK.E3,Prilep,Prilep,E3,MKD
+2055,MK.83,Probishtip,Probishtip,83,MKD
+2056,MK.84,Radovish,Radovish,84,MKD
+2057,MK.85,Rankovce,Rankovce,85,MKD
+2058,MK.E4,Mavrovo and Rostuša,Mavrovo and Rostusa,E4,MKD
+2059,MK.92,Sopište,Sopiste,92,MKD
+2060,MK.97,Staro Nagorichane,Staro Nagorichane,97,MKD
+2061,MK.98,Shtip,Shtip,98,MKD
+2062,MK.E6,Struga,Struga,E6,MKD
+2063,MK.E7,Strumica,Strumica,E7,MKD
+2064,MK.A2,Studenichani,Studenichani,A2,MKD
+2065,MK.A4,Sveti Nikole,Sveti Nikole,A4,MKD
+2066,MK.A5,Tearce,Tearce,A5,MKD
+2067,MK.E8,Tetovo,Tetovo,E8,MKD
+2068,MK.F1,Veles,Veles,F1,MKD
+2069,MK.B3,Vevchani,Vevchani,B3,MKD
+2070,MK.B4,Vinica,Vinica,B4,MKD
+2071,MK.B7,Vrapchishte,Vrapchishte,B7,MKD
+2072,MK.C2,Zelenikovo,Zelenikovo,C2,MKD
+2073,MK.C3,Zhelino,Zhelino,C3,MKD
+2074,MK.F5,Debarca,Debarca,F5,MKD
+2075,MK.F6,Grad Skopje,Grad Skopje,F6,MKD
+2076,ML.08,Tombouctou,Tombouctou,08,MLI
+2077,ML.06,Sikasso,Sikasso,06,MLI
+2078,ML.05,Ségou,Segou,05,MLI
+2079,ML.04,Mopti,Mopti,04,MLI
+2080,ML.07,Koulikoro,Koulikoro,07,MLI
+2081,ML.03,Kayes,Kayes,03,MLI
+2082,ML.09,Gao,Gao,09,MLI
+2083,ML.01,Bamako,Bamako,01,MLI
+2084,ML.10,Kidal,Kidal,10,MLI
+2085,ML.12070575,Taoudénit,Taoudenit,12070575,MLI
+2086,ML.12070577,Ménaka,Menaka,12070577,MLI
+2087,MM.12,Tanintharyi Region,Tanintharyi Region,12,MMR
+2088,MM.11,Shan State,Shan State,11,MMR
+2089,MM.10,Sagaing Region,Sagaing Region,10,MMR
+2090,MM.17,Yangon,Yangon,17,MMR
+2091,MM.01,Rakhine,Rakhine,01,MMR
+2092,MM.16,Bago Region,Bago Region,16,MMR
+2093,MM.13,Mon,Mon,13,MMR
+2094,MM.08,Mandalay Region,Mandalay Region,08,MMR
+2095,MM.15,Magway,Magway,15,MMR
+2096,MM.06,Kayah State,Kayah State,06,MMR
+2097,MM.05,Kayin State,Kayin State,05,MMR
+2098,MM.04,Kachin State,Kachin State,04,MMR
+2099,MM.03,Ayeyarwady,Ayeyarwady,03,MMR
+2100,MM.02,Chin State,Chin State,02,MMR
+2101,MM.18,Nay Pyi Taw,Nay Pyi Taw,18,MMR
+2102,MN.19,Uvs Province,Uvs Province,19,MNG
+2103,MN.12,Hovd,Hovd,12,MNG
+2104,MN.10,Govi-Altai Province,Govi-Altai Province,10,MNG
+2105,MN.09,Dzabkhan,Dzabkhan,09,MNG
+2106,MN.03,Bayan-Ölgii Province,Bayan-OElgii Province,03,MNG
+2107,MN.02,Bayanhongor,Bayanhongor,02,MNG
+2108,MN.20,Ulaanbaatar,Ulaanbaatar,20,MNG
+2109,MN.18,Central Aimak,Central Aimak,18,MNG
+2110,MN.17,Sühbaatar,Suhbaatar,17,MNG
+2111,MN.16,Selenge Province,Selenge Province,16,MNG
+2112,MN.15,Övörhangay,OEvoerhangay,15,MNG
+2113,MN.14,Ömnögovĭ,OEmnoegovi,14,MNG
+2114,MN.13,Khövsgöl Province,Khoevsgoel Province,13,MNG
+2115,MN.11,Hentiy,Hentiy,11,MNG
+2116,MN.08,Middle Govĭ,Middle Govi,08,MNG
+2117,MN.07,East Gobi Aymag,East Gobi Aymag,07,MNG
+2118,MN.06,East Aimak,East Aimak,06,MNG
+2119,MN.21,Bulgan,Bulgan,21,MNG
+2120,MN.01,Arkhangai Province,Arkhangai Province,01,MNG
+2121,MN.23,Darhan Uul,Darhan Uul,23,MNG
+2122,MN.24,Govĭ-Sumber,Govi-Sumber,24,MNG
+2123,MN.25,Orhon,Orhon,25,MNG
+2124,MO.11875154,Nossa Senhora de Fátima,Nossa Senhora de Fatima,11875154,MAC
+2125,MO.11875155,Santo António,Santo Antonio,11875155,MAC
+2126,MO.11875156,São Lázaro,Sao Lazaro,11875156,MAC
+2127,MO.11875157,Sé,Se,11875157,MAC
+2128,MO.11875158,São Lourenço,Sao Lourenco,11875158,MAC
+2129,MO.11875159,Nossa Senhora do Carmo,Nossa Senhora do Carmo,11875159,MAC
+2130,MO.11875160,Cotai,Cotai,11875160,MAC
+2131,MO.11875161,São Francisco Xavier,Sao Francisco Xavier,11875161,MAC
+2132,MP.100,Rota,Rota,100,MNP
+2133,MP.110,Saipan,Saipan,110,MNP
+2134,MP.120,Tinian,Tinian,120,MNP
+2135,MP.085,Northern Islands,Northern Islands,085,MNP
+2136,MQ.MQ,Martinique,Martinique,MQ,MTQ
+2137,MR.06,Trarza,Trarza,06,MRT
+2138,MR.11,Tiris Zemmour,Tiris Zemmour,11,MRT
+2139,MR.09,Tagant,Tagant,09,MRT
+2140,MR.12,Inchiri,Inchiri,12,MRT
+2141,MR.02,Hodh El Gharbi,Hodh El Gharbi,02,MRT
+2142,MR.01,Hodh Ech Chargi,Hodh Ech Chargi,01,MRT
+2143,MR.10,Guidimaka,Guidimaka,10,MRT
+2144,MR.04,Gorgol,Gorgol,04,MRT
+2145,MR.08,Dakhlet Nouadhibou,Dakhlet Nouadhibou,08,MRT
+2146,MR.05,Brakna,Brakna,05,MRT
+2147,MR.03,Assaba,Assaba,03,MRT
+2148,MR.07,Adrar,Adrar,07,MRT
+2149,MR.13,Nouakchott Ouest,Nouakchott Ouest,13,MRT
+2150,MR.14,Nouakchott Nord,Nouakchott Nord,14,MRT
+2151,MR.15,Nouakchott Sud,Nouakchott Sud,15,MRT
+2152,MS.03,Saint Peter,Saint Peter,03,MSR
+2153,MS.02,Saint Georges,Saint Georges,02,MSR
+2154,MS.01,Saint Anthony,Saint Anthony,01,MSR
+2155,MT.01,Attard,Attard,01,MLT
+2156,MT.02,Balzan,Balzan,02,MLT
+2157,MT.03,Il-Birgu,Il-Birgu,03,MLT
+2158,MT.04,Birkirkara,Birkirkara,04,MLT
+2159,MT.05,Birżebbuġa,Birzebbuga,05,MLT
+2160,MT.06,Bormla,Bormla,06,MLT
+2161,MT.07,Dingli,Dingli,07,MLT
+2162,MT.08,Il-Fgura,Il-Fgura,08,MLT
+2163,MT.09,Floriana,Floriana,09,MLT
+2164,MT.10,Il-Fontana,Il-Fontana,10,MLT
+2165,MT.11,Għajnsielem,Ghajnsielem,11,MLT
+2166,MT.12,L-Għarb,L-Gharb,12,MLT
+2167,MT.13,Ħal Għargħur,Hal Gharghur,13,MLT
+2168,MT.14,L-Għasri,L-Ghasri,14,MLT
+2169,MT.15,Ħal Għaxaq,Hal Ghaxaq,15,MLT
+2170,MT.16,Il-Gudja,Il-Gudja,16,MLT
+2171,MT.17,Il-Gżira,Il-Gzira,17,MLT
+2172,MT.18,Il-Ħamrun,Il-Hamrun,18,MLT
+2173,MT.19,L-Iklin,L-Iklin,19,MLT
+2174,MT.20,L-Imdina,L-Imdina,20,MLT
+2175,MT.21,L-Imġarr,L-Imgarr,21,MLT
+2176,MT.22,L-Imqabba,L-Imqabba,22,MLT
+2177,MT.23,L-Imsida,L-Imsida,23,MLT
+2178,MT.24,Mtarfa,Mtarfa,24,MLT
+2179,MT.25,Senglea,Senglea,25,MLT
+2180,MT.26,Il-Kalkara,Il-Kalkara,26,MLT
+2181,MT.27,Ta’ Kerċem,Ta' Kercem,27,MLT
+2182,MT.28,Kirkop,Kirkop,28,MLT
+2183,MT.29,Lija,Lija,29,MLT
+2184,MT.30,Luqa,Luqa,30,MLT
+2185,MT.31,Il-Marsa,Il-Marsa,31,MLT
+2186,MT.32,Marsaskala,Marsaskala,32,MLT
+2187,MT.33,Marsaxlokk,Marsaxlokk,33,MLT
+2188,MT.34,Il-Mellieħa,Il-Mellieha,34,MLT
+2189,MT.35,Il-Mosta,Il-Mosta,35,MLT
+2190,MT.36,Il-Munxar,Il-Munxar,36,MLT
+2191,MT.37,In-Nadur,In-Nadur,37,MLT
+2192,MT.38,In-Naxxar,In-Naxxar,38,MLT
+2193,MT.39,Paola,Paola,39,MLT
+2194,MT.40,Pembroke,Pembroke,40,MLT
+2195,MT.41,Tal-Pietà,Tal-Pieta,41,MLT
+2196,MT.42,Il-Qala,Il-Qala,42,MLT
+2197,MT.43,Qormi,Qormi,43,MLT
+2198,MT.44,Il-Qrendi,Il-Qrendi,44,MLT
+2199,MT.45,Ir-Rabat,Ir-Rabat,45,MLT
+2200,MT.46,Victoria,Victoria,46,MLT
+2201,MT.47,Safi,Safi,47,MLT
+2202,MT.48,Saint John,Saint John,48,MLT
+2203,MT.49,Saint Julian,Saint Julian,49,MLT
+2204,MT.50,Saint Lawrence,Saint Lawrence,50,MLT
+2205,MT.51,Saint Lucia,Saint Lucia,51,MLT
+2206,MT.52,Saint Paul’s Bay,Saint Paul's Bay,52,MLT
+2207,MT.53,Saint Venera,Saint Venera,53,MLT
+2208,MT.54,Sannat,Sannat,54,MLT
+2209,MT.55,Is-Siġġiewi,Is-Siggiewi,55,MLT
+2210,MT.56,Tas-Sliema,Tas-Sliema,56,MLT
+2211,MT.57,Is-Swieqi,Is-Swieqi,57,MLT
+2212,MT.58,Tarxien,Tarxien,58,MLT
+2213,MT.59,Ta’ Xbiex,Ta' Xbiex,59,MLT
+2214,MT.61,Ix-Xagħra,Ix-Xaghra,61,MLT
+2215,MT.62,Ix-Xewkija,Ix-Xewkija,62,MLT
+2216,MT.63,Ix-Xgħajra,Ix-Xghajra,63,MLT
+2217,MT.64,Ħaż-Żabbar,Haz-Zabbar,64,MLT
+2218,MT.65,Ħaż-Żebbuġ,Haz-Zebbug,65,MLT
+2219,MT.66,Iż-Żebbuġ,Iz-Zebbug,66,MLT
+2220,MT.67,Iż-Żejtun,Iz-Zejtun,67,MLT
+2221,MT.68,Iż-Żurrieq,Iz-Zurrieq,68,MLT
+2222,MT.60,Valletta,Valletta,60,MLT
+2223,MU.21,Agalega Islands,Agalega Islands,21,MUS
+2224,MU.20,Savanne,Savanne,20,MUS
+2225,MU.19,Rivière du Rempart,Riviere du Rempart,19,MUS
+2226,MU.18,Port Louis,Port Louis,18,MUS
+2227,MU.17,Plaines Wilhems,Plaines Wilhems,17,MUS
+2228,MU.16,Pamplemousses,Pamplemousses,16,MUS
+2229,MU.15,Moka,Moka,15,MUS
+2230,MU.14,Grand Port,Grand Port,14,MUS
+2231,MU.13,Flacq,Flacq,13,MUS
+2232,MU.12,Black River,Black River,12,MUS
+2233,MU.22,Cargados Carajos,Cargados Carajos,22,MUS
+2234,MU.23,Rodrigues,Rodrigues,23,MUS
+2235,MV.47,Vaavu Atholhu,Vaavu Atholhu,47,MDV
+2236,MV.46,Thaa Atholhu,Thaa Atholhu,46,MDV
+2237,MV.45,Shaviyani Atholhu,Shaviyani Atholhu,45,MDV
+2238,MV.01,Seenu,Seenu,01,MDV
+2239,MV.44,Raa Atoll,Raa Atoll,44,MDV
+2240,MV.43,Noonu Atoll,Noonu Atoll,43,MDV
+2241,MV.42,Gnyaviyani Atoll,Gnyaviyani Atoll,42,MDV
+2242,MV.41,Meemu Atholhu,Meemu Atholhu,41,MDV
+2243,MV.39,Faadhippolhu Atoll,Faadhippolhu Atoll,39,MDV
+2244,MV.05,Laamu,Laamu,05,MDV
+2245,MV.38,Kaafu Atoll,Kaafu Atoll,38,MDV
+2246,MV.37,Haa Dhaalu Atholhu,Haa Dhaalu Atholhu,37,MDV
+2247,MV.36,Haa Alifu Atholhu,Haa Alifu Atholhu,36,MDV
+2248,MV.35,Gaafu Dhaalu Atoll,Gaafu Dhaalu Atoll,35,MDV
+2249,MV.34,Gaafu Alif Atoll,Gaafu Alif Atoll,34,MDV
+2250,MV.33,Faafu Atholhu,Faafu Atholhu,33,MDV
+2251,MV.32,Dhaalu Atholhu,Dhaalu Atholhu,32,MDV
+2252,MV.31,Baa Atholhu,Baa Atholhu,31,MDV
+2253,MV.30,Northern Ari Atoll,Northern Ari Atoll,30,MDV
+2254,MV.40,Male,Male,40,MDV
+2255,MV.10346475,Southern Ari Atoll,Southern Ari Atoll,10346475,MDV
+2256,MW.S,Southern Region,Southern Region,S,MWI
+2257,MW.N,Northern Region,Northern Region,N,MWI
+2258,MW.C,Central Region,Central Region,C,MWI
+2259,MX.31,Yucatán,Yucatan,31,MEX
+2260,MX.30,Veracruz,Veracruz,30,MEX
+2261,MX.29,Tlaxcala,Tlaxcala,29,MEX
+2262,MX.28,Tamaulipas,Tamaulipas,28,MEX
+2263,MX.27,Tabasco,Tabasco,27,MEX
+2264,MX.23,Quintana Roo,Quintana Roo,23,MEX
+2265,MX.22,Querétaro,Queretaro,22,MEX
+2266,MX.21,Puebla,Puebla,21,MEX
+2267,MX.20,Oaxaca,Oaxaca,20,MEX
+2268,MX.19,Nuevo León,Nuevo Leon,19,MEX
+2269,MX.17,Morelos,Morelos,17,MEX
+2270,MX.15,México,Mexico,15,MEX
+2271,MX.13,Hidalgo,Hidalgo,13,MEX
+2272,MX.12,Guerrero,Guerrero,12,MEX
+2273,MX.09,Mexico City,Mexico City,09,MEX
+2274,MX.05,Chiapas,Chiapas,05,MEX
+2275,MX.04,Campeche,Campeche,04,MEX
+2276,MX.32,Zacatecas,Zacatecas,32,MEX
+2277,MX.26,Sonora,Sonora,26,MEX
+2278,MX.25,Sinaloa,Sinaloa,25,MEX
+2279,MX.24,San Luis Potosí,San Luis Potosi,24,MEX
+2280,MX.18,Nayarit,Nayarit,18,MEX
+2281,MX.16,Michoacán,Michoacan,16,MEX
+2282,MX.14,Jalisco,Jalisco,14,MEX
+2283,MX.11,Guanajuato,Guanajuato,11,MEX
+2284,MX.10,Durango,Durango,10,MEX
+2285,MX.08,Colima,Colima,08,MEX
+2286,MX.07,Coahuila,Coahuila,07,MEX
+2287,MX.06,Chihuahua,Chihuahua,06,MEX
+2288,MX.03,Baja California Sur,Baja California Sur,03,MEX
+2289,MX.02,Baja California,Baja California,02,MEX
+2290,MX.01,Aguascalientes,Aguascalientes,01,MEX
+2291,MY.04,Melaka,Melaka,04,MYS
+2292,MY.13,Terengganu,Terengganu,13,MYS
+2293,MY.12,Selangor,Selangor,12,MYS
+2294,MY.11,Sarawak,Sarawak,11,MYS
+2295,MY.16,Sabah,Sabah,16,MYS
+2296,MY.08,Perlis,Perlis,08,MYS
+2297,MY.07,Perak,Perak,07,MYS
+2298,MY.06,Pahang,Pahang,06,MYS
+2299,MY.05,Negeri Sembilan,Negeri Sembilan,05,MYS
+2300,MY.03,Kelantan,Kelantan,03,MYS
+2301,MY.14,Kuala Lumpur,Kuala Lumpur,14,MYS
+2302,MY.09,Penang,Penang,09,MYS
+2303,MY.02,Kedah,Kedah,02,MYS
+2304,MY.01,Johor,Johor,01,MYS
+2305,MY.15,Labuan,Labuan,15,MYS
+2306,MY.17,Putrajaya,Putrajaya,17,MYS
+2307,MZ.09,Zambezia Province,Zambezia Province,09,MOZ
+2308,MZ.08,Tete,Tete,08,MOZ
+2309,MZ.05,Sofala,Sofala,05,MOZ
+2310,MZ.07,Niassa Province,Niassa Province,07,MOZ
+2311,MZ.06,Nampula,Nampula,06,MOZ
+2312,MZ.04,Maputo Province,Maputo Province,04,MOZ
+2313,MZ.10,Manica,Manica,10,MOZ
+2314,MZ.03,Inhambane Province,Inhambane Province,03,MOZ
+2315,MZ.02,Gaza Province,Gaza Province,02,MOZ
+2316,MZ.01,Cabo Delgado Province,Cabo Delgado Province,01,MOZ
+2317,MZ.11,Maputo City,Maputo City,11,MOZ
+2318,NA.28,Zambezi Region,Zambezi Region,28,NAM
+2319,NA.21,Khomas Region,Khomas Region,21,NAM
+2320,NA.29,Erongo Region,Erongo Region,29,NAM
+2321,NA.30,Hardap Region,Hardap Region,30,NAM
+2322,NA.31,Karas Region,Karas Region,31,NAM
+2323,NA.32,Kunene Region,Kunene Region,32,NAM
+2324,NA.33,Ohangwena Region,Ohangwena Region,33,NAM
+2325,NA.35,Omaheke Region,Omaheke Region,35,NAM
+2326,NA.36,Omusati Region,Omusati Region,36,NAM
+2327,NA.37,Oshana Region,Oshana Region,37,NAM
+2328,NA.38,Oshikoto Region,Oshikoto Region,38,NAM
+2329,NA.39,Otjozondjupa Region,Otjozondjupa Region,39,NAM
+2330,NA.40,Kavango East,Kavango East,40,NAM
+2331,NA.41,Kavango West,Kavango West,41,NAM
+2332,NC.02,South Province,South Province,02,NCL
+2333,NC.01,North Province,North Province,01,NCL
+2334,NC.03,Loyalty Islands,Loyalty Islands,03,NCL
+2335,NE.07,Zinder Region,Zinder Region,07,NER
+2336,NE.06,Tahoua Region,Tahoua Region,06,NER
+2337,NE.04,Maradi Region,Maradi Region,04,NER
+2338,NE.03,Dosso Region,Dosso Region,03,NER
+2339,NE.02,Diffa,Diffa,02,NER
+2340,NE.01,Agadez,Agadez,01,NER
+2341,NE.09,Tillabéri Region,Tillaberi Region,09,NER
+2342,NE.08,Niamey,Niamey,08,NER
+2343,NG.51,Sokoto,Sokoto,51,NGA
+2344,NG.50,Rivers State,Rivers State,50,NGA
+2345,NG.49,Plateau State,Plateau State,49,NGA
+2346,NG.32,Oyo State,Oyo State,32,NGA
+2347,NG.48,Ondo State,Ondo State,48,NGA
+2348,NG.16,Ogun State,Ogun State,16,NGA
+2349,NG.31,Niger State,Niger State,31,NGA
+2350,NG.05,Lagos,Lagos,05,NGA
+2351,NG.30,Kwara State,Kwara State,30,NGA
+2352,NG.24,Katsina State,Katsina State,24,NGA
+2353,NG.29,Kano State,Kano State,29,NGA
+2354,NG.23,Kaduna State,Kaduna State,23,NGA
+2355,NG.28,Imo State,Imo State,28,NGA
+2356,NG.22,Cross River State,Cross River State,22,NGA
+2357,NG.27,Borno State,Borno State,27,NGA
+2358,NG.26,Benue State,Benue State,26,NGA
+2359,NG.46,Bauchi,Bauchi,46,NGA
+2360,NG.25,Anambra,Anambra,25,NGA
+2361,NG.21,Akwa Ibom State,Akwa Ibom State,21,NGA
+2362,NG.11,FCT,FCT,11,NGA
+2363,NG.45,Abia State,Abia State,45,NGA
+2364,NG.36,Delta,Delta,36,NGA
+2365,NG.35,Adamawa,Adamawa,35,NGA
+2366,NG.37,Edo State,Edo State,37,NGA
+2367,NG.47,Enugu State,Enugu State,47,NGA
+2368,NG.39,Jigawa State,Jigawa State,39,NGA
+2369,NG.52,Bayelsa State,Bayelsa State,52,NGA
+2370,NG.53,Ebonyi State,Ebonyi State,53,NGA
+2371,NG.54,Ekiti State,Ekiti State,54,NGA
+2372,NG.55,Gombe State,Gombe State,55,NGA
+2373,NG.56,Nasarawa State,Nasarawa State,56,NGA
+2374,NG.57,Zamfara State,Zamfara State,57,NGA
+2375,NG.40,Kebbi,Kebbi,40,NGA
+2376,NG.41,Kogi State,Kogi State,41,NGA
+2377,NG.42,Osun State,Osun State,42,NGA
+2378,NG.43,Taraba State,Taraba State,43,NGA
+2379,NG.44,Yobe State,Yobe State,44,NGA
+2380,NI.15,Rivas Department,Rivas Department,15,NIC
+2381,NI.14,Río San Juan Department,Rio San Juan Department,14,NIC
+2382,NI.13,Nueva Segovia Department,Nueva Segovia Department,13,NIC
+2383,NI.12,Matagalpa Department,Matagalpa Department,12,NIC
+2384,NI.11,Masaya Department,Masaya Department,11,NIC
+2385,NI.10,Managua Department,Managua Department,10,NIC
+2386,NI.09,Madriz Department,Madriz Department,09,NIC
+2387,NI.08,León Department,Leon Department,08,NIC
+2388,NI.07,Jinotega Department,Jinotega Department,07,NIC
+2389,NI.06,Granada Department,Granada Department,06,NIC
+2390,NI.05,Estelí Department,Esteli Department,05,NIC
+2391,NI.04,Chontales Department,Chontales Department,04,NIC
+2392,NI.03,Chinandega Department,Chinandega Department,03,NIC
+2393,NI.02,Carazo Department,Carazo Department,02,NIC
+2394,NI.01,Boaco Department,Boaco Department,01,NIC
+2395,NI.17,North Caribbean Coast,North Caribbean Coast,17,NIC
+2396,NI.18,South Caribbean Coast,South Caribbean Coast,18,NIC
+2397,NL.11,South Holland,South Holland,11,NLD
+2398,NL.10,Zeeland,Zeeland,10,NLD
+2399,NL.09,Utrecht,Utrecht,09,NLD
+2400,NL.15,Overijssel,Overijssel,15,NLD
+2401,NL.07,North Holland,North Holland,07,NLD
+2402,NL.06,North Brabant,North Brabant,06,NLD
+2403,NL.05,Limburg,Limburg,05,NLD
+2404,NL.04,Groningen,Groningen,04,NLD
+2405,NL.03,Gelderland,Gelderland,03,NLD
+2406,NL.02,Friesland,Friesland,02,NLD
+2407,NL.01,Drenthe,Drenthe,01,NLD
+2408,NL.16,Flevoland,Flevoland,16,NLD
+2409,NO.05,Finnmark,Finnmark,05,NOR
+2410,NO.20,Vestfold,Vestfold,20,NOR
+2411,NO.18,Troms,Troms,18,NOR
+2412,NO.17,Telemark,Telemark,17,NOR
+2413,NO.14,Rogaland,Rogaland,14,NOR
+2414,NO.13,Østfold,Ostfold,13,NOR
+2415,NO.12,Oslo,Oslo,12,NOR
+2416,NO.09,Nordland,Nordland,09,NOR
+2417,NO.08,Møre og Romsdal,More og Romsdal,08,NOR
+2418,NO.04,Buskerud,Buskerud,04,NOR
+2419,NO.01,Akershus,Akershus,01,NOR
+2420,NO.21,Trøndelag,Trondelag,21,NOR
+2421,NO.42,Agder,Agder,42,NOR
+2422,NO.34,Innlandet,Innlandet,34,NOR
+2423,NO.46,Vestland,Vestland,46,NOR
+2424,NP.1,Koshi,Koshi,1,NPL
+2425,NP.2,Madhesh,Madhesh,2,NPL
+2426,NP.3,Bagmati Province,Bagmati Province,3,NPL
+2427,NP.4,Province 4,Province 4,4,NPL
+2428,NP.5,Lumbini Province,Lumbini Province,5,NPL
+2429,NP.6,Karnali Pradesh,Karnali Pradesh,6,NPL
+2430,NP.7,Sudurpashchim Pradesh,Sudurpashchim Pradesh,7,NPL
+2431,NR.14,Yaren District,Yaren District,14,NRU
+2432,NR.13,Uaboe District,Uaboe District,13,NRU
+2433,NR.12,Nibok District,Nibok District,12,NRU
+2434,NR.11,Meneng District,Meneng District,11,NRU
+2435,NR.10,Ijuw District,Ijuw District,10,NRU
+2436,NR.09,Ewa District,Ewa District,09,NRU
+2437,NR.08,Denigomodu District,Denigomodu District,08,NRU
+2438,NR.07,Buada District,Buada District,07,NRU
+2439,NR.06,Boe District,Boe District,06,NRU
+2440,NR.05,Baiti District,Baiti District,05,NRU
+2441,NR.04,Anibare District,Anibare District,04,NRU
+2442,NR.03,Anetan District,Anetan District,03,NRU
+2443,NR.02,Anabar District,Anabar District,02,NRU
+2444,NR.01,Aiwo District,Aiwo District,01,NRU
+2445,NZ.G2,Wellington Region,Wellington Region,G2,NZL
+2446,NZ.F3,Manawatu-Wanganui,Manawatu-Wanganui,F3,NZL
+2447,NZ.G1,Waikato Region,Waikato Region,G1,NZL
+2448,NZ.TAS,Tasman District,Tasman District,TAS,NZL
+2449,NZ.F9,Taranaki Region,Taranaki Region,F9,NZL
+2450,NZ.F8,Southland,Southland,F8,NZL
+2451,NZ.E8,Bay of Plenty,Bay of Plenty,E8,NZL
+2452,NZ.F6,Northland,Northland,F6,NZL
+2453,NZ.F4,Marlborough,Marlborough,F4,NZL
+2454,NZ.F2,Hawke's Bay Region,Hawke's Bay Region,F2,NZL
+2455,NZ.F1,Gisborne,Gisborne,F1,NZL
+2456,NZ.E9,Canterbury,Canterbury,E9,NZL
+2457,NZ.E7,Auckland,Auckland,E7,NZL
+2458,NZ.10,Chatham Islands,Chatham Islands,10,NZL
+2459,NZ.F5,Nelson Region,Nelson Region,F5,NZL
+2460,NZ.F7,Otago,Otago,F7,NZL
+2461,NZ.G3,West Coast,West Coast,G3,NZL
+2462,OM.01,Ad Dakhiliyah,Ad Dakhiliyah,01,OMN
+2463,OM.02,Al Batinah South,Al Batinah South,02,OMN
+2464,OM.03,Al Wusta Governorate,Al Wusta Governorate,03,OMN
+2465,OM.04,Southeastern Governorate,Southeastern Governorate,04,OMN
+2466,OM.09,Ad Dhahirah,Ad Dhahirah,09,OMN
+2467,OM.06,Muscat,Muscat,06,OMN
+2468,OM.07,Musandam Governorate,Musandam Governorate,07,OMN
+2469,OM.08,Dhofar,Dhofar,08,OMN
+2470,OM.10,Al Buraimi,Al Buraimi,10,OMN
+2471,OM.12,Northeastern Governorate,Northeastern Governorate,12,OMN
+2472,OM.11,Al Batinah North,Al Batinah North,11,OMN
+2473,PA.10,Veraguas Province,Veraguas Province,10,PAN
+2474,PA.09,Guna Yala,Guna Yala,09,PAN
+2475,PA.08,Panamá,Panama,08,PAN
+2476,PA.07,Los Santos Province,Los Santos Province,07,PAN
+2477,PA.06,Herrera Province,Herrera Province,06,PAN
+2478,PA.05,Darién,Darien,05,PAN
+2479,PA.04,Colón,Colon,04,PAN
+2480,PA.03,Coclé,Cocle,03,PAN
+2481,PA.02,Chiriquí Province,Chiriqui Province,02,PAN
+2482,PA.01,Bocas del Toro Province,Bocas del Toro Province,01,PAN
+2483,PA.11,Emberá,Embera,11,PAN
+2484,PA.12,Ngöbe-Buglé Comarca,Ngoebe-Bugle Comarca,12,PAN
+2485,PA.13,Panamá Oeste Province,Panama Oeste Province,13,PAN
+2486,PA.NT,Naso Tjër Di,Naso Tjer Di,NT,PAN
+2487,PE.25,Ucayali,Ucayali,25,PER
+2488,PE.24,Tumbes,Tumbes,24,PER
+2489,PE.22,San Martín Department,San Martin Department,22,PER
+2490,PE.20,Piura,Piura,20,PER
+2491,PE.16,Loreto,Loreto,16,PER
+2492,PE.14,Lambayeque,Lambayeque,14,PER
+2493,PE.13,La Libertad,La Libertad,13,PER
+2494,PE.10,Huánuco Department,Huanuco Department,10,PER
+2495,PE.06,Cajamarca Department,Cajamarca Department,06,PER
+2496,PE.02,Ancash,Ancash,02,PER
+2497,PE.01,Amazonas,Amazonas,01,PER
+2498,PE.23,Tacna,Tacna,23,PER
+2499,PE.21,Puno,Puno,21,PER
+2500,PE.19,Pasco,Pasco,19,PER
+2501,PE.18,Moquegua Department,Moquegua Department,18,PER
+2502,PE.17,Madre de Dios,Madre de Dios,17,PER
+2503,PE.LMA,Lima Province,Lima Province,LMA,PER
+2504,PE.15,Lima region,Lima region,15,PER
+2505,PE.12,Junin,Junin,12,PER
+2506,PE.11,Ica,Ica,11,PER
+2507,PE.09,Huancavelica,Huancavelica,09,PER
+2508,PE.08,Cuzco Department,Cuzco Department,08,PER
+2509,PE.07,Callao,Callao,07,PER
+2510,PE.05,Ayacucho,Ayacucho,05,PER
+2511,PE.04,Arequipa,Arequipa,04,PER
+2512,PE.03,Apurímac Department,Apurimac Department,03,PER
+2513,PF.04,Îles Marquises,Iles Marquises,04,PYF
+2514,PF.03,Îles Tuamotu-Gambier,Iles Tuamotu-Gambier,03,PYF
+2515,PF.02,Leeward Islands,Leeward Islands,02,PYF
+2516,PF.01,Îles du Vent,Iles du Vent,01,PYF
+2517,PF.05,Îles Australes,Iles Australes,05,PYF
+2518,PG.17,West New Britain Province,West New Britain Province,17,PNG
+2519,PG.06,Western Province,Western Province,06,PNG
+2520,PG.16,Western Highlands Province,Western Highlands Province,16,PNG
+2521,PG.05,Southern Highlands Province,Southern Highlands Province,05,PNG
+2522,PG.18,Sandaun Province,Sandaun Province,18,PNG
+2523,PG.07,Bougainville,Bougainville,07,PNG
+2524,PG.04,Oro Province,Oro Province,04,PNG
+2525,PG.15,New Ireland,New Ireland,15,PNG
+2526,PG.20,National Capital,National Capital,20,PNG
+2527,PG.14,Morobe Province,Morobe Province,14,PNG
+2528,PG.13,Manus Province,Manus Province,13,PNG
+2529,PG.12,Madang Province,Madang Province,12,PNG
+2530,PG.02,Gulf Province,Gulf Province,02,PNG
+2531,PG.19,Enga Province,Enga Province,19,PNG
+2532,PG.11,East Sepik Province,East Sepik Province,11,PNG
+2533,PG.10,East New Britain Province,East New Britain Province,10,PNG
+2534,PG.09,Eastern Highlands Province,Eastern Highlands Province,09,PNG
+2535,PG.08,Chimbu Province,Chimbu Province,08,PNG
+2536,PG.03,Milne Bay Province,Milne Bay Province,03,PNG
+2537,PG.01,Central Province,Central Province,01,PNG
+2538,PG.21,Hela Province,Hela Province,21,PNG
+2539,PG.22,Jiwaka Province,Jiwaka Province,22,PNG
+2540,PH.14,Autonomous Region in Muslim Mindanao,Autonomous Region in Muslim Mindanao,14,PHL
+2541,PH.10,Northern Mindanao,Northern Mindanao,10,PHL
+2542,PH.41,Mimaropa,Mimaropa,41,PHL
+2543,PH.02,Cagayan Valley,Cagayan Valley,02,PHL
+2544,PH.12,Soccsksargen,Soccsksargen,12,PHL
+2545,PH.13,Caraga,Caraga,13,PHL
+2546,PH.15,Cordillera,Cordillera,15,PHL
+2547,PH.01,Ilocos,Ilocos,01,PHL
+2548,PH.40,Calabarzon,Calabarzon,40,PHL
+2549,PH.06,Western Visayas,Western Visayas,06,PHL
+2550,PH.03,Central Luzon,Central Luzon,03,PHL
+2551,PH.07,Central Visayas,Central Visayas,07,PHL
+2552,PH.08,Eastern Visayas,Eastern Visayas,08,PHL
+2553,PH.09,Zamboanga Peninsula,Zamboanga Peninsula,09,PHL
+2554,PH.11,Davao Region,Davao Region,11,PHL
+2555,PH.05,Bicol Region,Bicol Region,05,PHL
+2556,PH.NCR,Metro Manila,Metro Manila,NCR,PHL
+2557,PK.08,Islamabad,Islamabad,08,PAK
+2558,PK.05,Sindh,Sindh,05,PAK
+2559,PK.04,Punjab,Punjab,04,PAK
+2560,PK.03,Khyber Pakhtunkhwa,Khyber Pakhtunkhwa,03,PAK
+2561,PK.07,Gilgit-Baltistan(POK),Gilgit-Baltistan(POK),07,PAK
+2562,PK.02,Balochistan,Balochistan,02,PAK
+2563,PK.06,Azad Jammu and Kashmir(POK),Azad Jammu and Kashmir(POK),06,PAK
+2564,PL.75,Lublin,Lublin,75,POL
+2565,PL.77,Lesser Poland,Lesser Poland,77,POL
+2566,PL.78,Mazovia,Mazovia,78,POL
+2567,PL.80,Subcarpathia,Subcarpathia,80,POL
+2568,PL.81,Podlasie,Podlasie,81,POL
+2569,PL.84,Świętokrzyskie,Swietokrzyskie,84,POL
+2570,PL.85,Warmia-Masuria,Warmia-Masuria,85,POL
+2571,PL.72,Lower Silesia,Lower Silesia,72,POL
+2572,PL.74,Łódź Voivodeship,Lodz Voivodeship,74,POL
+2573,PL.76,Lubusz,Lubusz,76,POL
+2574,PL.79,Opole Voivodeship,Opole Voivodeship,79,POL
+2575,PL.82,Pomerania,Pomerania,82,POL
+2576,PL.83,Silesia,Silesia,83,POL
+2577,PL.86,Greater Poland,Greater Poland,86,POL
+2578,PL.87,West Pomerania,West Pomerania,87,POL
+2579,PL.73,Kujawsko-Pomorskie,Kujawsko-Pomorskie,73,POL
+2580,PM.97502,Saint-Pierre,Saint-Pierre,97502,SPM
+2581,PM.97501,Miquelon-Langlade,Miquelon-Langlade,97501,SPM
+2582,PR.001,Adjuntas,Adjuntas,001,PRI
+2583,PR.003,Aguada,Aguada,003,PRI
+2584,PR.005,Aguadilla,Aguadilla,005,PRI
+2585,PR.007,Aguas Buenas,Aguas Buenas,007,PRI
+2586,PR.009,Aibonito,Aibonito,009,PRI
+2587,PR.011,Añasco,Anasco,011,PRI
+2588,PR.013,Arecibo,Arecibo,013,PRI
+2589,PR.015,Arroyo,Arroyo,015,PRI
+2590,PR.017,Barceloneta,Barceloneta,017,PRI
+2591,PR.019,Barranquitas,Barranquitas,019,PRI
+2592,PR.021,Bayamón,Bayamon,021,PRI
+2593,PR.023,Cabo Rojo,Cabo Rojo,023,PRI
+2594,PR.025,Caguas,Caguas,025,PRI
+2595,PR.027,Camuy,Camuy,027,PRI
+2596,PR.029,Canóvanas,Canovanas,029,PRI
+2597,PR.031,Carolina,Carolina,031,PRI
+2598,PR.033,Cataño,Catano,033,PRI
+2599,PR.035,Cayey,Cayey,035,PRI
+2600,PR.037,Ceiba,Ceiba,037,PRI
+2601,PR.039,Ciales,Ciales,039,PRI
+2602,PR.041,Cidra,Cidra,041,PRI
+2603,PR.043,Coamo,Coamo,043,PRI
+2604,PR.045,Comerío,Comerio,045,PRI
+2605,PR.047,Corozal,Corozal,047,PRI
+2606,PR.049,Culebra,Culebra,049,PRI
+2607,PR.051,Dorado,Dorado,051,PRI
+2608,PR.053,Fajardo,Fajardo,053,PRI
+2609,PR.054,Florida,Florida,054,PRI
+2610,PR.055,Guánica,Guanica,055,PRI
+2611,PR.057,Guayama,Guayama,057,PRI
+2612,PR.059,Guayanilla,Guayanilla,059,PRI
+2613,PR.061,Guaynabo,Guaynabo,061,PRI
+2614,PR.063,Gurabo,Gurabo,063,PRI
+2615,PR.065,Hatillo,Hatillo,065,PRI
+2616,PR.067,Hormigueros,Hormigueros,067,PRI
+2617,PR.069,Humacao,Humacao,069,PRI
+2618,PR.071,Isabela,Isabela,071,PRI
+2619,PR.073,Jayuya,Jayuya,073,PRI
+2620,PR.075,Juana Díaz,Juana Diaz,075,PRI
+2621,PR.077,Juncos,Juncos,077,PRI
+2622,PR.079,Lajas,Lajas,079,PRI
+2623,PR.081,Lares,Lares,081,PRI
+2624,PR.083,Las Marías,Las Marias,083,PRI
+2625,PR.085,Las Piedras,Las Piedras,085,PRI
+2626,PR.087,Loíza,Loiza,087,PRI
+2627,PR.089,Luquillo,Luquillo,089,PRI
+2628,PR.091,Manatí,Manati,091,PRI
+2629,PR.093,Maricao,Maricao,093,PRI
+2630,PR.095,Maunabo,Maunabo,095,PRI
+2631,PR.097,Mayagüez,Mayagueez,097,PRI
+2632,PR.099,Moca,Moca,099,PRI
+2633,PR.101,Morovis,Morovis,101,PRI
+2634,PR.103,Naguabo,Naguabo,103,PRI
+2635,PR.105,Naranjito,Naranjito,105,PRI
+2636,PR.107,Orocovis,Orocovis,107,PRI
+2637,PR.109,Patillas,Patillas,109,PRI
+2638,PR.111,Peñuelas,Penuelas,111,PRI
+2639,PR.113,Ponce,Ponce,113,PRI
+2640,PR.117,Rincón,Rincon,117,PRI
+2641,PR.115,Quebradillas,Quebradillas,115,PRI
+2642,PR.119,Río Grande,Rio Grande,119,PRI
+2643,PR.121,Sabana Grande,Sabana Grande,121,PRI
+2644,PR.123,Salinas,Salinas,123,PRI
+2645,PR.125,San Germán,San German,125,PRI
+2646,PR.127,San Juan,San Juan,127,PRI
+2647,PR.129,San Lorenzo,San Lorenzo,129,PRI
+2648,PR.131,San Sebastián,San Sebastian,131,PRI
+2649,PR.133,Santa Isabel,Santa Isabel,133,PRI
+2650,PR.135,Toa Alta,Toa Alta,135,PRI
+2651,PR.137,Toa Baja,Toa Baja,137,PRI
+2652,PR.139,Trujillo Alto,Trujillo Alto,139,PRI
+2653,PR.141,Utuado,Utuado,141,PRI
+2654,PR.143,Vega Alta,Vega Alta,143,PRI
+2655,PR.145,Vega Baja,Vega Baja,145,PRI
+2656,PR.149,Villalba,Villalba,149,PRI
+2657,PR.151,Yabucoa,Yabucoa,151,PRI
+2658,PR.153,Yauco,Yauco,153,PRI
+2659,PR.147,Vieques,Vieques,147,PRI
+2660,PS.GZ,Gaza Strip,Gaza Strip,GZ,PSE
+2661,PS.WE,West Bank,West Bank,WE,PSE
+2662,PT.19,Setúbal,Setubal,19,PRT
+2663,PT.18,Santarém,Santarem,18,PRT
+2664,PT.16,Portalegre,Portalegre,16,PRT
+2665,PT.14,Lisbon,Lisbon,14,PRT
+2666,PT.13,Leiria,Leiria,13,PRT
+2667,PT.09,Faro,Faro,09,PRT
+2668,PT.08,Évora,Evora,08,PRT
+2669,PT.06,Castelo Branco,Castelo Branco,06,PRT
+2670,PT.03,Beja,Beja,03,PRT
+2671,PT.10,Madeira,Madeira,10,PRT
+2672,PT.22,Viseu,Viseu,22,PRT
+2673,PT.21,Vila Real,Vila Real,21,PRT
+2674,PT.20,Viana do Castelo,Viana do Castelo,20,PRT
+2675,PT.17,Porto,Porto,17,PRT
+2676,PT.11,Guarda,Guarda,11,PRT
+2677,PT.07,Coimbra,Coimbra,07,PRT
+2678,PT.05,Bragança,Braganca,05,PRT
+2679,PT.04,Braga,Braga,04,PRT
+2680,PT.02,Aveiro,Aveiro,02,PRT
+2681,PT.23,Azores,Azores,23,PRT
+2682,PW.11,Ngatpang,Ngatpang,11,PLW
+2683,PW.16,Sonsorol,Sonsorol,16,PLW
+2684,PW.05,Kayangel,Kayangel,05,PLW
+2685,PW.04,Hatohobei,Hatohobei,04,PLW
+2686,PW.01,Aimeliik,Aimeliik,01,PLW
+2687,PW.02,Airai,Airai,02,PLW
+2688,PW.03,Angaur,Angaur,03,PLW
+2689,PW.06,Koror,Koror,06,PLW
+2690,PW.07,Melekeok,Melekeok,07,PLW
+2691,PW.08,Ngaraard,Ngaraard,08,PLW
+2692,PW.12,Ngchesar,Ngchesar,12,PLW
+2693,PW.09,Ngarchelong,Ngarchelong,09,PLW
+2694,PW.10,Ngardmau,Ngardmau,10,PLW
+2695,PW.13,Ngeremlengui,Ngeremlengui,13,PLW
+2696,PW.14,Ngiwal,Ngiwal,14,PLW
+2697,PW.15,Peleliu,Peleliu,15,PLW
+2698,PY.17,San Pedro Department,San Pedro Department,17,PRY
+2699,PY.16,Presidente Hayes,Presidente Hayes,16,PRY
+2700,PY.15,Paraguarí,Paraguari,15,PRY
+2701,PY.13,Ñeembucú Department,Neembucu Department,13,PRY
+2702,PY.12,Misiones Department,Misiones Department,12,PRY
+2703,PY.11,Itapúa,Itapua,11,PRY
+2704,PY.10,Guairá,Guaira,10,PRY
+2705,PY.08,Cordillera Department,Cordillera Department,08,PRY
+2706,PY.07,Concepción,Concepcion,07,PRY
+2707,PY.06,Central Department,Central Department,06,PRY
+2708,PY.19,Canindeyú,Canindeyu,19,PRY
+2709,PY.05,Caazapá,Caazapa,05,PRY
+2710,PY.04,Caaguazú Department,Caaguazu Department,04,PRY
+2711,PY.02,Amambay Department,Amambay Department,02,PRY
+2712,PY.01,Alto Paraná Department,Alto Parana Department,01,PRY
+2713,PY.23,Alto Paraguay,Alto Paraguay,23,PRY
+2714,PY.22,Asunción,Asuncion,22,PRY
+2715,PY.24,Boquerón Department,Boqueron Department,24,PRY
+2716,QA.08,Madīnat ash Shamāl,Madinat ash Shamal,08,QAT
+2717,QA.04,Al Khor,Al Khor,04,QAT
+2718,QA.09,Umm Salal,Umm Salal,09,QAT
+2719,QA.06,Baladīyat ar Rayyān,Baladiyat ar Rayyan,06,QAT
+2720,QA.01,Baladīyat ad Dawḩah,Baladiyat ad Dawhah,01,QAT
+2721,QA.10,Al Wakrah,Al Wakrah,10,QAT
+2722,QA.13,Al Daayen,Al Daayen,13,QAT
+2723,QA.14,Al-Shahaniya,Al-Shahaniya,14,QAT
+2724,RE.RE,Réunion,Reunion,RE,REU
+2725,RO.40,Vrancea,Vrancea,40,ROU
+2726,RO.39,Vâlcea County,Valcea County,39,ROU
+2727,RO.38,Vaslui County,Vaslui County,38,ROU
+2728,RO.37,Tulcea County,Tulcea County,37,ROU
+2729,RO.36,Timiș County,Timis County,36,ROU
+2730,RO.35,Teleorman County,Teleorman County,35,ROU
+2731,RO.34,Suceava,Suceava,34,ROU
+2732,RO.33,Sibiu County,Sibiu County,33,ROU
+2733,RO.32,Satu Mare County,Satu Mare County,32,ROU
+2734,RO.31,Sălaj County,Salaj County,31,ROU
+2735,RO.30,Prahova,Prahova,30,ROU
+2736,RO.29,Olt,Olt,29,ROU
+2737,RO.28,Neamț County,Neamt County,28,ROU
+2738,RO.27,Mureș County,Mures County,27,ROU
+2739,RO.26,Mehedinți County,Mehedinti County,26,ROU
+2740,RO.25,Maramureş,Maramures,25,ROU
+2741,RO.23,Iași County,Iasi County,23,ROU
+2742,RO.22,Ialomița County,Ialomita County,22,ROU
+2743,RO.21,Hunedoara County,Hunedoara County,21,ROU
+2744,RO.20,Harghita County,Harghita County,20,ROU
+2745,RO.19,Gorj County,Gorj County,19,ROU
+2746,RO.42,Giurgiu County,Giurgiu County,42,ROU
+2747,RO.18,Galați County,Galati County,18,ROU
+2748,RO.17,Dolj,Dolj,17,ROU
+2749,RO.16,Dâmbovița County,Dambovita County,16,ROU
+2750,RO.15,Covasna County,Covasna County,15,ROU
+2751,RO.14,Constanța County,Constanta County,14,ROU
+2752,RO.13,Cluj County,Cluj County,13,ROU
+2753,RO.12,Caraș-Severin County,Caras-Severin County,12,ROU
+2754,RO.41,Călărași County,Calarasi County,41,ROU
+2755,RO.11,Buzău County,Buzau County,11,ROU
+2756,RO.10,București,Bucuresti,10,ROU
+2757,RO.09,Brașov County,Brasov County,09,ROU
+2758,RO.08,Brăila County,Braila County,08,ROU
+2759,RO.07,Botoșani County,Botosani County,07,ROU
+2760,RO.06,Bistrița-Năsăud County,Bistrita-Nasaud County,06,ROU
+2761,RO.05,Bihor County,Bihor County,05,ROU
+2762,RO.04,Bacău County,Bacau County,04,ROU
+2763,RO.03,Arges,Arges,03,ROU
+2764,RO.02,Arad County,Arad County,02,ROU
+2765,RO.01,Alba County,Alba County,01,ROU
+2766,RO.43,Ilfov,Ilfov,43,ROU
+2767,RS.VO,Vojvodina,Vojvodina,VO,SRB
+2768,RS.SE,Central Serbia,Central Serbia,SE,SRB
+2769,RU.88,Yaroslavl Oblast,Yaroslavl Oblast,88,RUS
+2770,RU.86,Voronezh Oblast,Voronezh Oblast,86,RUS
+2771,RU.85,Vologda Oblast,Vologda Oblast,85,RUS
+2772,RU.84,Volgograd Oblast,Volgograd Oblast,84,RUS
+2773,RU.81,Ulyanovsk,Ulyanovsk,81,RUS
+2774,RU.80,Udmurtiya Republic,Udmurtiya Republic,80,RUS
+2775,RU.77,Tver Oblast,Tver Oblast,77,RUS
+2776,RU.76,Tula Oblast,Tula Oblast,76,RUS
+2777,RU.73,Tatarstan Republic,Tatarstan Republic,73,RUS
+2778,RU.72,Tambov Oblast,Tambov Oblast,72,RUS
+2779,RU.70,Stavropol Kray,Stavropol Kray,70,RUS
+2780,RU.69,Smolensk Oblast,Smolensk Oblast,69,RUS
+2781,RU.67,Saratov Oblast,Saratov Oblast,67,RUS
+2782,RU.65,Samara Oblast,Samara Oblast,65,RUS
+2783,RU.62,Ryazan Oblast,Ryazan Oblast,62,RUS
+2784,RU.61,Rostov,Rostov,61,RUS
+2785,RU.60,Pskov Oblast,Pskov Oblast,60,RUS
+2786,RU.90,Perm Krai,Perm Krai,90,RUS
+2787,RU.57,Penza Oblast,Penza Oblast,57,RUS
+2788,RU.56,Oryol oblast,Oryol oblast,56,RUS
+2789,RU.55,Orenburg Oblast,Orenburg Oblast,55,RUS
+2790,RU.52,Novgorod Oblast,Novgorod Oblast,52,RUS
+2791,RU.68,North Ossetia–Alania,North Ossetia-Alania,68,RUS
+2792,RU.50,Nenets,Nenets,50,RUS
+2793,RU.49,Murmansk,Murmansk,49,RUS
+2794,RU.48,Moscow,Moscow,48,RUS
+2795,RU.47,Moscow Oblast,Moscow Oblast,47,RUS
+2796,RU.46,Mordoviya Republic,Mordoviya Republic,46,RUS
+2797,RU.45,Mariy-El Republic,Mariy-El Republic,45,RUS
+2798,RU.43,Lipetsk Oblast,Lipetsk Oblast,43,RUS
+2799,RU.42,Leningradskaya Oblast',Leningradskaya Oblast',42,RUS
+2800,RU.66,St.-Petersburg,St.-Petersburg,66,RUS
+2801,RU.41,Kursk Oblast,Kursk Oblast,41,RUS
+2802,RU.38,Krasnodar Krai,Krasnodar Krai,38,RUS
+2803,RU.37,Kostroma Oblast,Kostroma Oblast,37,RUS
+2804,RU.34,Komi,Komi,34,RUS
+2805,RU.33,Kirov Oblast,Kirov Oblast,33,RUS
+2806,RU.28,Karelia,Karelia,28,RUS
+2807,RU.27,Karachayevo-Cherkesiya Republic,Karachayevo-Cherkesiya Republic,27,RUS
+2808,RU.25,Kaluga Oblast,Kaluga Oblast,25,RUS
+2809,RU.24,Kalmykiya Republic,Kalmykiya Republic,24,RUS
+2810,RU.23,Kaliningrad Oblast,Kaliningrad Oblast,23,RUS
+2811,RU.22,Kabardino-Balkariya Republic,Kabardino-Balkariya Republic,22,RUS
+2812,RU.21,Ivanovo Oblast,Ivanovo Oblast,21,RUS
+2813,RU.19,Ingushetiya Republic,Ingushetiya Republic,19,RUS
+2814,RU.51,Nizhny Novgorod Oblast,Nizhny Novgorod Oblast,51,RUS
+2815,RU.17,Dagestan,Dagestan,17,RUS
+2816,RU.16,Chuvash Republic,Chuvash Republic,16,RUS
+2817,RU.12,Chechnya,Chechnya,12,RUS
+2818,RU.10,Bryansk Oblast,Bryansk Oblast,10,RUS
+2819,RU.09,Belgorod Oblast,Belgorod Oblast,09,RUS
+2820,RU.08,Bashkortostan Republic,Bashkortostan Republic,08,RUS
+2821,RU.07,Astrakhan Oblast,Astrakhan Oblast,07,RUS
+2822,RU.06,Arkhangelskaya,Arkhangelskaya,06,RUS
+2823,RU.01,Adygeya Republic,Adygeya Republic,01,RUS
+2824,RU.83,Vladimir Oblast,Vladimir Oblast,83,RUS
+2825,RU.87,Yamalo-Nenets,Yamalo-Nenets,87,RUS
+2826,RU.78,Tyumen Oblast,Tyumen Oblast,78,RUS
+2827,RU.79,Republic of Tyva,Republic of Tyva,79,RUS
+2828,RU.75,Tomsk Oblast,Tomsk Oblast,75,RUS
+2829,RU.71,Sverdlovsk Oblast,Sverdlovsk Oblast,71,RUS
+2830,RU.54,Omsk Oblast,Omsk Oblast,54,RUS
+2831,RU.53,Novosibirsk Oblast,Novosibirsk Oblast,53,RUS
+2832,RU.40,Kurgan Oblast,Kurgan Oblast,40,RUS
+2833,RU.91,Krasnoyarsk Krai,Krasnoyarsk Krai,91,RUS
+2834,RU.32,Khanty-Mansia,Khanty-Mansia,32,RUS
+2835,RU.31,Khakasiya Republic,Khakasiya Republic,31,RUS
+2836,RU.29,Kuzbass,Kuzbass,29,RUS
+2837,RU.03,Altai,Altai,03,RUS
+2838,RU.13,Chelyabinsk,Chelyabinsk,13,RUS
+2839,RU.04,Altai Krai,Altai Krai,04,RUS
+2840,RU.63,Sakha,Sakha,63,RUS
+2841,RU.59,Primorye,Primorye,59,RUS
+2842,RU.30,Khabarovsk,Khabarovsk,30,RUS
+2843,RU.20,Irkutsk Oblast,Irkutsk Oblast,20,RUS
+2844,RU.89,Jewish Autonomous Oblast,Jewish Autonomous Oblast,89,RUS
+2845,RU.05,Amur Oblast,Amur Oblast,05,RUS
+2846,RU.11,Buryatiya Republic,Buryatiya Republic,11,RUS
+2847,RU.64,Sakhalin Oblast,Sakhalin Oblast,64,RUS
+2848,RU.44,Magadan Oblast,Magadan Oblast,44,RUS
+2849,RU.92,Kamchatka,Kamchatka,92,RUS
+2850,RU.15,Chukotka,Chukotka,15,RUS
+2851,RU.93,Zabaykalskiy (Transbaikal) Kray,Zabaykalskiy (Transbaikal) Kray,93,RUS
+2852,RW.11,Eastern Province,Eastern Province,11,RWA
+2853,RW.12,Kigali,Kigali,12,RWA
+2854,RW.13,Northern Province,Northern Province,13,RWA
+2855,RW.14,Western Province,Western Province,14,RWA
+2856,RW.15,Southern Province,Southern Province,15,RWA
+2857,SA.19,Tabuk Region,Tabuk Region,19,SAU
+2858,SA.16,Najran Region,Najran Region,16,SAU
+2859,SA.14,Mecca Region,Mecca Region,14,SAU
+2860,SA.17,Jazan Region,Jazan Region,17,SAU
+2861,SA.13,Ha'il Region,Ha'il Region,13,SAU
+2862,SA.11,'Asir Region,'Asir Region,11,SAU
+2863,SA.06,Eastern Province,Eastern Province,06,SAU
+2864,SA.10,Riyadh Region,Riyadh Region,10,SAU
+2865,SA.08,Al-Qassim Region,Al-Qassim Region,08,SAU
+2866,SA.05,Medina Region,Medina Region,05,SAU
+2867,SA.20,Al Jawf Region,Al Jawf Region,20,SAU
+2868,SA.15,Northern Borders Region,Northern Borders Region,15,SAU
+2869,SA.02,Al Bahah Region,Al Bahah Region,02,SAU
+2870,SB.11,Western Province,Western Province,11,SLB
+2871,SB.03,Malaita Province,Malaita Province,03,SLB
+2872,SB.07,Isabel Province,Isabel Province,07,SLB
+2873,SB.06,Guadalcanal Province,Guadalcanal Province,06,SLB
+2874,SB.10,Central Province,Central Province,10,SLB
+2875,SB.09,Temotu Province,Temotu Province,09,SLB
+2876,SB.08,Makira-Ulawa Province,Makira-Ulawa Province,08,SLB
+2877,SB.12,Choiseul Province,Choiseul Province,12,SLB
+2878,SB.13,Rennell and Bellona Province,Rennell and Bellona Province,13,SLB
+2879,SB.14,Honiara,Honiara,14,SLB
+2880,SC.23,Takamaka,Takamaka,23,SYC
+2881,SC.22,Saint Louis,Saint Louis,22,SYC
+2882,SC.27,Port Glaud,Port Glaud,27,SYC
+2883,SC.20,Pointe La Rue,Pointe La Rue,20,SYC
+2884,SC.19,Plaisance,Plaisance,19,SYC
+2885,SC.18,Mont Fleuri,Mont Fleuri,18,SYC
+2886,SC.17,Mont Buxton,Mont Buxton,17,SYC
+2887,SC.26,La Rivière Anglaise,La Riviere Anglaise,26,SYC
+2888,SC.25,La Digue and Inner Islands,La Digue and Inner Islands,25,SYC
+2889,SC.24,Grand Anse Mahe,Grand Anse Mahe,24,SYC
+2890,SC.14,Grand Anse Praslin,Grand Anse Praslin,14,SYC
+2891,SC.12,Glacis,Glacis,12,SYC
+2892,SC.11,Cascade,Cascade,11,SYC
+2893,SC.10,Bel Ombre,Bel Ombre,10,SYC
+2894,SC.09,Bel Air,Bel Air,09,SYC
+2895,SC.08,Beau Vallon,Beau Vallon,08,SYC
+2896,SC.07,Baie Sainte Anne,Baie Sainte Anne,07,SYC
+2897,SC.06,Baie Lazare,Baie Lazare,06,SYC
+2898,SC.05,Anse Royale,Anse Royale,05,SYC
+2899,SC.03,Anse Etoile,Anse Etoile,03,SYC
+2900,SC.02,Anse Boileau,Anse Boileau,02,SYC
+2901,SC.01,Anse-aux-Pins,Anse-aux-Pins,01,SYC
+2902,SC.29,Les Mamelles,Les Mamelles,29,SYC
+2903,SC.30,Roche Caiman,Roche Caiman,30,SYC
+2904,SC.28,Au Cap,Au Cap,28,SYC
+2905,SC.11876017,Outer Islands,Outer Islands,11876017,SYC
+2906,SC.12200079,Ile Perseverance I,Ile Perseverance I,12200079,SYC
+2907,SC.12200080,Ile Perseverance II,Ile Perseverance II,12200080,SYC
+2908,SD.43,Northern State,Northern State,43,SDN
+2909,SD.29,Khartoum,Khartoum,29,SDN
+2910,SD.36,Red Sea,Red Sea,36,SDN
+2911,SD.38,Al Jazīrah,Al Jazirah,38,SDN
+2912,SD.39,Al Qaḑārif,Al Qadarif,39,SDN
+2913,SD.41,White Nile,White Nile,41,SDN
+2914,SD.42,Blue Nile,Blue Nile,42,SDN
+2915,SD.47,Western Darfur,Western Darfur,47,SDN
+2916,SD.62,West Kordofan State,West Kordofan State,62,SDN
+2917,SD.49,Southern Darfur,Southern Darfur,49,SDN
+2918,SD.50,Southern Kordofan,Southern Kordofan,50,SDN
+2919,SD.52,Kassala,Kassala,52,SDN
+2920,SD.53,River Nile,River Nile,53,SDN
+2921,SD.55,Northern Darfur,Northern Darfur,55,SDN
+2922,SD.56,North Kordofan,North Kordofan,56,SDN
+2923,SD.58,Sinnār,Sinnar,58,SDN
+2924,SD.60,Eastern Darfur,Eastern Darfur,60,SDN
+2925,SD.61,Central Darfur,Central Darfur,61,SDN
+2926,SE.14,Norrbotten,Norrbotten,14,SWE
+2927,SE.25,Västmanland,Vaestmanland,25,SWE
+2928,SE.24,Västernorrland,Vaesternorrland,24,SWE
+2929,SE.23,Västerbotten,Vaesterbotten,23,SWE
+2930,SE.22,Värmland,Vaermland,22,SWE
+2931,SE.21,Uppsala,Uppsala,21,SWE
+2932,SE.26,Stockholm,Stockholm,26,SWE
+2933,SE.18,Södermanland,Soedermanland,18,SWE
+2934,SE.16,Östergötland,OEstergoetland,16,SWE
+2935,SE.15,Örebro,OErebro,15,SWE
+2936,SE.12,Kronoberg,Kronoberg,12,SWE
+2937,SE.10,Dalarna,Dalarna,10,SWE
+2938,SE.09,Kalmar,Kalmar,09,SWE
+2939,SE.08,Jönköping,Joenkoeping,08,SWE
+2940,SE.07,Jämtland,Jaemtland,07,SWE
+2941,SE.06,Halland,Halland,06,SWE
+2942,SE.05,Gotland,Gotland,05,SWE
+2943,SE.03,Gävleborg,Gaevleborg,03,SWE
+2944,SE.02,Blekinge,Blekinge,02,SWE
+2945,SE.27,Skåne,Skane,27,SWE
+2946,SE.28,Västra Götaland,Vaestra Goetaland,28,SWE
+2947,SH.01,Ascension,Ascension,01,SHN
+2948,SH.03,Tristan da Cunha,Tristan da Cunha,03,SHN
+2949,SH.02,Saint Helena,Saint Helena,02,SHN
+2950,SI.N5,Žalec,Zalec,N5,SVN
+2951,SI.E7,Zagorje ob Savi Municipality,Zagorje ob Savi Municipality,E7,SVN
+2952,SI.E5,Vrhnika,Vrhnika,E5,SVN
+2953,SI.D5,Tržič,Trzic,D5,SVN
+2954,SI.D4,Trebnje,Trebnje,D4,SVN
+2955,SI.D3,Trbovlje,Trbovlje,D3,SVN
+2956,SI.D2,Tolmin,Tolmin,D2,SVN
+2957,SI.D7,Velenje,Velenje,D7,SVN
+2958,SI.C5,Šmarje pri Jelšah,Smarje pri Jelsah,C5,SVN
+2959,SI.C4,Slovenska Konjice,Slovenska Konjice,C4,SVN
+2960,SI.L8,Slovenska Bistrica,Slovenska Bistrica,L8,SVN
+2961,SI.C2,Slovenj Gradec,Slovenj Gradec,C2,SVN
+2962,SI.B9,Škofja Loka,Skofja Loka,B9,SVN
+2963,SI.B7,Sežana,Sezana,B7,SVN
+2964,SI.B6,Sevnica Municipality,Sevnica Municipality,B6,SVN
+2965,SI.L7,Sentjur,Sentjur,L7,SVN
+2966,SI.L1,Ribnica,Ribnica,L1,SVN
+2967,SI.A3,Radovljica,Radovljica,A3,SVN
+2968,SI.A2,Radlje ob Dravi,Radlje ob Dravi,A2,SVN
+2969,SI.K7,Ptuj,Ptuj,K7,SVN
+2970,SI.94,Postojna,Postojna,94,SVN
+2971,SI.J9,Piran-Pirano,Piran-Pirano,J9,SVN
+2972,SI.87,Ormož,Ormoz,87,SVN
+2973,SI.J7,Novo Mesto,Novo Mesto,J7,SVN
+2974,SI.84,Nova Gorica,Nova Gorica,84,SVN
+2975,SI.80,Murska Sobota,Murska Sobota,80,SVN
+2976,SI.79,Mozirje,Mozirje,79,SVN
+2977,SI.73,Metlika,Metlika,73,SVN
+2978,SI.J2,Maribor City Municipality,Maribor City Municipality,J2,SVN
+2979,SI.64,Logatec,Logatec,64,SVN
+2980,SI.I6,Ljutomer,Ljutomer,I6,SVN
+2981,SI.I5,Litija,Litija,I5,SVN
+2982,SI.I3,Lenart,Lenart,I3,SVN
+2983,SI.57,Laško Municipality,Lasko Municipality,57,SVN
+2984,SI.54,Krško,Krsko,54,SVN
+2985,SI.52,Kranj,Kranj,52,SVN
+2986,SI.50,Koper-Capodistria,Koper-Capodistria,50,SVN
+2987,SI.H7,Kočevje,Kocevje,H7,SVN
+2988,SI.H6,Kamnik,Kamnik,H6,SVN
+2989,SI.H4,Jesenice,Jesenice,H4,SVN
+2990,SI.40,Izola-Isola,Izola-Isola,40,SVN
+2991,SI.38,Ilirska Bistrica,Ilirska Bistrica,38,SVN
+2992,SI.36,Idrija,Idrija,36,SVN
+2993,SI.34,Hrastnik Municipality,Hrastnik Municipality,34,SVN
+2994,SI.32,Grosuplje,Grosuplje,32,SVN
+2995,SI.29,Gornja Radgona,Gornja Radgona,29,SVN
+2996,SI.25,Dravograd,Dravograd,25,SVN
+2997,SI.G7,Domžale,Domzale,G7,SVN
+2998,SI.17,Črnomelj Municipality,Crnomelj Municipality,17,SVN
+2999,SI.13,Cerknica,Cerknica,13,SVN
+3000,SI.11,Celje,Celje,11,SVN
+3001,SI.08,Brežice,Brezice,08,SVN
+3002,SI.01,Ajdovščina Municipality,Ajdovscina Municipality,01,SVN
+3003,SI.35,Hrpelje-Kozina,Hrpelje-Kozina,35,SVN
+3004,SI.19,Divača,Divaca,19,SVN
+3005,SI.91,Pivka,Pivka,91,SVN
+3006,SI.I7,Loška Dolina Municipality,Loska Dolina Municipality,I7,SVN
+3007,SI.66,Loški Potok,Loski Potok,66,SVN
+3008,SI.88,Osilnica,Osilnica,88,SVN
+3009,SI.D8,Velike Lašče,Velike Lasce,D8,SVN
+3010,SI.C1,Škofljica,Skofljica,C1,SVN
+3011,SI.37,Ig Municipality,Ig Municipality,37,SVN
+3012,SI.09,Brezovica,Brezovica,09,SVN
+3013,SI.05,Borovnica,Borovnica,05,SVN
+3014,SI.E1,Vipava,Vipava,E1,SVN
+3015,SI.49,Komen,Komen,49,SVN
+3016,SI.J5,Miren-Kostanjevica,Miren-Kostanjevica,J5,SVN
+3017,SI.07,Brda,Brda,07,SVN
+3018,SI.44,Kanal ob Soči Municipality,Kanal ob Soci Municipality,44,SVN
+3019,SI.F2,Žiri,Ziri,F2,SVN
+3020,SI.14,Cerkno,Cerkno,14,SVN
+3021,SI.F1,Železniki Municipality,Zelezniki Municipality,F1,SVN
+3022,SI.27,Občina Gorenja vas-Poljane,Obcina Gorenja vas-Poljane,27,SVN
+3023,SI.G4,Dobrova-Horjul-Polhov Gradec,Dobrova-Horjul-Polhov Gradec,G4,SVN
+3024,SI.46,Kobarid Municipality,Kobarid Municipality,46,SVN
+3025,SI.06,Bovec,Bovec,06,SVN
+3026,SI.04,Bohinj Municipality,Bohinj Municipality,04,SVN
+3027,SI.03,Bled,Bled,03,SVN
+3028,SI.82,Naklo,Naklo,82,SVN
+3029,SI.53,Kranjska Gora,Kranjska Gora,53,SVN
+3030,SI.K5,Preddvor,Preddvor,K5,SVN
+3031,SI.12,Cerklje na Gorenjskem,Cerklje na Gorenjskem,12,SVN
+3032,SI.B2,Šenčur,Sencur,B2,SVN
+3033,SI.E3,Vodice,Vodice,E3,SVN
+3034,SI.71,Medvode,Medvode,71,SVN
+3035,SI.72,Mengeš,Menges,72,SVN
+3036,SI.22,Dol pri Ljubljani,Dol pri Ljubljani,22,SVN
+3037,SI.77,Moravče,Moravce,77,SVN
+3038,SI.30,Gornji Grad,Gornji Grad,30,SVN
+3039,SI.I9,Luče,Luce,I9,SVN
+3040,SI.K8,Ravne na Koroškem,Ravne na Koroskem,K8,SVN
+3041,SI.74,Mežica,Mezica,74,SVN
+3042,SI.81,Muta,Muta,81,SVN
+3043,SI.E6,Vuzenica,Vuzenica,E6,SVN
+3044,SI.16,Črna na Koroškem Municipality,Crna na Koroskem Municipality,16,SVN
+3045,SI.62,Ljubno,Ljubno,62,SVN
+3046,SI.C7,Šoštanj,Sostanj,C7,SVN
+3047,SI.C6,Šmartno ob Paki,Smartno ob Paki,C6,SVN
+3048,SI.68,Lukovica,Lukovica,68,SVN
+3049,SI.99,Radeče Municipality,Radece Municipality,99,SVN
+3050,SI.39,Ivančna Gorica,Ivancna Gorica,39,SVN
+3051,SI.20,Dobrepolje,Dobrepolje,20,SVN
+3052,SI.B1,Semič,Semic,B1,SVN
+3053,SI.B4,Šentjernej,Sentjernej,B4,SVN
+3054,SI.B8,Škocjan,Skocjan,B8,SVN
+3055,SI.C9,Štore,Store,C9,SVN
+3056,SI.N3,Vojnik,Vojnik,N3,SVN
+3057,SI.E2,Vitanje,Vitanje,E2,SVN
+3058,SI.F3,Zreče Municipality,Zrece Municipality,F3,SVN
+3059,SI.76,Mislinja,Mislinja,76,SVN
+3060,SI.L3,Ruše Municipality,Ruse Municipality,L3,SVN
+3061,SI.55,Kungota,Kungota,55,SVN
+3062,SI.B3,Šentilj,Sentilj,B3,SVN
+3063,SI.89,Pesnica,Pesnica,89,SVN
+3064,SI.26,Duplek,Duplek,26,SVN
+3065,SI.98,Rače-Fram,Race-Fram,98,SVN
+3066,SI.C8,Starše,Starse,C8,SVN
+3067,SI.45,Kidričevo,Kidricevo,45,SVN
+3068,SI.J1,Majšperk,Majsperk,J1,SVN
+3069,SI.N2,Videm,Videm,N2,SVN
+3070,SI.A7,Rogaška Slatina,Rogaska Slatina,A7,SVN
+3071,SI.A8,Rogatec,Rogatec,A8,SVN
+3072,SI.92,Podčetrtek,Podcetrtek,92,SVN
+3073,SI.51,Kozje,Kozje,51,SVN
+3074,SI.28,Gorišnica,Gorisnica,28,SVN
+3075,SI.E9,Zavrč,Zavrc,E9,SVN
+3076,SI.24,Dornava,Dornava,24,SVN
+3077,SI.42,Juršinci,Jursinci,42,SVN
+3078,SI.D1,Sveti Jurij,Sveti Jurij,D1,SVN
+3079,SI.A1,Radenci,Radenci,A1,SVN
+3080,SI.97,Puconci,Puconci,97,SVN
+3081,SI.A6,Rogašovci,Rogasovci,A6,SVN
+3082,SI.I2,Kuzma,Kuzma,I2,SVN
+3083,SI.31,Gornji Petrovci,Gornji Petrovci,31,SVN
+3084,SI.78,Moravske Toplice,Moravske Toplice,78,SVN
+3085,SI.47,Kobilje,Kobilje,47,SVN
+3086,SI.02,Beltinci,Beltinci,02,SVN
+3087,SI.D6,Turnišče,Turnisce,D6,SVN
+3088,SI.86,Odranci,Odranci,86,SVN
+3089,SI.15,Črenšovci,Crensovci,15,SVN
+3090,SI.83,Nazarje,Nazarje,83,SVN
+3091,SI.61,Ljubljana,Ljubljana,61,SVN
+3092,SI.N7,Žirovnica,Zirovnica,N7,SVN
+3093,SI.H5,Jezersko,Jezersko,H5,SVN
+3094,SI.M2,Solčava Municipality,Solcava Municipality,M2,SVN
+3095,SI.H8,Komenda,Komenda,H8,SVN
+3096,SI.H3,Horjul,Horjul,H3,SVN
+3097,SI.L6,Šempeter-Vrtojba,Sempeter-Vrtojba,L6,SVN
+3098,SI.F6,Bloke,Bloke,F6,SVN
+3099,SI.M1,Sodražica,Sodrazica,M1,SVN
+3100,SI.M8,Trzin,Trzin,M8,SVN
+3101,SI.K6,Prevalje,Prevalje,K6,SVN
+3102,SI.N4,Vransko,Vransko,N4,SVN
+3103,SI.M5,Tabor,Tabor,M5,SVN
+3104,SI.F7,Braslovče,Braslovce,F7,SVN
+3105,SI.K3,Polzela,Polzela,K3,SVN
+3106,SI.K4,Prebold,Prebold,K4,SVN
+3107,SI.H9,Kostel,Kostel,H9,SVN
+3108,SI.N8,Žužemberk,Zuzemberk,N8,SVN
+3109,SI.G6,Dolenjske Toplice,Dolenjske Toplice,G6,SVN
+3110,SI.J6,Mirna Peč Municipality,Mirna Pec Municipality,J6,SVN
+3111,SI.F5,Bistrica ob Sotli,Bistrica ob Sotli,F5,SVN
+3112,SI.G2,Dobje,Dobje,G2,SVN
+3113,SI.G3,Dobrna,Dobrna,G3,SVN
+3114,SI.J8,Oplotnica Municipality,Oplotnica Municipality,J8,SVN
+3115,SI.K2,Podvelka,Podvelka,K2,SVN
+3116,SI.L2,Ribnica na Pohorju,Ribnica na Pohorju,L2,SVN
+3117,SI.I8,Lovrenc na Pohorju,Lovrenc na Pohorju,I8,SVN
+3118,SI.L5,Selnica ob Dravi,Selnica ob Dravi,L5,SVN
+3119,SI.H1,Hoče-Slivnica,Hoce-Slivnica,H1,SVN
+3120,SI.J4,Miklavž na Dravskem Polju,Miklavz na Dravskem Polju,J4,SVN
+3121,SI.G9,Hajdina,Hajdina,G9,SVN
+3122,SI.N6,Žetale,Zetale,N6,SVN
+3123,SI.K1,Podlehnik,Podlehnik,K1,SVN
+3124,SI.J3,Markovci,Markovci,J3,SVN
+3125,SI.G1,Destrnik,Destrnik,G1,SVN
+3126,SI.M7,Trnovska Vas,Trnovska Vas,M7,SVN
+3127,SI.M4,Sveti Andraž v Slovenskih Goricah,Sveti Andraz v Slovenskih Goricah,M4,SVN
+3128,SI.F9,Cerkvenjak,Cerkvenjak,F9,SVN
+3129,SI.F4,Benedikt,Benedikt,F4,SVN
+3130,SI.M3,Sveta Ana Municipality,Sveta Ana Municipality,M3,SVN
+3131,SI.I1,Križevci,Krizevci,I1,SVN
+3132,SI.N1,Veržej,Verzej,N1,SVN
+3133,SI.M9,Velika Polana,Velika Polana,M9,SVN
+3134,SI.I4,Lendava-Lendva,Lendava-Lendva,I4,SVN
+3135,SI.G5,Dobrovnik-Dobronak,Dobrovnik-Dobronak,G5,SVN
+3136,SI.M6,Tišina,Tisina,M6,SVN
+3137,SI.F8,Cankova,Cankova,F8,SVN
+3138,SI.G8,Grad,Grad,G8,SVN
+3139,SI.H2,Hodoš-Hodos,Hodos-Hodos,H2,SVN
+3140,SI.K9,Razkrižje,Razkrizje,K9,SVN
+3141,SI.L9,Šmartno pri Litiji,Smartno pri Litiji,L9,SVN
+3142,SI.L4,Šalovci,Salovci,L4,SVN
+3143,SI.N9,Apače,Apace,N9,SVN
+3144,SI.O1,Cirkulane,Cirkulane,O1,SVN
+3145,SI.O3,Kostanjevica na Krki,Kostanjevica na Krki,O3,SVN
+3146,SI.O4,Log–Dragomer,Log-Dragomer,O4,SVN
+3147,SI.O5,Makole,Makole,O5,SVN
+3148,SI.O7,Mokronog-Trebelno Municipality,Mokronog-Trebelno Municipality,O7,SVN
+3149,SI.O8,Poljčane,Poljcane,O8,SVN
+3150,SI.O9,Rečica ob Savinji,Recica ob Savinji,O9,SVN
+3151,SI.P1,Renče-Vogrsko,Rence-Vogrsko,P1,SVN
+3152,SI.P4,Središče ob Dravi,Sredisce ob Dravi,P4,SVN
+3153,SI.P5,Straža,Straza,P5,SVN
+3154,SI.P6,Sv. Trojica v Slov. Goricah,Sv. Trojica v Slov. Goricah,P6,SVN
+3155,SI.P8,Sveti Tomaž,Sveti Tomaz,P8,SVN
+3156,SI.P2,Šentrupert,Sentrupert,P2,SVN
+3157,SI.P3,Šmarješke Toplice,Smarjeske Toplice,P3,SVN
+3158,SI.P7,Sveti Jurij v Slovenskih Goricah,Sveti Jurij v Slovenskih Goricah,P7,SVN
+3159,SI.O2,Gorje,Gorje,O2,SVN
+3160,SI.P9,Ankaran Municipality,Ankaran Municipality,P9,SVN
+3161,SI.O6,Mirna,Mirna,O6,SVN
+3162,SJ.22,Jan Mayen,Jan Mayen,22,SJM
+3163,SJ.21,Svalbard,Svalbard,21,SJM
+3164,SK.03,Košice Region,Kosice Region,03,SVK
+3165,SK.05,Prešov Region,Presov Region,05,SVK
+3166,SK.08,Žilina Region,Zilina Region,08,SVK
+3167,SK.01,Banská Bystrica Region,Banska Bystrica Region,01,SVK
+3168,SK.02,Bratislava Region,Bratislava Region,02,SVK
+3169,SK.04,Nitra Region,Nitra Region,04,SVK
+3170,SK.06,Trenčín Region,Trencin Region,06,SVK
+3171,SK.07,Trnava Region,Trnava Region,07,SVK
+3172,SL.04,Western Area,Western Area,04,SLE
+3173,SL.03,Southern Province,Southern Province,03,SLE
+3174,SL.02,Northern Province,Northern Province,02,SLE
+3175,SL.01,Eastern Province,Eastern Province,01,SLE
+3176,SL.05,North West,North West,05,SLE
+3177,SM.09,Serravalle,Serravalle,09,SMR
+3178,SM.02,Chiesanuova,Chiesanuova,02,SMR
+3179,SM.07,San Marino,San Marino,07,SMR
+3180,SM.01,Acquaviva,Acquaviva,01,SMR
+3181,SM.06,Borgo Maggiore,Borgo Maggiore,06,SMR
+3182,SM.03,Domagnano,Domagnano,03,SMR
+3183,SM.04,Faetano,Faetano,04,SMR
+3184,SM.05,Fiorentino,Fiorentino,05,SMR
+3185,SM.08,Montegiardino,Montegiardino,08,SMR
+3186,SN.12,Ziguinchor,Ziguinchor,12,SEN
+3187,SN.07,Thiès,Thies,07,SEN
+3188,SN.05,Tambacounda,Tambacounda,05,SEN
+3189,SN.14,Saint-Louis,Saint-Louis,14,SEN
+3190,SN.15,Matam,Matam,15,SEN
+3191,SN.13,Louga,Louga,13,SEN
+3192,SN.11,Kolda,Kolda,11,SEN
+3193,SN.10,Kaolack,Kaolack,10,SEN
+3194,SN.09,Fatick,Fatick,09,SEN
+3195,SN.03,Diourbel Region,Diourbel Region,03,SEN
+3196,SN.01,Dakar,Dakar,01,SEN
+3197,SN.16,Kaffrine,Kaffrine,16,SEN
+3198,SN.17,Kédougou,Kedougou,17,SEN
+3199,SN.18,Sédhiou,Sedhiou,18,SEN
+3200,SO.20,Woqooyi Galbeed,Woqooyi Galbeed,20,SOM
+3201,SO.19,Togdheer,Togdheer,19,SOM
+3202,SO.14,Lower Shabeelle,Lower Shabeelle,14,SOM
+3203,SO.13,Middle Shabele,Middle Shabele,13,SOM
+3204,SO.12,Sanaag,Sanaag,12,SOM
+3205,SO.18,Nugaal,Nugaal,18,SOM
+3206,SO.10,Mudug,Mudug,10,SOM
+3207,SO.09,Lower Juba,Lower Juba,09,SOM
+3208,SO.08,Middle Juba,Middle Juba,08,SOM
+3209,SO.07,Hiiraan,Hiiraan,07,SOM
+3210,SO.06,Gedo,Gedo,06,SOM
+3211,SO.05,Galguduud,Galguduud,05,SOM
+3212,SO.04,Bay,Bay,04,SOM
+3213,SO.03,Bari,Bari,03,SOM
+3214,SO.02,Banaadir,Banaadir,02,SOM
+3215,SO.01,Bakool,Bakool,01,SOM
+3216,SO.21,Awdal,Awdal,21,SOM
+3217,SO.22,Sool,Sool,22,SOM
+3218,SR.19,Wanica District,Wanica District,19,SUR
+3219,SR.18,Sipaliwini District,Sipaliwini District,18,SUR
+3220,SR.17,Saramacca District,Saramacca District,17,SUR
+3221,SR.16,Paramaribo District,Paramaribo District,16,SUR
+3222,SR.15,Para District,Para District,15,SUR
+3223,SR.14,Nickerie District,Nickerie District,14,SUR
+3224,SR.13,Marowijne District,Marowijne District,13,SUR
+3225,SR.12,Coronie District,Coronie District,12,SUR
+3226,SR.11,Commewijne District,Commewijne District,11,SUR
+3227,SR.10,Brokopondo District,Brokopondo District,10,SUR
+3228,SS.07,Upper Nile,Upper Nile,07,SSD
+3229,SS.04,Lakes,Lakes,04,SSD
+3230,SS.06,Unity,Unity,06,SSD
+3231,SS.01,Central Equatoria,Central Equatoria,01,SSD
+3232,SS.10,Western Equatoria,Western Equatoria,10,SSD
+3233,SS.09,Western Bahr al Ghazal,Western Bahr al Ghazal,09,SSD
+3234,SS.03,Jonglei,Jonglei,03,SSD
+3235,SS.05,Northern Bahr al Ghazal,Northern Bahr al Ghazal,05,SSD
+3236,SS.02,Eastern Equatoria,Eastern Equatoria,02,SSD
+3237,SS.08,Warrap,Warrap,08,SSD
+3238,ST.02,São Tomé Island,Sao Tome Island,02,STP
+3239,ST.01,Príncipe,Principe,01,STP
+3240,SV.14,Usulután,Usulutan,14,SLV
+3241,SV.13,Sonsonate Department,Sonsonate Department,13,SLV
+3242,SV.12,San Vicente Department,San Vicente Department,12,SLV
+3243,SV.11,Santa Ana Department,Santa Ana Department,11,SLV
+3244,SV.10,San Salvador Department,San Salvador Department,10,SLV
+3245,SV.09,San Miguel Department,San Miguel Department,09,SLV
+3246,SV.08,Morazán,Morazan,08,SLV
+3247,SV.07,La Unión,La Union,07,SLV
+3248,SV.06,La Paz Department,La Paz Department,06,SLV
+3249,SV.05,La Libertad Department,La Libertad Department,05,SLV
+3250,SV.04,Cuscatlán,Cuscatlan,04,SLV
+3251,SV.03,Chalatenango Department,Chalatenango Department,03,SLV
+3252,SV.02,Cabañas,Cabanas,02,SLV
+3253,SV.01,Ahuachapán,Ahuachapan,01,SLV
+3254,SY.14,Tartus,Tartus,14,SYR
+3255,SY.13,Dimashq,Dimashq,13,SYR
+3256,SY.12,Idlib,Idlib,12,SYR
+3257,SY.11,Homs,Homs,11,SYR
+3258,SY.10,Hama,Hama,10,SYR
+3259,SY.09,Aleppo,Aleppo,09,SYR
+3260,SY.08,Rif-dimashq,Rif-dimashq,08,SYR
+3261,SY.07,Deir ez-Zor,Deir ez-Zor,07,SYR
+3262,SY.06,Daraa,Daraa,06,SYR
+3263,SY.05,As-Suwayda,As-Suwayda,05,SYR
+3264,SY.04,Ar-Raqqah,Ar-Raqqah,04,SYR
+3265,SY.03,Quneitra,Quneitra,03,SYR
+3266,SY.02,Latakia,Latakia,02,SYR
+3267,SY.01,Al-Hasakah,Al-Hasakah,01,SYR
+3268,SZ.04,Shiselweni,Shiselweni,04,SWZ
+3269,SZ.03,Manzini Region,Manzini Region,03,SWZ
+3270,SZ.02,Lubombo Region,Lubombo Region,02,SWZ
+3271,SZ.01,Hhohho Region,Hhohho Region,01,SWZ
+3272,TD.13,Salamat,Salamat,13,TCD
+3273,TD.12,Ouadaï,Ouadai,12,TCD
+3274,TD.02,Wadi Fira,Wadi Fira,02,TCD
+3275,TD.14,Tandjilé,Tandjile,14,TCD
+3276,TD.17,Moyen-Chari,Moyen-Chari,17,TCD
+3277,TD.16,Mayo-Kebbi Est,Mayo-Kebbi Est,16,TCD
+3278,TD.09,Logone Oriental,Logone Oriental,09,TCD
+3279,TD.08,Logone Occidental,Logone Occidental,08,TCD
+3280,TD.07,Lac,Lac,07,TCD
+3281,TD.06,Kanem,Kanem,06,TCD
+3282,TD.05,Guéra,Guera,05,TCD
+3283,TD.15,Chari-Baguirmi,Chari-Baguirmi,15,TCD
+3284,TD.01,Batha,Batha,01,TCD
+3285,TD.23,Borkou,Borkou,23,TCD
+3286,TD.18,Hadjer-Lamis,Hadjer-Lamis,18,TCD
+3287,TD.19,Mandoul,Mandoul,19,TCD
+3288,TD.20,Mayo-Kebbi Ouest,Mayo-Kebbi Ouest,20,TCD
+3289,TD.21,N’Djaména,N'Djamena,21,TCD
+3290,TD.22,Barh el Gazel,Barh el Gazel,22,TCD
+3291,TD.25,Sila,Sila,25,TCD
+3292,TD.26,Tibesti,Tibesti,26,TCD
+3293,TD.28,Ennedi-Ouest,Ennedi-Ouest,28,TCD
+3294,TD.27,Ennedi-Est,Ennedi-Est,27,TCD
+3295,TF.02,Crozet,Crozet,02,ATF
+3296,TF.03,Kerguelen,Kerguelen,03,ATF
+3297,TF.01,Saint-Paul-et-Amsterdam,Saint-Paul-et-Amsterdam,01,ATF
+3298,TF.05,Îles Éparses,Iles Eparses,05,ATF
+3299,TF.04,Terre-Adélie,Terre-Adelie,04,ATF
+3300,TG.26,Savanes,Savanes,26,TGO
+3301,TG.25,Plateaux,Plateaux,25,TGO
+3302,TG.24,Maritime,Maritime,24,TGO
+3303,TG.22,Centrale,Centrale,22,TGO
+3304,TG.23,Kara,Kara,23,TGO
+3305,TH.15,Uthai Thani,Uthai Thani,15,THA
+3306,TH.65,Trang,Trang,65,THA
+3307,TH.08,Tak,Tak,08,THA
+3308,TH.60,Surat Thani,Surat Thani,60,THA
+3309,TH.09,Sukhothai,Sukhothai,09,THA
+3310,TH.52,Ratchaburi,Ratchaburi,52,THA
+3311,TH.59,Ranong province,Ranong province,59,THA
+3312,TH.57,Prachuap Khiri Khan,Prachuap Khiri Khan,57,THA
+3313,TH.62,Phuket,Phuket,62,THA
+3314,TH.56,Phetchaburi,Phetchaburi,56,THA
+3315,TH.61,Phang Nga,Phang Nga,61,THA
+3316,TH.01,Mae Hong Son,Mae Hong Son,01,THA
+3317,TH.05,Lamphun,Lamphun,05,THA
+3318,TH.06,Lampang,Lampang,06,THA
+3319,TH.63,Krabi,Krabi,63,THA
+3320,TH.50,Kanchanaburi,Kanchanaburi,50,THA
+3321,TH.11,Kamphaeng Phet,Kamphaeng Phet,11,THA
+3322,TH.58,Chumphon,Chumphon,58,THA
+3323,TH.03,Chiang Rai,Chiang Rai,03,THA
+3324,TH.02,Chiang Mai,Chiang Mai,02,THA
+3325,TH.72,Yasothon,Yasothon,72,THA
+3326,TH.70,Yala,Yala,70,THA
+3327,TH.10,Uttaradit,Uttaradit,10,THA
+3328,TH.49,Trat,Trat,49,THA
+3329,TH.29,Surin,Surin,29,THA
+3330,TH.51,Suphan Buri,Suphan Buri,51,THA
+3331,TH.68,Songkhla,Songkhla,68,THA
+3332,TH.30,Si Sa Ket,Si Sa Ket,30,THA
+3333,TH.33,Sing Buri,Sing Buri,33,THA
+3334,TH.67,Satun,Satun,67,THA
+3335,TH.37,Saraburi,Saraburi,37,THA
+3336,TH.54,Samut Songkhram,Samut Songkhram,54,THA
+3337,TH.55,Samut Sakhon,Samut Sakhon,55,THA
+3338,TH.42,Samut Prakan,Samut Prakan,42,THA
+3339,TH.20,Sakon Nakhon,Sakon Nakhon,20,THA
+3340,TH.25,Roi Et,Roi Et,25,THA
+3341,TH.47,Rayong,Rayong,47,THA
+3342,TH.36,Phra Nakhon Si Ayutthaya,Phra Nakhon Si Ayutthaya,36,THA
+3343,TH.07,Phrae,Phrae,07,THA
+3344,TH.12,Phitsanulok,Phitsanulok,12,THA
+3345,TH.13,Phichit,Phichit,13,THA
+3346,TH.14,Phetchabun,Phetchabun,14,THA
+3347,TH.41,Phayao,Phayao,41,THA
+3348,TH.66,Phatthalung,Phatthalung,66,THA
+3349,TH.69,Pattani,Pattani,69,THA
+3350,TH.39,Pathum Thani,Pathum Thani,39,THA
+3351,TH.38,Nonthaburi,Nonthaburi,38,THA
+3352,TH.17,Nong Khai,Nong Khai,17,THA
+3353,TH.31,Narathiwat,Narathiwat,31,THA
+3354,TH.04,Nan,Nan,04,THA
+3355,TH.64,Nakhon Si Thammarat,Nakhon Si Thammarat,64,THA
+3356,TH.16,Nakhon Sawan,Nakhon Sawan,16,THA
+3357,TH.27,Nakhon Ratchasima,Nakhon Ratchasima,27,THA
+3358,TH.73,Nakhon Phanom,Nakhon Phanom,73,THA
+3359,TH.53,Nakhon Pathom,Nakhon Pathom,53,THA
+3360,TH.43,Nakhon Nayok,Nakhon Nayok,43,THA
+3361,TH.78,Mukdahan,Mukdahan,78,THA
+3362,TH.24,Maha Sarakham,Maha Sarakham,24,THA
+3363,TH.34,Lopburi,Lopburi,34,THA
+3364,TH.18,Loei,Loei,18,THA
+3365,TH.40,Bangkok,Bangkok,40,THA
+3366,TH.22,Khon Kaen,Khon Kaen,22,THA
+3367,TH.23,Kalasin,Kalasin,23,THA
+3368,TH.46,Chon Buri,Chon Buri,46,THA
+3369,TH.48,Chanthaburi,Chanthaburi,48,THA
+3370,TH.26,Chaiyaphum,Chaiyaphum,26,THA
+3371,TH.32,Chai Nat,Chai Nat,32,THA
+3372,TH.44,Chachoengsao,Chachoengsao,44,THA
+3373,TH.28,Buriram,Buriram,28,THA
+3374,TH.35,Ang Thong,Ang Thong,35,THA
+3375,TH.76,Udon Thani,Udon Thani,76,THA
+3376,TH.74,Prachin Buri,Prachin Buri,74,THA
+3377,TH.75,Ubon Ratchathani,Ubon Ratchathani,75,THA
+3378,TH.77,Amnat Charoen,Amnat Charoen,77,THA
+3379,TH.79,Nong Bua Lamphu,Nong Bua Lamphu,79,THA
+3380,TH.80,Sa Kaeo,Sa Kaeo,80,THA
+3381,TH.81,Bueng Kan,Bueng Kan,81,THA
+3382,TJ.03,Sughd,Sughd,03,TJK
+3383,TJ.01,Gorno-Badakhshan,Gorno-Badakhshan,01,TJK
+3384,TJ.02,Khatlon Province,Khatlon Province,02,TJK
+3385,TJ.RR,Republican Subordination,Republican Subordination,RR,TJK
+3386,TJ.04,Dushanbe,Dushanbe,04,TJK
+3387,TK.N,Nukunonu,Nukunonu,N,TKL
+3388,TK.F,Fakaofo,Fakaofo,F,TKL
+3389,TK.A,Atafu,Atafu,A,TKL
+3390,TL.VI,Viqueque,Viqueque,VI,TLS
+3391,TL.MF,Manufahi,Manufahi,MF,TLS
+3392,TL.MT,Manatuto,Manatuto,MT,TLS
+3393,TL.LI,Liquiçá,Liquica,LI,TLS
+3394,TL.LA,Lautém,Lautem,LA,TLS
+3395,TL.CO,Cova Lima,Cova Lima,CO,TLS
+3396,TL.ER,Ermera,Ermera,ER,TLS
+3397,TL.DI,Dili Municipality,Dili Municipality,DI,TLS
+3398,TL.BO,Bobonaro,Bobonaro,BO,TLS
+3399,TL.BA,Baucau,Baucau,BA,TLS
+3400,TL.OE,Oecusse,Oecusse,OE,TLS
+3401,TL.AN,Ainaro,Ainaro,AN,TLS
+3402,TL.AL,Aileu,Aileu,AL,TLS
+3403,TM.02,Balkan,Balkan,02,TKM
+3404,TM.01,Ahal,Ahal,01,TKM
+3405,TM.S,Ashgabat,Ashgabat,S,TKM
+3406,TM.03,Daşoguz,Dasoguz,03,TKM
+3407,TM.05,Mary,Mary,05,TKM
+3408,TM.04,Lebap,Lebap,04,TKM
+3409,TN.37,Zaghouan Governorate,Zaghouan Governorate,37,TUN
+3410,TN.36,Tunis Governorate,Tunis Governorate,36,TUN
+3411,TN.35,Tozeur Governorate,Tozeur Governorate,35,TUN
+3412,TN.34,Tataouine,Tataouine,34,TUN
+3413,TN.23,Sousse Governorate,Sousse Governorate,23,TUN
+3414,TN.22,Siliana Governorate,Siliana Governorate,22,TUN
+3415,TN.33,Sidi Bouzid Governorate,Sidi Bouzid Governorate,33,TUN
+3416,TN.32,Sfax Governorate,Sfax Governorate,32,TUN
+3417,TN.31,Kebili Governorate,Kebili Governorate,31,TUN
+3418,TN.30,Gafsa,Gafsa,30,TUN
+3419,TN.29,Gabès Governorate,Gabes Governorate,29,TUN
+3420,TN.19,Nabeul Governorate,Nabeul Governorate,19,TUN
+3421,TN.28,Medenine Governorate,Medenine Governorate,28,TUN
+3422,TN.06,Jendouba Governorate,Jendouba Governorate,06,TUN
+3423,TN.27,Ben Arous Governorate,Ben Arous Governorate,27,TUN
+3424,TN.18,Bizerte Governorate,Bizerte Governorate,18,TUN
+3425,TN.17,Béja Governorate,Beja Governorate,17,TUN
+3426,TN.38,Ariana Governorate,Ariana Governorate,38,TUN
+3427,TN.03,Kairouan,Kairouan,03,TUN
+3428,TN.02,Kasserine Governorate,Kasserine Governorate,02,TUN
+3429,TN.16,Monastir Governorate,Monastir Governorate,16,TUN
+3430,TN.15,Mahdia Governorate,Mahdia Governorate,15,TUN
+3431,TN.14,Kef Governorate,Kef Governorate,14,TUN
+3432,TN.39,Manouba,Manouba,39,TUN
+3433,TO.03,Vava‘u,Vava`u,03,TON
+3434,TO.02,Tongatapu,Tongatapu,02,TON
+3435,TO.01,Ha‘apai,Ha`apai,01,TON
+3436,TO.EU,ʻEua,'Eua,EU,TON
+3437,TO.NI,Niuas,Niuas,NI,TON
+3438,TR.66,Yozgat,Yozgat,66,TUR
+3439,TR.65,Van,Van,65,TUR
+3440,TR.64,Uşak,Usak,64,TUR
+3441,TR.63,Şanlıurfa,Sanliurfa,63,TUR
+3442,TR.62,Tunceli,Tunceli,62,TUR
+3443,TR.58,Sivas,Sivas,58,TUR
+3444,TR.74,Siirt,Siirt,74,TUR
+3445,TR.73,Niğde Province,Nigde Province,73,TUR
+3446,TR.50,Nevşehir Province,Nevsehir Province,50,TUR
+3447,TR.49,Muş,Mus,49,TUR
+3448,TR.48,Muğla,Mugla,48,TUR
+3449,TR.72,Mardin,Mardin,72,TUR
+3450,TR.45,Manisa,Manisa,45,TUR
+3451,TR.44,Malatya,Malatya,44,TUR
+3452,TR.43,Kütahya,Kuetahya,43,TUR
+3453,TR.71,Konya,Konya,71,TUR
+3454,TR.40,Kırşehir,Kirsehir,40,TUR
+3455,TR.38,Kayseri,Kayseri,38,TUR
+3456,TR.46,Kahramanmaraş,Kahramanmaras,46,TUR
+3457,TR.35,İzmir Province,Izmir Province,35,TUR
+3458,TR.33,Isparta,Isparta,33,TUR
+3459,TR.32,Mersin,Mersin,32,TUR
+3460,TR.31,Hatay,Hatay,31,TUR
+3461,TR.70,Hakkâri,Hakkari,70,TUR
+3462,TR.83,Gaziantep,Gaziantep,83,TUR
+3463,TR.26,Eskişehir,Eskisehir,26,TUR
+3464,TR.25,Erzurum,Erzurum,25,TUR
+3465,TR.24,Erzincan,Erzincan,24,TUR
+3466,TR.23,Elazığ,Elazig,23,TUR
+3467,TR.21,Diyarbakır Province,Diyarbakir Province,21,TUR
+3468,TR.20,Denizli,Denizli,20,TUR
+3469,TR.15,Burdur,Burdur,15,TUR
+3470,TR.13,Bitlis,Bitlis,13,TUR
+3471,TR.12,Bingöl,Bingoel,12,TUR
+3472,TR.11,Bilecik,Bilecik,11,TUR
+3473,TR.10,Balıkesir,Balikesir,10,TUR
+3474,TR.09,Aydın,Aydin,09,TUR
+3475,TR.07,Antalya,Antalya,07,TUR
+3476,TR.68,Ankara,Ankara,68,TUR
+3477,TR.04,Ağrı,Agri,04,TUR
+3478,TR.03,Afyonkarahisar Province,Afyonkarahisar Province,03,TUR
+3479,TR.02,Adıyaman Province,Adiyaman Province,02,TUR
+3480,TR.81,Adana,Adana,81,TUR
+3481,TR.91,Osmaniye,Osmaniye,91,TUR
+3482,TR.88,Iğdır,Igdir,88,TUR
+3483,TR.75,Aksaray,Aksaray,75,TUR
+3484,TR.76,Batman,Batman,76,TUR
+3485,TR.78,Karaman,Karaman,78,TUR
+3486,TR.79,Kırıkkale,Kirikkale,79,TUR
+3487,TR.80,Şırnak,Sirnak,80,TUR
+3488,TR.90,Kilis,Kilis,90,TUR
+3489,TR.85,Zonguldak Province,Zonguldak Province,85,TUR
+3490,TR.61,Trabzon,Trabzon,61,TUR
+3491,TR.60,Tokat Province,Tokat Province,60,TUR
+3492,TR.59,Tekirdağ,Tekirdag,59,TUR
+3493,TR.57,Sinop,Sinop,57,TUR
+3494,TR.55,Samsun,Samsun,55,TUR
+3495,TR.54,Sakarya,Sakarya,54,TUR
+3496,TR.53,Rize Province,Rize Province,53,TUR
+3497,TR.52,Ordu,Ordu,52,TUR
+3498,TR.41,Kocaeli,Kocaeli,41,TUR
+3499,TR.39,Kırklareli,Kirklareli,39,TUR
+3500,TR.37,Kastamonu,Kastamonu,37,TUR
+3501,TR.84,Kars Province,Kars Province,84,TUR
+3502,TR.34,Istanbul,Istanbul,34,TUR
+3503,TR.69,Gümüşhane Province,Guemueshane Province,69,TUR
+3504,TR.28,Giresun,Giresun,28,TUR
+3505,TR.22,Edirne,Edirne,22,TUR
+3506,TR.19,Çorum,Corum,19,TUR
+3507,TR.82,Çankırı,Cankiri,82,TUR
+3508,TR.17,Canakkale,Canakkale,17,TUR
+3509,TR.16,Bursa Province,Bursa Province,16,TUR
+3510,TR.14,Bolu,Bolu,14,TUR
+3511,TR.08,Artvin,Artvin,08,TUR
+3512,TR.05,Amasya,Amasya,05,TUR
+3513,TR.87,Bartın,Bartin,87,TUR
+3514,TR.89,Karabük Province,Karabuek Province,89,TUR
+3515,TR.92,Yalova,Yalova,92,TUR
+3516,TR.86,Ardahan,Ardahan,86,TUR
+3517,TR.77,Bayburt Province,Bayburt Province,77,TUR
+3518,TR.93,Düzce,Duzce,93,TUR
+3519,TT.11,Tobago,Tobago,11,TTO
+3520,TT.10,San Fernando,San Fernando,10,TTO
+3521,TT.05,Port of Spain,Port of Spain,05,TTO
+3522,TT.03,Mayaro,Mayaro,03,TTO
+3523,TT.01,Borough of Arima,Borough of Arima,01,TTO
+3524,TT.CHA,Chaguanas,Chaguanas,CHA,TTO
+3525,TT.CTT,Couva-Tabaquite-Talparo,Couva-Tabaquite-Talparo,CTT,TTO
+3526,TT.DMN,Diego Martin Regional Corporation,Diego Martin Regional Corporation,DMN,TTO
+3527,TT.PED,Penal/Debe,Penal/Debe,PED,TTO
+3528,TT.PRT,Princes Town,Princes Town,PRT,TTO
+3529,TT.PTF,Point Fortin,Point Fortin,PTF,TTO
+3530,TT.SGE,Sangre Grande Regional Corporation,Sangre Grande Regional Corporation,SGE,TTO
+3531,TT.SIP,Siparia Regional Corporation,Siparia Regional Corporation,SIP,TTO
+3532,TT.SJL,San Juan/Laventille,San Juan/Laventille,SJL,TTO
+3533,TT.TUP,Tunapuna/Piarco,Tunapuna/Piarco,TUP,TTO
+3534,TV.NUI,Nui,Nui,NUI,TUV
+3535,TV.NMA,Nanumea,Nanumea,NMA,TUV
+3536,TV.FUN,Funafuti,Funafuti,FUN,TUV
+3537,TV.NIT,Niutao,Niutao,NIT,TUV
+3538,TV.NMG,Nanumanga,Nanumanga,NMG,TUV
+3539,TV.VAI,Vaitupu,Vaitupu,VAI,TUV
+3540,TV.NKF,Nukufetau,Nukufetau,NKF,TUV
+3541,TV.NKL,Nukulaelae,Nukulaelae,NKL,TUV
+3542,TW.01,Fukien,Fukien,01,TWN
+3543,TW.02,Takao,Takao,02,TWN
+3544,TW.03,Taipei,Taipei,03,TWN
+3545,TW.04,Taiwan,Taiwan,04,TWN
+3546,TZ.19,Kagera,Kagera,19,TZA
+3547,TZ.25,Zanzibar Urban/West,Zanzibar Urban/West,25,TZA
+3548,TZ.22,Zanzibar North,Zanzibar North,22,TZA
+3549,TZ.21,Zanzibar Central/South,Zanzibar Central/South,21,TZA
+3550,TZ.18,Tanga,Tanga,18,TZA
+3551,TZ.17,Tabora,Tabora,17,TZA
+3552,TZ.16,Singida,Singida,16,TZA
+3553,TZ.15,Shinyanga,Shinyanga,15,TZA
+3554,TZ.24,Rukwa,Rukwa,24,TZA
+3555,TZ.02,Pwani,Pwani,02,TZA
+3556,TZ.20,Pemba South,Pemba South,20,TZA
+3557,TZ.13,Pemba North,Pemba North,13,TZA
+3558,TZ.12,Mwanza,Mwanza,12,TZA
+3559,TZ.10,Morogoro,Morogoro,10,TZA
+3560,TZ.09,Mbeya,Mbeya,09,TZA
+3561,TZ.08,Mara,Mara,08,TZA
+3562,TZ.07,Lindi,Lindi,07,TZA
+3563,TZ.06,Kilimanjaro,Kilimanjaro,06,TZA
+3564,TZ.05,Kigoma,Kigoma,05,TZA
+3565,TZ.04,Iringa,Iringa,04,TZA
+3566,TZ.03,Dodoma,Dodoma,03,TZA
+3567,TZ.23,Dar es Salaam Region,Dar es Salaam Region,23,TZA
+3568,TZ.26,Arusha,Arusha,26,TZA
+3569,TZ.27,Manyara,Manyara,27,TZA
+3570,TZ.14,Ruvuma,Ruvuma,14,TZA
+3571,TZ.11,Mtwara,Mtwara,11,TZA
+3572,TZ.31,Simiyu,Simiyu,31,TZA
+3573,TZ.28,Geita,Geita,28,TZA
+3574,TZ.29,Katavi,Katavi,29,TZA
+3575,TZ.30,Njombe,Njombe,30,TZA
+3576,TZ.32,Songwe,Songwe,32,TZA
+3577,UA.27,Zhytomyr,Zhytomyr,27,UKR
+3578,UA.26,Zaporizhzhia,Zaporizhzhia,26,UKR
+3579,UA.25,Transcarpathia,Transcarpathia,25,UKR
+3580,UA.24,Volyn,Volyn,24,UKR
+3581,UA.23,Vinnytsia,Vinnytsia,23,UKR
+3582,UA.22,Ternopil,Ternopil,22,UKR
+3583,UA.21,Sumy,Sumy,21,UKR
+3584,UA.20,Sevastopol City,Sevastopol City,20,UKR
+3585,UA.19,Rivne,Rivne,19,UKR
+3586,UA.18,Poltava,Poltava,18,UKR
+3587,UA.17,Odessa,Odessa,17,UKR
+3588,UA.16,Mykolaiv,Mykolaiv,16,UKR
+3589,UA.15,Lviv,Lviv,15,UKR
+3590,UA.14,Luhansk,Luhansk,14,UKR
+3591,UA.13,Kiev,Kiev,13,UKR
+3592,UA.12,Kyiv City,Kyiv City,12,UKR
+3593,UA.11,Crimea,Crimea,11,UKR
+3594,UA.10,Kirovohrad,Kirovohrad,10,UKR
+3595,UA.09,Khmelnytskyi,Khmelnytskyi,09,UKR
+3596,UA.08,Kherson,Kherson,08,UKR
+3597,UA.07,Kharkivs’ka Oblast’,Kharkivs'ka Oblast',07,UKR
+3598,UA.06,Ivano-Frankivsk,Ivano-Frankivsk,06,UKR
+3599,UA.05,Donetsk,Donetsk,05,UKR
+3600,UA.04,Dnipropetrovsk,Dnipropetrovsk,04,UKR
+3601,UA.03,Chernivtsi,Chernivtsi,03,UKR
+3602,UA.02,Chernihiv,Chernihiv,02,UKR
+3603,UA.01,Cherkasy,Cherkasy,01,UKR
+3604,UG.C,Central Region,Central Region,C,UGA
+3605,UG.E,Eastern Region,Eastern Region,E,UGA
+3606,UG.N,Northern Region,Northern Region,N,UGA
+3607,UG.W,Western Region,Western Region,W,UGA
+3608,UM.450,Wake Island,Wake Island,450,UMI
+3609,UM.350,Navassa Island,Navassa Island,350,UMI
+3610,UM.050,Baker Island,Baker Island,050,UMI
+3611,UM.100,Howland Island,Howland Island,100,UMI
+3612,UM.150,Jarvis Island,Jarvis Island,150,UMI
+3613,UM.200,Johnston Atoll,Johnston Atoll,200,UMI
+3614,UM.250,Kingman Reef,Kingman Reef,250,UMI
+3615,UM.300,Midway Islands,Midway Islands,300,UMI
+3616,UM.400,Palmyra Atoll,Palmyra Atoll,400,UMI
+3617,US.AR,Arkansas,Arkansas,AR,USA
+3618,US.DC,District of Columbia,District of Columbia,DC,USA
+3619,US.DE,Delaware,Delaware,DE,USA
+3620,US.FL,Florida,Florida,FL,USA
+3621,US.GA,Georgia,Georgia,GA,USA
+3622,US.KS,Kansas,Kansas,KS,USA
+3623,US.LA,Louisiana,Louisiana,LA,USA
+3624,US.MD,Maryland,Maryland,MD,USA
+3625,US.MO,Missouri,Missouri,MO,USA
+3626,US.MS,Mississippi,Mississippi,MS,USA
+3627,US.NC,North Carolina,North Carolina,NC,USA
+3628,US.OK,Oklahoma,Oklahoma,OK,USA
+3629,US.SC,South Carolina,South Carolina,SC,USA
+3630,US.TN,Tennessee,Tennessee,TN,USA
+3631,US.TX,Texas,Texas,TX,USA
+3632,US.WV,West Virginia,West Virginia,WV,USA
+3633,US.AL,Alabama,Alabama,AL,USA
+3634,US.CT,Connecticut,Connecticut,CT,USA
+3635,US.IA,Iowa,Iowa,IA,USA
+3636,US.IL,Illinois,Illinois,IL,USA
+3637,US.IN,Indiana,Indiana,IN,USA
+3638,US.ME,Maine,Maine,ME,USA
+3639,US.MI,Michigan,Michigan,MI,USA
+3640,US.MN,Minnesota,Minnesota,MN,USA
+3641,US.NE,Nebraska,Nebraska,NE,USA
+3642,US.NH,New Hampshire,New Hampshire,NH,USA
+3643,US.NJ,New Jersey,New Jersey,NJ,USA
+3644,US.NY,New York,New York,NY,USA
+3645,US.OH,Ohio,Ohio,OH,USA
+3646,US.RI,Rhode Island,Rhode Island,RI,USA
+3647,US.VT,Vermont,Vermont,VT,USA
+3648,US.WI,Wisconsin,Wisconsin,WI,USA
+3649,US.CA,California,California,CA,USA
+3650,US.CO,Colorado,Colorado,CO,USA
+3651,US.NM,New Mexico,New Mexico,NM,USA
+3652,US.NV,Nevada,Nevada,NV,USA
+3653,US.UT,Utah,Utah,UT,USA
+3654,US.AZ,Arizona,Arizona,AZ,USA
+3655,US.ID,Idaho,Idaho,ID,USA
+3656,US.MT,Montana,Montana,MT,USA
+3657,US.ND,North Dakota,North Dakota,ND,USA
+3658,US.OR,Oregon,Oregon,OR,USA
+3659,US.SD,South Dakota,South Dakota,SD,USA
+3660,US.WA,Washington,Washington,WA,USA
+3661,US.WY,Wyoming,Wyoming,WY,USA
+3662,US.HI,Hawaii,Hawaii,HI,USA
+3663,US.AK,Alaska,Alaska,AK,USA
+3664,US.KY,Kentucky,Kentucky,KY,USA
+3665,US.MA,Massachusetts,Massachusetts,MA,USA
+3666,US.PA,Pennsylvania,Pennsylvania,PA,USA
+3667,US.VA,Virginia,Virginia,VA,USA
+3668,UY.19,Treinta y Tres Department,Treinta y Tres Department,19,URY
+3669,UY.18,Tacuarembó Department,Tacuarembo Department,18,URY
+3670,UY.17,Soriano,Soriano,17,URY
+3671,UY.16,San José Department,San Jose Department,16,URY
+3672,UY.15,Salto Department,Salto Department,15,URY
+3673,UY.14,Rocha Department,Rocha Department,14,URY
+3674,UY.13,Rivera Department,Rivera Department,13,URY
+3675,UY.12,Río Negro Department,Rio Negro Department,12,URY
+3676,UY.11,Paysandú Department,Paysandu Department,11,URY
+3677,UY.10,Montevideo Department,Montevideo Department,10,URY
+3678,UY.09,Maldonado,Maldonado,09,URY
+3679,UY.08,Lavalleja,Lavalleja,08,URY
+3680,UY.07,Florida,Florida,07,URY
+3681,UY.06,Flores Department,Flores Department,06,URY
+3682,UY.05,Durazno Department,Durazno Department,05,URY
+3683,UY.04,Colonia,Colonia,04,URY
+3684,UY.03,Cerro Largo,Cerro Largo,03,URY
+3685,UY.02,Canelones,Canelones,02,URY
+3686,UY.01,Artigas,Artigas,01,URY
+3687,UZ.09,Karakalpakstan,Karakalpakstan,09,UZB
+3688,UZ.12,Surxondaryo Region,Surxondaryo Region,12,UZB
+3689,UZ.10,Samarqand Region,Samarqand Region,10,UZB
+3690,UZ.08,Qashqadaryo,Qashqadaryo,08,UZB
+3691,UZ.02,Bukhara,Bukhara,02,UZB
+3692,UZ.14,Tashkent Region,Tashkent Region,14,UZB
+3693,UZ.13,Tashkent,Tashkent,13,UZB
+3694,UZ.16,Sirdaryo Region,Sirdaryo Region,16,UZB
+3695,UZ.07,Navoiy Region,Navoiy Region,07,UZB
+3696,UZ.06,Namangan,Namangan,06,UZB
+3697,UZ.05,Xorazm Region,Xorazm Region,05,UZB
+3698,UZ.15,Jizzakh Region,Jizzakh Region,15,UZB
+3699,UZ.03,Fergana,Fergana,03,UZB
+3700,UZ.01,Andijan Region,Andijan Region,01,UZB
+3701,VC.05,Saint Patrick Parish,Saint Patrick Parish,05,VCT
+3702,VC.04,Saint George Parish,Saint George Parish,04,VCT
+3703,VC.03,Saint David Parish,Saint David Parish,03,VCT
+3704,VC.02,Saint Andrew Parish,Saint Andrew Parish,02,VCT
+3705,VC.06,Grenadines Parish,Grenadines Parish,06,VCT
+3706,VC.01,Charlotte Parish,Charlotte Parish,01,VCT
+3707,VE.23,Zulia,Zulia,23,VEN
+3708,VE.22,Yaracuy,Yaracuy,22,VEN
+3709,VE.21,Trujillo,Trujillo,21,VEN
+3710,VE.20,Táchira,Tachira,20,VEN
+3711,VE.19,Sucre,Sucre,19,VEN
+3712,VE.18,Portuguesa,Portuguesa,18,VEN
+3713,VE.17,Nueva Esparta,Nueva Esparta,17,VEN
+3714,VE.16,Monagas,Monagas,16,VEN
+3715,VE.15,Miranda,Miranda,15,VEN
+3716,VE.14,Mérida,Merida,14,VEN
+3717,VE.13,Lara,Lara,13,VEN
+3718,VE.12,Guárico,Guarico,12,VEN
+3719,VE.24,Dependencias Federales,Dependencias Federales,24,VEN
+3720,VE.25,Distrito Federal,Distrito Federal,25,VEN
+3721,VE.11,Falcón,Falcon,11,VEN
+3722,VE.09,Delta Amacuro,Delta Amacuro,09,VEN
+3723,VE.08,Cojedes,Cojedes,08,VEN
+3724,VE.07,Carabobo,Carabobo,07,VEN
+3725,VE.06,Bolívar,Bolivar,06,VEN
+3726,VE.05,Barinas,Barinas,05,VEN
+3727,VE.04,Aragua,Aragua,04,VEN
+3728,VE.03,Apure,Apure,03,VEN
+3729,VE.02,Anzoátegui,Anzoategui,02,VEN
+3730,VE.01,Amazonas,Amazonas,01,VEN
+3731,VE.26,Vargas,Vargas,26,VEN
+3732,VI.010,Saint Croix Island,Saint Croix Island,010,VIR
+3733,VI.020,Saint John Island,Saint John Island,020,VIR
+3734,VI.030,Saint Thomas Island,Saint Thomas Island,030,VIR
+3735,VN.58,Nghệ An Province,Nghe An Province,58,VNM
+3736,VN.59,Ninh Bình Province,Ninh Binh Province,59,VNM
+3737,VN.60,Ninh Thuận Province,Ninh Thuan Province,60,VNM
+3738,VN.65,Sóc Trăng Province,Soc Trang Province,65,VNM
+3739,VN.67,Trà Vinh Province,Tra Vinh Province,67,VNM
+3740,VN.68,Tuyên Quang Province,Tuyen Quang Province,68,VNM
+3741,VN.69,Vĩnh Long Province,Vinh Long Province,69,VNM
+3742,VN.70,Yên Bái Province,Yen Bai Province,70,VNM
+3743,VN.90,Lào Cai Province,Lao Cai Province,90,VNM
+3744,VN.37,Tiền Giang,Tien Giang,37,VNM
+3745,VN.66,Thừa Thiên Huế Province,Thua Thien Hue Province,66,VNM
+3746,VN.55,Kon Tum,Kon Tum,55,VNM
+3747,VN.34,Thanh Hóa Province,Thanh Hoa Province,34,VNM
+3748,VN.35,Thái Bình Province,Thai Binh Province,35,VNM
+3749,VN.33,Tây Ninh Province,Tay Ninh Province,33,VNM
+3750,VN.32,Sơn La Province,Son La Province,32,VNM
+3751,VN.64,Quảng Trị Province,Quang Tri Province,64,VNM
+3752,VN.30,Quảng Ninh,Quang Ninh,30,VNM
+3753,VN.63,Quảng Ngãi Province,Quang Ngai Province,63,VNM
+3754,VN.62,Quảng Bình Province,Quang Binh Province,62,VNM
+3755,VN.61,Phú Yên Province,Phu Yen Province,61,VNM
+3756,VN.53,Hòa Bình Province,Hoa Binh Province,53,VNM
+3757,VN.24,Long An Povince,Long An Povince,24,VNM
+3758,VN.39,Lạng Sơn Province,Lang Son Province,39,VNM
+3759,VN.23,Lâm Đồng Province,Lam GJong Province,23,VNM
+3760,VN.89,Lai Châu Province,Lai Chau Province,89,VNM
+3761,VN.21,Kiên Giang Province,Kien Giang Province,21,VNM
+3762,VN.54,Khánh Hòa Province,Khanh Hoa Province,54,VNM
+3763,VN.20,Ho Chi Minh,Ho Chi Minh,20,VNM
+3764,VN.52,Hà Tĩnh Province,Ha Tinh Province,52,VNM
+3765,VN.50,Hà Giang Province,Ha Giang Province,50,VNM
+3766,VN.49,Gia Lai Province,Gia Lai Province,49,VNM
+3767,VN.44,Hanoi,Hanoi,44,VNM
+3768,VN.87,Can Tho,Can Tho,87,VNM
+3769,VN.13,Haiphong,Haiphong,13,VNM
+3770,VN.47,Bình Thuận Province,Binh Thuan Province,47,VNM
+3771,VN.09,Đồng Tháp Province,GJong Thap Province,09,VNM
+3772,VN.43,Đồng Nai Province,GJong Nai Province,43,VNM
+3773,VN.88,Đắk Lắk,GJak Lak,88,VNM
+3774,VN.45,Bà Rịa–Vũng Tàu Province,Ba Ria-Vung Tau Province,45,VNM
+3775,VN.05,Cao Bằng Province,Cao Bang Province,05,VNM
+3776,VN.46,Bình Định Province,Binh GJinh Province,46,VNM
+3777,VN.03,Bến Tre Province,Ben Tre Province,03,VNM
+3778,VN.01,An Giang Province,An Giang Province,01,VNM
+3779,VN.91,Đăk Nông Province,GJak Nong Province,91,VNM
+3780,VN.92,Điện Biên Province,GJien Bien Province,92,VNM
+3781,VN.74,Bắc Ninh Province,Bac Ninh Province,74,VNM
+3782,VN.71,Bắc Giang Province,Bac Giang Province,71,VNM
+3783,VN.78,Da Nang,Da Nang,78,VNM
+3784,VN.75,Bình Dương Province,Binh Duong Province,75,VNM
+3785,VN.76,Bình Phước Province,Binh Phuoc Province,76,VNM
+3786,VN.85,Thái Nguyên Province,Thai Nguyen Province,85,VNM
+3787,VN.84,Quảng Nam Province,Quang Nam Province,84,VNM
+3788,VN.83,Phú Thọ Province,Phu Tho Province,83,VNM
+3789,VN.82,Nam Định Province,Nam GJinh Province,82,VNM
+3790,VN.80,Hà Nam Province,Ha Nam Province,80,VNM
+3791,VN.72,Bắc Kạn Province,Bac Kan Province,72,VNM
+3792,VN.73,Bạc Liêu Province,Bac Lieu Province,73,VNM
+3793,VN.77,Cà Mau Province,Ca Mau Province,77,VNM
+3794,VN.79,Hải Dương Province,Hai Duong Province,79,VNM
+3795,VN.81,Hưng Yên Province,Hung Yen Province,81,VNM
+3796,VN.86,Vĩnh Phúc Province,Vinh Phuc Province,86,VNM
+3797,VN.93,Hậu Giang,Hau Giang,93,VNM
+3798,VU.15,Tafea,Tafea,15,VUT
+3799,VU.13,Sanma,Sanma,13,VUT
+3800,VU.07,Torba,Torba,07,VUT
+3801,VU.16,Malampa,Malampa,16,VUT
+3802,VU.17,Penama,Penama,17,VUT
+3803,VU.18,Shefa,Shefa,18,VUT
+3804,WF.98613,Uvea,Uvea,98613,WLF
+3805,WF.98612,Sigave,Sigave,98612,WLF
+3806,WF.98611,Alo,Alo,98611,WLF
+3807,WS.11,Vaisigano,Vaisigano,11,WSM
+3808,WS.06,Va'a-o-Fonoti,Va'a-o-Fonoti,06,WSM
+3809,WS.10,Tuamasaga,Tuamasaga,10,WSM
+3810,WS.09,Satupa'itea,Satupa'itea,09,WSM
+3811,WS.08,Palauli,Palauli,08,WSM
+3812,WS.07,Gaga'ifomauga,Gaga'ifomauga,07,WSM
+3813,WS.05,Gaga'emauga,Gaga'emauga,05,WSM
+3814,WS.04,Fa'asaleleaga,Fa'asaleleaga,04,WSM
+3815,WS.03,Atua,Atua,03,WSM
+3816,WS.02,Aiga-i-le-Tai,Aiga-i-le-Tai,02,WSM
+3817,WS.01,A'ana,A'ana,01,WSM
+3818,XK.10096138,Ferizaj,Ferizaj,10096138,
+3819,XK.10096859,Gjakova,Gjakova,10096859,
+3820,XK.10097357,Gjilan,Gjilan,10097357,
+3821,XK.10097358,Mitrovica,Mitrovica,10097358,
+3822,XK.10097359,Pec,Pec,10097359,
+3823,XK.10097360,Pristina,Pristina,10097360,
+3824,XK.10097361,Prizren,Prizren,10097361,
+3825,YE.25,Ta‘izz,Ta'izz,25,YEM
+3826,YE.05,Shabwah,Shabwah,05,YEM
+3827,YE.16,Sanaa Governorate,Sanaa Governorate,16,YEM
+3828,YE.15,Şa‘dah,Sa'dah,15,YEM
+3829,YE.27,Raymah,Raymah,27,YEM
+3830,YE.14,Ma’rib,Ma'rib,14,YEM
+3831,YE.10,Al Mahwit Governorate,Al Mahwit Governorate,10,YEM
+3832,YE.21,Al Jawf,Al Jawf,21,YEM
+3833,YE.04,Muhafazat Hadramaout,Muhafazat Hadramaout,04,YEM
+3834,YE.11,Dhamār,Dhamar,11,YEM
+3835,YE.03,Al Mahrah Governorate,Al Mahrah Governorate,03,YEM
+3836,YE.08,Al Hudaydah,Al Hudaydah,08,YEM
+3837,YE.20,Al Bayda,Al Bayda,20,YEM
+3838,YE.02,Aden,Aden,02,YEM
+3839,YE.01,Abyan Governorate,Abyan Governorate,01,YEM
+3840,YE.18,Aḑ Ḑāli‘,Ad Dali',18,YEM
+3841,YE.19,Omran,Omran,19,YEM
+3842,YE.22,Ḩajjah,Hajjah,22,YEM
+3843,YE.23,Ibb Governorate,Ibb Governorate,23,YEM
+3844,YE.24,Laḩij,Lahij,24,YEM
+3845,YE.26,Amanat Alasimah,Amanat Alasimah,26,YEM
+3846,YE.28,Soqatra,Soqatra,28,YEM
+3847,YT.97601,Acoua,Acoua,97601,MYT
+3848,YT.97602,Bandraboua,Bandraboua,97602,MYT
+3849,YT.97603,Bandrele,Bandrele,97603,MYT
+3850,YT.97604,Bouéni,Boueni,97604,MYT
+3851,YT.97605,Chiconi,Chiconi,97605,MYT
+3852,YT.97606,Chirongui,Chirongui,97606,MYT
+3853,YT.97607,Dembeni,Dembeni,97607,MYT
+3854,YT.97608,Dzaoudzi,Dzaoudzi,97608,MYT
+3855,YT.97609,Kani-Kéli,Kani-Keli,97609,MYT
+3856,YT.97610,Koungou,Koungou,97610,MYT
+3857,YT.97611,Mamoudzou,Mamoudzou,97611,MYT
+3858,YT.97612,Mtsamboro,Mtsamboro,97612,MYT
+3859,YT.97613,M'Tsangamouji,M'Tsangamouji,97613,MYT
+3860,YT.97614,Ouangani,Ouangani,97614,MYT
+3861,YT.97615,Pamandzi,Pamandzi,97615,MYT
+3862,YT.97616,Sada,Sada,97616,MYT
+3863,YT.97617,Tsingoni,Tsingoni,97617,MYT
+3864,ZA.03,Free State,Free State,03,ZAF
+3865,ZA.02,KwaZulu-Natal,KwaZulu-Natal,02,ZAF
+3866,ZA.05,Eastern Cape,Eastern Cape,05,ZAF
+3867,ZA.06,Gauteng,Gauteng,06,ZAF
+3868,ZA.07,Mpumalanga,Mpumalanga,07,ZAF
+3869,ZA.08,Northern Cape,Northern Cape,08,ZAF
+3870,ZA.09,Limpopo,Limpopo,09,ZAF
+3871,ZA.10,North West,North West,10,ZAF
+3872,ZA.11,Western Cape,Western Cape,11,ZAF
+3873,ZM.01,Western Province,Western Province,01,ZMB
+3874,ZM.07,Southern Province,Southern Province,07,ZMB
+3875,ZM.06,North-Western,North-Western,06,ZMB
+3876,ZM.05,Northern Province,Northern Province,05,ZMB
+3877,ZM.09,Lusaka Province,Lusaka Province,09,ZMB
+3878,ZM.04,Luapula Province,Luapula Province,04,ZMB
+3879,ZM.03,Eastern Province,Eastern Province,03,ZMB
+3880,ZM.08,Copperbelt,Copperbelt,08,ZMB
+3881,ZM.02,Central Province,Central Province,02,ZMB
+3882,ZM.10,Muchinga,Muchinga,10,ZMB
+3883,ZW.02,Midlands Province,Midlands Province,02,ZWE
+3884,ZW.07,Matabeleland South Province,Matabeleland South Province,07,ZWE
+3885,ZW.06,Matabeleland North,Matabeleland North,06,ZWE
+3886,ZW.08,Masvingo Province,Masvingo Province,08,ZWE
+3887,ZW.05,Mashonaland West,Mashonaland West,05,ZWE
+3888,ZW.04,Mashonaland East Province,Mashonaland East Province,04,ZWE
+3889,ZW.03,Mashonaland Central,Mashonaland Central,03,ZWE
+3890,ZW.01,Manicaland,Manicaland,01,ZWE
+3891,ZW.09,Bulawayo,Bulawayo,09,ZWE
+3892,ZW.10,Harare,Harare,10,ZWE
