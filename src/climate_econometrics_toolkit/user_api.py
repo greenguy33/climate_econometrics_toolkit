@@ -8,6 +8,8 @@ from importlib.resources import files
 from functools import reduce
 from metpy.calc import heat_index
 from metpy.units import units
+import progressbar
+import itertools as it
 
 from climate_econometrics_toolkit import interface_api as api
 from climate_econometrics_toolkit.ClimateEconometricsModel import ClimateEconometricsModel
@@ -23,6 +25,8 @@ model = ClimateEconometricsModel()
 cet_home = os.getenv("CETHOME")
 
 # TODO: utils.assert_with_log(types for user input to each method
+# TODO: the transformations user interface is clunky and unintuitive, ideally should be re-worked
+# TODO: document new methods
 
 def model_checks():
     checks = {
@@ -37,6 +41,59 @@ def model_checks():
             utils.print_with_log(f"{key} Please update your model.", "error")
             return False
     return True
+
+
+def run_specification_search(metric="out_sample_mse_reduction"):
+    utils.assert_with_log(metric in utils.supported_metrics, f"Supplied metric must be one of: {utils.supported_metrics}")
+    if model_checks():
+
+        target_var = model.target_var.split("(")[-1].split(")")[0]
+        covariates = list(set([var.split("(")[-1].split(")")[0] for var in model.covariates]))
+        dataset = model.dataset
+        panel_column = model.panel_column
+        time_column = model.time_column
+        levels = ["level","fd"]
+        logged_target_var = [False,True]
+        fe = [["ISO3"], ["year"], None, ["ISO3","year"]]
+        transformations = [None, "sq", "cu"]
+        permutation_list = list(it.product(*[levels, logged_target_var, fe, transformations]))
+
+        model_list = []
+        for permutation in progressbar.progressbar(permutation_list):
+            reset_model()
+            model.dataset = dataset
+            model.datafile = "ds1"
+            set_panel_column(panel_column)
+            set_time_column(time_column)
+            model.target_var = target_var
+            model.covariates = copy.deepcopy(covariates)
+            if permutation[1]:
+                model.target_var = f"ln({target_var})"
+            if permutation[-1] == "sq":
+                new_covariate_list = []
+                for cov in model.covariates:
+                    new_covariate_list.append(f"sq({cov})")
+                model.covariates.extend(new_covariate_list)
+            elif permutation[-1] == "cu":
+                new_covariate_list = []
+                for cov in model.covariates:
+                    new_covariate_list.append(f"sq({cov})")
+                    new_covariate_list.append(f"cu({cov})")
+                model.covariates.extend(new_covariate_list)
+            if permutation[0] == "fd":
+                model.covariates = [f"fd({var})" for var in model.covariates]
+                model.target_var = f"fd({model.target_var})"
+            if permutation[2] != None:
+                add_fixed_effects(permutation[2])
+            model.model_vars.append(model.target_var)
+            for var in model.covariates:
+                model.model_vars.append(var)
+            evaluate_model()
+            model_list.append(copy.deepcopy(model))
+
+        best_model = get_best_model(model_list, metric)
+        utils.print_with_log(f"Best model for metric {metric}: {best_model.to_string()}", "info")
+        return best_model
 
 
 def compute_degree_days(years, countries, threshold, mode="above", weight="unweighted", panel_column_name="ISO3", time_column_name="year"):
@@ -156,7 +213,7 @@ def load_spei_data(weight="unweighted"):
 
 def get_temperature_humidity_index(temp_data, relative_humidity_data):
     # requires temp data in celsius and relative humidity data (percentage) between 0 and 100
-    utils.print_with_log("Generating temperature/humidity index using supplied data")
+    utils.print_with_log("Generating temperature/humidity index using supplied data", "info")
     return heat_index(
         temp_data * units.degC, 
         relative_humidity_data * units.percent,
@@ -190,8 +247,9 @@ def get_all_models_from_cache():
     return model_list
 
 
-def get_best_model(metric="r2"):
-    model_list = get_all_models_from_cache()
+def get_best_model(model_list=None, metric="r2"):
+    if not model_list:
+        model_list = get_all_models_from_cache()
     utils.assert_with_log(metric in utils.supported_metrics, f"Metric must be one of {utils.supported_metrics}")
     if metric in ["r2","out_sample_mse","rmse"]:
         sorted_models = sorted(model_list, key=lambda x : getattr(x, metric))
@@ -199,9 +257,9 @@ def get_best_model(metric="r2"):
         sorted_models = sorted(model_list, key=lambda x : getattr(x, metric), reverse=True)
     elif metric == "out_sample_pred_int_cov":
         sorted_models = sorted(model_list, key=lambda x : abs(getattr(x, "out_sample_pred_int_cov")-.95))
-    utils.print_with_log(f"ID {sorted_models[0].model_id} assigned to model", "info")
-    print(sorted_models[0].print())
+    utils.print_with_log(f"Model with ID {sorted_models[0].model_id} is best for metric {metric}", "info")
     return sorted_models[0]
+
 
 def get_all_model_ids():
     if model.data_file == None:
@@ -209,9 +267,11 @@ def get_all_model_ids():
         return None
     else:
         return list(os.listdir(f"{cet_home}/model_cache/{model.data_file}"))
+    
 
 def get_model_by_id(model_id):
     return build_model_from_cache(model_id)
+
 
 def load_dataset_from_file(datafile):
     utils.print_with_log(f"Loading dataset {datafile} as active dataset and resetting current model.", "info")
@@ -220,6 +280,7 @@ def load_dataset_from_file(datafile):
     model.data_file = datafile.split("/")[-1]
     model.dataset = pd.read_csv(datafile)
 
+
 def set_dataset(dataframe, dataset_name):
     utils.print_with_log(f"Setting dataset '{dataset_name}' as active dataset and resetting current model.", "info")
     # resets model when new dataset is loaded
@@ -227,8 +288,10 @@ def set_dataset(dataframe, dataset_name):
     model.data_file = dataset_name
     model.dataset = dataframe
 
+
 def view_current_model():
     model.print()
+
 
 def basic_existence_check(var):
     if model.dataset is None:
@@ -239,18 +302,22 @@ def basic_existence_check(var):
         return False
     return True
 
+
 def set_target_variable(var, existence_check=True):
     if not existence_check or basic_existence_check(var):
         model.target_var = var
         model.model_vars = model.covariates + [model.target_var]
 
+
 def set_time_column(var):
     if basic_existence_check(var):
         model.time_column = var
 
+
 def set_panel_column(var):
     if basic_existence_check(var):
         model.panel_column = var
+
 
 def add_transformation(var, transformations, keep_original_var=False):
     if not isinstance(transformations, list):
@@ -274,6 +341,7 @@ def add_transformation(var, transformations, keep_original_var=False):
                 var = f"{transform}({var})"
             set_target_variable(var, existence_check=False)
 
+
 def add_covariates(vars, existence_check=True):
     if not isinstance(vars, list):
         vars = [vars]
@@ -283,6 +351,7 @@ def add_covariates(vars, existence_check=True):
                 model.covariates.append(var)
         model.model_vars = model.covariates + [model.target_var]
 
+
 def add_fixed_effects(vars):
     if not isinstance(vars, list):
         vars = [vars]
@@ -291,11 +360,13 @@ def add_fixed_effects(vars):
             if fe not in model.fixed_effects:
                 model.fixed_effects.append(fe)
 
+
 def add_time_trend(var, exp):
     if basic_existence_check(var):
         time_trend = var + " " + str(exp)
         if time_trend not in model.time_trends:
             model.time_trends.append(time_trend)
+
 
 def remove_covariates(vars):
     if not isinstance(vars, list):
@@ -304,9 +375,11 @@ def remove_covariates(vars):
         model.covariates = [var for var in model.covariates if var != var_to_remove]
         model.model_vars = [var for var in model.model_vars if var != var_to_remove]
 
+
 def remove_time_trend(var, exp):
     time_trend = var + " " + str(exp)
     model.time_trends = [var for var in model.time_trends if var != time_trend]
+
 
 def remove_transformation(var, transformations):
     if not isinstance(transformations, list):
@@ -322,8 +395,10 @@ def remove_transformation(var, transformations):
     else:
         utils.print_with_log(f"Transformed var f{transformed_var} not found", "error")
 
+
 def remove_fixed_effect(fe):
     model.fixed_effects = [var for var in model.fixed_effects if var != fe]
+
 
 def add_random_effect(var, group):
     if model.random_effects != [var, group]:
@@ -334,19 +409,23 @@ def add_random_effect(var, group):
             if var in model.covariates:
                 remove_covariates(var)
 
+
 def remove_random_effect(add_to_covariate_list=True):
     if model.random_effects is not None:
         if add_to_covariate_list:
             add_covariates(model.random_effects[0])
         model.random_effects = None
 
+
 def run_spatial_lag_regression(reg_type, geometry_column=None):
     model_id = time.time()
     regression.run_spatial_regression(model, reg_type, model_id, geometry_column)
 
+
 def run_spatial_error_regression(reg_type, geometry_column=None):
     model_id = time.time()
     regression.run_spatial_regression(model, reg_type, model_id, geometry_column)
+
 
 def run_quantile_regression(q):
     model_id = time.time()
@@ -393,6 +472,7 @@ def run_bayesian_regression(model, num_samples=1000):
         model = get_model_by_id(model)
     regression.run_bayesian_regression(model, num_samples)
 
+
 def run_block_bootstrap(model, std_error_type, num_samples=1000):
     # TODO: check to see if bootstrap already ran for this model
     if isinstance(model, str):
@@ -400,30 +480,34 @@ def run_block_bootstrap(model, std_error_type, num_samples=1000):
     utils.assert_with_log(model != None, "NoneType passed as model object")
     regression.run_block_bootstrap(model, std_error_type, num_samples)
 
+
 def extract_raster_data(raster_file, shape_file, weight_file=None):
     utils.print_with_log(f"Extracting raster data using raster_file {raster_file}; shape_file {shape_file}; weights file {weight_file}.", "info")
     return predict.extract_raster_data(raster_file, shape_file, weight_file)
 
-def aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use=None):
+
+def aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year, subperiods_to_use=None, ):
     utils.print_with_log(f"Aggregating raster data using function {aggregation_func}", "info")
-    return predict.aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use)
+    return predict.aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year, subperiods_to_use)
+
 
 def predict_out_of_sample(model, data, transform_data=False, var_map=None):
     if isinstance(model, str):
         model = get_model_by_id(model)
-    utils.print_with_log(f"Generating out-of-sample predictions for Model with ID {model.model_id} using supplied data")
+    utils.print_with_log(f"Generating out-of-sample predictions for Model with ID {model.model_id} using supplied data", "info")
     return predict.predict_out_of_sample(model, copy.deepcopy(data), transform_data, var_map)
 
+
 def call_user_prediction_function(function_name, args):
-    utils.print_with_log(f"User prediction function '{function_name}' called with args: {args}")
+    utils.print_with_log(f"User prediction function '{function_name}' called with args: {args}", "info")
     func = getattr(user_predict, function_name)
     return func(*args)
 
-# TODO: document below this line
 
 def transform_data(data, model, include_target_var=True, demean=False):
     utils.print_with_log(f"Runing data transformation with the following settings: include_target_var: {include_target_var}, demean: {demean}", "info")
     return utils.transform_data(copy.deepcopy(data), model, include_target_var, demean)
+
 
 def reset_model():
     global model

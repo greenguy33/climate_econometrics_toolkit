@@ -281,18 +281,20 @@ class TkInterfaceUtils():
 		if raster_files is None or shape_file is None:
 			self.update_interface_window_output("Both a raster file and a shape file must be selected.")
 		else:
-			time_interval = int(raster_extract_popup.time_interval)
+			subperiods_per_year = int(raster_extract_popup.time_interval)
+			starting_year = int(raster_extract_popup.starting_year)
 			weights_file = raster_extract_popup.weight_file
 			aggregation_func = raster_extract_popup.func
 			logger.info(f"Extracting raster data using function {aggregation_func}; raster_file(s) {raster_files}; shape_file {shape_file}; weights file {weights_file}.")
 			self.update_interface_window_output(f"Raster aggregation will run in background. When complete file will be saved to {cet_home}/raster_output. Check command line for errors.")
-			thread = threading.Thread(target=self.raster_aggregation,name="bootstrap_thread",args=(raster_files, shape_file, aggregation_func, weights_file, time_interval))
+			thread = threading.Thread(target=self.raster_aggregation,name="raster_agg_thread",args=(raster_files, shape_file, aggregation_func, weights_file, subperiods_per_year, starting_year))
 			thread.daemon = True
 			thread.start()
 
 
 	def integrate_raster_datasets(self, raster_datasets, geo_id):
 		# remove values of panel and time variables that aren't shared between all datasets
+		# TODO: replace with merge function from pandas
 		common_time_vals = set()
 		common_geo_vals = set()
 		for dataset in raster_datasets:
@@ -319,15 +321,15 @@ class TkInterfaceUtils():
 		df.to_csv(f"{cet_home}/raster_output/integrated_dataset_with_{len(raster_datasets)}_input_files.csv")
 
 
-	def raster_aggregation(self, raster_files, shape_file, aggregation_func, weights_file, time_interval):
+	def raster_aggregation(self, raster_files, shape_file, aggregation_func, weights_file, subperiods_per_year, starting_year):
 		raster_datasets = []
-		# TODO: for multiple rasters, since time index is set to 0 for all files, this will erroneously align time spans even if they are not aligned in original files
+		# TODO: subperiods per year can accept list that corresponds with each raster file?
 		for raster_file in raster_files:
 			raster = xr.open_dataset(raster_file)
 			geo_identifier = gpd.read_file(shape_file).columns[0]
 			climate_var_name = list(raster.data_vars)[-1]
 			out = api.extract_raster_data(raster_file, shape_file, weights_file)
-			raster_datasets.append(api.aggregate_raster_data(out, shape_file, climate_var_name, aggregation_func.lower(), time_interval, geo_identifier))
+			raster_datasets.append(api.aggregate_raster_data(out, shape_file, climate_var_name, aggregation_func.lower(), geo_identifier, subperiods_per_year, starting_year))
 		if len(raster_files) == 1:
 			raster_file_short = raster_file.split("/")[-1].rpartition('.')[0]
 			raster_datasets[0].to_csv(f"{cet_home}/raster_output/{raster_file_short}.csv")

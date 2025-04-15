@@ -266,7 +266,7 @@ def test_tt_transformed_covariates_transformed_target_time_trends():
 	assert .99 > model.out_sample_pred_int_cov and .92 < model.out_sample_pred_int_cov
 	pd.testing.assert_frame_equal(res1.sort_index(), model.regression_result.summary2().tables[1].sort_index())
 
-	tt_test_data = pd.read_csv("tests/time_trend_test_data.csv")
+	tt_test_data = pd.read_csv("tests/test_data/time_trend_test_data.csv")
 	tt_test_data["GDP"] = tt_test_data["TotGDP"]
 	tt_test_data["Temp"] = tt_test_data["UDel_temp_popweight"]
 	tt_test_data["Precip"] = tt_test_data["UDel_precip_popweight"]
@@ -319,7 +319,7 @@ def test_tt_transformed_covariates_transformed_target_fixed_effects_and_time_tre
 	np.testing.assert_allclose(res1.loc['fd(Temp)']["Coef."],res2.loc['fd(Temp)']["Coef."],rtol=1e-04)
 	np.testing.assert_allclose(res1.loc['fd(Precip)']["Coef."],res2.loc['fd(Precip)']["Coef."],rtol=1e-04)
 
-	tt_test_data = pd.read_csv("tests/time_trend_test_data.csv")
+	tt_test_data = pd.read_csv("tests/test_data/time_trend_test_data.csv")
 	tt_test_data["GDP"] = tt_test_data["TotGDP"]
 	tt_test_data["Temp"] = tt_test_data["UDel_temp_popweight"]
 	tt_test_data["Precip"] = tt_test_data["UDel_precip_popweight"]

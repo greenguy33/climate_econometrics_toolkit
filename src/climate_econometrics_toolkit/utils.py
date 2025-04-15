@@ -72,6 +72,7 @@ def assert_with_log(clause, message):
 
 def print_with_log(message, level):
 	assert level in ["warning","info","error"], "Invalid log-level passed. This is an internal application error."
+	print(f"{level.upper()}: {message}")
 	if level == "info":
 		logger.info(message)
 	elif level == "warning":

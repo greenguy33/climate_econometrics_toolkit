@@ -112,8 +112,8 @@ def extract_raster_data(raster_file, shape_file, weights_file=None):
 	return predict.extract_raster_data(raster_file, shape_file, weights_file)
 
 
-def aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, timescale, geo_identifier):
-	return predict.aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, timescale, months_to_use=None)
+def aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year):
+	return predict.aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year, subperiods_to_use=None)
 
 
 def predict_out_of_sample(model, out_sample_data_file, function_name, use_threading=True):

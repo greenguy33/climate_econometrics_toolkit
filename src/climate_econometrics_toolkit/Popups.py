@@ -109,6 +109,7 @@ class RasterExtractionPopup(tk.Toplevel):
 	shape_file = None
 	time_interval = None
 	func = None
+	starting_year = None
 
 	def open_file(self, file, popup):
 			if file == "raster":
@@ -141,6 +142,7 @@ class RasterExtractionPopup(tk.Toplevel):
 		def on_close():
 			self.time_interval = time_interval.get()
 			self.func = function.get()
+			self.starting_year = starting_year.get()
 			popup.destroy()
 
 		popup.protocol("WM_DELETE_WINDOW", on_close)
@@ -154,11 +156,14 @@ class RasterExtractionPopup(tk.Toplevel):
 		sum_button = tk.Radiobutton(popup, text="Sum", variable=function, value="Sum")
 
 		time_interval = tk.StringVar()
+		starting_year = tk.StringVar()
 
 		text_entry_label = tk.Label(popup, text="Enter the quantity of time periods to aggregate as an integer.\nFor example, if your raster data is monthly and\nyou want to aggregate to the yearly level, enter 12.")
+		year_entry_label = tk.Label(popup, text="Enter the first year for which data is present in the raster data.")
 		radio_button_label = tk.Label(popup, text="Select the aggregation function")
 
 		time_entry = tk.Entry(popup, textvariable=time_interval)
+		year_entry = tk.Entry(popup, textvariable=starting_year)
 
 		raster_file_button.grid(row=0, column=0, padx=5, pady=1, columnspan=2)
 		shape_file_button.grid(row=1, column=0, padx=5, pady=1, columnspan=2)
@@ -166,10 +171,12 @@ class RasterExtractionPopup(tk.Toplevel):
 
 		text_entry_label.grid(row=3, column=0, padx=5, pady=1, columnspan=2)
 		time_entry.grid(row=4, column=0, padx=5, pady=1, columnspan=2)
+		year_entry_label.grid(row=5, column=0, padx=5, pady=1, columnspan=2)
+		year_entry.grid(row=6, column=1, padx=5, pady=1, columnspan=2)
 
-		radio_button_label.grid(row=5, column=0, padx=5, pady=1, columnspan=2)
-		mean_button.grid(row=6, column=0, padx=5, pady=1)
-		sum_button.grid(row=6, column=1, padx=5, pady=1)
+		radio_button_label.grid(row=7, column=0, padx=5, pady=1, columnspan=2)
+		mean_button.grid(row=8, column=0, padx=5, pady=1)
+		sum_button.grid(row=8, column=1, padx=5, pady=1)
 
 		window.wait_window(popup)
 

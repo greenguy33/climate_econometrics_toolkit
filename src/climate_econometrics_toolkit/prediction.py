@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import random
 import numpy as np
+import calendar
 
 from exactextract import exact_extract
 import geopandas as gpd
@@ -11,7 +12,7 @@ import climate_econometrics_toolkit.regression as regression
 
 cet_home = os.getenv("CETHOME")
 
-
+# TODO: add resampling to handle common incompatible extents error
 def extract_raster_data(gcm_file, shape_file, weight_file):
 	aggregation_func = "weighted_mean"
 	if weight_file is None:
@@ -20,10 +21,20 @@ def extract_raster_data(gcm_file, shape_file, weight_file):
 	return exact_extract(gcm_file, shape_file, [aggregation_func], weights=weight_file)
 
 def aggregate_raster_data(
-		raster_data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_time_unit, months_to_use, 
+		raster_data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year, subperiods_to_use=None
 	):
-	utils.assert_with_log(isinstance(subperiods_per_time_unit, int), f"Supplied subperiods per time unit value {subperiods_per_time_unit} is not an integer.")
+	utils.assert_with_log(isinstance(subperiods_per_year, int), f"Value {subperiods_per_year} supplied as 'subperiods per time unit' argument is not an integer.")
+	utils.assert_with_log(isinstance(starting_year, int), f"Value {starting_year} supplied as 'starting_year' argument is not an integer.")
 	utils.assert_with_log(aggregation_func in ["sum","mean"], "Argument aggregation_func must be 'sum' or 'mean'")
+	reg_year_sbp, leap_year_sbp = None, None
+	if subperiods_per_year > 365:
+		utils.assert_with_log((subperiods_per_year % 365 == 0) or (subperiods_per_year % 366 == 0), "Argument 'subperiods_per_year' at the sub-daily level must be a multiple of 365 or 366. Leap years will be automatically applied.")
+		if subperiods_per_year % 365 == 0:
+			reg_year_sbp = subperiods_per_year
+			leap_year_sbp = subperiods_per_year + (subperiods_per_year / 365)
+		elif subperiods_per_year % 366 == 0:
+			reg_year_sbp = subperiods_per_year - (subperiods_per_year / 366)
+			leap_year_sbp = subperiods_per_year
 	data = []
 	geo_shapes = gpd.read_file(shape_file)
 	for index, geo in enumerate(geo_shapes[geo_identifier]):
@@ -31,14 +42,20 @@ def aggregate_raster_data(
 		new_dict = {}
 		for key in raster_data[index]["properties"]:
 			new_dict[key.split("_")[0] + "_" + key.split("_")[1]] = raster_data[index]["properties"][key]
-		period = 0
 		agg_mean = []
+		period = starting_year
 		subperiod = 0
 		for obs in range(len(raster_data[index]["properties"])):
 			subperiod += 1
-			if months_to_use is None or (geo in months_to_use and subperiod in months_to_use[geo]):
+			if subperiods_to_use is None or (geo in subperiods_to_use and subperiod in subperiods_to_use[geo]):
 				agg_mean.append(new_dict[f"band_{str(obs+1)}"])
-			if subperiod == subperiods_per_time_unit:
+			if leap_year_sbp is None:
+				condition = (subperiod == subperiods_per_year)
+			elif calendar.isleap(period):
+				condition = (subperiod == leap_year_sbp)
+			else:
+				condition = (subperiod == reg_year_sbp)
+			if condition:
 				if aggregation_func == "sum":
 					if len(agg_mean) > 0:
 						data.append([geo, period, np.nansum(agg_mean)])

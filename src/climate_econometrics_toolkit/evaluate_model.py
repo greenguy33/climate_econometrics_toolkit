@@ -81,12 +81,12 @@ def evaluate_model(data, std_error_type, model):
 
 def evaluate_non_random_effects_model(data, std_error_type, model):
 
-	utils.print_with_log(f"Evalating non-random-effects model using standard error type {std_error_type}")
+	utils.print_with_log(f"Evalating non-random-effects model using standard error type {std_error_type}", "info")
 
 	demean_data = False
 	if len(model.fixed_effects) > 0 and len(model.time_trends) == 0:
 		demean_data = True
-	utils.print_with_log(f"Demeaning applied {demean_data}")
+	utils.print_with_log(f"Demeaning applied: {demean_data}", "info")
 	transformed_data = utils.transform_data(data, model, demean=demean_data)
 
 	in_sample_mse_list, out_sample_mse_list, out_sample_pred_int_cov_list, intercept_only_mse_list = [], [], [], []
@@ -131,7 +131,7 @@ def evaluate_non_random_effects_model(data, std_error_type, model):
 
 def evaluate_random_effects_model(data, std_error_type, model):
 
-	utils.print_with_log(f"Evalating random-effects model using standard error type {std_error_type}")
+	utils.print_with_log(f"Evalating random-effects model using standard error type {std_error_type}", "info")
 
 	transformed_data = utils.transform_data(data, model)
 

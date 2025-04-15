@@ -342,3 +342,52 @@ def test_csd():
     assert not pd.isnull(res).values.any()
     end = time.time()
     assert end - start < 120
+
+
+def test_specification_search():
+
+    build_example_model()
+    model = api.run_specification_search("out_sample_mse_reduction")
+    assert model
+    model = api.run_specification_search("out_sample_pred_int_cov")
+    assert model
+
+
+def test_extract_raster_data():
+
+    shape_file = "tests/test_data/country_shapes/country.shp"
+    weight_file = "tests/test_data/CroplandPastureArea2000_Geotiff/ag_raster_resampled.tif"
+
+    # monthly data
+    monthly_raster_file = "tests/test_data/climate_raster_data/air.2m.mon.mean.shifted.nc"
+
+    raster_data = api.extract_raster_data(monthly_raster_file, shape_file, weight_file)
+    assert raster_data is not None
+    aggregated_data = api.aggregate_raster_data(raster_data, shape_file, "tmean", "mean", "GMI_CNTRY", 12, 1948)
+    assert aggregated_data is not None
+    assert all(val in range(1948,2024) for val in aggregated_data.time)
+
+    # daily data
+    daily_raster_file = "tests/test_data/climate_raster_data/air.2m.gauss.1948.shifted.nc"
+
+    raster_data = api.extract_raster_data(daily_raster_file, shape_file, weight_file)
+    assert raster_data is not None
+    aggregated_data = api.aggregate_raster_data(raster_data, shape_file, "tmean", "mean", "GMI_CNTRY", 1464, 1948)
+    assert aggregated_data is not None
+    assert len(set(aggregated_data.time)) == 1
+
+    aggregated_data = api.aggregate_raster_data(raster_data, shape_file, "tmean", "mean", "GMI_CNTRY", 1460, 1948)
+    assert aggregated_data is not None
+    assert len(set(aggregated_data.time)) == 1
+
+    daily_raster_file = "tests/test_data/climate_raster_data/air.2m.gauss.1949.shifted.nc"
+
+    raster_data = api.extract_raster_data(daily_raster_file, shape_file, weight_file)
+    assert raster_data is not None
+    aggregated_data = api.aggregate_raster_data(raster_data, shape_file, "tmean", "mean", "GMI_CNTRY", 1464, 1949)
+    assert aggregated_data is not None
+    assert len(set(aggregated_data.time)) == 1
+
+    aggregated_data = api.aggregate_raster_data(raster_data, shape_file, "tmean", "mean", "GMI_CNTRY", 1460, 1949)
+    assert aggregated_data is not None
+    assert len(set(aggregated_data.time)) == 1

@@ -50,6 +50,12 @@ class ClimateEconometricsModel:
 		for val in self.attrib_list:
 			print(val, ":", getattr(self, val), flush=True)
 
+	def to_string(self):
+		str = ""
+		for val in self.attrib_list:
+			str += f"{val} : {getattr(self, val)}\n"
+		return str
+
 	def is_empty(self):
 		if self.model_vars == []:
 			return True
