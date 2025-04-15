@@ -55,7 +55,8 @@ def initial_checks():
 		"statistical_tests_output",
 		"statistical_tests_output/panel_unit_root_tests/",
 		"statistical_tests_output/cointegration_tests/",
-		"statistical_tests_output/cross_sectional_dependence_tests/"
+		"statistical_tests_output/cross_sectional_dependence_tests/",
+		"html"
 	]
 	for dir in dirs_to_init:
 		if not os.path.isdir(dir):

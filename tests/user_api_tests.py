@@ -391,3 +391,45 @@ def test_extract_raster_data():
     aggregated_data = api.aggregate_raster_data(raster_data, shape_file, "tmean", "mean", "GMI_CNTRY", 1460, 1949)
     assert aggregated_data is not None
     assert len(set(aggregated_data.time)) == 1
+
+
+def test_compute_degree_days():
+
+    panel_data = pd.read_csv("data/ortiz_bobea_data.csv")
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "above", "unweighted")
+    assert data is not None
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "below", "popweighted")
+    assert data is not None
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "above", "agweighted")
+    assert data is not None
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "below", "unweighted", crop="maize")
+    assert data is not None
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "above", "popweighted", crop="wheat.spring")
+    assert data is not None
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "below", "agweighted", crop="wheat.winter")
+    assert data is not None
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "above", "unweighted", crop="soybeans")
+    assert data is not None
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "below", "popweighted", crop="rice")
+    assert data is not None
+
+
+def test_add_degree_days_to_dataframe():
+
+    panel_data = pd.read_csv("data/ortiz_bobea_data.csv")
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="above", weight="unweighted")
+    assert data is not None
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="below", weight="popweighted")
+    assert data is not None
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="above", weight="agweighted")
+    assert data is not None
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="below", weight="unweighted", crop="maize")
+    assert data is not None
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="above", weight="popweighted", crop="wheat.spring")
+    assert data is not None
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="below", weight="agweighted", crop="wheat.winter")
+    assert data is not None
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="above", weight="unweighted", crop="soybeans")
+    assert data is not None
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="below", weight="popweighted", crop="rice")
+    assert data is not None

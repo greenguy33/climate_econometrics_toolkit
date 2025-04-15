@@ -1,4 +1,6 @@
 import tkinter as tk
+
+import pandas as pd
 from tkinter import filedialog
 
 from climate_econometrics_toolkit import user_prediction_functions as user_predict

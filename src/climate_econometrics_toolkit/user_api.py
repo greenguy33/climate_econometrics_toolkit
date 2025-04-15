@@ -96,36 +96,71 @@ def run_specification_search(metric="out_sample_mse_reduction"):
         return best_model
 
 
-def compute_degree_days(years, countries, threshold, mode="above", weight="unweighted", panel_column_name="ISO3", time_column_name="year"):
-    utils.print_with_log("Computing degree days with mode '{above}', threshold '{threshold}', using panel column '{panel_column_name}' and time_column '{time_column_name}'", "info")
-    col_name = f"deg_days_{mode}_{str(threshold)}"
-    res = {panel_column_name:[], time_column_name:[], col_name:[]}
+def compute_degree_days(years, countries, threshold, mode="above", weight="unweighted", panel_column_name="ISO3", time_column_name="year", crop=None):
+    utils.print_with_log(f"Computing degree days with mode '{mode}', threshold '{threshold}', using panel column '{panel_column_name}' and time_column '{time_column_name}'", "info")
+    utils.assert_with_log(crop is None or crop in ["maize","rice","soybeans","wheat.spring","wheat.winter"], f"Specified crop must be one of: 'maize','rice','soybeans','wheat.spring','wheat.winter'.")
+    if crop is None:
+        utils.print_with_log("No growing season specified with 'crop' argument: degree days will be computed for the entire year.", "info")
     utils.assert_with_log(mode in ["above","below"], "Mode most be either 'above' or 'below' the supplied threshold.")
-    utils.assert_with_log(weight in ["unweighted","popweighted","agweighted"], "Weight argument must be one of: unweighted, agweighted, popweighted.")
+    utils.assert_with_log(weight in ["unweighted","popweighted","agweighted"], "Weight argument must be one of: 'unweighted', 'agweighted', 'popweighted'.")
+    col_name = f"deg_days_{mode}_{str(threshold)}"
+    if crop is not None:
+        col_name += f"_{crop}_growing_season"
+    res = {panel_column_name:[], time_column_name:[], col_name:[]}
+    years_missing_data, countries_missing_temp_data, countries_missing_crop_data = set(), set(), set()
     for year in years:
         try:
             file = files(f"climate_econometrics_toolkit.preprocessed_data.daily_temp.{weight}").joinpath(f'temp.daily.bycountry.{weight}.{year}.csv')
             daily_temp_data = pd.read_csv(file)
+            if crop is not None:
+                # if crop specified, get growing season dates for specified crop
+                gs_file = files(f"climate_econometrics_toolkit.preprocessed_data.crop_growing_seasons").joinpath(f'{crop}.csv')
+                growing_season_data = pd.read_csv(gs_file)
+                country_start_days = dict(zip(growing_season_data["ISO3"],growing_season_data[f"day.{crop}.plant.start"]))
+                country_end_days = dict(zip(growing_season_data["ISO3"],growing_season_data[f"day.{crop}.harvest.end"]))
             for country in countries:
                 if country in daily_temp_data:
-                    if mode == "above":
-                        degree_days = len([val for val in daily_temp_data[country] if val > threshold])
+                    if crop is None:
+                        # if no crop specified, compute degree days for entire year
+                        daily_temps = daily_temp_data[country]
                     else:
-                        degree_days = len([val for val in daily_temp_data[country] if val < threshold])
+                        # if crop specified, extract only crop growing days
+                        try:
+                            if country_end_days[country] < country_start_days[country]:
+                                daily_temps = pd.concat([daily_temp_data[country].iloc[:int(country_end_days[country])+1],daily_temp_data[country].iloc[int(country_start_days[country]):]])
+                            else:
+                                daily_temps = daily_temp_data[country].iloc[int(country_start_days[country]):int(country_end_days[country])+1]
+                        except (KeyError,ValueError):
+                            # except case where no crop growing season data exists
+                            daily_temps = None
+                    if daily_temps is not None:
+                        if mode == "above":
+                            degree_days = len([val for val in daily_temps if val > threshold])
+                        else:
+                            degree_days = len([val for val in daily_temps if val < threshold])
+                    else:
+                        degree_days = pd.NA
+                        countries_missing_crop_data.add(country)
                     res[panel_column_name].append(country)
                     res[time_column_name].append(year)
                     res[col_name].append(degree_days)
                 else:
-                    utils.print_with_log(f"No daily temperature data available for country {country}", "warning")
+                    countries_missing_temp_data.add(country)
         except FileNotFoundError:
-            utils.print_with_log(f"No daily temperature data available for year {year}", "warning")
+            years_missing_data.add(year)
+    if len(countries_missing_temp_data) > 0:
+        utils.print_with_log(f"No daily temperature data available for countries: {countries_missing_temp_data}", "warning")
+    if len(countries_missing_crop_data) > 0:
+        utils.print_with_log(f"No {crop} growing season data available for countries: {countries_missing_crop_data}", "warning")
+    if len(years_missing_data) > 0:
+        utils.print_with_log(f"No daily temperature data available for years: {years_missing_data}", "warning")        
     return pd.DataFrame.from_dict(res)
 
 
-def add_degree_days_to_dataframe(dataframe, threshold, panel_column = "ISO3", time_column = "year", mode = "above", weight = "unweighted"):
+def add_degree_days_to_dataframe(dataframe, threshold, panel_column = "ISO3", time_column = "year", mode = "above", weight = "unweighted", crop=None):
     utils.assert_with_log(panel_column in dataframe, f"Specified panel column {panel_column} not in supplied dataframe.")
     utils.assert_with_log(time_column in dataframe, f"Specified time column {time_column} not in supplied dataframe.")
-    degree_days_df = compute_degree_days(set(dataframe[time_column]), set(dataframe[panel_column]), threshold, mode, weight)
+    degree_days_df = compute_degree_days(set(dataframe[time_column]), set(dataframe[panel_column]), threshold, mode, weight, crop=crop)
     utils.assert_with_log(len(degree_days_df) > 0, f"No daily temperature data available for supplied columns {panel_column}/{time_column}.")
     merge_strategy = "outer"
     utils.print_with_log(f"Merging supplied dataframe with degree days dataframe using threshold '{threshold}' and merge strategy '{merge_strategy}'", "info")

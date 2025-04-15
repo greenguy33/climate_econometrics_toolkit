@@ -58,15 +58,15 @@ class TkInterfaceUtils():
 		if self.dnd.variables_displayed:
 			self.update_interface_window_output("Please clear the canvas before loading another dataset.")
 		else:
-			filename = filedialog.askopenfilename(
-				initialdir = "/",
-				title = "Select a File",
-				filetypes = (("CSV files",
-							"*.csv*"),
-							("all files",
-							"*.*"))
-			  )
-			# filename = "data/GDP_climate_test_data.csv"
+			# filename = filedialog.askopenfilename(
+			# 	initialdir = "/",
+			# 	title = "Select a File",
+			# 	filetypes = (("CSV files",
+			# 				"*.csv*"),
+			# 				("all files",
+			# 				"*.*"))
+			#   )
+			filename = "data/GDP_climate_test_data.csv"
 
 			self.dnd.data_source = filename.split("/")[-1]
 			self.dnd.filename = filename
@@ -86,6 +86,8 @@ class TkInterfaceUtils():
 				else:
 					self.panel_column = user_identified_columns[0]
 					self.time_column = user_identified_columns[1]
+				self.dnd.panel_column = self.panel_column
+				self.dnd.time_column = self.time_column
 			logger.info(f"Loaded data from file {filename}")
 
 

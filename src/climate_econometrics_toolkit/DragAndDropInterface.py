@@ -1,13 +1,15 @@
 import sys
+import os
+
 import tkinter as tk
 from tkinter import Menu
 
 import pickle as pkl
 import pandas as pd
-
-import os
+import webbrowser
 
 import climate_econometrics_toolkit.utils as utils
+
 
 cet_home = os.getenv("CETHOME")
 
@@ -31,6 +33,7 @@ class DragAndDropInterface():
         self.canvas_print_out = None
         self.menu = None
         self.time_column = None
+        self.panel_column = None
         self.arrow_width = 3
         self.fontsize = 18
         self.right_click_button = "<ButtonPress-3>"
@@ -45,7 +48,7 @@ class DragAndDropInterface():
 
         main_menu = Menu(self.window, tearoff=0)
 
-        if not (tag.startswith("tt1(") or tag.startswith("tt2(") or tag.startswith("tt3(") or tag.startswith("fe(")):
+        if not any(tag.startswith(val+"(") for val in utils.supported_effects):
 
             transformation_menu = Menu(main_menu, tearoff=0)
             time_trends_menu = Menu(main_menu, tearoff=0)
@@ -86,8 +89,22 @@ class DragAndDropInterface():
         main_menu.add_command(label="Delete Variable", command=self.remove_node)
         main_menu.add_command(label="Swap with Other Variable", command=self.swap_node)
 
+        if not any(tag.startswith(val+"(") for val in utils.supported_functions) and not any(tag.startswith(val) for val in utils.supported_effects) and tag != self.panel_column and tag != self.time_column:
+            main_menu.add_command(label="Open Data Explorer", command=self.open_data_explorer)
+
         return main_menu
-    
+
+    def open_data_explorer(self):
+        element_tag = self.canvas.gettags(self.right_clicked_object)[0]
+        element_text = element_tag.split("boxed_text_")[1]
+        data = pd.read_csv(self.filename)
+        data.columns = [col.replace(" ","_") for col in data.columns]
+        html_data = data[[self.panel_column,self.time_column,element_text]].set_index([self.panel_column,self.time_column]).unstack().style.applymap(lambda x: "background-color: red" if pd.isnull(x) else "background-color: lime").to_html()
+        temp_file_path = f"{cet_home}/html/data_{element_text}.html"
+        with open(temp_file_path,"w") as tmpfile:
+            tmpfile.write(html_data)
+        webbrowser.open(temp_file_path)
+
     def remove_node(self):
         element_tag = self.canvas.gettags(self.right_clicked_object)[0]
         rectangle = [elem for elem in self.canvas.find_withtag(element_tag) if self.canvas.type(elem) == "rectangle"][0]
@@ -232,7 +249,7 @@ class DragAndDropInterface():
                     self.canvas.create_text(*item["coords"], text=item["text"], fill="black", tags=item["tags"], font=("Helvetica", self.fontsize, "bold"))
                     text = item["text"]
                     column_box_tag = f"boxed_text_{text}".replace(" ","_")
-                    self.add_tags_to_canvas_elements(column_box_tag, item["text"])
+                    self.add_tags_to_canvas_elements(column_box_tag)
             for item in cached_canvas["canvas_data"]:
                 # now process all arrows
                 if item["type"] == "line":
@@ -281,7 +298,7 @@ class DragAndDropInterface():
             finally:
                 self.menu.grab_release()
 
-    def add_tags_to_canvas_elements(self, column_box_tag, column):
+    def add_tags_to_canvas_elements(self, column_box_tag):
         self.canvas.tag_bind(column_box_tag, "<B1-Motion>", self.on_drag)
         self.canvas.tag_bind(column_box_tag, self.right_click_button, self.popup_menu)
         self.canvas.tag_bind(column_box_tag, "<Control-Button-1>", self.popup_menu)
@@ -302,7 +319,7 @@ class DragAndDropInterface():
             text = self.canvas.create_text(*var_coords, text=column, fill="black", tags=column_box_tag, font=("Helvetica", self.fontsize, "bold"))
             rect = self.canvas.create_rectangle(self.canvas.bbox(text), fill="orange", tags=column_box_tag)
             self.canvas.lower(rect)
-            self.add_tags_to_canvas_elements(column_box_tag, column)
+            self.add_tags_to_canvas_elements(column_box_tag)
             last_rectangle_right_side = self.canvas.bbox(text)[2]
         self.variables_displayed = True
 
