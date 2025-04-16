@@ -10,6 +10,7 @@ import copy
 import ast
 import tkinter as tk
 from tkinter import ttk
+from importlib.resources import files
 
 from climate_econometrics_toolkit.TkInterfaceUtils import TkInterfaceUtils
 from climate_econometrics_toolkit.DragAndDropInterface import DragAndDropInterface
@@ -69,6 +70,15 @@ def assert_with_log(clause, message):
 	except AssertionError:
 		logger.error(message)
 		raise
+
+
+def get_growing_season_data_by_crop(crop):
+	assert_with_log(crop is None or crop in ["maize","rice","soybeans","wheat.spring","wheat.winter"], "Specified crop must be one of: 'maize','rice','soybeans','wheat.spring','wheat.winter'.")
+	gs_file = files("climate_econometrics_toolkit.preprocessed_data.crop_growing_seasons").joinpath(f'{crop}.csv')
+	growing_season_data = pd.read_csv(gs_file)
+	country_start_days = dict(zip(growing_season_data["ISO3"],growing_season_data[f"day.{crop}.plant.start"]))
+	country_end_days = dict(zip(growing_season_data["ISO3"],growing_season_data[f"day.{crop}.harvest.end"]))
+	return country_start_days, country_end_days
 
 
 def print_with_log(message, level):

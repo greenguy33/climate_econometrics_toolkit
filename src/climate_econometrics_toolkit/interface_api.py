@@ -11,6 +11,8 @@ import climate_econometrics_toolkit.regression as regression
 import climate_econometrics_toolkit.prediction as predict
 import climate_econometrics_toolkit.user_prediction_functions as user_predict
 import climate_econometrics_toolkit.stat_tests as stat_tests
+from climate_econometrics_toolkit import raster_extraction as extract
+
 
 pd.set_option('display.min_rows', 100)
 pd.set_option('display.max_rows', 100)
@@ -109,11 +111,11 @@ def run_cross_sectional_dependence_tests(model, model_id):
 
 
 def extract_raster_data(raster_file, shape_file, weights_file=None):
-	return predict.extract_raster_data(raster_file, shape_file, weights_file)
+	return extract.extract_raster_data(raster_file, shape_file, weights_file)
 
 
-def aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year):
-	return predict.aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year, subperiods_to_use=None)
+def aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year, crop):
+	return extract.aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year, subperiods_to_use=None, crop=crop)
 
 
 def predict_out_of_sample(model, out_sample_data_file, function_name, use_threading=True):

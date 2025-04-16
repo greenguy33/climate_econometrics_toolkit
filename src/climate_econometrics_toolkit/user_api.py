@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import os
 import copy
 import time
@@ -16,7 +17,7 @@ from climate_econometrics_toolkit.ClimateEconometricsModel import ClimateEconome
 import climate_econometrics_toolkit.utils as utils
 from climate_econometrics_toolkit import regression as regression
 from climate_econometrics_toolkit import prediction as predict
-from climate_econometrics_toolkit import user_prediction_functions as user_predict
+from climate_econometrics_toolkit import raster_extraction as extract
 from climate_econometrics_toolkit import user_prediction_functions as user_predict
 from climate_econometrics_toolkit import stat_tests as stat_tests
 
@@ -96,28 +97,28 @@ def run_specification_search(metric="out_sample_mse_reduction"):
         return best_model
 
 
-def compute_degree_days(years, countries, threshold, mode="above", weight="unweighted", panel_column_name="ISO3", time_column_name="year", crop=None):
+def compute_degree_days(years, countries, threshold, mode="above", weight="unweighted", panel_column_name="ISO3", time_column_name="year", crop=None, second_threshold=None):
     utils.print_with_log(f"Computing degree days with mode '{mode}', threshold '{threshold}', using panel column '{panel_column_name}' and time_column '{time_column_name}'", "info")
-    utils.assert_with_log(crop is None or crop in ["maize","rice","soybeans","wheat.spring","wheat.winter"], f"Specified crop must be one of: 'maize','rice','soybeans','wheat.spring','wheat.winter'.")
     if crop is None:
         utils.print_with_log("No growing season specified with 'crop' argument: degree days will be computed for the entire year.", "info")
-    utils.assert_with_log(mode in ["above","below"], "Mode most be either 'above' or 'below' the supplied threshold.")
+    utils.assert_with_log(mode in ["above","below","between"], "Mode most be either 'above', 'below', or 'between' the supplied threshold(s).")
     utils.assert_with_log(weight in ["unweighted","popweighted","agweighted"], "Weight argument must be one of: 'unweighted', 'agweighted', 'popweighted'.")
+    if mode == "between":
+        utils.assert_with_log(second_threshold is not None, "Second threshold argument must be supplied to use mode 'between'.")
+        utils.assert_with_log(second_threshold > threshold, "Second threshold argument must be greater than threshold argument.")
     col_name = f"deg_days_{mode}_{str(threshold)}"
+    if mode == "between":
+        col_name += f"_{str(second_threshold)}"
     if crop is not None:
         col_name += f"_{crop}_growing_season"
+        # if crop specified, get growing season dates for specified crop
+        country_start_days, country_end_days = utils.get_growing_season_data_by_crop(crop)
     res = {panel_column_name:[], time_column_name:[], col_name:[]}
     years_missing_data, countries_missing_temp_data, countries_missing_crop_data = set(), set(), set()
     for year in years:
         try:
             file = files(f"climate_econometrics_toolkit.preprocessed_data.daily_temp.{weight}").joinpath(f'temp.daily.bycountry.{weight}.{year}.csv')
             daily_temp_data = pd.read_csv(file)
-            if crop is not None:
-                # if crop specified, get growing season dates for specified crop
-                gs_file = files(f"climate_econometrics_toolkit.preprocessed_data.crop_growing_seasons").joinpath(f'{crop}.csv')
-                growing_season_data = pd.read_csv(gs_file)
-                country_start_days = dict(zip(growing_season_data["ISO3"],growing_season_data[f"day.{crop}.plant.start"]))
-                country_end_days = dict(zip(growing_season_data["ISO3"],growing_season_data[f"day.{crop}.harvest.end"]))
             for country in countries:
                 if country in daily_temp_data:
                     if crop is None:
@@ -135,9 +136,11 @@ def compute_degree_days(years, countries, threshold, mode="above", weight="unwei
                             daily_temps = None
                     if daily_temps is not None:
                         if mode == "above":
-                            degree_days = len([val for val in daily_temps if val > threshold])
-                        else:
-                            degree_days = len([val for val in daily_temps if val < threshold])
+                            degree_days = int(np.sum([val-threshold for val in daily_temps if val > threshold]))
+                        elif mode == "below":
+                            degree_days = int(np.sum([threshold-val for val in daily_temps if val < threshold]))
+                        elif mode == "between":
+                            degree_days = int(np.sum([val-threshold for val in daily_temps if val > threshold and val < second_threshold]))
                     else:
                         degree_days = pd.NA
                         countries_missing_crop_data.add(country)
@@ -149,18 +152,18 @@ def compute_degree_days(years, countries, threshold, mode="above", weight="unwei
         except FileNotFoundError:
             years_missing_data.add(year)
     if len(countries_missing_temp_data) > 0:
-        utils.print_with_log(f"No daily temperature data available for countries: {countries_missing_temp_data}", "warning")
+        utils.print_with_log(f"No daily temperature data available for countries: {sorted(countries_missing_temp_data)}", "warning")
     if len(countries_missing_crop_data) > 0:
-        utils.print_with_log(f"No {crop} growing season data available for countries: {countries_missing_crop_data}", "warning")
+        utils.print_with_log(f"No {crop} growing season data available for countries: {sorted(countries_missing_crop_data)}", "warning")
     if len(years_missing_data) > 0:
-        utils.print_with_log(f"No daily temperature data available for years: {years_missing_data}", "warning")        
+        utils.print_with_log(f"No daily temperature data available for years: {sorted(years_missing_data)}", "warning")        
     return pd.DataFrame.from_dict(res)
 
 
-def add_degree_days_to_dataframe(dataframe, threshold, panel_column = "ISO3", time_column = "year", mode = "above", weight = "unweighted", crop=None):
+def add_degree_days_to_dataframe(dataframe, threshold, panel_column = "ISO3", time_column = "year", mode = "above", weight = "unweighted", crop=None, second_threshold=None):
     utils.assert_with_log(panel_column in dataframe, f"Specified panel column {panel_column} not in supplied dataframe.")
     utils.assert_with_log(time_column in dataframe, f"Specified time column {time_column} not in supplied dataframe.")
-    degree_days_df = compute_degree_days(set(dataframe[time_column]), set(dataframe[panel_column]), threshold, mode, weight, crop=crop)
+    degree_days_df = compute_degree_days(set(dataframe[time_column]), set(dataframe[panel_column]), threshold, mode, weight, crop=crop, second_threshold=second_threshold)
     utils.assert_with_log(len(degree_days_df) > 0, f"No daily temperature data available for supplied columns {panel_column}/{time_column}.")
     merge_strategy = "outer"
     utils.print_with_log(f"Merging supplied dataframe with degree days dataframe using threshold '{threshold}' and merge strategy '{merge_strategy}'", "info")
@@ -518,12 +521,12 @@ def run_block_bootstrap(model, std_error_type, num_samples=1000):
 
 def extract_raster_data(raster_file, shape_file, weight_file=None):
     utils.print_with_log(f"Extracting raster data using raster_file {raster_file}; shape_file {shape_file}; weights file {weight_file}.", "info")
-    return predict.extract_raster_data(raster_file, shape_file, weight_file)
+    return extract.extract_raster_data(raster_file, shape_file, weight_file)
 
 
-def aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year, subperiods_to_use=None, ):
+def aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year, subperiods_to_use=None, crop=None):
     utils.print_with_log(f"Aggregating raster data using function {aggregation_func}", "info")
-    return predict.aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year, subperiods_to_use)
+    return extract.aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year, subperiods_to_use, crop)
 
 
 def predict_out_of_sample(model, data, transform_data=False, var_map=None):

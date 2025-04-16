@@ -1,6 +1,6 @@
 import tkinter as tk
 
-import pandas as pd
+import geopandas as gpd
 from tkinter import filedialog
 
 from climate_econometrics_toolkit import user_prediction_functions as user_predict
@@ -112,6 +112,7 @@ class RasterExtractionPopup(tk.Toplevel):
 	time_interval = None
 	func = None
 	starting_year = None
+	crop = None
 
 	def open_file(self, file, popup):
 			if file == "raster":
@@ -138,47 +139,100 @@ class RasterExtractionPopup(tk.Toplevel):
 	def __init__(self, window):
 
 		popup = tk.Toplevel()
-		popup.geometry("500x300")
+		popup.geometry("500x500")
 		popup.transient(window)
 
 		def on_close():
 			self.time_interval = time_interval.get()
 			self.func = function.get()
 			self.starting_year = starting_year.get()
+			self.crop = crop.get()
 			popup.destroy()
 
 		popup.protocol("WM_DELETE_WINDOW", on_close)
 
 		raster_file_button = tk.Button(popup, text="Select One or More Raster File(s)", command=lambda : self.open_file("raster", popup))
 		shape_file_button = tk.Button(popup, text="Select One Shape File", command=lambda : self.open_file("shapes", popup))
-		weight_file_button = tk.Button(popup, text="Select One Weight File", command=lambda : self.open_file("weights", popup))
+		weight_file_button = tk.Button(popup, text="Select One Weight File (optional)", command=lambda : self.open_file("weights", popup))
 
 		function = tk.StringVar(value="Mean")
 		mean_button = tk.Radiobutton(popup, text="Mean", variable=function, value="Mean")
 		sum_button = tk.Radiobutton(popup, text="Sum", variable=function, value="Sum")
 
-		time_interval = tk.StringVar()
+		time_interval = tk.StringVar(value="Daily")
+		daily_button = tk.Radiobutton(popup, text="Daily", variable=time_interval, value=365)
+		monthly_button = tk.Radiobutton(popup, text="Monthly", variable=time_interval, value=12)
+
+		crop = tk.StringVar(value="Daily")
+		none_button = tk.Radiobutton(popup, text="None", variable=crop, value=None)
+		wheat_winter_button = tk.Radiobutton(popup, text="Wheat (winter season)", variable=crop, value="wheat.winter")
+		wheat_spring_button = tk.Radiobutton(popup, text="Wheat (spring season)", variable=crop, value="wheat.spring")
+		soybeans_button = tk.Radiobutton(popup, text="Soybeans", variable=crop, value="soybeans")
+		maize_button = tk.Radiobutton(popup, text="Maize", variable=crop, value="maize")
+		rice_button = tk.Radiobutton(popup, text="Rice", variable=crop, value="rice")
+
 		starting_year = tk.StringVar()
 
-		text_entry_label = tk.Label(popup, text="Enter the quantity of time periods to aggregate as an integer.\nFor example, if your raster data is monthly and\nyou want to aggregate to the yearly level, enter 12.")
+		time_period_radio_button_label = tk.Label(popup, text="Select the time interval of your raster data.\nOnly daily and monthly to yearly aggregation is currently supported.")
 		year_entry_label = tk.Label(popup, text="Enter the first year for which data is present in the raster data.")
-		radio_button_label = tk.Label(popup, text="Select the aggregation function")
+		function_radio_button_label = tk.Label(popup, text="Select the aggregation function")
+		crop_radio_button_label = tk.Label(popup, text="Select the crop growing season to filter the raster data.")
 
-		time_entry = tk.Entry(popup, textvariable=time_interval)
 		year_entry = tk.Entry(popup, textvariable=starting_year)
 
 		raster_file_button.grid(row=0, column=0, padx=5, pady=1, columnspan=2)
 		shape_file_button.grid(row=1, column=0, padx=5, pady=1, columnspan=2)
 		weight_file_button.grid(row=2, column=0, padx=5, pady=1, columnspan=2)
 
-		text_entry_label.grid(row=3, column=0, padx=5, pady=1, columnspan=2)
-		time_entry.grid(row=4, column=0, padx=5, pady=1, columnspan=2)
+		time_period_radio_button_label.grid(row=3, column=0, padx=5, pady=1, columnspan=2)
+		daily_button.grid(row=4, column=0, padx=5, pady=1)
+		monthly_button.grid(row=4, column=1, padx=5, pady=1)
+		
 		year_entry_label.grid(row=5, column=0, padx=5, pady=1, columnspan=2)
 		year_entry.grid(row=6, column=1, padx=5, pady=1, columnspan=2)
 
-		radio_button_label.grid(row=7, column=0, padx=5, pady=1, columnspan=2)
+		function_radio_button_label.grid(row=7, column=0, padx=5, pady=1, columnspan=2)
 		mean_button.grid(row=8, column=0, padx=5, pady=1)
 		sum_button.grid(row=8, column=1, padx=5, pady=1)
+
+		crop_radio_button_label.grid(row=9, column=0, padx=5, pady=1, columnspan=2)
+		none_button.grid(row=10, column=0, padx=5, pady=1)
+		wheat_winter_button.grid(row=10, column=1, padx=5, pady=1)
+		wheat_spring_button.grid(row=11, column=0, padx=5, pady=1)
+		soybeans_button.grid(row=11, column=1, padx=5, pady=1)
+		maize_button.grid(row=12, column=0, padx=5, pady=1)
+		rice_button.grid(row=12, column=1, padx=5, pady=1)
+
+		window.wait_window(popup)
+
+class GeoIdentifierSelectionPopup(tk.Toplevel):
+
+	geo_identifier = None
+
+	def __init__(self, window, shape_file):
+
+		popup = tk.Toplevel()
+		popup.geometry("500x500")
+		popup.transient(window)
+
+		def on_close():
+			self.geo_identifier = geo_identifier.get()
+			popup.destroy()
+
+		popup.protocol("WM_DELETE_WINDOW", on_close)
+
+		geo_identifier = tk.StringVar(value=None)
+
+		geo_id_radio_button_label = tk.Label(popup, text="Select the geo-identifier to use from your selected shapefile.\nIf you specified a crop growing season filter, select\nan ISO3 or GMI code.")
+		
+		shape_file_columns = gpd.read_file(shape_file).columns
+		buttons = []
+		for column in shape_file_columns:
+			buttons.append(tk.Radiobutton(popup, text=column, variable=geo_identifier, value=column))
+
+		geo_id_radio_button_label.grid(row=0, column=0, padx=5, pady=1)
+		for index, button in enumerate(buttons):
+			button.grid(row=index+1, column=0, padx=5, pady=1)
 
 		window.wait_window(popup)
 

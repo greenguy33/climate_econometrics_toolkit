@@ -353,7 +353,7 @@ def test_specification_search():
     assert model
 
 
-def test_extract_raster_data():
+def test_extract_and_aggregate_raster_data():
 
     shape_file = "tests/test_data/country_shapes/country.shp"
     weight_file = "tests/test_data/CroplandPastureArea2000_Geotiff/ag_raster_resampled.tif"
@@ -365,7 +365,15 @@ def test_extract_raster_data():
     assert raster_data is not None
     aggregated_data = api.aggregate_raster_data(raster_data, shape_file, "tmean", "mean", "GMI_CNTRY", 12, 1948)
     assert aggregated_data is not None
-    assert all(val in range(1948,2024) for val in aggregated_data.time)
+    assert all(val in range(1948,2025) for val in aggregated_data.time)
+
+    monthly_raster_file = "tests/test_data/climate_raster_data/air.2m.mon.mean.shifted.nc"
+
+    raster_data = api.extract_raster_data(monthly_raster_file, shape_file, weight_file)
+    assert raster_data is not None
+    aggregated_data = api.aggregate_raster_data(raster_data, shape_file, "tmean", "mean", "GMI_CNTRY", 12, 1948, crop="maize")
+    assert aggregated_data is not None
+    assert all(val in range(1948,2025) for val in aggregated_data.time)
 
     # daily data
     daily_raster_file = "tests/test_data/climate_raster_data/air.2m.gauss.1948.shifted.nc"
@@ -392,26 +400,50 @@ def test_extract_raster_data():
     assert aggregated_data is not None
     assert len(set(aggregated_data.time)) == 1
 
+    daily_raster_file = "tests/test_data/climate_raster_data/air.2m.gauss.1949.shifted.nc"
+
+    raster_data = api.extract_raster_data(daily_raster_file, shape_file, weight_file)
+    assert raster_data is not None
+    
+    aggregated_data = api.aggregate_raster_data(raster_data, shape_file, "tmean", "mean", "GMI_CNTRY", 365, 1949, crop="rice")
+    assert aggregated_data is not None
+    assert len(set(aggregated_data.time)) == 4
+
+    aggregated_data = api.aggregate_raster_data(raster_data, shape_file, "tmean", "mean", "GMI_CNTRY", 366, 1949, crop="wheat.spring")
+    assert aggregated_data is not None
+    assert len(set(aggregated_data.time)) == 4
+
 
 def test_compute_degree_days():
 
     panel_data = pd.read_csv("data/ortiz_bobea_data.csv")
     data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "above", "unweighted")
     assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
     data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "below", "popweighted")
     assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
     data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "above", "agweighted")
     assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
     data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "below", "unweighted", crop="maize")
     assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
     data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "above", "popweighted", crop="wheat.spring")
     assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
     data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "below", "agweighted", crop="wheat.winter")
     assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
     data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "above", "unweighted", crop="soybeans")
     assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
     data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "below", "popweighted", crop="rice")
     assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "between", "popweighted", crop="rice", second_threshold=25)
+    assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
 
 
 def test_add_degree_days_to_dataframe():
@@ -419,17 +451,28 @@ def test_add_degree_days_to_dataframe():
     panel_data = pd.read_csv("data/ortiz_bobea_data.csv")
     data = api.add_degree_days_to_dataframe(panel_data, 20, mode="above", weight="unweighted")
     assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
     data = api.add_degree_days_to_dataframe(panel_data, 20, mode="below", weight="popweighted")
     assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
     data = api.add_degree_days_to_dataframe(panel_data, 20, mode="above", weight="agweighted")
     assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
     data = api.add_degree_days_to_dataframe(panel_data, 20, mode="below", weight="unweighted", crop="maize")
     assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
     data = api.add_degree_days_to_dataframe(panel_data, 20, mode="above", weight="popweighted", crop="wheat.spring")
     assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
     data = api.add_degree_days_to_dataframe(panel_data, 20, mode="below", weight="agweighted", crop="wheat.winter")
     assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
     data = api.add_degree_days_to_dataframe(panel_data, 20, mode="above", weight="unweighted", crop="soybeans")
     assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
     data = api.add_degree_days_to_dataframe(panel_data, 20, mode="below", weight="popweighted", crop="rice")
     assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="between", weight="popweighted", crop="rice", second_threshold=25)
+    assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
