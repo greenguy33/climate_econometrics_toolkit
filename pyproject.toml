@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "climate_econometrics_toolkit"
+version = "0.0.16"
+authors = [
+  { name="Hayden Freedman", email="hfreedma@uci.edu" },
+]
+description = "An API and visual tool for building climate econometric models"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[tool.setuptools.package-data]
+climate_econometrics_toolkit = [
+  "preprocessed_data/**/*.csv",
+  "preprocessed_data/**/*.shp",
+  "preprocessed_data/**/*.shx",
+  "preprocessed_data/**/*.dbf",
+  "preprocessed_data/**/*.prj",
+  "preprocessed_data/**/*.sbn",
+  "preprocessed_data/**/*.sbx",
+  "preprocessed_data/**/*.xml",
+  "preprocessed_data/**/*.tif"
+]
+
+dependencies = [
+  # "networkx>=3.3",
+  # "numpy>=1.26.4",
+  # "statsmodels>=0.14.2",
+  # "pandas>=2.2.2",
+  # "pymc>=5.10.3",
+  # "pyfixest>=0.24.1",
+  # "scikit-learn>=1.4.0",
+  # "scipy>=1.12.0",
+  # "xarray>=2024.1.0",
+  # "geopandas>=0.14.3",
+  # "exactextract>=0.2.0",
+  # "progressbar2>=4.5.0",
+  # "linearmodels>=6.1",
+  # "pysal>=25.1",
+  # "spreg>=1.8.2",
+  # "MetPy>=1.6.3",
+  # "rasterio>=1.4.3"
+]
