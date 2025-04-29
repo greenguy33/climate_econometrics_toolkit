@@ -4,7 +4,7 @@ This project contains both a user interface and a Python API designed for helpin
 
 Developer contact: Hayden Freedman (hfreedma@uci.edu)
 
-There is an installation and quick start guide in this README. For more detailed instructions, you can reference the full [User Guide](USER_GUIDE.md).
+This README provides a brief overview of the toolkit and instructions for installation. There are also quickstart guides for the GUI and API available in this repository.
 
 # Is this the right tool for you?
 
@@ -123,4 +123,4 @@ api.start_interface()
 
 The interface should launch in a separate window.
 
-For further documentation, see the [Interface Quickstart Guide](docs/quickstart.md) and the [API Documentation](docs/api_documentation.pdf).
+For further documentation, see the [API Quickstart Guide](docs/api_quickstart.md), [Interface Quickstart Guide](docs/interface_quickstart.md) and the [API Documentation](docs/api_documentation.pdf).
