@@ -2,6 +2,7 @@ import tkinter as tk
 
 import geopandas as gpd
 from tkinter import filedialog
+from inspect import getmembers, isfunction
 
 from climate_econometrics_toolkit import user_prediction_functions as user_predict
 
@@ -118,7 +119,7 @@ class PredictionFunctionPopup(tk.Toplevel):
 		popup.protocol("WM_DELETE_WINDOW", on_close)
 
 		method_list = ["None"]
-		method_list_from_user_predict = [method for method in dir(user_predict) if not method.startswith("__") and not method == "np" and not method == "pd"]
+		method_list_from_user_predict = [val[0] for val in (getmembers(user_predict, isfunction))]
 		method_list.extend(method_list_from_user_predict)
 
 		function = tk.StringVar(value=method_list[0])
