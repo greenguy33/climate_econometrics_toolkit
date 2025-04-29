@@ -4,10 +4,12 @@ This guide is designed to help users navigate the Climate Econometrics Toolkit u
 
 ## Starting the interface
 
+First, ensure that "CETHOME" is set as an environmental variable on your system. If it is not set, the system will use the current working directory as the program's home directory.
+
 Once you have the toolkit installed, open a Python shell and execute the following commands:
 
 ```
-from climate_econometrics_toolkit import climate_econometrics_api as api
+import climate_econometrics_toolkit.interface_api as api
 api.start_interface()
 ```
 
@@ -20,27 +22,25 @@ The interface is primarily designed to help with constructing and evaluating cli
 ### Aggregating Raster Data
 
 <p align="center">
-<img src="../figures/step1.png" alt="raster" width="600" height="400" class="center">
+<img src="../figures/step1.png" alt="raster" width="600" height="500" class="center">
 </p>
 
 The "Extract Raster Data" button can be used for rudimentary raster extraction. This button will pop open a new window where the user can select:
-1. one or more raster (NetCDF) files containing gridded climate data
+1. one or more raster (NetCDF/TIF) files containing gridded climate data
 2. a shape (.shp) file which represents the boundaries of the geographical regions in question
-3. optionally, a weight (NetCDF) file with the same dimensions and granularity as the raster file(s) for population or cropland weights
+3. optionally, a weight (NetCDF/TIF) file with the same dimensions and granularity as the raster file(s) for population or cropland weights
 
-Enter a number into the blank field that indicates the number of time periods to aggregate together. I am still working out how to handle unconventional conversions such as days-to-months (since there are an irregular number of days in each month). Hoewver, the most conventional case is aggregating daily or monthly data to the yearly level; enter "365" for days-to-years or "12" for months-to-years.
-
-Finally, select an aggregation function, which defines how to group the aggregated data. "Mean" would be appropriate for temperature or humidity data, while "Sum" would be appropriate for precipitation data.
+Select whether data exists at the "daily" or "monthly" level (only these temporal levels are supported here - the user API provides more flexible specification of temporal aggregation levels). Enter the first year that data exists in the raster data. Select an aggregation function, which defines how to group the aggregated data. "Mean" would be appropriate for temperature or humidity data, while "Sum" would be appropriate for precipitation data. Finally, optionally select whether the temporal aggregation should be processed only over a specified crop's growing season, on a country-by-country basis.
 
 <p align="center">
-<img src="../figures/step1_popup.png" alt="raster" width="300" height="200" class="center">
+<img src="../figures/step1_popup.png" alt="raster" width="300" height="250" class="center">
 </p>
 
-The output will be written to `{cet_home}/raster_output`. Check the console for errors.
+Once these settings have been selected, close the extraction popup window. The output will be written to `{cet_home}/raster_output`. Check the console for errors.
 
 ### Construct Climate Econometric Models
 
-To get started, click "Load Dataset" and choose a .CSV file containing some panel data. This guide will use the file `data/GDP_climate_test_data.csv`.
+To get started, click "Load Dataset" and choose a .CSV file containing some panel data. This guide will use the file `tests/test_data//GDP_climate_test_data.csv`.
 
 You should be able to identify a time column and geography (panel) column; the system will prompt you to do so upon opening the dataset for the first time. Enter "year" for the time column and "iso_id" for the panel column.
 
@@ -80,7 +80,7 @@ Sometimes you might want to swap in a different dependent variable. Rather than 
 
 ### Evaluate Climate Econometric Models
 
-Once a model has been created, select the "Evaluate Model" button. The model will automatically be evaluated on out-of-sample data. Several metrics and distributions with p-values will appear on the left hand side, and the timeline on the bottom right will be updated.
+Once a model has been created, select the "Evaluate Model with OLS" button. The model will automatically be evaluated on out-of-sample data. Several metrics and distributions with p-values will appear on the left hand side, and the timeline on the bottom right will be updated.
 
 <p align="center">
 <img src="../figures/metrics.png" width=400 alt="metrics" align="left">
@@ -112,7 +112,7 @@ Note that both of these processes can be long-running, depending on the model; c
 ### Computing Impacts
 
 <p align="center">
-<img src="../figures/step3.png" alt="raster" width="600" height="400" class="center">
+<img src="../figures/step3.png" alt="raster" width="600" height="500" class="center">
 </p>
 
 The "Predict Out-of-Sample" button can be used to apply the constructed model to generate predictions on some other dataset. A typical use case would be predicting against aggregated General Circulation Model (GCM) data, which contains historical forcing or future projection data. This would allow for the computation of historical impacts or making predictions about the future. Note that the selected file must contain the same columns as the input dataset.
