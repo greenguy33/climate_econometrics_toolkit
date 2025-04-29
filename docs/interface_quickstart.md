@@ -27,7 +27,7 @@ The interface is primarily designed to help with constructing and evaluating cli
 
 The "Extract Raster Data" button can be used for rudimentary raster extraction. This button will pop open a new window where the user can select:
 1. one or more raster (NetCDF/TIF) files containing gridded climate data
-2. a shape (.shp) file which represents the boundaries of the geographical regions in question
+2. a shape (.shp) file which represents the boundaries of the geographical regions in question (must be in a directory that also contains the corresponding .dbf, .prj, .sbn, .sbx, and .shx files)
 3. optionally, a weight (NetCDF/TIF) file with the same dimensions and granularity as the raster file(s) for population or cropland weights
 
 Select whether data exists at the "daily" or "monthly" level (only these temporal levels are supported here - the user API provides more flexible specification of temporal aggregation levels). Enter the first year that data exists in the raster data. Select an aggregation function, which defines how to group the aggregated data. "Mean" would be appropriate for temperature or humidity data, while "Sum" would be appropriate for precipitation data. Finally, optionally select whether the temporal aggregation should be processed only over a specified crop's growing season, on a country-by-country basis.
