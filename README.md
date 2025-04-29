@@ -51,6 +51,44 @@ See the [Interface Quickstart Guide](docs/quickstart.md) for more details.
 
 # Availability of Pre-Processed Data
 
+The toolkit provides a series of pre-processed datasets, weight files, and crop growing-season masks to help you get up and running quickly. Available weight files are shown in the table below. These files can be automatically used with raster extraction, following the code example below. 
+
+| Weight File Source                                                      | Weight File Content                                                                     | Granularity  |
+|-------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|--------------|
+| NASA Gridded Population of the World (Doxsey 2015)             | Population density                                                                      | 5 arcminutes |
+| EarthStat Cropland Harvested Area Map (Ramankutty 2008)       | Harvested area (all crops)                                                              | 5 arcminutes |
+| EarthStat Individual Crops Harvested Area Map (Monfreda 2008) | Maize harvested area, Wheat harvested area, Rice harvested area, Soybean harvested area | 5 arcminutes |
+
+```
+# Argument to 'weights' must be one of: "popweighted","cropweighted","maizeweighted","riceweighted","soybeanweighted","wheatweighted"
+# This call uses a built-in shape file that countains country shapes. The 'shape_file' argument can be used to pass a custom shape file via its filepath.
+extracted = api.extract_raster_data(path_to_raster_file, weights="cropweighted")
+
+# The argument '12' indicates that the raster file contains monthly data and to aggregate it yearly
+# The optional argument 'maize' to the 'crop' parameter indicates to only process raster layers that exist over the maize growing season for each country
+aggregated = api.aggregate_raster_data(extracted, "temp", "mean", 12, 1948, crop="maize")
+```
+Note that crop growing season masks, such as used in the above argument to the 'crop' parameter, are from Sacks et al. 2010., _Crop planting dates: an analysis of global patterns_.
+
+For users who wish to avoid the raster extraction process entirely, the toolkit also provides several datasets already extracted and processed as CSV files at the country/year level. The table below shows the available datasets, and the code example below shows how one can integrate two or more of these datasets into a single regression-ready dataset. Asterisks next to the data source indicate that the file was aggregated from gridded data to the country/year level and is available with various weights applied, using arguments to the `weight' parameter.
+
+| Data Source                                                                          | Data Variables                                                                    | Years in Dataset | Num. Countries in Dataset |
+|--------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|------------------|---------------------------|
+| NCEP-NCAR Reanalysis* (Kalnay 2018)                                         | Surface Air Temperature, Precipitation, Specific Humidity                         | 1948-2024        | 235                       |
+| SPEIbase* (Begueria 2010)                                              | Standardized Precipitation-Evapotranspiration Index                               | 1901-2023        | 240                       |
+| PKU Global Inventory Modeling and Mapping Studies NDVI* (Li 2023) | Normalized Difference Vegetation Index                                            | 1982-2022        | 162                       |
+| FAOStat Database (Kasnakoglu 2006)                                 | Total Food, Primary Cereals, Agriculture, Livestock, and Crops Production Indices | 1961-2023        | 199                       |
+| USDA FDA (USDA 2024)                                              | Agricultural Total Factor Productivity                                            | 1961-2021        | 182                       |
+| World Bank Development Indicators (World Bank 2024)                             | Per-Capita Gross Domestic Product                                                 | 1961-2022        | 262                       |
+| EM-DAT International Disaster Database (Delforge 2023)                         | Drought, Heat Wave, Wildfire, Flood                                               | 1960-2024        | 200                       |
+```
+ndvi_data = api.load_ndvi_data(weight='cropweighted')
+spei_data = api.load_spei_data(weight='cropweighted')
+# loads NCEP-NCAR dataeeee
+clim_data = api.load_climate_data(weight='cropweighted')
+ag_tfp_data = api.load_usda_fda_data()
+reg_data = api.integrate([ndvi_data,spei_data,clim_data,ag_tfp_data], keep_na=False)
+```
 
 
 # Installation
