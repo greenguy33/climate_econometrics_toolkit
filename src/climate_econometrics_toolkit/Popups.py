@@ -269,6 +269,7 @@ class GeoIdentifierSelectionPopup(tk.Toplevel):
 class QuantileRegressionPopup(tk.Toplevel):
 
 	quantiles = None
+	std_error_type = None
 
 	def __init__(self, window):
 
@@ -278,6 +279,7 @@ class QuantileRegressionPopup(tk.Toplevel):
 
 		def on_close():
 			self.quantiles = quantiles.get()
+			self.std_error_type = std_error_type.get()
 			popup.destroy()
 
 		popup.protocol("WM_DELETE_WINDOW", on_close)
@@ -289,5 +291,15 @@ class QuantileRegressionPopup(tk.Toplevel):
 
 		text_entry_label.grid(row=1, column=0, padx=5, pady=1, columnspan=2)
 		quantile_entry.grid(row=2, column=0, padx=5, pady=1, columnspan=2)
+
+		std_error_type_list = ["nonrobust","greene"]
+
+		std_error_label = tk.Label(popup, text="Select a type of standard error to use:")
+		std_error_type = tk.StringVar(value=std_error_type_list[0])
+
+		std_error_label.grid(row=3, column=0, padx=5, pady=1, columnspan=2)
+		for index, method in enumerate(std_error_type_list):
+			button = tk.Radiobutton(popup, text=method, variable=std_error_type, value=method)
+			button.grid(row=index+4, column=0, padx=5, pady=1)
 		
 		window.wait_window(popup)

@@ -27,6 +27,8 @@ cet_home = os.getenv("CETHOME")
 
 # TODO: utils.assert_with_log(types for user input to each method
 # TODO: the transformations user interface is clunky and unintuitive, ideally should be re-worked
+# TODO: there is inconsistency about when methods are accepting a model argument vs. when they are using the pre-loaded model
+# TODO: what if you want to load and run a model from the cache using evaluate_model, spatial regression or quantile regression?
 
 def model_checks():
     checks = {
@@ -106,6 +108,8 @@ def compute_degree_days(years, countries, threshold, mode="above", weight="unwei
     if mode == "between":
         utils.assert_with_log(second_threshold is not None, "Second threshold argument must be supplied to use mode 'between'.")
         utils.assert_with_log(second_threshold > threshold, "Second threshold argument must be greater than threshold argument.")
+    elif second_threshold is not None:
+        utils.print_with_log(f"Argument '{second_threshold}' to 'second_threshold' parameter is ignored with mode {mode}.", "warning")
     col_name = f"deg_days_{mode}_{str(threshold)}"
     if mode == "between":
         col_name += f"_{str(second_threshold)}"

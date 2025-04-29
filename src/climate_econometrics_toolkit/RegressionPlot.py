@@ -21,9 +21,8 @@ class RegressionPlot():
     def add_normal_distribution_to_axis(self, coef_name, reg_result, index, axis, num_plots):
         mean = float(reg_result["Coef."][index])
         sd = float(reg_result["Std.Err."][index])
-        # TODO: get pvals from random effect model result
-        if "P>|t|" in reg_result:
-            pval = reg_result["P>|t|"][index]
+        pval = reg_result.pvals[index]
+        if not pd.isnull(pval):
             if pval < .00001:
                 pval = "< .00001"
             elif pval < .0001:
@@ -36,7 +35,9 @@ class RegressionPlot():
                 pval = "< .05"
             else:
                 pval = '%.2f' % pval
-            axis.set_xlabel(f"P-value : {str(pval)}")
+        else:
+            pval = "NaN"
+        axis.set_xlabel(f"P-value : {str(pval)}")
         x = np.linspace(mean - 3*sd, mean + 3*sd, 100)
         axis.plot(x, stats.norm.pdf(x, mean, sd))
         axis.set_title(coef_name)
@@ -57,6 +58,7 @@ class RegressionPlot():
             and not val.startswith("fe_") 
             and not (val.startswith("tt") and val[3] == "_")
             and (reg_result["Std.Err."][val] != "")
+            and (not pd.isnull(reg_result["Std.Err."][val]))
         ])
         if num_plots <= 4:
             fig, axes = plt.subplots(1,num_plots,figsize=(6,2))
@@ -72,6 +74,7 @@ class RegressionPlot():
                 (coef_name != "const" and not coef_name.startswith("fe_"))
                 and (not (coef_name.startswith("tt") and coef_name[3] == "_")) 
                 and (reg_result["Std.Err."][index] != "")
+                and (not pd.isnull(reg_result["Std.Err."][index]))
             ):
                 if num_plots == 1:
                     self.add_normal_distribution_to_axis(coef_name, reg_result, index, axes, num_plots)
@@ -92,11 +95,16 @@ class RegressionPlot():
         if model_type == "random":
             err_data = reg_result.bse.to_frame()
             mean_data = reg_result.params.to_frame()
-            reg_result = pd.concat([mean_data, err_data], axis=1)
-            reg_result.columns = ["Coef.","Std.Err."]
+            pvals = reg_result.pvalues.to_frame()
+            reg_result = pd.concat([mean_data, err_data, pvals], axis=1)
+            reg_result.columns = ["Coef.","Std.Err.","pvals"]
         elif model_type == "driscollkraay":
-            reg_result = pd.concat([reg_result.params, reg_result.std_errors], axis=1)
-            reg_result.columns = ["Coef.","Std.Err."]
+            reg_result = pd.concat([reg_result.params, reg_result.std_errors, reg_result.pvalues], axis=1)
+            reg_result.columns = ["Coef.","Std.Err.","pvals"]
+        elif "P>|t|" in reg_result:
+            reg_result["pvals"] = reg_result["P>|t|"]
+        else:
+            reg_result["pvals"] = reg_result["P>|z|"]
         fig, axes = self.build_axes(reg_result)
 
         plt.tight_layout(h_pad = -.3)

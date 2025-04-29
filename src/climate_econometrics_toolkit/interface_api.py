@@ -88,8 +88,7 @@ def run_spatial_regression(model, reg_type, model_id, geometry_column, std_error
 	regression.run_spatial_regression(model, std_error_type, reg_type, model_id, geometry_column, k, num_lags)
 
 
-def run_quantile_regression(model, model_id, q, std_error_type="nonrobust"):
-	# TODO: make std_error_type configurable via the interface
+def run_quantile_regression(model, model_id, q, std_error_type):
 	if isinstance(q, list):
 		for val in q:
 			regression.run_quantile_regression(model, std_error_type, model_id, val)

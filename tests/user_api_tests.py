@@ -668,6 +668,20 @@ def test_add_degree_days_to_dataframe():
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
 
+    # these tests fail due to missing modules (see Github Issue #1)
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="between", weight="riceweighted", crop="rice", second_threshold=25)
+    assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="between", weight="maizeweighted", crop="maize", second_threshold=25)
+    assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="between", weight="soybeanweighted", crop="soybeans", second_threshold=25)
+    assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="between", weight="wheatweighted", crop="wheat.spring", second_threshold=25)
+    assert data is not None
+    assert sorted(set(data.year)) == list(range(1962,2016))
+
 
 def test_load_climate_data():
 

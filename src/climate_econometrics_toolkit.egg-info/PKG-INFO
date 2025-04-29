@@ -15,7 +15,7 @@ This project contains both a user interface and a Python API designed for helpin
 
 Developer contact: Hayden Freedman (hfreedma@uci.edu)
 
-This README provides a brief overview of the toolkit and instructions for installation. There are also quickstart guides for the GUI and API available in this repository.
+This README provides a brief overview of the toolkit and instructions for installation. For further documentation, see the [API Quickstart Guide](docs/api_quickstart.md), [Interface Quickstart Guide](docs/interface_quickstart.md) and the [API Documentation](docs/api_documentation.pdf).
 
 # Is this the right tool for you?
 
@@ -45,6 +45,39 @@ There are functions available in this tool to help with each step of this workfl
 **For Step 2**, you can use the user interface to visually construct and evaluate different models. Models are automatically evaluated using ten-fold cross-validation, and several metrics are available to compare models directly in the interface. The timeline feature lets you easily return to previous models and see which models are the best performing. After choosing your best model, you can export the coefficients as a CSV file or you can run bootstrapping or Bayesian inference from within the interface to generate coefficient samples that can be used to seed your impact projections with uncertainty. A model cache saves model results and canvas state for each dataset, which persists between sessions. All of these features are also available from the API if you prefer to programmatically construct and evaluate your model.
 
 **For Step 3**, you provide your counterfactual or climate projection data and you get predictions of your dependent variable based on your model. If you ran bootstrapping or Bayesian inference, a prediction for each sample will be calculated (so if you have, for example, 1,000 bootstrap samples, you'll get 1,000 predictions of the dependent variable for each row of climate data input). You can then use these predictions to assess historical attribution, compute historical cumulative sums, or project future impacts.
+
+# Installation
+
+The package is currently hosted on TestPyPi. When installing, use the commands below to install all dependencies from PyPi in addition to the TestPyPi repo. Python 3 must be installed prior to installation.
+
+#### Create and enter new virtual environment (optional)
+
+```
+python3 -m venv climate_econometrics_toolkit.venv
+source climate_econometrics_toolkit.venv/bin/activate
+```
+
+#### Install package and dependencies
+
+```
+pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ climate-econometrics-toolkit==0.0.16
+```
+
+#### Add environmental variable CET_HOME
+
+In order for all features to work properly, the environmental variable `CET_HOME` must be set. Exported files will be saved to this directory.
+
+#### Start
+
+To start the interface, simply open a Python shell and execute the following commands:
+
+```
+from climate_econometrics_toolkit import interface_api as api
+api.start_interface()
+```
+
+The interface should launch in a separate window.
+
 
 # Climate Econometrics Toolkit Interface
 
@@ -101,37 +134,14 @@ ag_tfp_data = api.load_usda_fda_data()
 reg_data = api.integrate([ndvi_data,spei_data,clim_data,ag_tfp_data], keep_na=False)
 ```
 
+# Available Regression Models and Estimators
 
-# Installation
+The toolkit makes several different types of regressions and estimators available, which are designed to suit a variety of different use cases in the field of climate econometrics. The table below summarizes the types of regressions that can be used to fit specified models:
 
-The package is currently hosted on TestPyPi. When installing, use the commands below to install all dependencies from PyPi in addition to the TestPyPi repo. Python 3 must be installed prior to installation.
+| **Regression Models & Estimators** | **Standard Errors Supported** | **Implementation** |
+|-----------------------------------|-------------------------------|---------------------|
+| **POLS** (Pooled OLS)  <br> **FEOLS** (Fixed Effects via OLS)  <br> **Random Effects** via ML | - Non-robust SE  <br> - Clustered SE  <br> - Driscoll-Kraay SE  <br> - White-Huber SE  <br> - Newey-West SE | Statsmodels |
+| **Quantile Regression** via IWLS | - Non-robust SE  <br> - Greene SE | Statsmodels |
+| **Spatial Lag Model** via TSLS | - Non-robust SE  <br> - White-Huber SE  <br> - Newey-West SE | PySAL/spreg |
+| **Spatial Error Model** via GMM | - Non-robust SE | PySAL/spreg |
 
-#### Create and enter new virtual environment (optional)
-
-```
-python3 -m venv climate_econometrics_toolkit.venv
-source climate_econometrics_toolkit.venv/bin/activate
-```
-
-#### Install package and dependencies
-
-```
-pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ climate-econometrics-toolkit==0.0.16
-```
-
-#### Add environmental variable CET_HOME
-
-In order for all features to work properly, the environmental variable `CET_HOME` must be set. Exported files will be saved to this directory.
-
-#### Start
-
-To start the interface, simply open a Python shell and execute the following commands:
-
-```
-from climate_econometrics_toolkit import interface_api as api
-api.start_interface()
-```
-
-The interface should launch in a separate window.
-
-For further documentation, see the [API Quickstart Guide](docs/api_quickstart.md), [Interface Quickstart Guide](docs/interface_quickstart.md) and the [API Documentation](docs/api_documentation.pdf).

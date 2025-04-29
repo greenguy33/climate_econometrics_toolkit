@@ -40,7 +40,6 @@ def split_data_randomly(data, model, splits=10):
 
 def generate_withheld_data(data, model):
 	# TODO: does this introduce problems for comparing fe/non-fe models?
-	# TODO: changing this mades HUGE difference in result of Burke model
 	# return split_data_by_column(data, model.time_column)
 	return split_data_randomly(data, model, 10)
 
@@ -74,6 +73,7 @@ def generate_prediction_interval_figure(mean_pred_int_cov, predictions, in_sampl
 	if not os.path.isdir(f"{cet_home}/prediction_intervals/{model_id}"):
 		os.makedirs(f"{cet_home}/prediction_intervals/{model_id}")
 	plt.savefig(f"{cet_home}/prediction_intervals/{model_id}/{model_id}_cv_iter_{iteration}.png", bbox_inches='tight')
+	plt.close()
 
 
 def calculate_prediction_interval_accuracy(y, predictions, in_sample_mse, target_var, model_id, iteration, gen_figure=True):
@@ -123,7 +123,7 @@ def evaluate_model(data, std_error_type, model):
 
 def evaluate_non_random_effects_model(data, std_error_type, model, model_id):
 
-	utils.print_with_log(f"Evalating non-random-effects model using standard error type {std_error_type}", "info")
+	utils.print_with_log(f"Evalating non-random-effects model using standard error type '{std_error_type}'", "info")
 
 	demean_data = False
 	if len(model.fixed_effects) > 0 and len(model.time_trends) == 0:
@@ -174,7 +174,7 @@ def evaluate_non_random_effects_model(data, std_error_type, model, model_id):
 
 def evaluate_random_effects_model(data, std_error_type, model, model_id):
 
-	utils.print_with_log(f"Evalating random-effects model using standard error type {std_error_type}", "info")
+	utils.print_with_log(f"Evalating random-effects model using standard error type '{std_error_type}'", "info")
 
 	transformed_data = utils.transform_data(data, model)
 

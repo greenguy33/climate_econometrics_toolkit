@@ -135,6 +135,7 @@ def run_spatial_regression(model, std_error_type, reg_type, model_id, geometry_c
 		pkl.dump(spatial_reg_model,buff)
 	file.close()
 	model.save_spatial_regression_script(reg_type, std_error_type, geometry_column, k, num_lags, demean_data)
+	utils.print_with_log(f"Spatial regression results saved to {save_dir}", "info")
 	return spatial_reg_model
 
 
@@ -160,6 +161,7 @@ def run_quantile_regression(model, std_error_type, model_id, q):
 		pkl.dump(quant_reg_model,buff)
 	file.close()
 	model.save_quantile_regression_script(std_error_type, q)
+	utils.print_with_log(f"Quantile regression results saved to {save_dir}", "info")
 	return quant_reg_model
 
 

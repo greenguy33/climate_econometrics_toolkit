@@ -30,6 +30,7 @@ def build_model_from_graph(graph, data_file, panel_column, time_column):
 	model.full_data_path = data_file
 	model.time_column = time_column
 	model.panel_column = panel_column
+	model.dataset = pd.read_csv(data_file)
 
 	unused_nodes = [node for node in graph.nodes() if node != model.target_var and node not in input_nodes]
 	return model, unused_nodes

@@ -195,72 +195,77 @@ class TkInterfaceUtils():
 
 
 	def run_bayesian_inference(self):
-		# TODO shouldn't need to evaluate model with OLS before running Bayesian inference
 		if self.dnd.current_model is None:
-			self.update_interface_window_output("Please evaluate your model or select an existing model before running Bayesian inference.")
+			model = api.build_model_object_from_canvas(self.build_model_indices_lists(), self.dnd.filename, self.panel_column, self.time_column)[0]
+			model.model_id = time.time()
 		else:
-			utils.print_with_log(f"Running Bayesian Inference against Model with ID {self.dnd.current_model.model_id}", "info")
-			self.update_interface_window_output(f"Bayesian inference will run in background...see command line for progress. Output will be available in {cet_home}/bayes_samples")
-			api.run_bayesian_regression(self.dnd.current_model)
+			model = self.dnd.current_model
+		utils.print_with_log(f"Running Bayesian Inference against Model with ID {model.model_id}", "info")
+		self.update_interface_window_output(f"Bayesian inference will run in background...see command line for progress. Output will be available in {cet_home}/bayes_samples")
+		api.run_bayesian_regression(model)
 
 
 	def run_block_bootstrap(self):
-		# TODO shouldn't need to evaluate model with OLS before running bootstrap
 		if self.dnd.current_model is None:
-			self.update_interface_window_output("Please evaluate your model or select an existing model before running bootstrapping.")
+			model = api.build_model_object_from_canvas(self.build_model_indices_lists(), self.dnd.filename, self.panel_column, self.time_column)[0]
+			model.model_id = time.time()
 		else:
-			standard_error_popup = StandardErrorPopup(self.window)
-			utils.print_with_log(f"Running Bootstrapping against Model with ID {self.dnd.current_model.model_id}", "info")
-			self.update_interface_window_output(f"Bootstrapping will run in background...see command line for progress. Output will be available in {cet_home}/bootstrap_samples")
-			api.run_block_bootstrap(self.dnd.current_model, standard_error_popup.std_error_type)
+			model = self.dnd.current_model
+		standard_error_popup = StandardErrorPopup(self.window)
+		utils.print_with_log(f"Running Bootstrapping against Model with ID {model.model_id}", "info")
+		self.update_interface_window_output(f"Bootstrapping will run in background...see command line for progress. Output will be available in {cet_home}/bootstrap_samples")
+		api.run_block_bootstrap(model, standard_error_popup.std_error_type)
 
 
 	def run_spatial_regression(self):
-		# TODO shouldn't need to evaluate model with OLS before running spatial regression
 		if self.dnd.current_model is None:
-			self.update_interface_window_output("Please evaluate your model or select an existing model before running spatial regression.")
-		else:
-			spatial_regression_type_popup = SpatialRegressionTypePopup(self.window)
+			model = api.build_model_object_from_canvas(self.build_model_indices_lists(), self.dnd.filename, self.panel_column, self.time_column)[0]
 			model_id = time.time()
-			utils.print_with_log(f"Running Spatial Regression against Model with ID {model_id}", "info")
-			reg_type = spatial_regression_type_popup.reg_type.split(" ")[0]
-			if spatial_regression_type_popup.k == "":
-				k = 5
-			else:
-				k = int(spatial_regression_type_popup.k)
-			if spatial_regression_type_popup.num_lags == "":
-				num_lags = 1
-			else:
-				num_lags = int(spatial_regression_type_popup.num_lags)
-			api.run_spatial_regression(
-				self.dnd.current_model, 
-				reg_type, 
-				model_id, 
-				spatial_regression_type_popup.geometry_column, 
-				spatial_regression_type_popup.std_error_type, 
-				k, 
-				num_lags
-			)
-			self.update_interface_window_output(f"Spatial regression output is available in {cet_home}/spatial_regression_output/{model_id}")
+		else:
+			model = self.dnd.current_model
+			model_id = model.model_id
+		spatial_regression_type_popup = SpatialRegressionTypePopup(self.window)
+		utils.print_with_log(f"Running Spatial Regression against Model with ID {model_id}", "info")
+		reg_type = spatial_regression_type_popup.reg_type.split(" ")[0]
+		if spatial_regression_type_popup.k == "":
+			k = 5
+		else:
+			k = int(spatial_regression_type_popup.k)
+		if spatial_regression_type_popup.num_lags == "":
+			num_lags = 1
+		else:
+			num_lags = int(spatial_regression_type_popup.num_lags)
+		api.run_spatial_regression(
+			model, 
+			reg_type, 
+			model_id, 
+			spatial_regression_type_popup.geometry_column, 
+			spatial_regression_type_popup.std_error_type, 
+			k, 
+			num_lags
+		)
+		self.update_interface_window_output(f"Spatial regression output is available in {cet_home}/spatial_regression_output/{model_id}")
 
 
 	def run_quantile_regression(self):
-		# TODO shouldn't need to evaluate model with OLS before running quantile regression
 		if self.dnd.current_model is None:
-			self.update_interface_window_output("Please evaluate your model or select an existing model before running quantile regression.")
-		else:
-			quantile_popup = QuantileRegressionPopup(self.window)
+			model = api.build_model_object_from_canvas(self.build_model_indices_lists(), self.dnd.filename, self.panel_column, self.time_column)[0]
 			model_id = time.time()
-			utils.print_with_log(f"Running Quantile Regression against Model with ID {model_id}", "info")
-			quantiles = quantile_popup.quantiles.strip()
-			if "," in quantiles:
-				if quantiles[-1] == ",":
-					quantiles = quantiles[:-1]
-				quantiles = [float(val) for val in quantiles.split(",")]
-			else:
-				quantiles = float(quantiles)
-			api.run_quantile_regression(self.dnd.current_model, model_id, quantiles)
-			self.update_interface_window_output(f"Quantile regression output is available in {cet_home}/quantile_regression_output/{model_id}")
+		else:
+			model = self.dnd.current_model
+			model_id = model.model_id
+		quantile_popup = QuantileRegressionPopup(self.window)
+		utils.print_with_log(f"Running Quantile Regression against Model with ID {model_id}", "info")
+		quantiles = quantile_popup.quantiles.strip()
+		if "," in quantiles:
+			if quantiles[-1] == ",":
+				quantiles = quantiles[:-1]
+			quantiles = [float(val) for val in quantiles.split(",")]
+		else:
+			quantiles = float(quantiles)
+		std_error_type = quantile_popup.std_error_type
+		api.run_quantile_regression(model, model_id, quantiles, std_error_type)
+		self.update_interface_window_output(f"Quantile regression output is available in {cet_home}/quantile_regression_output/{model_id}")
 
 
 	def run_panel_unit_root_tests(self):

@@ -405,14 +405,23 @@ class DragAndDropInterface():
             )
             self.bind_right_click_to_arrow_tag(f"from_{self.canvas.gettags(source_object)[0]}")
             self.arrow_list.append((source_object,target_object))
+            self.current_model = None
             self.reset_click()
 
     def clear_canvas(self):
         self.reset_click()
-        self.arrow_list = []
         self.canvas.delete("all")
-        self.variables_displayed = False
+        self.drag_start_x = None
+        self.drag_start_y = None
+        self.left_clicked_object = None
+        self.left_clicked_object_tk = tk.StringVar(value=(""))
+        self.object_to_drag = None
+        self.right_clicked_object = None
+        self.in_drag = False
+        self.arrow_list = []
         self.transformation_list = []
+        self.variables_displayed = False
+        self.current_model = None
 
     def delete_arrow_from_click(self, event):
         arrow = self.canvas.find_closest(event.x, event.y)[0]
@@ -420,6 +429,7 @@ class DragAndDropInterface():
         if self.tags_are_arrow(arrow_tags): 
             self.arrow_list.remove(self.get_arrow_source_and_target(arrow_tags))
             self.canvas.delete(arrow)
+            self.current_model = None
 
     def update_arrow_coordinates(self, event, delta_x, delta_y):
         arrow_source_tags = f"from_{self.canvas.gettags(self.object_to_drag)[0]}"
