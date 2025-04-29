@@ -42,7 +42,7 @@ def generate_withheld_data(data, model):
 	# TODO: does this introduce problems for comparing fe/non-fe models?
 	# TODO: changing this mades HUGE difference in result of Burke model
 	# return split_data_by_column(data, model.time_column)
-	return split_data_randomly(data, model, 2)
+	return split_data_randomly(data, model, 10)
 
 
 def generate_prediction_interval_figure(mean_pred_int_cov, predictions, in_sample_mse, target_var, model_id, iteration):
