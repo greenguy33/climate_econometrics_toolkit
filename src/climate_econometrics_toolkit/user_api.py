@@ -276,12 +276,14 @@ def evaluate_model(std_error_type="nonrobust"):
         
 
 def build_model_from_cache(model_id):
+    utils.initial_checks()
     utils.assert_with_log(model.data_file == None, "Attempted to access cache with no dataset loaded")
     utils.print_with_log(f"Loading model from cache with ID {model_id}", "info")
     return pd.read_pickle((f"{cet_home}/model_cache/{model.data_file}/{model_id}/model.pkl"))
         
 
 def get_all_models_from_cache():
+    utils.initial_checks()
     utils.assert_with_log(model.data_file == None, "Attempted to access cache with no dataset loaded")
     model_list = []
     model_ids = os.listdir(f"{cet_home}/model_cache/{model.data_file}")
@@ -305,6 +307,7 @@ def get_best_model(model_list=None, metric="r2"):
 
 
 def get_all_model_ids():
+    utils.initial_checks()
     if model.data_file == None:
         utils.print_with_log("You must load a dataset before accessing the cache", "error")
         return None
@@ -326,6 +329,7 @@ def load_dataset_from_file(datafile):
 
 
 def set_dataset(dataframe, dataset_name):
+    utils.initial_checks()
     utils.print_with_log(f"Setting dataset '{dataset_name}' as active dataset and resetting current model.", "info")
     # resets model when new dataset is loaded
     reset_model()

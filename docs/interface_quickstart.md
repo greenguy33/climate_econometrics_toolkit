@@ -1,6 +1,6 @@
 # Climate Econometrics Toolkit Interface Quickstart
 
-This guide is designed to help users navigate the Climate Econometrics Toolkit user interface. The API is not covered here: for that, see the [API Documentation](api_documentation.pdf) or the [Ortiz-Bobea et al. reproduction](../notebooks/ortiz-bobea-reproduction.ipynb).
+This guide is designed to help users navigate the Climate Econometrics Toolkit user interface. The API is not covered here: for that, see the [API quickstart guide](api_quickstart.md), the [API Documentation](api_documentation.pdf) or one of the two example notebooks in "notebooks/".
 
 ## Starting the interface
 

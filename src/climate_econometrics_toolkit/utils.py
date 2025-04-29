@@ -63,8 +63,7 @@ spatial_std_error_map = {
 random_state = 123
 
 def initial_checks():
-	env_var_name = "CETHOME"
-	if os.getenv(env_var_name) is None:
+	if cet_home is None:
 		print_with_log("Environmental Variable 'CETHOME' is not set. Defaulting to current directory as working directory.")
 		os.environ["CETHOME"] = "."
 	dirs_to_init = [
@@ -87,8 +86,8 @@ def initial_checks():
 		"resampled_raster_files"
 	]
 	for dir in dirs_to_init:
-		if not os.path.isdir(dir):
-			os.makedirs(dir)
+		if not os.path.isdir(f"{cet_home}/{dir}"):
+			os.makedirs(f"{cet_home}/{dir}")
 
 
 def assert_with_log(clause, message):

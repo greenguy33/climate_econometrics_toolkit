@@ -132,4 +132,4 @@ def aggregate_raster_data(
 				subperiod = 0
 	if len(omitted_geoids) > 0:
 		utils.print_with_log(f"These GeoIDs were omitted from the aggregated dataset: {sorted(omitted_geoids)}", "warning")        
-	return pd.DataFrame.from_records(data, columns=[geo_identifier,"time",climate_var_name]).sort_values([geo_identifier,"time"])
+	return pd.DataFrame.from_records(data, columns=[geo_identifier,"time",climate_var_name]).sort_values([geo_identifier,"time"]).reset_index(drop=True)
