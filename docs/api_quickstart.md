@@ -138,9 +138,9 @@ api.run_bayesian_regression(model, num_samples=1000)
 ```
 ### Run block bootstrap to generate coefficient samples
 ```
-api.run_block_bootstrap(model, std_error_type="driscollkraay", num_samples=1000)
+api.run_block_bootstrap(api.get_model_by_id(model_id), std_error_type="driscollkraay", num_samples=1000)
 ```
 ### Use samples to generate predictions
 ```
-api.predict_out_of_sample(model, out_sample_data)
+api.predict_out_of_sample(api.get_model_by_id(model_id), out_sample_data)
 ```
