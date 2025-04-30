@@ -168,7 +168,7 @@ class TkInterfaceUtils():
 			self.update_interface_window_output(print_string)
 			if model != None:
 				utils.print_with_log(f"Evaluating Model with ID {model.model_id}", "info")
-				self.update_interface_window_output(f"Model results saved to {cet_home}/model_results/{model.model_id}.csv. Regression script saved to {cet_home}/regression_scripts/{model.model_id}.csv")
+				self.update_interface_window_output(f"Model results saved to {cet_home}/OLS_output/{model.model_id}.csv. Regression script saved to {cet_home}/regression_scripts/{model.model_id}.csv")
 				self.dnd.save_canvas_to_cache(str(model.model_id), self.panel_column, self.time_column)
 				if model.random_effects is None:
 					try:

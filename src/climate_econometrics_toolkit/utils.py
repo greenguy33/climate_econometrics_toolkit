@@ -73,7 +73,7 @@ def initial_checks():
 		"bootstrap_samples",
 		"raster_output",
 		"predictions",
-		"model_results",
+		"OLS_output",
 		"regression_scripts",
 		"spatial_regression_output",
 		"quantile_regression_output",

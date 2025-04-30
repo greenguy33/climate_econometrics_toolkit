@@ -29,7 +29,7 @@ std_error_name_map = {
 
 # TODO: refactor code into API and interface directories
 
-def run_model_analysis(data, std_error_type, model, save_to_cache=True):
+def run_model_analysis(data, std_error_type, model, save_model_to_cache=True, save_result_to_file=True):
 	regression_result = None
 	return_string = ""
 	data.sort_values([model.panel_column, model.time_column]).reset_index(drop=True)
@@ -39,14 +39,19 @@ def run_model_analysis(data, std_error_type, model, save_to_cache=True):
 		model = None
 	else:
 		model = ce_eval.evaluate_model(data, std_error_type, model)
-		if save_to_cache:
+		if save_model_to_cache:
 			model.save_model_to_cache()
+		if save_result_to_file:
+			model.save_result_to_file()
 		regression_result = model.regression_result
 		# TODO: don't print out fixed effect/time trend coefficients
 		try:
 			print(regression_result.summary2().tables[1])
 		except:
-			print(regression_result.params)
+			try:
+				print(regression_result.summary())
+			except:
+				print(regression_result.summary)
 		model.save_OLS_regression_script(std_error_type)
 	return model, regression_result, return_string
 

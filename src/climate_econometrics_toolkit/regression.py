@@ -66,7 +66,7 @@ def run_random_effects_regression(transformed_data, model, std_error_type):
 	target_var = model.target_var.replace("(","_").replace(")","_")
 	random_effects_formatted = model.random_effects[0].replace("(","_").replace(")","_")
 	formula = f"{target_var} ~ {mv_as_string}"
-	reg = smf.mixedlm(formula, data=transformed_data, groups=model.random_effects[1], re_formula=f"0+{random_effects_formatted}").fit()
+	reg = smf.mixedlm(formula, data=transformed_data, groups=model.random_effects[1], re_formula=f"1+{random_effects_formatted}").fit()
 	return reg
 
 
@@ -80,6 +80,7 @@ def run_intercept_only_regression(transformed_data, model, std_error_type):
 
 
 def run_spatial_regression(model, std_error_type, reg_type, model_id, geometry_column, k, num_lags):
+	# TODO: check why warning says there are 155 disconnected components
 	utils.assert_with_log(reg_type in ["lag","error"], "Spatial model type must be either 'lag' or 'error'.")
 	utils.assert_with_log(std_error_type in ["nonrobust","whitehuber","neweywest"], "Standard error type must be one of 'nonrobust','whitehuber','neweywest'")
 	if reg_type == "error":

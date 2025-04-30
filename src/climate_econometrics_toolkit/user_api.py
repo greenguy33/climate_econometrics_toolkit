@@ -271,10 +271,9 @@ def evaluate_model(std_error_type="nonrobust"):
     utils.initial_checks()
     # TODO: check to see if this model is already in cache, if so return that model rather than re-evaluating the same model
     if model_checks():
-        _, _, return_string = api.run_model_analysis(copy.deepcopy(model.dataset), std_error_type, model, save_to_cache=False)
+        _, _, return_string = api.run_model_analysis(copy.deepcopy(model.dataset), std_error_type, model, save_model_to_cache=True, save_result_to_file=False)
         if return_string != "": utils.print_with_log(return_string, "error")
         if model != None:
-            model.save_model_to_cache()
             utils.print_with_log(f"Model assigned ID: {model.model_id}", "info")
             return str(model.model_id)
         

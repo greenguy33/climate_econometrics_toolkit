@@ -1,6 +1,8 @@
 import numpy as np
+import pandas as pd
 import os
 import pickle as pkl
+
 from climate_econometrics_toolkit import utils
 
 cet_home = os.getenv("CETHOME")
@@ -67,10 +69,25 @@ class ClimateEconometricsModel:
 		os.makedirs(dir_name)
 		with open(f"{dir_name}/model.pkl", "wb") as write_file:
 			pkl.dump(self, write_file)
+
+
+	def save_result_to_file(self):
 		try:
-			self.regression_result.summary2().tables[1].to_csv(f"{cet_home}/model_results/{self.model_id}.csv")
+			# handle non-random-effects model
+			self.regression_result.summary2().tables[1].to_csv(f"{cet_home}/OLS_output/{self.model_id}.csv")
 		except:
-			self.regression_result.params.to_csv(f"{cet_home}/model_results/{self.model_id}.csv")
+			try:
+				# handle random-effects model
+				res = self.regression_result.summary().tables[1]
+				os.mkdir(f"{cet_home}/OLS_output/{self.model_id}")
+				res.to_csv(f"{cet_home}/OLS_output/{self.model_id}/covariates.csv")
+				np.transpose(pd.DataFrame.from_dict(self.regression_result.random_effects)).to_csv(f"{cet_home}/OLS_output/{self.model_id}/random_effects.csv")
+			except:
+				res = self.regression_result.summary
+				# handle driscoll-kraay model
+				file = open(f"{cet_home}/OLS_output/{self.model_id}.csv", "w")
+				file.write(str(res))
+				file.close()
 
 
 	def build_model_as_string(self, script_text):
