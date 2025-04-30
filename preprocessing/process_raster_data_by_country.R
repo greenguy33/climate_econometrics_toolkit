@@ -13,7 +13,7 @@ timeframes = c("daily")
 country_shapes = read_sf("country_shapes",layer="country")
 # pop_raster = raster("../data/gpw-v4-population-density-rev11_2000_30_sec_tif/gpw_v4_population_density_rev11_2000_30_sec.tif")
 # ag_raster = raster("../data/CroplandPastureArea2000_Geotiff/Cropland2000_5m.tif")
-soybean_raster = raster("crop_maps/harvested_area/soybean_HarvestedArea.tif")
+soybean_raster = raster("crop_maps/harvested_area/soybean_HarvestedAreaFraction.tif")
 
 single_climate_raster = stack(str_interp("../data/temp/daily/shifted/air.2m.gauss.1961.shifted.nc"))
 # pop_raster <- resample(pop_raster, single_climate_raster)

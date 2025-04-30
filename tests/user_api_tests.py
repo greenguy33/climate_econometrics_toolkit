@@ -608,31 +608,31 @@ def test_extraction_with_built_in_weight_files():
 def test_compute_degree_days():
 
     panel_data = pd.read_csv("data/ortiz_bobea_data.csv")
-    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "above", "unweighted")
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "above")
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "below", "popweighted")
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "below")
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "above", "cropweighted")
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "above")
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "below", "unweighted", crop="maize")
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "below", crop="maize")
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "above", "popweighted", crop="wheat.spring")
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "above", crop="wheat.spring")
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "below", "cropweighted", crop="wheat.winter")
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "below", crop="wheat.winter")
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "above", "unweighted", crop="soybeans")
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "above", crop="soybeans")
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "below", "popweighted", crop="rice")
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "below", crop="rice")
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "between", "popweighted", crop="rice", second_threshold=25)
+    data = api.compute_degree_days(set(panel_data["year"]), set(panel_data["ISO3"]), 20, "between", crop="rice", second_threshold=25)
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
 
@@ -640,45 +640,31 @@ def test_compute_degree_days():
 def test_add_degree_days_to_dataframe():
 
     panel_data = pd.read_csv("data/ortiz_bobea_data.csv")
-    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="above", weight="unweighted")
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="above")
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="below", weight="popweighted")
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="below")
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="above", weight="cropweighted")
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="above")
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="below", weight="unweighted", crop="maize")
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="below", crop="maize")
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="above", weight="popweighted", crop="wheat.spring")
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="above", crop="wheat.spring")
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="below", weight="cropweighted", crop="wheat.winter")
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="below", crop="wheat.winter")
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="above", weight="unweighted", crop="soybeans")
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="above", crop="soybeans")
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="below", weight="popweighted", crop="rice")
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="below", crop="rice")
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="between", weight="popweighted", crop="rice", second_threshold=25)
-    assert data is not None
-    assert sorted(set(data.year)) == list(range(1962,2016))
-
-    # these tests fail due to missing modules (see Github Issue #1)
-    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="between", weight="riceweighted", crop="rice", second_threshold=25)
-    assert data is not None
-    assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="between", weight="maizeweighted", crop="maize", second_threshold=25)
-    assert data is not None
-    assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="between", weight="soybeanweighted", crop="soybeans", second_threshold=25)
-    assert data is not None
-    assert sorted(set(data.year)) == list(range(1962,2016))
-    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="between", weight="wheatweighted", crop="wheat.spring", second_threshold=25)
+    data = api.add_degree_days_to_dataframe(panel_data, 20, mode="between", crop="rice", second_threshold=25)
     assert data is not None
     assert sorted(set(data.year)) == list(range(1962,2016))
 
