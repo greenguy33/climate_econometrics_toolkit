@@ -16,7 +16,7 @@ extracted = api.extract_raster_data(path_to_raster_file, weights="soybeanweighte
 ```
 ### Aggregate monthly extracted raster data to the country/year level, starting with the year 1948, using the soybean growing season
 ```
-aggregated = api.aggregate_raster_data(extracted, "temp", "mean", 12, 1948, crop="soybean")
+aggregated = api.aggregate_raster_data(extracted, "temp", "mean", 12, 1948, crop="soybeans")
 ```
 
 ### Alternatively, load some pre-loaded datasets for agricultural productiivty (TFP) from USDA FDA and climate data from NCAP-NCER
