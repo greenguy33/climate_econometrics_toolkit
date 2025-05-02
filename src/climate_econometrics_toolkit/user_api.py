@@ -3,7 +3,6 @@ import numpy as np
 import os
 import copy
 import time
-import logging
 
 from importlib.resources import files
 from functools import reduce
@@ -21,82 +20,69 @@ from climate_econometrics_toolkit import raster_extraction as extract
 from climate_econometrics_toolkit import user_prediction_functions as user_predict
 from climate_econometrics_toolkit import stat_tests as stat_tests
 
-model = ClimateEconometricsModel()
+current_model = ClimateEconometricsModel()
 
 cet_home = os.getenv("CETHOME")
 
-# TODO: utils.assert_with_log(types for user input to each method
+# TODO: assert correct for user input to each method
 # TODO: the transformations user interface is clunky and unintuitive, ideally should be re-worked
-# TODO: there is inconsistency about when methods are accepting a model argument vs. when they are using the pre-loaded model
-# TODO: what if you want to load and run a model from the cache using evaluate_model, spatial regression or quantile regression?
 
-def model_checks():
-    checks = {
-        "No dataset loaded." : model.dataset is not None,
-        "No target variable set." : not pd.isnull(model.target_var),
-         # At least one covariate is required even if random effects are applied
-		"No model covariates found." : model.covariates != [],
-		"No time-based column set." : model.time_column is not None,
-		"No panel column set." : model.panel_column is not None
-    }
-    for key, check in checks.items():
-        if not check:
-            utils.print_with_log(f"{key} Please update your model.", "error")
-            return False
-    return True
-
-
-def run_specification_search(metric="out_sample_mse_reduction"):
+def run_specification_search(model=None, metric="out_sample_mse_reduction", cv_folds=10):
+    if model is None:
+        model = copy.deepcopy(current_model)
     utils.assert_with_log(metric in utils.supported_metrics, f"Supplied metric must be one of: {utils.supported_metrics}")
-    if model_checks():
+    if isinstance(model, str) or isinstance(model, float):
+        model = get_model_by_id(model)
+    utils.model_checks(model)
 
-        target_var = model.target_var.split("(")[-1].split(")")[0]
-        covariates = list(set([var.split("(")[-1].split(")")[0] for var in model.covariates]))
-        dataset = model.dataset
-        panel_column = model.panel_column
-        time_column = model.time_column
-        levels = ["level","fd"]
-        logged_target_var = [False,True]
-        fe = [["ISO3"], ["year"], None, ["ISO3","year"]]
-        transformations = [None, "sq", "cu"]
-        permutation_list = list(it.product(*[levels, logged_target_var, fe, transformations]))
+    target_var = model.target_var.split("(")[-1].split(")")[0]
+    covariates = list(set([var.split("(")[-1].split(")")[0] for var in model.covariates]))
+    dataset = model.dataset
+    panel_column = model.panel_column
+    time_column = model.time_column
+    levels = ["level","fd"]
+    logged_target_var = [False,True]
+    fe = [["ISO3"], ["year"], None, ["ISO3","year"]]
+    transformations = [None, "sq", "cu"]
+    permutation_list = list(it.product(*[levels, logged_target_var, fe, transformations]))
 
-        model_list = []
-        for permutation in progressbar.progressbar(permutation_list):
-            reset_model()
-            model.dataset = dataset
-            model.datafile = "ds1"
-            set_panel_column(panel_column)
-            set_time_column(time_column)
-            model.target_var = target_var
-            model.covariates = copy.deepcopy(covariates)
-            if permutation[1]:
-                model.target_var = f"ln({target_var})"
-            if permutation[-1] == "sq":
-                new_covariate_list = []
-                for cov in model.covariates:
-                    new_covariate_list.append(f"sq({cov})")
-                model.covariates.extend(new_covariate_list)
-            elif permutation[-1] == "cu":
-                new_covariate_list = []
-                for cov in model.covariates:
-                    new_covariate_list.append(f"sq({cov})")
-                    new_covariate_list.append(f"cu({cov})")
-                model.covariates.extend(new_covariate_list)
-            if permutation[0] == "fd":
-                model.covariates = [f"fd({var})" for var in model.covariates]
-                model.target_var = f"fd({model.target_var})"
-            if permutation[2] != None:
-                add_fixed_effects(permutation[2])
-            model.model_vars.append(model.target_var)
-            for var in model.covariates:
-                model.model_vars.append(var)
-            evaluate_model()
-            model_list.append(copy.deepcopy(model))
+    model_list = []
+    for permutation in progressbar.progressbar(permutation_list):
+        model = ClimateEconometricsModel()
+        model.dataset = dataset
+        model.data_file = "ds1"
+        model.panel_column = panel_column
+        model.time_column = time_column
+        model.target_var = target_var
+        # copy is important here to avoid altering the base covariates list when applying transformations
+        model.covariates = copy.deepcopy(covariates)
+        if permutation[1]:
+            model.target_var = f"ln({target_var})"
+        if permutation[-1] == "sq":
+            new_covariate_list = []
+            for cov in model.covariates:
+                new_covariate_list.append(f"sq({cov})")
+            model.covariates.extend(new_covariate_list)
+        elif permutation[-1] == "cu":
+            new_covariate_list = []
+            for cov in model.covariates:
+                new_covariate_list.append(f"sq({cov})")
+                new_covariate_list.append(f"cu({cov})")
+            model.covariates.extend(new_covariate_list)
+        if permutation[0] == "fd":
+            model.covariates = [f"fd({var})" for var in model.covariates]
+            model.target_var = f"fd({model.target_var})"
+        if permutation[2] != None:
+            add_fixed_effects(permutation[2])
+        model.model_vars.append(model.target_var)
+        for var in model.covariates:
+            model.model_vars.append(var)
+        evaluate_model_with_OLS(model, cv_folds=cv_folds)
+        model_list.append(model)
 
-        best_model = get_best_model(model_list, metric)
-        utils.print_with_log(f"Best model for metric {metric}: {best_model.to_string()}", "info")
-        return best_model
+    best_model = get_best_model(model_list, metric)
+    utils.print_with_log(f"Best model for metric {metric}: {best_model.to_string()}", "info")
+    return best_model
 
 
 def compute_degree_days(years, countries, threshold, mode="above", panel_column_name="ISO3", time_column_name="year", crop=None, second_threshold=None):
@@ -266,29 +252,32 @@ def get_temperature_humidity_index(temp_data, relative_humidity_data):
     ).magnitude
 
 
-def evaluate_model(std_error_type="nonrobust"):
+def evaluate_model_with_OLS(model=None, std_error_type="nonrobust", cv_folds=10):
+    if model is None:
+        model = current_model
     utils.initial_checks()
     # TODO: check to see if this model is already in cache, if so return that model rather than re-evaluating the same model
-    if model_checks():
-        _, _, return_string = api.run_model_analysis(copy.deepcopy(model.dataset), std_error_type, model, save_model_to_cache=True, save_result_to_file=False)
-        if return_string != "": utils.print_with_log(return_string, "error")
-        if model != None:
-            utils.print_with_log(f"Model assigned ID: {model.model_id}", "info")
-            return str(model.model_id)
+    if isinstance(model, str) or isinstance(model, float):
+        model = get_model_by_id(model)
+    _, _, return_string = api.run_model_analysis(copy.deepcopy(model.dataset), std_error_type, model, save_model_to_cache=True, save_result_to_file=False, cv_folds=cv_folds)
+    if return_string != "": utils.print_with_log(return_string, "error")
+    if model != None:
+        utils.print_with_log(f"Model assigned ID: {model.model_id}", "info")
+        return str(model.model_id)
         
 
 def build_model_from_cache(model_id):
     utils.initial_checks()
-    utils.assert_with_log(model.data_file == None, "Attempted to access cache with no dataset loaded")
-    utils.print_with_log(f"Loading model from cache with ID {model_id}", "info")
-    return pd.read_pickle((f"{cet_home}/model_cache/{model.data_file}/{model_id}/model.pkl"))
+    utils.assert_with_log(current_model.data_file is not None, "Attempted to access cache with no dataset loaded")
+    utils.print_with_log(f"Loading model from cache with ID '{str(model_id)}'", "info")
+    return pd.read_pickle((f"{cet_home}/model_cache/{current_model.data_file}/{str(model_id)}/model.pkl"))
         
 
 def get_all_models_from_cache():
     utils.initial_checks()
-    utils.assert_with_log(model.data_file == None, "Attempted to access cache with no dataset loaded")
+    utils.assert_with_log(current_model.data_file is not None, "Attempted to access cache with no dataset loaded")
     model_list = []
-    model_ids = os.listdir(f"{cet_home}/model_cache/{model.data_file}")
+    model_ids = os.listdir(f"{cet_home}/model_cache/{current_model.data_file}")
     for model_id in model_ids:
         model_list.append(build_model_from_cache(model_id))
     return model_list
@@ -304,17 +293,17 @@ def get_best_model(model_list=None, metric="r2"):
         sorted_models = sorted(model_list, key=lambda x : getattr(x, metric), reverse=True)
     elif metric == "out_sample_pred_int_cov":
         sorted_models = sorted(model_list, key=lambda x : abs(getattr(x, "out_sample_pred_int_cov")-.95))
-    utils.print_with_log(f"Model with ID {sorted_models[0].model_id} is best for metric {metric}", "info")
+    utils.print_with_log(f"Model with ID '{sorted_models[0].model_id}' is best for metric '{metric}'", "info")
     return sorted_models[0]
 
 
 def get_all_model_ids():
     utils.initial_checks()
-    if model.data_file == None:
+    if current_model.data_file is None:
         utils.print_with_log("You must load a dataset before accessing the cache", "error")
         return None
     else:
-        return list(os.listdir(f"{cet_home}/model_cache/{model.data_file}"))
+        return list(os.listdir(f"{cet_home}/model_cache/{current_model.data_file}"))
     
 
 def get_model_by_id(model_id):
@@ -325,9 +314,9 @@ def load_dataset_from_file(datafile):
     utils.print_with_log(f"Loading dataset {datafile} as active dataset and resetting current model.", "info")
     # resets model when new dataset is loaded
     reset_model()
-    model.data_file = datafile.split("/")[-1]
-    model.full_data_path = datafile
-    model.dataset = pd.read_csv(datafile)
+    current_model.data_file = datafile.split("/")[-1]
+    current_model.full_data_path = datafile
+    current_model.dataset = pd.read_csv(datafile)
 
 
 def set_dataset(dataframe, dataset_name):
@@ -335,45 +324,45 @@ def set_dataset(dataframe, dataset_name):
     utils.print_with_log(f"Setting dataset '{dataset_name}' as active dataset and resetting current model.", "info")
     # resets model when new dataset is loaded
     reset_model()
-    model.data_file = dataset_name
+    current_model.data_file = dataset_name
     save_path = f"{cet_home}/data/{dataset_name}.csv"
     utils.print_with_log(f"Dataset '{dataset_name}' saved to file path {save_path}", "info")
     dataframe.to_csv(save_path)
-    model.full_data_path = save_path
-    model.dataset = dataframe
+    current_model.full_data_path = save_path
+    current_model.dataset = dataframe
 
 
 def view_current_model():
-    model.print()
+    current_model.print()
 
 
 def basic_existence_check(var):
-    if model.dataset is None:
-        utils.print_with_log("Attempting to set variables before loading dataset", "error")
-        return False
-    elif var not in model.dataset:
-        utils.print_with_log(f"Element {var} not found in data", "error")
-        return False
-    return True
+    utils.assert_with_log(current_model.dataset is not None, "Attempting to set variables before loading dataset")
+    utils.assert_with_log(var in current_model.dataset, f"Element {var} not found in data")
 
 
 def set_target_variable(var, existence_check=True):
-    if not existence_check or basic_existence_check(var):
-        model.target_var = var
-        model.model_vars = model.covariates + [model.target_var]
+    if existence_check:
+        basic_existence_check(var)
+    current_model.model_id = None
+    current_model.target_var = var
+    current_model.model_vars = current_model.covariates + [current_model.target_var]
 
 
 def set_time_column(var):
-    if basic_existence_check(var):
-        model.time_column = var
+    basic_existence_check(var)
+    current_model.model_id = None
+    current_model.time_column = var
 
 
 def set_panel_column(var):
-    if basic_existence_check(var):
-        model.panel_column = var
+    basic_existence_check(var)
+    current_model.model_id = None
+    current_model.panel_column = var
 
 
 def add_transformation(var, transformations, keep_original_var=False):
+    current_model.model_id = None
     if not isinstance(transformations, list):
         transformations = [transformations]
     all_transformations_valid = True
@@ -382,15 +371,15 @@ def add_transformation(var, transformations, keep_original_var=False):
             all_transformations_valid = False
             utils.print_with_log(f"{transform}() not a supported function.","error")
     if all_transformations_valid:
-        if var not in model.covariates and var != model.target_var:
+        if var not in current_model.covariates and var != current_model.target_var:
             utils.print_with_log(f"{var} not in covariates list and is not target variable.", "error")
-        elif var in model.covariates:
+        elif var in current_model.covariates:
             for transform in transformations:
                 if not keep_original_var:
                     remove_covariates(var)
                 var = f"{transform}({var})"
             add_covariates(f"{var}", existence_check=False)
-        elif var == model.target_var:
+        elif var == current_model.target_var:
             for transform in transformations:
                 var = f"{transform}({var})"
             set_target_variable(var, existence_check=False)
@@ -399,141 +388,188 @@ def add_transformation(var, transformations, keep_original_var=False):
 def add_covariates(vars, existence_check=True):
     if not isinstance(vars, list):
         vars = [vars]
-    if not existence_check or all(basic_existence_check(var) for var in vars):
+    if existence_check:
         for var in vars:
-            if var not in model.covariates:
-                model.covariates.append(var)
-        model.model_vars = model.covariates + [model.target_var]
+            basic_existence_check(var)
+    current_model.model_id = None
+    for var in vars:
+        if var not in current_model.covariates:
+            current_model.covariates.append(var)
+    current_model.model_vars = current_model.covariates + [current_model.target_var]
 
 
 def add_fixed_effects(vars):
     if not isinstance(vars, list):
         vars = [vars]
-    if all(basic_existence_check(var) for var in vars):
-        for fe in vars:
-            if fe not in model.fixed_effects:
-                model.fixed_effects.append(fe)
+    for var in vars:
+        basic_existence_check(var)
+    current_model.model_id = None
+    for fe in vars:
+        if fe not in current_model.fixed_effects:
+            current_model.fixed_effects.append(fe)
 
 
 def add_time_trend(var, exp):
-    if basic_existence_check(var):
-        time_trend = var + " " + str(exp)
-        if time_trend not in model.time_trends:
-            model.time_trends.append(time_trend)
+    basic_existence_check(var)
+    current_model.model_id = None
+    time_trend = var + " " + str(exp)
+    if time_trend not in current_model.time_trends:
+        current_model.time_trends.append(time_trend)
 
 
 def remove_covariates(vars):
+    current_model.model_id = None
     if not isinstance(vars, list):
         vars = [vars]
     for var_to_remove in vars:
-        model.covariates = [var for var in model.covariates if var != var_to_remove]
-        model.model_vars = [var for var in model.model_vars if var != var_to_remove]
+        current_model.covariates = [var for var in current_model.covariates if var != var_to_remove]
+        current_model.model_vars = [var for var in current_model.model_vars if var != var_to_remove]
 
 
 def remove_time_trend(var, exp):
+    current_model.model_id = None
     time_trend = var + " " + str(exp)
-    model.time_trends = [var for var in model.time_trends if var != time_trend]
+    current_model.time_trends = [var for var in current_model.time_trends if var != time_trend]
 
 
 def remove_transformation(var, transformations):
+    current_model.model_id = None
     if not isinstance(transformations, list):
         transformations = [transformations]
     transformed_var = copy.deepcopy(var)
     for transform in transformations:
         transformed_var = f"{transform}({transformed_var})"
-    if model.target_var == transformed_var:
+    if current_model.target_var == transformed_var:
         set_target_variable(var)
-    elif transformed_var in model.covariates:
-        model.covariates = [var for var in model.covariates if var != transformed_var]
-        model.model_vars = [var for var in model.model_vars if var != transformed_var]
+    elif transformed_var in current_model.covariates:
+        current_model.covariates = [var for var in current_model.covariates if var != transformed_var]
+        current_model.model_vars = [var for var in current_model.model_vars if var != transformed_var]
     else:
         utils.print_with_log(f"Transformed var f{transformed_var} not found", "error")
 
 
 def remove_fixed_effect(fe):
-    model.fixed_effects = [var for var in model.fixed_effects if var != fe]
+    current_model.model_id = None
+    current_model.fixed_effects = [var for var in current_model.fixed_effects if var != fe]
 
 
 def add_random_effect(var, group):
-    if model.random_effects != [var, group]:
-        if model.random_effects != None:
+    current_model.model_id = None
+    if current_model.random_effects != [var, group]:
+        if current_model.random_effects != None:
             utils.print_with_log("Attempted to set multiple random effects when only one is supported.", "error")
         else:
-            model.random_effects = [var, group]
-            if var in model.covariates:
+            current_model.random_effects = [var, group]
+            if var in current_model.covariates:
                 remove_covariates(var)
 
 
 def remove_random_effect(add_to_covariate_list=True):
-    if model.random_effects is not None:
+    current_model.model_id = None
+    if current_model.random_effects is not None:
         if add_to_covariate_list:
-            add_covariates(model.random_effects[0])
-        model.random_effects = None
+            add_covariates(current_model.random_effects[0])
+        current_model.random_effects = None
 
 
-def run_spatial_regression(reg_type, std_error_type="nonrobust", geometry_column=None, k=5, num_lags=1):
+def run_spatial_regression(reg_type, model=None, k=5):
+    if model is None:
+        model = current_model
     utils.initial_checks()
-    model_id = time.time()
-    model.model_id = model_id
-    regression.run_spatial_regression(model, std_error_type, reg_type, model_id, geometry_column, k, num_lags)
+    if isinstance(model, str) or isinstance(model, float):
+        model = get_model_by_id(model)
+    if model.model_id is None:
+        model.model_id = time.time()
+        utils.print_with_log(f"Model ID {model.model_id} assigned to model.", "info")
+    utils.model_checks(model)
+    regression.run_spatial_regression(model, reg_type, model.model_id, k)
+    return model.model_id
 
 
-def run_quantile_regression(q, std_error_type="nonrobust"):
+def run_quantile_regression(q, model=None, std_error_type="nonrobust"):
+    if model is None:
+        model = current_model
     utils.initial_checks()
-    model_id = time.time()
-    model.model_id = model_id
+    if isinstance(model, str) or isinstance(model, float):
+        model = get_model_by_id(model)
+    if model.model_id is None:
+        model.model_id = time.time()
+        utils.print_with_log(f"Model ID {model.model_id} assigned to model.", "info")
+    utils.model_checks(model)
     if isinstance(q, list):
         for val in q:
-            regression.run_quantile_regression(model, std_error_type, model_id, val)
+            regression.run_quantile_regression(model, std_error_type, model.model_id, val)
     else:
-        regression.run_quantile_regression(model, std_error_type, model_id, q)
+        regression.run_quantile_regression(model, std_error_type, model.model_id, q)
+    return model.model_id
 
 
-def run_adf_panel_unit_root_tests():
-    utils.assert_with_log(model.dataset is not None, "Dataset must be set before running panel unit root tests.")
-    utils.assert_with_log(model.target_var is not None, "Target variable must be set before running panel unit root tests.")
-    utils.assert_with_log(model.target_var is not None, "Covariates must be set before running panel unit root tests.")
-    utils.assert_with_log(model.time_column is not None, "Time column must be set before running panel unit root tests.")
-    utils.assert_with_log(model.panel_column is not None, "Panel column must be set before running panel unit root tests.")
-    utils.print_with_log(f"Runing Panel Unit Root Tests against current model", "info")
+def run_adf_panel_unit_root_tests(model=None):
+    if model is None:
+        model = current_model
+    if isinstance(model, str) or isinstance(model, float):
+        model = get_model_by_id(model)
+    if model.model_id is None:
+        model.model_id = time.time()
+        utils.print_with_log(f"Model ID {model.model_id} assigned to model.", "info")
+    utils.model_checks(model)
+    utils.print_with_log(f"Running Panel Unit Root Tests against model with ID '{model.model_id}'", "info")
     return stat_tests.panel_unit_root_tests(model)
 
 
-def run_engle_granger_cointegration_check():
-    utils.assert_with_log(model.dataset is not None, "Dataset must be set before running cointegration check.")
-    utils.assert_with_log(model.target_var is not None, "Target variable must be set before running cointegration check.")
-    utils.assert_with_log(model.target_var is not None, "Covariates must be set before running cointegration check.")
-    utils.assert_with_log(model.time_column is not None, "Time column must be set before running cointegration check.")
-    utils.assert_with_log(model.panel_column is not None, "Panel column must be set before running cointegration check.")
-    utils.print_with_log(f"Runing Cointegration Tests against current model", "info")
+def run_engle_granger_cointegration_check(model=None):
+    if model is None:
+        model = current_model
+    if isinstance(model, str) or isinstance(model, float):
+        model = get_model_by_id(model)
+    if model.model_id is None:
+        model.model_id = time.time()
+        utils.print_with_log(f"Model ID {model.model_id} assigned to model.", "info")
+    utils.model_checks(model)
+    utils.print_with_log(f"Running Cointegration Tests against model with ID '{model.model_id}'", "info")
     return stat_tests.cointegration_tests(model)
 
 
-def run_pesaran_cross_sectional_dependence_check():
-    utils.assert_with_log(model.dataset is not None, "Dataset must be set before running cointegration check.")
-    utils.assert_with_log(model.target_var is not None, "Target variable must be set before running cointegration check.")
-    utils.assert_with_log(model.target_var is not None, "Covariates must be set before running cointegration check.")
-    utils.assert_with_log(model.time_column is not None, "Time column must be set before running cointegration check.")
-    utils.assert_with_log(model.panel_column is not None, "Panel column must be set before running cointegration check.")
-    utils.print_with_log(f"Runing Cross-Sectional Dependence Tests against current model", "info")
+def run_pesaran_cross_sectional_dependence_check(model=None):
+    if model is None:
+        model = current_model
+    if isinstance(model, str) or isinstance(model, float):
+        model = get_model_by_id(model)
+    if model.model_id is None:
+        model.model_id = time.time()
+        utils.print_with_log(f"Model ID {model.model_id} assigned to model.", "info")
+    utils.model_checks(model)
+    utils.print_with_log(f"Running Cross-Sectional Dependence Tests against model with ID '{model.model_id}'", "info")
     return stat_tests.cross_sectional_dependence_tests(model)
 
 
-def run_bayesian_regression(model, num_samples=1000):
+def run_bayesian_regression(model=None, num_samples=1000, overwrite_samples=False):
+    if model is None:
+        model = current_model
     utils.initial_checks()
-    # TODO: check to see if bayesian inference already ran for this model
-    if isinstance(model, str):
+    if isinstance(model, str) or isinstance(model, float):
         model = get_model_by_id(model)
-    regression.run_bayesian_regression(model, num_samples)
+    if model.model_id is None:
+        model.model_id = time.time()
+        utils.print_with_log(f"Model ID {model.model_id} assigned to model.", "info")
+    utils.model_checks(model)
+    regression.run_bayesian_regression(model, num_samples, overwrite=overwrite_samples)
+    return model.model_id
 
 
-def run_block_bootstrap(model, std_error_type, num_samples=1000):
+def run_block_bootstrap(model=None, std_error_type="nonrobust", num_samples=1000, overwrite_samples=False):
+    if model is None:
+        model = current_model
     utils.initial_checks()
     # TODO: check to see if bootstrap already ran for this model
-    if isinstance(model, str):
+    if isinstance(model, str) or isinstance(model, float):
         model = get_model_by_id(model)
-    utils.assert_with_log(model != None, "NoneType passed as model object")
-    regression.run_block_bootstrap(model, std_error_type, num_samples)
+    if model.model_id is None:
+        model.model_id = time.time()
+        utils.print_with_log(f"Model ID {model.model_id} assigned to model.", "info")
+    utils.model_checks(model)
+    regression.run_block_bootstrap(model, std_error_type, num_samples, overwrite=overwrite_samples)
+    return model.model_id
 
 
 def extract_raster_data(raster_file, shape_file=None, weights=None, weight_file=None):
@@ -576,9 +612,9 @@ def aggregate_raster_data(data, climate_var_name, aggregation_func, subperiods_p
 
 def predict_out_of_sample(model, data, transform_data=False, var_map=None):
     utils.initial_checks()
-    if isinstance(model, str):
+    if isinstance(model, str) or isinstance(model, float):
         model = get_model_by_id(model)
-    utils.print_with_log(f"Generating out-of-sample predictions for Model with ID {model.model_id} using supplied data", "info")
+    utils.print_with_log(f"Generating out-of-sample predictions for Model with ID '{model.model_id}' using supplied data", "info")
     return predict.predict_out_of_sample(model, copy.deepcopy(data), transform_data, var_map)
 
 
@@ -588,11 +624,11 @@ def call_user_prediction_function(function_name, args):
     return func(*args)
 
 
-def transform_data(data, model, include_target_var=True, demean=False):
-    utils.print_with_log(f"Runing data transformation with the following settings: include_target_var: {include_target_var}, demean: {demean}", "info")
-    return utils.transform_data(copy.deepcopy(data), model, include_target_var, demean)
+def transform_data(model, include_target_var=True, demean=False):
+    utils.print_with_log(f"Running data transformation with the following settings: include_target_var: {include_target_var}, demean: {demean}", "info")
+    return utils.transform_data(copy.deepcopy(model.dataset), model, include_target_var, demean)
 
 
 def reset_model():
-    global model
-    model = ClimateEconometricsModel()
+    global current_model
+    current_model = ClimateEconometricsModel()

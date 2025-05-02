@@ -98,6 +98,20 @@ def assert_with_log(clause, message):
 		raise
 
 
+def model_checks(model):
+    checks = {
+        "No dataset loaded." : model.dataset is not None,
+        "No target variable set." : not pd.isnull(model.target_var),
+         # At least one covariate is required even if random effects are applied
+		"No model covariates found." : model.covariates != [],
+		"No time-based column set." : model.time_column is not None,
+		"No panel column set." : model.panel_column is not None,
+		"Time trends and random effects cannot currently be combined in a single model." : model.random_effects is None or len(model.time_trends) == 0
+    }
+    for key, check in checks.items():
+        assert_with_log(check, f"{key} Please update your model.")
+
+
 def get_growing_season_data_by_crop(crop):
 	assert_with_log(crop is None or crop in ["maize","rice","soybeans","wheat.spring","wheat.winter"], "Specified crop must be one of: 'maize','rice','soybeans','wheat.spring','wheat.winter'.")
 	gs_file = files("climate_econometrics_toolkit.preprocessed_data.crop_growing_seasons").joinpath(f'{crop}.csv')
@@ -125,31 +139,12 @@ def add_transformation_to_data(data, model, function):
 	if function_split[0] == "sq":
 		data[function] = np.square(data[data_col])
 	elif function_split[0] == "fd":
-		# TODO: this won't work if the data isn't sorted by year or if there are missing year values
-		# TODO: this also breaks if there are multiple panel column/time column observations, like in the harveststat data
-		# add something like this for missing year values:
-		# data["T5_mean_diff"] = data.groupby("ID")["T5_mean"].diff()
-		# t5_mean_diff = []
-		# last_year = 0
-		# last_region = ""
-		# last_row = None
-		# for row in data.itertuples():
-		# 	this_year = row.yearn
-		# 	this_region = row.ID
-		# 	t5_mean_diff.append(row.T5_mean_diff)
-		# 	if this_year - last_year > 1 and row.ID == last_region:
-		# 		print(last_row.ID, last_row.year, last_row.country, last_row.T5_mean, last_row.T5_mean_diff)
-		# 		print(row.ID, row.year, row.country, row.T5_mean, row.T5_mean_diff)
-		# 		t5_mean_diff[-1] = np.NaN
-		# 	last_year = this_year
-		# 	last_region = this_region
-		# 	last_row = row
+		print_with_log("First-differencing assumes continuous time periods for each geographical unit and that each dataset row contains a unique geography/time combination. If these assumptions are not met in your dataset, the first-differencing operation may not perform as expected. Verify the transformed data appears as expected with 'api.transform_data(api.current_model)' after defining your transformations.","warning")
 		data[function] = data.groupby(model.panel_column)[data_col].diff()
 	elif function_split[0] == "ln":
 		data[function] = np.log(data[data_col])
 	elif function_split[0].startswith("lag"):
-		# TODO: this won't work if the data isn't sorted by year or if there are missing year values
-		# TODO: this also breaks if there are multiple panel column/time column observations, like in the harveststat data
+		print_with_log("Lagging a variable assumes continuous time periods for each geographical unit and that each dataset row contains a unique geography/time combination. If these assumptions are not met in your dataset, the lagging operation may not perform as expected. Verify the transformed data appears as expected with 'api.transform_data(api.current_model)' after defining your transformations.","warning")
 		num_lags = int(function_split[0][3])
 		data[function] = data.groupby(model.panel_column)[data_col].shift(num_lags)
 	elif function_split[0] == "cu":
@@ -178,7 +173,7 @@ def add_time_trends_to_data(node, data, time_column):
 	node_split = node.split(" ")
 	if len(node_split) > 1:
 		ie_level = int(node_split[1].strip())
-	for element in sorted(list(set(data[node_split[0]]))):
+	for element in sorted(list(set(data[node_split[0]])))[1:]:
 		data[f"tt1_{element}_{node_split[0]}"] = np.where(data[node_split[0]] == element, data[time_column] - min_year, 0)
 		for i in range(1, ie_level+1):
 			data[f"tt{i}_{element}_{node_split[0]}"] = np.power(data[f"tt1_{element}_{node_split[0]}"], i)
@@ -219,6 +214,7 @@ def demean_fixed_effects(data, model):
 
 def transform_data(data, model, include_target_var=True, demean=False):
 	data = copy.deepcopy(data)
+	data.sort_values([model.panel_column, model.time_column]).reset_index(drop=True)
 	transformations = []
 	vars_to_transform = copy.deepcopy(model.model_vars)
 	if not include_target_var:

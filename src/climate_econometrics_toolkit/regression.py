@@ -6,6 +6,7 @@ import os
 from pytensor import tensor as pt
 import pickle as pkl
 import numpy as np
+import copy
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.utils import resample
@@ -13,7 +14,7 @@ import pandas as pd
 import threading
 import progressbar
 import geopandas as gpd
-from spreg import GM_Lag, GM_Error
+from spreg import Panel_FE_Error, Panel_FE_Lag
 from libpysal.weights import distance
 from shapely.wkt import loads
 
@@ -57,16 +58,23 @@ def run_standard_regression(transformed_data, model, std_error_type, demeaned=Fa
 		return run_linearmodels_regression(transformed_data, model_vars, model, std_error_type)
 
 
-def run_random_effects_regression(transformed_data, model, std_error_type):
+def run_random_effects_regression(transformed_data, model, std_error_type="nonrobust"):
 	utils.assert_with_log(std_error_type == "nonrobust", "Specialized standard errors are not currently supported with random effects models")
-	model_vars = utils.get_model_vars(transformed_data, model, exclude_fixed_effects=False)
+	model_vars = utils.get_model_vars(transformed_data, model, exclude_fixed_effects=True)
 	transformed_data.columns = [col.replace("(","_").replace(")","_") for col in transformed_data.columns]
 	model_vars = [var.replace("(","_").replace(")","_") for var in model_vars]
 	mv_as_string = "+".join(model_vars) if len(model_vars) > 0 else "0"
 	target_var = model.target_var.replace("(","_").replace(")","_")
 	random_effects_formatted = model.random_effects[0].replace("(","_").replace(")","_")
 	formula = f"{target_var} ~ {mv_as_string}"
-	reg = smf.mixedlm(formula, data=transformed_data, groups=model.random_effects[1], re_formula=f"1+{random_effects_formatted}").fit()
+	if len(model.fixed_effects) > 0:
+		for fe in model.fixed_effects:
+			formula += f" + C({fe})"
+		utils.print_with_log(f"Fitting mixed-effects model with random slopes for '{model.random_effects[0]}' and fixed intercepts for '{model.fixed_effects}'.", "info")
+		reg = smf.mixedlm(formula, data=transformed_data, groups=model.random_effects[1], re_formula=f"0+{random_effects_formatted}").fit()
+	else:
+		utils.print_with_log(f"Fitting random-effects model with random slopes and random intercepts for '{model.random_effects[0]}'.", "info")
+		reg = smf.mixedlm(formula, data=transformed_data, groups=model.random_effects[1], re_formula=f"1+{random_effects_formatted}").fit()
 	return reg
 
 
@@ -79,54 +87,61 @@ def run_intercept_only_regression(transformed_data, model, std_error_type):
 		return run_linearmodels_regression(transformed_data, ["const"], model, std_error_type)
 
 
-def run_spatial_regression(model, std_error_type, reg_type, model_id, geometry_column, k, num_lags):
-	# TODO: check why warning says there are 155 disconnected components
+# Note: spatial regression currently requires a data column with ISO3/GMI identifiers
+def run_spatial_regression(model, reg_type, model_id, k):
 	utils.assert_with_log(reg_type in ["lag","error"], "Spatial model type must be either 'lag' or 'error'.")
-	utils.assert_with_log(std_error_type in ["nonrobust","whitehuber","neweywest"], "Standard error type must be one of 'nonrobust','whitehuber','neweywest'")
 	if reg_type == "error":
-		utils.print_with_log("Arguments to fields 'std_error_type' and 'num_lags' are ignored with spatial error models.", "warning")
+		utils.print_with_log("Arguments to fields 'std_error_type' and 'num_lags' are ignored with spatial error models.", "info")
 	if model.random_effects != None:
-		utils.print_with_log(f"The specified random-effect {model.random_effects} is ignored in spatial regression model.", "warning")
+		utils.print_with_log(f"The specified random-effect '{model.random_effects[0]}' is ignored in spatial regression model.", "warning")
 	demean_data = False
 	if len(model.fixed_effects) > 0 and len(model.time_trends) == 0:
 		demean_data = True
 	transformed_data = utils.transform_data(model.dataset, model, demean=demean_data)
+
 	model_vars = utils.get_model_vars(transformed_data, model, exclude_fixed_effects=demean_data)
-	if geometry_column is None or geometry_column == "":
-		utils.print_with_log("Geometry column unspecified. Defaulting to ISO3 geometry.", "warning")
-		# assume ISO3 if no geometry column specified
-		geometry_column_to_use = "geometry"
-		countries = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))[['iso_a3', 'geometry']]
-		countries = countries[countries['iso_a3'].isin(transformed_data[model.panel_column])]
-		transformed_data = transformed_data[transformed_data[model.panel_column].isin(countries.iso_a3)].reset_index(drop=True)
-		if len(transformed_data) == 0:
-			raise Exception("No geometry column was specified and automatic application of ISO3 geometry failed. Please add a geometry column to your data or use ISO3 data.")
-		country_geo = map(lambda country: countries.loc[countries.iso_a3 == country].geometry.item(), transformed_data[model.panel_column])
-		transformed_data[geometry_column_to_use] = list(country_geo)
+	
+	countries = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))[['iso_a3', 'geometry']]
+	countries = countries[countries['iso_a3'].isin(transformed_data[model.panel_column])]
+	transformed_data = transformed_data[transformed_data[model.panel_column].isin(countries.iso_a3)].reset_index(drop=True)
+
+	utils.assert_with_log(len(transformed_data) > 0, "No geometry column was specified and automatic application of ISO3 geometry failed. Please add a geometry column to your data or use ISO3 data.")
+	
+	transformed_data = transformed_data.set_index(["ISO3","year"])
+	columns = copy.deepcopy(model_vars)
+	columns.append(model.target_var)
+	# choose whether to remove nans by georef or time based on which scenario leads to more remaining data
+	td_rm_ax0 = transformed_data[columns].unstack().dropna(axis=0)
+	td_rm_ax1 = transformed_data[columns].unstack().dropna(axis=1)
+	axis0_size = td_rm_ax0.shape[0] * td_rm_ax0.shape[1]
+	axis1_size = td_rm_ax1.shape[0] * td_rm_ax1.shape[1]
+	if axis0_size > axis1_size:
+		regression_data = td_rm_ax0
 	else:
-		geometry_column_to_use = geometry_column
-	try:
-		W = distance.KNN.from_dataframe(transformed_data[[model.panel_column,geometry_column_to_use]], k=k)
-	except ValueError:
-		transformed_data[geometry_column_to_use] = transformed_data[geometry_column_to_use].apply(loads)
-		W = distance.KNN.from_dataframe(transformed_data[[model.panel_column,geometry_column_to_use]], k=k)
-	regression_data = transformed_data[model_vars]
+		regression_data = td_rm_ax1
+	
+	country_geo = map(lambda country: countries.loc[countries.iso_a3 == country].geometry.item(), regression_data.index)
+
+	W = distance.KNN.from_dataframe(pd.DataFrame([regression_data.index, list(country_geo)]).T.rename(columns={0:model.panel_column,1:"geometry"}), k=k)
+	W.transform = "r"
+
 	if reg_type == "error":
-		spatial_reg_model = GM_Error(
-			y=transformed_data[model.target_var], 
-			x=regression_data,
-			w=W
+		spatial_reg_model = Panel_FE_Error(
+			y=np.array(regression_data[model.target_var]), 
+			x=np.array(regression_data[model_vars]),
+			w=W,
+			name_x=model_vars,
+			name_y=model.target_var
 	)
 	else:
-		Wk = distance.Kernel.from_dataframe(transformed_data[[model.panel_column,geometry_column_to_use]], k=k)
-		spatial_reg_model = GM_Lag(
-			y=transformed_data[model.target_var], 
-			x=regression_data,
+		spatial_reg_model = Panel_FE_Lag(
+			y=np.array(regression_data[model.target_var]), 
+			x=np.array(regression_data[model_vars]),
 			w=W,
-			gwk=Wk,
-			robust=utils.spatial_std_error_map[std_error_type],
-			w_lags=num_lags
+			name_x=model_vars,
+			name_y=model.target_var
 		)
+
 	save_dir = f"{cet_home}/spatial_regression_output/{model_id}"
 	if not os.path.exists(save_dir):
 		os.makedirs(save_dir)
@@ -135,7 +150,8 @@ def run_spatial_regression(model, std_error_type, reg_type, model_id, geometry_c
 	with open (f'{save_dir}/model.pkl', 'wb') as buff:
 		pkl.dump(spatial_reg_model,buff)
 	file.close()
-	model.save_spatial_regression_script(reg_type, std_error_type, geometry_column, k, num_lags, demean_data)
+	# TODO: fix spatial regression script
+	# model.save_spatial_regression_script(reg_type, std_error_type, geometry_column, k, num_lags, demean_data)
 	utils.print_with_log(f"Spatial regression results saved to {save_dir}", "info")
 	return spatial_reg_model
 
@@ -166,19 +182,22 @@ def run_quantile_regression(model, std_error_type, model_id, q):
 	return quant_reg_model
 
 
-def run_block_bootstrap(model, std_error_type, num_samples, use_threading=False):
+def run_block_bootstrap(model, std_error_type, num_samples, use_threading=False, overwrite=False):
 	utils.print_with_log("Bootstrapping may run for awhile. See progress bar on command line for updates.", "info")
 	data = model.dataset
 	transformed_data = utils.transform_data(data, model)
+	transformed_data.to_csv("test.csv")
 	if use_threading:
-		thread = threading.Thread(target=bootstrap,name="bootstrap_thread",args=(transformed_data,model,num_samples,std_error_type))
+		thread = threading.Thread(target=bootstrap,name="bootstrap_thread",args=(transformed_data,model,num_samples,std_error_type,overwrite))
 		thread.daemon = True
 		thread.start()
 	else:
-		bootstrap(transformed_data,model,num_samples,std_error_type)
+		bootstrap(transformed_data,model,num_samples,std_error_type,overwrite)
 
 
-def bootstrap(transformed_data, model, num_samples, std_error_type):
+def bootstrap(transformed_data, model, num_samples, std_error_type, overwrite):
+	if not overwrite:
+		utils.assert_with_log(not os.path.exists(f"{cet_home}/bootstrap_samples/coefficient_samples_{str(model.model_id)}.csv"), f"Bootstrap samples already exist for model with ID '{model.model_id}'")
 	covar_coefs = {}
 	panel_ids = list(set(transformed_data[model.panel_column]))
 	for i in progressbar.progressbar(range(num_samples)):
@@ -196,7 +215,11 @@ def bootstrap(transformed_data, model, num_samples, std_error_type):
 				if model.random_effects[0] + "_" + entity not in covar_coefs:
 					covar_coefs[model.random_effects[0] + "_" + entity] = []
 				if entity in reg_result.random_effects:
-					covar_coefs[model.random_effects[0] + "_" + entity].append(reg_result.random_effects[entity].item())
+					try:
+						re_val = reg_result.random_effects[entity].item()
+					except ValueError:
+						re_val = reg_result.random_effects[entity][model.random_effects[0].replace("(","_").replace(")","_")]
+					covar_coefs[model.random_effects[0] + "_" + entity].append(re_val)
 				else:
 					covar_coefs[model.random_effects[0] + "_" + entity].append(np.NaN)
 		else:
@@ -208,23 +231,30 @@ def bootstrap(transformed_data, model, num_samples, std_error_type):
 	pd.DataFrame.from_dict(covar_coefs).to_csv(f"{cet_home}/bootstrap_samples/coefficient_samples_{str(model.model_id)}.csv")
 
 
-def run_bayesian_regression(model, num_samples, use_threading=False):
+def run_bayesian_regression(model, num_samples, use_threading=False, overwrite=False):
+	utils.print_with_log("Bayesian inference may run for awhile. See progress bar on command line for updates.", "info")
 	data = model.dataset
-	transformed_data = utils.transform_data(data, model)
+	demean_data = False
+	if len(model.fixed_effects) > 0 and len(model.time_trends) == 0 and model.random_effects is None:
+		demean_data = True
+	utils.print_with_log(f"Demeaning applied: {demean_data}", "info")
+	transformed_data = utils.transform_data(data, model, demean=demean_data)
 	if use_threading:
-		thread = threading.Thread(target=run_bayesian_inference,name="bayes_sampling_thread",args=(transformed_data,model,num_samples))
+		thread = threading.Thread(target=run_bayesian_inference,name="bayes_sampling_thread",args=(transformed_data,model,num_samples,demean_data,overwrite))
 		thread.daemon = True
 		thread.start()
 	else:
-		run_bayesian_inference(transformed_data,model,num_samples)
+		run_bayesian_inference(transformed_data,model,num_samples,demean_data,overwrite)
 
 
-def run_bayesian_inference(transformed_data, model, num_samples):
-
-	utils.print_with_log("Bayesian inference may run for awhile. See progress bar on command line for updates.", "info")
+def run_bayesian_inference(transformed_data, model, num_samples, demean_data,overwrite):
 
 	utils.assert_with_log(model.model_id is not None, "No ID assigned to the model.")
-	model_vars = utils.get_model_vars(transformed_data, model)
+	
+	if not overwrite:
+		utils.assert_with_log(not os.path.exists(f"{cet_home}/bayes_samples/{model.model_id}"), f"Bayesian samples already exist for model with ID '{model.model_id}'")
+
+	model_vars = utils.get_model_vars(transformed_data, model, exclude_fixed_effects=demean_data)
 
 	scalers, scaled_data = {}, {}
 	scalers[model.target_var] = StandardScaler()
@@ -241,8 +271,6 @@ def run_bayesian_inference(transformed_data, model, num_samples):
 		if var not in scaled_df:
 			scaled_df[var] = transformed_data[var]
 
-	utils.print_with_log(f"Fitting Bayesian model to dataset of length {len(transformed_data)} containing variables: {model_vars}", "info")
-
 	with pm.Model() as pymc_model:
 
 		covar_coefs = pm.Normal("covar_coefs", 0, 10, shape=(len(model_vars)))
@@ -251,14 +279,16 @@ def run_bayesian_inference(transformed_data, model, num_samples):
 
 		if model.random_effects is not None:
 
+			utils.print_with_log(f"Fitting hierarchical (random-slopes) Bayesian model to dataset of length {len(transformed_data)} containing variables: {model_vars}", "info")
+
 			# add dummy variable for random effect if not already present
 			if model.random_effects[1] not in model.fixed_effects:
-				transformed_data = utils.add_dummy_variable_to_data(model.random_effects[1], transformed_data, leave_out_first=False)
+				transformed_data = utils.add_dummy_variable_to_data(model.random_effects[1], transformed_data, leave_out_first=True)
 			re_dummy_cols = [col for col in transformed_data.columns if col.startswith("fe_") and col.endswith(f"_{model.random_effects[1]}")]
 			
 			global_rs_mean = pm.Normal("global_rs_mean",0,10)
 			global_rs_sd = pm.HalfNormal("global_rs_sd",10)
-			rs_means = pm.Normal("rs_means", global_rs_mean, global_rs_sd, shape=(1,len(set(transformed_data[model.random_effects[1]]))))
+			rs_means = pm.Normal("rs_means", global_rs_mean, global_rs_sd, shape=(1,len(set(transformed_data[model.random_effects[1]]))-1))
 			rs_sd = pm.HalfNormal("rs_sd", 10)
 			rs_coefs = pm.Normal("rs_coefs", rs_means, rs_sd)
 			rs_matrix = pm.Deterministic("rs_matrix", pt.sum(rs_coefs * transformed_data[re_dummy_cols],axis=1))
@@ -267,6 +297,8 @@ def run_bayesian_inference(transformed_data, model, num_samples):
 			target_prior = pm.Deterministic("target_prior", covar_terms + rs_terms + intercept)
 
 		else:
+
+			utils.print_with_log(f"Fitting Bayesian model to dataset of length {len(transformed_data)} containing variables: {model_vars}", "info")
 		
 			target_prior = pm.Deterministic("target_prior", covar_terms + intercept)
 		
@@ -278,7 +310,10 @@ def run_bayesian_inference(transformed_data, model, num_samples):
 		trace = pm.sample(target_accept=.99, cores=4, tune=num_samples, draws=num_samples)
 		posterior = pm.sample_posterior_predictive(trace, extend_inferencedata=True)
 
-	with open (f'{cet_home}/bayes_samples/bayes_model_{str(model.model_id)}.pkl', 'wb') as buff:
+	dir_name = f"{cet_home}/bayes_samples/{model.model_id}"
+	if not os.path.exists(dir_name):
+		os.makedirs(dir_name)
+	with open (f"{dir_name}/bayes_model.pkl", "wb") as buff:
 		pkl.dump({
 			"prior":prior,
 			"trace":trace,
@@ -294,7 +329,7 @@ def run_bayesian_inference(transformed_data, model, num_samples):
 		for index, var_name in enumerate(re_dummy_cols):
 			var_name = var_name.replace("fe_",f"{model.random_effects[0]}_").replace(f"_{model.random_effects[1]}","") 
 			unscaled_samples = unscale_variable_list(scalers.keys(), var_name, trace.posterior.rs_coefs[:,:,:,index].data.flatten(), unscaled_samples, transformed_data, model.target_var)
-	unscaled_samples.to_csv(f'{cet_home}/bayes_samples/coefficient_samples_{str(model.model_id)}.csv')
+	unscaled_samples.to_csv(f"{dir_name}/coefficient_samples.csv")
 
 
 def unscale_variable_list(scaled_vars, var_name, var_values, unscaled_samples, data, target_var):

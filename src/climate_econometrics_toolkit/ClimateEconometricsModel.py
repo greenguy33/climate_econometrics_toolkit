@@ -66,9 +66,12 @@ class ClimateEconometricsModel:
 
 	def save_model_to_cache(self):
 		dir_name = f"{cet_home}/model_cache/{self.data_file}/{self.model_id}"
-		os.makedirs(dir_name)
-		with open(f"{dir_name}/model.pkl", "wb") as write_file:
-			pkl.dump(self, write_file)
+		if not os.path.exists(dir_name):
+			os.makedirs(dir_name)
+			with open(f"{dir_name}/model.pkl", "wb") as write_file:
+				pkl.dump(self, write_file)
+		else:
+			utils.print_with_log(f"Cached model with ID {self.model_id} already exists; will not overwrite.", "warning")
 
 
 	def save_result_to_file(self):
@@ -79,15 +82,23 @@ class ClimateEconometricsModel:
 			try:
 				# handle random-effects model
 				res = self.regression_result.summary().tables[1]
-				os.mkdir(f"{cet_home}/OLS_output/{self.model_id}")
-				res.to_csv(f"{cet_home}/OLS_output/{self.model_id}/covariates.csv")
-				np.transpose(pd.DataFrame.from_dict(self.regression_result.random_effects)).to_csv(f"{cet_home}/OLS_output/{self.model_id}/random_effects.csv")
+				dir_name = f"{cet_home}/OLS_output/{self.model_id}"
+				if not os.path.exists(dir_name):
+					os.mkdir(dir_name)
+					res.to_csv(f"{dir_name}/covariates.csv")
+					np.transpose(pd.DataFrame.from_dict(self.regression_result.random_effects)).to_csv(f"{dir_name}/random_effects.csv")
+				else:
+					utils.print_with_log(f"OLS results file for model with ID {self.model_id} already exists; will not overwrite.", "warning")
 			except:
 				res = self.regression_result.summary
 				# handle driscoll-kraay model
-				file = open(f"{cet_home}/OLS_output/{self.model_id}.csv", "w")
-				file.write(str(res))
-				file.close()
+				filepath = "{cet_home}/OLS_output/{self.model_id}.csv"
+				if not os.path.exists(filepath):
+					file = open(filepath, "w")
+					file.write(str(res))
+					file.close()
+				else:
+					utils.print_with_log(f"OLS results file for model with ID {self.model_id} already exists; will not overwrite.", "warning")
 
 
 	def build_model_as_string(self, script_text):

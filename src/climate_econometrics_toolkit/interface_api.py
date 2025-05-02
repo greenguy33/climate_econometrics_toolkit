@@ -29,16 +29,16 @@ std_error_name_map = {
 
 # TODO: refactor code into API and interface directories
 
-def run_model_analysis(data, std_error_type, model, save_model_to_cache=True, save_result_to_file=True):
+def run_model_analysis(data, std_error_type, model, save_model_to_cache=True, save_result_to_file=True, cv_folds=10):
+	utils.model_checks(model)
 	regression_result = None
 	return_string = ""
-	data.sort_values([model.panel_column, model.time_column]).reset_index(drop=True)
 	data.columns = data.columns.str.replace(' ', '_') 
 	if len(set(data.columns)) != len(data.columns): 
 		return_string += "\nTwo column names in dataset collide when spaces are removed. Please correct."
 		model = None
 	else:
-		model = ce_eval.evaluate_model(data, std_error_type, model)
+		model = ce_eval.evaluate_model(data, std_error_type, model, cv_folds)
 		if save_model_to_cache:
 			model.save_model_to_cache()
 		if save_result_to_file:

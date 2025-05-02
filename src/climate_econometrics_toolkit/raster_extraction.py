@@ -50,6 +50,7 @@ def extract_raster_data(raster_file, shape_file, weight_file):
 		return exact_extract(raster_file, shape_file, "mean")
 	else:
 		resampled_weight_file = resample_rasters(weight_file, raster_file)
+		# TODO: remove resampled weight file to save space on disk
 		return exact_extract(raster_file, shape_file, "weighted_mean", weights=resampled_weight_file)
 
 

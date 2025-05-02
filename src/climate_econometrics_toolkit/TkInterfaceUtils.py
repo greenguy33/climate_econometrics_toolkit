@@ -201,7 +201,7 @@ class TkInterfaceUtils():
 		else:
 			model = self.dnd.current_model
 		utils.print_with_log(f"Running Bayesian Inference against Model with ID {model.model_id}", "info")
-		self.update_interface_window_output(f"Bayesian inference will run in background...see command line for progress. Output will be available in {cet_home}/bayes_samples")
+		self.update_interface_window_output(f"Bayesian inference will run in background...see command line for progress. Output will be available in {cet_home}/bayes_samples/{model.model_id}")
 		api.run_bayesian_regression(model)
 
 
@@ -213,7 +213,7 @@ class TkInterfaceUtils():
 			model = self.dnd.current_model
 		standard_error_popup = StandardErrorPopup(self.window)
 		utils.print_with_log(f"Running Bootstrapping against Model with ID {model.model_id}", "info")
-		self.update_interface_window_output(f"Bootstrapping will run in background...see command line for progress. Output will be available in {cet_home}/bootstrap_samples")
+		self.update_interface_window_output(f"Bootstrapping will run in background...see command line for progress. Output will be available in {cet_home}/bootstrap_samples/coefficient_samples_{model.model_id}.csv")
 		api.run_block_bootstrap(model, standard_error_popup.std_error_type)
 
 

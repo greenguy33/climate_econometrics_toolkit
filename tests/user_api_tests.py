@@ -1,9 +1,13 @@
-from climate_econometrics_toolkit import user_api as api
-
+import os
 import pandas as pd
 import time
+import shutil
+
+from climate_econometrics_toolkit import user_api as api
 
 # TODO: ensure all methods in user_api are tested here.
+
+cet_home = os.getenv("CETHOME")
 
 def assert_series_not_equal(ser1, ser2):
     try:
@@ -14,10 +18,15 @@ def assert_series_not_equal(ser1, ser2):
         raise AssertionError
     
 def build_example_model():
+
+    dataset_name = "TFP_example"
+    cache_dir = f'{cet_home}/model_cache/{dataset_name}'
+    if os.path.exists(cache_dir):
+        shutil.rmtree(cache_dir)
     
     panel_data = pd.read_csv("tests/test_data/ortiz_bobea_data.csv")
 
-    api.set_dataset(panel_data, "example")
+    api.set_dataset(panel_data, dataset_name)
     api.set_panel_column("ISO3")
     api.set_time_column("year")
     api.set_target_variable("tfp")
@@ -28,9 +37,14 @@ def build_example_model():
 
 def build_high_degree_fe_example_model():
     
-    panel_data = pd.read_csv("data/kotz_et_al_dataset.csv")
+    panel_data = pd.read_csv("tests/test_data/kotz_et_al_dataset.csv")
 
-    api.set_dataset(panel_data, "hd_fe_example")
+    dataset_name = "hd_fe_example"
+    cache_dir = f'{cet_home}/model_cache/{dataset_name}'
+    if os.path.exists(cache_dir):
+        shutil.rmtree(cache_dir)
+
+    api.set_dataset(panel_data, dataset_name)
     api.set_panel_column("ID")
     api.set_time_column("year")
     api.set_target_variable("dlgdp_pc_usd")
@@ -39,144 +53,152 @@ def build_high_degree_fe_example_model():
 
 def test_model_construction():
 
-    api.load_dataset_from_file("data/GDP_climate_test_data.csv")
+    data = pd.read_csv("tests/test_data/GDP_climate_test_data.csv")
+
+    dataset_name = "GDP_example"
+    cache_dir = f'{cet_home}/model_cache/{dataset_name}'
+    if os.path.exists(cache_dir):
+        shutil.rmtree(cache_dir)
+
+    api.set_dataset(data, dataset_name)
 
     api.set_panel_column("iso_id")
     api.set_time_column("year")
 
     api.set_target_variable("GDP_per_capita")
-    assert api.model.model_vars == ["GDP_per_capita"]
+    assert api.current_model.model_vars == ["GDP_per_capita"]
 
-    assert api.model.panel_column == "iso_id"
-    assert api.model.time_column == "year"
-    assert api.model.target_var == "GDP_per_capita"
-    assert api.model.data_file == "GDP_climate_test_data.csv"
-    assert api.model.dataset is not None
+    assert api.current_model.panel_column == "iso_id"
+    assert api.current_model.time_column == "year"
+    assert api.current_model.target_var == "GDP_per_capita"
+    assert api.current_model.data_file == "GDP_example"
+    assert api.current_model.dataset is not None
 	
     api.add_covariates("Temp")
 
-    assert api.model.covariates == ["Temp"]
-    assert api.model.model_vars == ["Temp","GDP_per_capita"]
+    assert api.current_model.covariates == ["Temp"]
+    assert api.current_model.model_vars == ["Temp","GDP_per_capita"]
 
     api.add_covariates(["Precip","Temp"])
 
-    assert api.model.covariates == ["Temp","Precip"]
-    assert api.model.model_vars == ["Temp","Precip","GDP_per_capita"]
+    assert api.current_model.covariates == ["Temp","Precip"]
+    assert api.current_model.model_vars == ["Temp","Precip","GDP_per_capita"]
 
     api.add_fixed_effects("iso_id")
 
-    assert api.model.fixed_effects == ["iso_id"]
+    assert api.current_model.fixed_effects == ["iso_id"]
 
     api.add_fixed_effects(["iso_id","year"])
 
-    assert api.model.fixed_effects == ["iso_id","year"]
+    assert api.current_model.fixed_effects == ["iso_id","year"]
 
     api.add_time_trend("iso_id", 2)
 
-    assert api.model.time_trends == ["iso_id 2"]
+    assert api.current_model.time_trends == ["iso_id 2"]
 
     api.add_transformation("GDP_per_capita", ["ln","fd"])
 
-    assert api.model.target_var == "fd(ln(GDP_per_capita))"
-    assert api.model.model_vars == ["Temp","Precip","fd(ln(GDP_per_capita))"]
+    assert api.current_model.target_var == "fd(ln(GDP_per_capita))"
+    assert api.current_model.model_vars == ["Temp","Precip","fd(ln(GDP_per_capita))"]
 
-    api.add_transformation("Precip", "sq", keep_original_var=False)
-    assert api.model.covariates == ["Temp","sq(Precip)"]
-    assert api.model.model_vars == ["Temp","sq(Precip)","fd(ln(GDP_per_capita))"]
+    api.add_transformation("Precip", "sq")
+    assert api.current_model.covariates == ["Temp","sq(Precip)"]
+    assert api.current_model.model_vars == ["Temp","sq(Precip)","fd(ln(GDP_per_capita))"]
 
-    api.add_transformation("Temp", "sq")
-    assert api.model.covariates == ["Temp","sq(Precip)","sq(Temp)"]
-    assert api.model.model_vars == ["Temp","sq(Precip)","sq(Temp)","fd(ln(GDP_per_capita))"]
+    api.add_transformation("Temp", "sq", keep_original_var=True)
+    # TODO: fails here
+    assert api.current_model.covariates == ["Temp","sq(Precip)","sq(Temp)"]
+    assert api.current_model.model_vars == ["Temp","sq(Precip)","sq(Temp)","fd(ln(GDP_per_capita))"]
 
     api.add_transformation("Precip", ["sq","fd"])
     # doesn't add anything because Precip node doesn't exist
-    assert api.model.covariates == ["Temp","sq(Precip)","sq(Temp)"]
-    assert api.model.model_vars == ["Temp","sq(Precip)","sq(Temp)","fd(ln(GDP_per_capita))"]
+    assert api.current_model.covariates == ["Temp","sq(Precip)","sq(Temp)"]
+    assert api.current_model.model_vars == ["Temp","sq(Precip)","sq(Temp)","fd(ln(GDP_per_capita))"]
 
     api.add_covariates("Precip")
     api.remove_transformation("Precip", "sq")
-    api.add_transformation("Precip", ["sq","fd"])
-    assert api.model.covariates == ["Temp","sq(Temp)","Precip","fd(sq(Precip))"]
-    assert api.model.model_vars == ["Temp","sq(Temp)","Precip","fd(sq(Precip))","fd(ln(GDP_per_capita))"]
+    api.add_transformation("Precip", ["sq","fd"], keep_original_var=True)
+    assert api.current_model.covariates == ["Temp","sq(Temp)","Precip","fd(sq(Precip))"]
+    assert api.current_model.model_vars == ["Temp","sq(Temp)","Precip","fd(sq(Precip))","fd(ln(GDP_per_capita))"]
 
-    api.add_transformation("Precip", "sq")
-    assert api.model.covariates == ["Temp","sq(Temp)","Precip","fd(sq(Precip))","sq(Precip)"]
-    assert api.model.model_vars == ["Temp","sq(Temp)","Precip","fd(sq(Precip))","sq(Precip)","fd(ln(GDP_per_capita))"]
+    api.add_transformation("Precip", "sq", keep_original_var=True)
+    assert api.current_model.covariates == ["Temp","sq(Temp)","Precip","fd(sq(Precip))","sq(Precip)"]
+    assert api.current_model.model_vars == ["Temp","sq(Temp)","Precip","fd(sq(Precip))","sq(Precip)","fd(ln(GDP_per_capita))"]
     
-    model1_id = api.evaluate_model()
+    model1_id = api.evaluate_model_with_OLS(api.current_model, cv_folds=2)
     model1 = api.get_model_by_id(model1_id)
     assert model1.regression_result is not None
 
     api.remove_time_trend("iso_id", 2)
 
-    assert api.model.time_trends == []
+    assert api.current_model.time_trends == []
 
     api.remove_covariates("Temp")
 
-    assert api.model.covariates == ["sq(Temp)","Precip","fd(sq(Precip))","sq(Precip)"]
-    assert api.model.model_vars == ["sq(Temp)","Precip","fd(sq(Precip))","sq(Precip)","fd(ln(GDP_per_capita))"]
+    assert api.current_model.covariates == ["sq(Temp)","Precip","fd(sq(Precip))","sq(Precip)"]
+    assert api.current_model.model_vars == ["sq(Temp)","Precip","fd(sq(Precip))","sq(Precip)","fd(ln(GDP_per_capita))"]
 
     api.remove_transformation("Temp", "sq")
 
-    assert api.model.covariates == ["Precip","fd(sq(Precip))","sq(Precip)"]
-    assert api.model.model_vars == ["Precip","fd(sq(Precip))","sq(Precip)","fd(ln(GDP_per_capita))"]
+    assert api.current_model.covariates == ["Precip","fd(sq(Precip))","sq(Precip)"]
+    assert api.current_model.model_vars == ["Precip","fd(sq(Precip))","sq(Precip)","fd(ln(GDP_per_capita))"]
 
     api.remove_transformation("Precip", ["sq","fd"])
 
-    assert api.model.covariates == ["Precip","sq(Precip)"]
-    assert api.model.model_vars == ["Precip","sq(Precip)","fd(ln(GDP_per_capita))"]
+    assert api.current_model.covariates == ["Precip","sq(Precip)"]
+    assert api.current_model.model_vars == ["Precip","sq(Precip)","fd(ln(GDP_per_capita))"]
     
     api.remove_transformation("GDP_per_capita", ["ln", "fd"])
 
-    assert api.model.target_var == "GDP_per_capita"
-    assert api.model.model_vars == ["Precip","sq(Precip)","GDP_per_capita"]
+    assert api.current_model.target_var == "GDP_per_capita"
+    assert api.current_model.model_vars == ["Precip","sq(Precip)","GDP_per_capita"]
 
-    model2_id = api.evaluate_model()
+    model2_id = api.evaluate_model_with_OLS(api.current_model, cv_folds=2)
 
     api.remove_fixed_effect("iso_id")
 
-    assert api.model.fixed_effects == ["year"]
+    assert api.current_model.fixed_effects == ["year"]
 
     api.add_covariates("Temp")
-    assert api.model.covariates == ["Precip","sq(Precip)","Temp"]
-    assert api.model.model_vars == ["Precip","sq(Precip)","Temp","GDP_per_capita"]
+    assert api.current_model.covariates == ["Precip","sq(Precip)","Temp"]
+    assert api.current_model.model_vars == ["Precip","sq(Precip)","Temp","GDP_per_capita"]
 
     api.add_random_effect("Temp", "iso_id")
 
-    assert api.model.random_effects == ["Temp","iso_id"]
-    assert api.model.covariates == ["Precip","sq(Precip)"]
-    assert api.model.model_vars == ["Precip","sq(Precip)","GDP_per_capita"]
+    assert api.current_model.random_effects == ["Temp","iso_id"]
+    assert api.current_model.covariates == ["Precip","sq(Precip)"]
+    assert api.current_model.model_vars == ["Precip","sq(Precip)","GDP_per_capita"]
 
     # does nothing because there is already a random effect in the model
     api.add_random_effect("Precip", "iso_id")
 
-    assert api.model.random_effects == ["Temp","iso_id"]
-    assert api.model.covariates == ["Precip","sq(Precip)"]
-    assert api.model.model_vars == ["Precip","sq(Precip)","GDP_per_capita"]
+    assert api.current_model.random_effects == ["Temp","iso_id"]
+    assert api.current_model.covariates == ["Precip","sq(Precip)"]
+    assert api.current_model.model_vars == ["Precip","sq(Precip)","GDP_per_capita"]
 
     api.remove_random_effect()
 
-    assert api.model.random_effects is None
-    assert api.model.covariates == ["Precip","sq(Precip)","Temp"]
-    assert api.model.model_vars == ["Precip","sq(Precip)","Temp","GDP_per_capita"]
+    assert api.current_model.random_effects is None
+    assert api.current_model.covariates == ["Precip","sq(Precip)","Temp"]
+    assert api.current_model.model_vars == ["Precip","sq(Precip)","Temp","GDP_per_capita"]
 
     api.remove_covariates("Temp")
-    assert api.model.covariates == ["Precip","sq(Precip)"]
-    assert api.model.model_vars == ["Precip","sq(Precip)","GDP_per_capita"]
+    assert api.current_model.covariates == ["Precip","sq(Precip)"]
+    assert api.current_model.model_vars == ["Precip","sq(Precip)","GDP_per_capita"]
 
     api.add_random_effect("Precip", "iso_id")
 
-    assert api.model.random_effects == ["Precip","iso_id"]
-    assert api.model.covariates == ["sq(Precip)"]
-    assert api.model.model_vars == ["sq(Precip)","GDP_per_capita"]
+    assert api.current_model.random_effects == ["Precip","iso_id"]
+    assert api.current_model.covariates == ["sq(Precip)"]
+    assert api.current_model.model_vars == ["sq(Precip)","GDP_per_capita"]
 
-    model3_id = api.evaluate_model()
+    model3_id = api.evaluate_model_with_OLS(api.current_model, cv_folds=2)
 
-    best_rmse_model = api.get_best_model("rmse")
-    best_r2_model = api.get_best_model("r2")
-    best_mse_model = api.get_best_model("out_sample_mse")
-    best_mse_red_model = api.get_best_model("out_sample_mse_reduction")
-    best_pred_int_model = api.get_best_model("out_sample_pred_int_cov")
+    best_rmse_model = api.get_best_model(metric="rmse")
+    best_r2_model = api.get_best_model(metric="r2")
+    best_mse_model = api.get_best_model(metric="out_sample_mse")
+    best_mse_red_model = api.get_best_model(metric="out_sample_mse_reduction")
+    best_pred_int_model = api.get_best_model(metric="out_sample_pred_int_cov")
 
     model1 = api.get_model_by_id(model1_id)
     assert model1 is not None
@@ -198,24 +220,87 @@ def test_model_construction():
 
     assert not any(model is None for model in [model1,model2,model3,best_rmse_model,best_r2_model,best_mse_model,best_mse_red_model,best_pred_int_model])
 
+    print(api.get_all_model_ids())
     assert len(api.get_all_model_ids()) > 1
+
+def test_fit_models_from_model_id():
+
+    dataset_name = "ds1"
+    cache_dir = f'{cet_home}/model_cache/{dataset_name}'
+    if os.path.exists(cache_dir):
+        shutil.rmtree(cache_dir)
+
+    build_example_model()
+    model_id = api.evaluate_model_with_OLS(cv_folds=2)
+
+    api.run_adf_panel_unit_root_tests(model_id)
+    api.run_engle_granger_cointegration_check(model_id)
+    api.run_pesaran_cross_sectional_dependence_check(model_id)
+    api.run_specification_search(model_id, cv_folds=2)
+    api.evaluate_model_with_OLS(model_id, cv_folds=2)
+    api.run_quantile_regression([.1,.2,.3], model=model_id)
+    api.run_spatial_regression("lag", model=model_id)
+    api.run_spatial_regression("error", model=model_id)
+    api.run_block_bootstrap(model_id, num_samples=2)
+    api.run_bayesian_regression(model_id, num_samples=2)
+
+    api.add_fixed_effects(["ISO3", "year"])
+    api.evaluate_model_with_OLS(cv_folds=2)
+
+    best_model = api.get_best_model(metric="rmse")
+    best_model_id = best_model.model_id
+    
+    api.run_adf_panel_unit_root_tests(best_model_id)
+    api.run_engle_granger_cointegration_check(best_model_id)
+    api.run_pesaran_cross_sectional_dependence_check(best_model_id)
+    api.run_specification_search(best_model_id, cv_folds=2)
+    eval_id = api.evaluate_model_with_OLS(best_model_id, cv_folds=2)
+    assert str(eval_id) == str(best_model_id)
+    quant_id = api.run_quantile_regression([.1,.2,.3], model=best_model_id)
+    assert str(quant_id) == str(best_model_id)
+    spatial_id = api.run_spatial_regression("lag", model=best_model_id)
+    assert str(spatial_id) == str(best_model_id)
+    spatial_id = api.run_spatial_regression("error", model=best_model_id)
+    assert str(spatial_id) == str(best_model_id)
+    boot_id = api.run_block_bootstrap(best_model_id, num_samples=2)
+    assert str(boot_id) == str(best_model_id)
+    bayes_id = api.run_bayesian_regression(best_model_id, num_samples=2)
+    assert str(bayes_id) == str(best_model_id)
+
+    api.run_adf_panel_unit_root_tests(best_model)
+    api.run_engle_granger_cointegration_check(best_model)
+    api.run_pesaran_cross_sectional_dependence_check(best_model)
+    api.run_specification_search(best_model_id, cv_folds=2)
+    eval_id = api.evaluate_model_with_OLS(best_model, cv_folds=2)
+    assert str(eval_id) == str(best_model_id)
+    quant_id = api.run_quantile_regression([.1,.2,.3], model=best_model)
+    assert str(quant_id) == str(best_model_id)
+    spatial_id = api.run_spatial_regression("lag", model=best_model)
+    assert str(spatial_id) == str(best_model_id)
+    spatial_id = api.run_spatial_regression("error", model=best_model)
+    assert str(spatial_id) == str(best_model_id)
+    boot_id = api.run_block_bootstrap(best_model_id, num_samples=2, overwrite_samples=True)
+    assert str(boot_id) == str(best_model_id)
+    bayes_id = api.run_bayesian_regression(best_model, num_samples=2, overwrite_samples=True)
+    assert str(bayes_id) == str(best_model_id)
+
 
 def test_regression_standard_error_univariate():
 
     build_example_model()
 
-    api.evaluate_model()
-    res1 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("whitehuber")
-    res2 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("neweywest")
-    res3 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("clusteredtime")
-    res4 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("clusteredspace")
-    res5 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("driscollkraay")
-    res6 = api.model.regression_result.std_errors
+    api.evaluate_model_with_OLS(cv_folds=2)
+    res1 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="whitehuber", cv_folds=2)
+    res2 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="neweywest", cv_folds=2)
+    res3 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="clusteredtime", cv_folds=2)
+    res4 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="clusteredspace", cv_folds=2)
+    res5 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="driscollkraay", cv_folds=2)
+    res6 = api.current_model.regression_result.std_errors
 
     assert_series_not_equal(res1, res2)
     assert_series_not_equal(res1, res3)
@@ -238,18 +323,18 @@ def test_regression_standard_error_multivariate():
 
     build_example_model()
 
-    api.evaluate_model()
-    res1 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("whitehuber")
-    res2 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("neweywest")
-    res3 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("clusteredtime")
-    res4 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("clusteredspace")
-    res5 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("driscollkraay")
-    res6 = api.model.regression_result.std_errors
+    api.evaluate_model_with_OLS(cv_folds=2)
+    res1 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="whitehuber", cv_folds=2)
+    res2 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="neweywest", cv_folds=2)
+    res3 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="clusteredtime", cv_folds=2)
+    res4 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="clusteredspace", cv_folds=2)
+    res5 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="driscollkraay", cv_folds=2)
+    res6 = api.current_model.regression_result.std_errors
 
     assert_series_not_equal(res1, res2)
     assert_series_not_equal(res1, res3)
@@ -269,18 +354,18 @@ def test_regression_standard_error_multivariate():
 
     api.add_fixed_effects(["ISO3","year"])
 
-    api.evaluate_model()
-    res1 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("whitehuber")
-    res2 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("neweywest")
-    res3 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("clusteredtime")
-    res4 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("clusteredspace")
-    res5 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("driscollkraay")
-    res6 = api.model.regression_result.std_errors
+    api.evaluate_model_with_OLS(cv_folds=2)
+    res1 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="whitehuber", cv_folds=2)
+    res2 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="neweywest", cv_folds=2)
+    res3 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="clusteredtime", cv_folds=2)
+    res4 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="clusteredspace", cv_folds=2)
+    res5 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="driscollkraay", cv_folds=2)
+    res6 = api.current_model.regression_result.std_errors
 
     assert_series_not_equal(res1, res2)
     assert_series_not_equal(res1, res3)
@@ -300,18 +385,18 @@ def test_regression_standard_error_multivariate():
 
     api.add_time_trend("ISO3", 2)
 
-    api.evaluate_model()
-    res1 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("whitehuber")
-    res2 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("neweywest")
-    res3 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("clusteredtime")
-    res4 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("clusteredspace")
-    res5 = api.model.regression_result.summary2().tables[1]["Std.Err."]
-    api.evaluate_model("driscollkraay")
-    res6 = api.model.regression_result.std_errors
+    api.evaluate_model_with_OLS(cv_folds=2)
+    res1 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="whitehuber", cv_folds=2)
+    res2 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="neweywest", cv_folds=2)
+    res3 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="clusteredtime", cv_folds=2)
+    res4 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="clusteredspace", cv_folds=2)
+    res5 = api.current_model.regression_result.summary2().tables[1]["Std.Err."]
+    api.evaluate_model_with_OLS(std_error_type="driscollkraay", cv_folds=2)
+    res6 = api.current_model.regression_result.std_errors
 
     assert_series_not_equal(res1, res2)
     assert_series_not_equal(res1, res3)
@@ -335,34 +420,84 @@ def test_random_effects_model():
     build_example_model()
     api.add_random_effect("tmean", "ISO3")
     api.add_covariates("tmin")
-    res = api.evaluate_model()
+    res = api.evaluate_model_with_OLS(cv_folds=2)
     assert res is not None
+    assert api.current_model.regression_result is not None
+    assert api.current_model.regression_result.random_effects is not None
 
     build_example_model()
     api.add_random_effect("fd(sq(tmean))", "ISO3")
     api.add_covariates("tmin")
-    res = api.evaluate_model()
+    res = api.evaluate_model_with_OLS(cv_folds=2)
     assert res is not None
+    assert api.current_model.regression_result is not None
+    assert api.current_model.regression_result.random_effects is not None
 
     build_example_model()
     api.add_random_effect("fd(sq(tmean))", "ISO3")
     api.add_covariates("tmin")
     api.add_fixed_effects(["ISO3", "year"])
-    res = api.evaluate_model()
+    api.view_current_model()
+    res = api.evaluate_model_with_OLS(cv_folds=2)
     assert res is not None
+    assert api.current_model.regression_result is not None
+    assert api.current_model.regression_result.random_effects is not None
 
 def test_bootstrap():
 
     build_example_model()
+    api.run_block_bootstrap(num_samples=2)
+    api.run_block_bootstrap(std_error_type="whitehuber", num_samples=2, overwrite_samples=True)
+    api.run_block_bootstrap(std_error_type="neweywest", num_samples=2, overwrite_samples=True)
+    api.run_block_bootstrap(std_error_type="clusteredtime", num_samples=2, overwrite_samples=True)
+    api.run_block_bootstrap(std_error_type="clusteredspace", num_samples=2, overwrite_samples=True)
+    api.run_block_bootstrap(std_error_type="driscollkraay", num_samples=2, overwrite_samples=True)
 
-    model_id = api.evaluate_model()
+    build_example_model()
+    api.run_block_bootstrap(num_samples=2)
+    api.run_block_bootstrap(std_error_type="whitehuber", num_samples=2, overwrite_samples=True)
+    api.run_block_bootstrap(std_error_type="neweywest", num_samples=2, overwrite_samples=True)
+    api.run_block_bootstrap(std_error_type="clusteredtime", num_samples=2, overwrite_samples=True)
+    api.run_block_bootstrap(std_error_type="clusteredspace", num_samples=2, overwrite_samples=True)
+    api.run_block_bootstrap(std_error_type="driscollkraay", num_samples=2, overwrite_samples=True)
 
-    api.run_block_bootstrap(model_id, "nonrobust", 2)
-    api.run_block_bootstrap(model_id, "whitehuber", 2)
-    api.run_block_bootstrap(model_id, "neweywest", 2)
-    api.run_block_bootstrap(model_id, "clusteredtime", 2)
-    api.run_block_bootstrap(model_id, "clusteredspace", 2)
-    api.run_block_bootstrap(model_id, "driscollkraay", 2)
+    build_example_model()
+    api.add_random_effect("tmean", "ISO3")
+    api.run_block_bootstrap(num_samples=2)
+
+    build_example_model()
+    api.add_random_effect("fd(sq(tmean))", "ISO3")
+    api.add_covariates("tmin")
+    api.run_block_bootstrap(num_samples=2)
+
+    build_example_model()
+    api.add_random_effect("tmean", "ISO3")
+    api.add_fixed_effects(["ISO3","year"])
+    api.run_block_bootstrap(num_samples=2)
+
+def test_bayesian_inference():
+
+    build_example_model()
+    api.run_bayesian_regression(num_samples=2)
+
+    build_example_model()
+    api.add_fixed_effects(["ISO3","year"])
+    api.run_bayesian_regression(num_samples=2)
+
+    build_example_model()
+    api.add_random_effect("tmean","ISO3")
+    api.run_bayesian_regression(num_samples=2)
+
+    build_example_model()
+    api.add_random_effect("fd(sq(tmean))", "ISO3")
+    api.add_covariates("tmin")
+    api.run_bayesian_regression(num_samples=2)
+
+    build_example_model()
+    api.add_random_effect("fd(sq(tmean))", "ISO3")
+    api.add_fixed_effects(["ISO3","year"])
+    api.add_covariates("tmin")
+    api.run_bayesian_regression(num_samples=2)
 
 def test_spatial_regression():
 
@@ -370,47 +505,14 @@ def test_spatial_regression():
 
     api.run_spatial_regression("error")
     api.run_spatial_regression("lag")
-    api.add_random_effect("tmean","ISO3")
-    api.run_spatial_regression("lag")
 
-    api.run_spatial_regression("lag","nonrobust")
-    api.run_spatial_regression("lag","whitehuber")
-    api.run_spatial_regression("lag","neweywest")
+    api.run_spatial_regression("error",k=10)
+    api.run_spatial_regression("lag",k=10)
 
-    api.run_spatial_regression("lag","nonrobust",k=10)
-    api.run_spatial_regression("lag","whitehuber",k=10)
-    api.run_spatial_regression("lag","neweywest",k=10)
-
-    api.run_spatial_regression("lag","nonrobust",num_lags=2)
-    api.run_spatial_regression("lag","whitehuber",num_lags=3)
-    api.run_spatial_regression("lag","neweywest",num_lags=4)
-
-    api.run_spatial_regression("lag","nonrobust",k=10,num_lags=2)
-    api.run_spatial_regression("lag","whitehuber",k=10,num_lags=2)
-    api.run_spatial_regression("lag","neweywest",k=10,num_lags=2)
-
-    api.add_fixed_effects(["ISO3","year"])
+    api.add_covariates("prcp")
 
     api.run_spatial_regression("error")
     api.run_spatial_regression("lag")
-    api.add_random_effect("tmean","ISO3")
-    api.run_spatial_regression("lag")
-
-    api.run_spatial_regression("lag","nonrobust")
-    api.run_spatial_regression("lag","whitehuber")
-    api.run_spatial_regression("lag","neweywest")
-
-    api.run_spatial_regression("lag","nonrobust",k=10)
-    api.run_spatial_regression("lag","whitehuber",k=10)
-    api.run_spatial_regression("lag","neweywest",k=10)
-
-    api.run_spatial_regression("lag","nonrobust",num_lags=2)
-    api.run_spatial_regression("lag","whitehuber",num_lags=3)
-    api.run_spatial_regression("lag","neweywest",num_lags=4)
-
-    api.run_spatial_regression("lag","nonrobust",k=10,num_lags=2)
-    api.run_spatial_regression("lag","whitehuber",k=10,num_lags=2)
-    api.run_spatial_regression("lag","neweywest",k=10,num_lags=2)
 
 def test_quantile_regression():
 
@@ -482,13 +584,23 @@ def test_csd():
     end = time.time()
     assert end - start < 120
 
+    build_example_model()
+    api.add_random_effect("tmean","ISO3")
+    res = api.run_pesaran_cross_sectional_dependence_check()
+    print(res)
+    assert all(val in res.columns for val in ["cd_stat","pval","significant"])
 
 def test_specification_search():
 
+    dataset_name = "ds1"
+    cache_dir = f'{cet_home}/model_cache/{dataset_name}'
+    if os.path.exists(cache_dir):
+        shutil.rmtree(cache_dir)
+
     build_example_model()
-    model = api.run_specification_search("out_sample_mse_reduction")
+    model = api.run_specification_search(metric="out_sample_mse_reduction", cv_folds=2)
     assert model
-    model = api.run_specification_search("out_sample_pred_int_cov")
+    model = api.run_specification_search(metric="out_sample_pred_int_cov", cv_folds=2)
     assert model
 
 
@@ -585,6 +697,7 @@ def test_extraction_with_built_in_weight_files():
     assert raster_data is not None
     raster_data = api.extract_raster_data(monthly_raster_file, weights="soybeanweighted")
     assert raster_data is not None
+    # uses a lot of memory
     # raster_data = api.extract_raster_data(monthly_raster_file, weights="popweighted")
     # assert raster_data is not None
     raster_data = api.extract_raster_data(monthly_raster_file, weights="wheatweighted")
@@ -599,6 +712,7 @@ def test_extraction_with_built_in_weight_files():
     assert raster_data is not None
     raster_data = api.extract_raster_data(ndvi_raster_file, weights="soybeanweighted")
     assert raster_data is not None
+    # uses a lot of memory
     # raster_data = api.extract_raster_data(ndvi_raster_file, weights="popweighted")
     # assert raster_data is not None
     raster_data = api.extract_raster_data(ndvi_raster_file, weights="wheatweighted")
@@ -847,3 +961,59 @@ def test_integrate_dataframes():
         ]
     )
     assert integrated_data is not None
+
+
+def test_transform_data():
+
+    build_example_model()
+    api.remove_transformation("tfp", ["ln", "fd"])
+    api.remove_transformation("tmean", ["sq", "fd"])
+    td = api.transform_data(api.current_model)
+    expected_cols = ["tfp","tmean","year","ISO3"]
+    assert all(val in td for val in expected_cols)
+    assert td[expected_cols].isnull().any().sum() == 0
+    assert all(year in set(td.year) for year in range(1962,2016))
+
+    build_example_model()
+    api.remove_transformation("tfp", ["ln", "fd"])
+    api.remove_transformation("tmean", ["sq", "fd"])
+    api.add_transformation("tfp", "lag2")
+    td = api.transform_data(api.current_model)
+    expected_cols = ["tfp","lag2(tfp)","tmean","year","ISO3"]
+    assert all(val in td for val in expected_cols)
+    assert td[expected_cols].isnull().any().sum() == 0
+    assert all(year in set(td.year) for year in range(1964,2016))
+    assert all(year not in set(td.year) for year in [1962,1963])
+
+    build_example_model()
+    td = api.transform_data(api.current_model)
+    expected_cols = ["fd(ln(tfp))","ln(tfp)","tfp","fd(sq(tmean))","sq(tmean)","tmean","year","ISO3"]
+    assert all(val in td for val in expected_cols)
+    assert td[expected_cols].isnull().any().sum() == 0
+    assert all(year in set(td.year) for year in range(1963,2016))
+    assert 1962 not in set(td.year)
+
+    build_example_model()
+    td = api.transform_data(api.current_model, include_target_var=False)
+    expected_cols = ["tfp","fd(sq(tmean))","sq(tmean)","tmean","year","ISO3"]
+    assert all(val in td for val in expected_cols)
+    assert all(val not in td for val in ["fd(sq(tfp))","sq(tfp)"])
+    assert td[expected_cols].isnull().any().sum() == 0
+    assert all(year in set(td.year) for year in range(1963,2016))
+    assert 1962 not in set(td.year)
+
+    build_example_model()
+    api.add_fixed_effects(["ISO3","year"])
+    td = api.transform_data(api.current_model)
+    expected_cols = ["fd(ln(tfp))","ln(tfp)","tfp","fd(sq(tmean))","sq(tmean)","tmean","year","ISO3"]
+    for val in set(td["ISO3"]):
+        expected_cols.append(f"fe_{val}_ISO3")
+    for val in set(td["year"]):
+        expected_cols.append(f"fe_{val}_year")
+    expected_cols.remove("fe_AFG_ISO3")
+    expected_cols.remove("fe_1963_year")
+    for col in expected_cols:
+        assert col in td
+    assert td[expected_cols].isnull().any().sum() == 0
+    assert all(year in set(td.year) for year in range(1963,2016))
+    assert 1962 not in set(td.year)
