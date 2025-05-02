@@ -26,7 +26,7 @@ tfp_data = api.load_usda_fda_data()
 ```
 ### Add annual growing degree days between 10C and 15C to data 
 ```
-tfp_data = api.add_degree_days_to_dataframe(tfp_data, threshold=10, mode="between", weight="cropweighted", crop="soybeans", second_threshold=15)
+tfp_data = api.add_degree_days_to_dataframe(tfp_data, threshold=10, mode="between", crop="soybeans", second_threshold=15)
 ```
 ### Integrate pre-loaded data and aggregated raster data into a single dataset
 ```
