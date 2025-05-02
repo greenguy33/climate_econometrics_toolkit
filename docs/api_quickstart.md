@@ -118,17 +118,17 @@ best_model = api.run_specification_search(best_model, metric="rmse", cv_folds=2)
 
 ### Run model as quantile regression
 ```
-api.run_quantile_regression(best_model, [.1,.5,.99], std_error_type="greene",)
+api.run_quantile_regression([.1,.5,.99], model=best_model, std_error_type="greene",)
 ```
 
-### Run model as spatial lag regression
+### Run model as panel spatial lag regression
 ```
-api.run_spatial_regression(best_model, "lag", k=5, num_lags=2)
+api.run_spatial_regression("lag", model=best_model, k=5)
 ```
 
 ### Run model as spatial error regression
 ```
-api.run_spatial_regression(best_model, "error", k=5)
+api.run_spatial_regression("error", model=best_model, k=5)
 ```
 
 ## Quantification of Uncertainty and Computation of Impacts
