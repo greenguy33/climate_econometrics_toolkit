@@ -113,7 +113,7 @@ best_model = api.get_best_model(metric="rmse")
 
 ### Get best permutation of best model using specification search
 ```
-best_model = api.run_specification_search(best_model, metric="rmse")
+best_model = api.run_specification_search(best_model, metric="rmse", cv_folds=2)
 ```
 
 ### Run model as quantile regression
