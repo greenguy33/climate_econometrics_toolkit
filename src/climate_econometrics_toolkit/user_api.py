@@ -228,7 +228,7 @@ def load_faostat_data():
 
 def load_usda_fda_data():
     file = files("climate_econometrics_toolkit.preprocessed_data").joinpath('USDA_FDA_global_TFP_1961_2021.csv')
-    return pd.read_csv(file)
+    return pd.read_csv(file).reset_index(drop=True)
 
 
 def load_worldbank_gdp_data():

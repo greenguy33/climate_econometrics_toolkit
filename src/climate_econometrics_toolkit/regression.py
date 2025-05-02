@@ -44,7 +44,7 @@ def run_linearmodels_regression(transformed_data, model_vars, model, std_error_t
 	transformed_data = transformed_data.set_index([model.panel_column, model.time_column])
 	regression_data = transformed_data[model_vars]
 	regression_data = sm.add_constant(regression_data)
-	# TODO: check_rank = False not the best long-term solution for bootstrap using driscoll-kraay std. error
+	# TODO: check_rank = False may not be the best long-term solution for bootstrap using driscoll-kraay std. error
 	return PanelOLS(transformed_data[model.target_var], regression_data, check_rank=False).fit(cov_type=utils.std_error_name_map[std_error_type])
 
 
@@ -53,8 +53,7 @@ def run_standard_regression(transformed_data, model, std_error_type, demeaned=Fa
 	if std_error_type != "driscollkraay":
 		return run_statsmodels_regression(transformed_data, model_vars, model, std_error_type, use_panel_indexing)
 	else:
-		if not use_panel_indexing:
-			utils.print_with_log("Argument 'use_panel_indexing' is ignored. Panel indexing must be used with Driscoll-Kraay standard error.", "warning")
+		# use_panel_indexing argument ignored - always used for PanelOLS models
 		return run_linearmodels_regression(transformed_data, model_vars, model, std_error_type)
 
 
@@ -90,8 +89,6 @@ def run_intercept_only_regression(transformed_data, model, std_error_type):
 # Note: spatial regression currently requires a data column with ISO3/GMI identifiers
 def run_spatial_regression(model, reg_type, model_id, k):
 	utils.assert_with_log(reg_type in ["lag","error"], "Spatial model type must be either 'lag' or 'error'.")
-	if reg_type == "error":
-		utils.print_with_log("Arguments to fields 'std_error_type' and 'num_lags' are ignored with spatial error models.", "info")
 	if model.random_effects != None:
 		utils.print_with_log(f"The specified random-effect '{model.random_effects[0]}' is ignored in spatial regression model.", "warning")
 	demean_data = False
@@ -107,7 +104,7 @@ def run_spatial_regression(model, reg_type, model_id, k):
 
 	utils.assert_with_log(len(transformed_data) > 0, "No geometry column was specified and automatic application of ISO3 geometry failed. Please add a geometry column to your data or use ISO3 data.")
 	
-	transformed_data = transformed_data.set_index(["ISO3","year"])
+	transformed_data = transformed_data.set_index([model.panel_column,model.time_column])
 	columns = copy.deepcopy(model_vars)
 	columns.append(model.target_var)
 	# choose whether to remove nans by georef or time based on which scenario leads to more remaining data
@@ -124,6 +121,10 @@ def run_spatial_regression(model, reg_type, model_id, k):
 
 	W = distance.KNN.from_dataframe(pd.DataFrame([regression_data.index, list(country_geo)]).T.rename(columns={0:model.panel_column,1:"geometry"}), k=k)
 	W.transform = "r"
+
+
+	reg_shape = np.array(regression_data[model_vars]).shape
+	utils.assert_with_log(reg_shape[1] < reg_shape[0], "Spatial regression transforms dataset into a wide format: x[:, 0:T] refers to T periods of k1, x[:, T+1:2T] refers to k2, etc. In the wide format, your data has more columns than rows, which breaks an assumption of the estimation. To solve this, try reducing the number of time periods in your data or reduce the number of covariates in your regression model.")
 
 	if reg_type == "error":
 		spatial_reg_model = Panel_FE_Error(
@@ -150,8 +151,7 @@ def run_spatial_regression(model, reg_type, model_id, k):
 	with open (f'{save_dir}/model.pkl', 'wb') as buff:
 		pkl.dump(spatial_reg_model,buff)
 	file.close()
-	# TODO: fix spatial regression script
-	# model.save_spatial_regression_script(reg_type, std_error_type, geometry_column, k, num_lags, demean_data)
+	model.save_spatial_regression_script(reg_type, k, demean_data)
 	utils.print_with_log(f"Spatial regression results saved to {save_dir}", "info")
 	return spatial_reg_model
 
@@ -186,7 +186,6 @@ def run_block_bootstrap(model, std_error_type, num_samples, use_threading=False,
 	utils.print_with_log("Bootstrapping may run for awhile. See progress bar on command line for updates.", "info")
 	data = model.dataset
 	transformed_data = utils.transform_data(data, model)
-	transformed_data.to_csv("test.csv")
 	if use_threading:
 		thread = threading.Thread(target=bootstrap,name="bootstrap_thread",args=(transformed_data,model,num_samples,std_error_type,overwrite))
 		thread.daemon = True

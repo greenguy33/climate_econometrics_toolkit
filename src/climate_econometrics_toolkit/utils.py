@@ -62,6 +62,9 @@ spatial_std_error_map = {
 # TODO: understand how changing this can lead to undesirable results (e.g. in the Burke model)
 random_state = 123
 
+fd_warn = False
+lag_warn = False
+
 def initial_checks():
 	if cet_home is None:
 		print_with_log("Environmental Variable 'CETHOME' is not set. Defaulting to current directory as working directory.")
@@ -133,18 +136,24 @@ def print_with_log(message, level="info"):
 
 
 def add_transformation_to_data(data, model, function):
+	global fd_warn
+	global lag_warn
 	# TODO: add interaction transformations
 	function_split = function.split("(")
 	data_col = "(".join(function_split[1:])[:-1]
 	if function_split[0] == "sq":
 		data[function] = np.square(data[data_col])
 	elif function_split[0] == "fd":
-		print_with_log("First-differencing assumes continuous time periods for each geographical unit and that each dataset row contains a unique geography/time combination. If these assumptions are not met in your dataset, the first-differencing operation may not perform as expected. Verify the transformed data appears as expected with 'api.transform_data(api.current_model)' after defining your transformations.","warning")
+		if not fd_warn:
+			print_with_log("First-differencing assumes continuous time periods for each geographical unit and that each dataset row contains a unique geography/time combination. If these assumptions are not met in your dataset, the first-differencing operation may not perform as expected. Verify the transformed data appears as expected with 'api.transform_data(api.current_model)' after defining your transformations.","warning")
+			fd_warn = True
 		data[function] = data.groupby(model.panel_column)[data_col].diff()
 	elif function_split[0] == "ln":
 		data[function] = np.log(data[data_col])
 	elif function_split[0].startswith("lag"):
-		print_with_log("Lagging a variable assumes continuous time periods for each geographical unit and that each dataset row contains a unique geography/time combination. If these assumptions are not met in your dataset, the lagging operation may not perform as expected. Verify the transformed data appears as expected with 'api.transform_data(api.current_model)' after defining your transformations.","warning")
+		if not lag_warn:
+			print_with_log("Lagging a variable assumes continuous time periods for each geographical unit and that each dataset row contains a unique geography/time combination. If these assumptions are not met in your dataset, the lagging operation may not perform as expected. Verify the transformed data appears as expected with 'api.transform_data(api.current_model)' after defining your transformations.","warning")
+			lag_warn = True
 		num_lags = int(function_split[0][3])
 		data[function] = data.groupby(model.panel_column)[data_col].shift(num_lags)
 	elif function_split[0] == "cu":

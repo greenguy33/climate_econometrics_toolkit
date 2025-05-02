@@ -231,18 +231,11 @@ class TkInterfaceUtils():
 			k = 5
 		else:
 			k = int(spatial_regression_type_popup.k)
-		if spatial_regression_type_popup.num_lags == "":
-			num_lags = 1
-		else:
-			num_lags = int(spatial_regression_type_popup.num_lags)
 		api.run_spatial_regression(
 			model, 
 			reg_type, 
 			model_id, 
-			spatial_regression_type_popup.geometry_column, 
-			spatial_regression_type_popup.std_error_type, 
-			k, 
-			num_lags
+			k		
 		)
 		self.update_interface_window_output(f"Spatial regression output is available in {cet_home}/spatial_regression_output/{model_id}")
 

@@ -89,8 +89,8 @@ def run_block_bootstrap(model, std_error_type, use_threading=True):
 	regression.run_block_bootstrap(model, std_error_name_map[std_error_type], 1000, use_threading=use_threading)
 
 
-def run_spatial_regression(model, reg_type, model_id, geometry_column, std_error_type, k, num_lags):
-	regression.run_spatial_regression(model, std_error_type, reg_type, model_id, geometry_column, k, num_lags)
+def run_spatial_regression(model, reg_type, model_id, k):
+	regression.run_spatial_regression(model, reg_type, model_id, k)
 
 
 def run_quantile_regression(model, model_id, q, std_error_type):

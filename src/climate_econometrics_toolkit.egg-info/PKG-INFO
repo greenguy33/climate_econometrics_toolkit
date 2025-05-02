@@ -140,8 +140,7 @@ The toolkit makes several different types of regressions and estimators availabl
 
 | **Regression Models & Estimators** | **Standard Errors Supported** | **Implementation** |
 |-----------------------------------|-------------------------------|---------------------|
-| **POLS** (Pooled OLS)  <br> **FEOLS** (Fixed Effects via OLS)  <br> **Random Effects** via ML | - Non-robust SE  <br> - Clustered SE  <br> - Driscoll-Kraay SE  <br> - White-Huber SE  <br> - Newey-West SE | Statsmodels |
+| **POLS** (Pooled OLS)  <br> **FEOLS** (Fixed Effects via OLS)  <br> **Random Effects** via REML | - Non-robust SE  <br> - Clustered SE  <br> - Driscoll-Kraay SE  <br> - White-Huber SE  <br> - Newey-West SE | Statsmodels |
 | **Quantile Regression** via IWLS | - Non-robust SE  <br> - Greene SE | Statsmodels |
-| **Spatial Lag Model** via TSLS | - Non-robust SE  <br> - White-Huber SE  <br> - Newey-West SE | PySAL/spreg |
-| **Spatial Error Model** via GMM | - Non-robust SE | PySAL/spreg |
+| **Panel Spatial Lag Model** via ML <br> **Panel Spatial Error Model** via ML | - Non-robust SE   | PySAL/spreg |
 

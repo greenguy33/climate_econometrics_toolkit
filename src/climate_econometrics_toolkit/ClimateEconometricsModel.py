@@ -92,7 +92,7 @@ class ClimateEconometricsModel:
 			except:
 				res = self.regression_result.summary
 				# handle driscoll-kraay model
-				filepath = "{cet_home}/OLS_output/{self.model_id}.csv"
+				filepath = f"{cet_home}/OLS_output/{self.model_id}.csv"
 				if not os.path.exists(filepath):
 					file = open(filepath, "w")
 					file.write(str(res))
@@ -134,8 +134,8 @@ import statsmodels.api as sm
 
 {self.build_model_as_string("")}
 
-transformed_data = api.transform_data(api.model.dataset, api.model, demean={str(demean_data)})
-model_vars = utils.get_model_vars(transformed_data, api.model, exclude_fixed_effects={str(demean_data)})
+transformed_data = api.transform_data(api.current_model, demean={str(demean_data)})
+model_vars = utils.get_model_vars(transformed_data, api.current_model, exclude_fixed_effects={str(demean_data)})
 regression_data = transformed_data[model_vars]
 regression_data = sm.add_constant(regression_data)
 quant_reg_model = sm.QuantReg(transformed_data["{self.target_var}"], regression_data).fit(q={str(q)}, vcov="{utils.quantile_std_error_map[std_error_type]}")
@@ -146,66 +146,68 @@ print(quant_reg_model.summary())
 		file.close()
 
 
-	def save_spatial_regression_script(self, reg_type, std_error_type, geometry_column, k, num_lags, demean_data):
+	def save_spatial_regression_script(self, reg_type, k, demean_data):
 		script_text = "from climate_econometrics_toolkit import user_api as api\n"
 		script_text += "from climate_econometrics_toolkit import utils as utils\n"
-		script_text += "from spreg import GM_Lag, GM_Error\n"
+		script_text += "from spreg import Panel_FE_Error, Panel_FE_Lag\n"
 		script_text += "from libpysal.weights import distance\n"
+		script_text += "import copy\n"
+		script_text += "import pandas as pd\n"
+		script_text += "import numpy as np\n"
 		script_text += "from shapely.wkt import loads\n"
 		script_text += "import geopandas as gpd\n\n"
 
 		script_text += f"""
 {self.build_model_as_string("")}
 
-transformed_data = utils.transform_data(api.model.dataset, api.model, demean={str(demean_data)})
-model_vars = utils.get_model_vars(transformed_data, api.model, exclude_fixed_effects={str(demean_data)})
-"""
-
-		if geometry_column is None or geometry_column == "":
-			geometry_column = "geometry"
-			script_text += f"""
+transformed_data = api.transform_data(api.current_model, demean={str(demean_data)})
+model_vars = utils.get_model_vars(transformed_data, api.current_model, exclude_fixed_effects={str(demean_data)})
 countries = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))[['iso_a3', 'geometry']]
 countries = countries[countries['iso_a3'].isin(transformed_data["{self.panel_column}"])]
 transformed_data = transformed_data[transformed_data["{self.panel_column}"].isin(countries.iso_a3)].reset_index(drop=True)
-country_geo = map(lambda country: countries.loc[countries.iso_a3 == country].geometry.item(), transformed_data["{self.panel_column}"])
-transformed_data["geometry"] = list(country_geo)
+
+transformed_data = transformed_data.set_index(["{self.panel_column}","{self.time_column}"])
+columns = copy.deepcopy(model_vars)
+columns.append("{self.target_var}")
+# choose whether to remove nans by georef or time based on which scenario leads to more remaining data
+td_rm_ax0 = transformed_data[columns].unstack().dropna(axis=0)
+td_rm_ax1 = transformed_data[columns].unstack().dropna(axis=1)
+axis0_size = td_rm_ax0.shape[0] * td_rm_ax0.shape[1]
+axis1_size = td_rm_ax1.shape[0] * td_rm_ax1.shape[1]
+if axis0_size > axis1_size:
+	regression_data = td_rm_ax0
+else:
+	regression_data = td_rm_ax1
+
+country_geo = map(lambda country: countries.loc[countries.iso_a3 == country].geometry.item(), regression_data.index)
+
+W = distance.KNN.from_dataframe(pd.DataFrame([regression_data.index, list(country_geo)]).T.rename(columns="""+"""{0:\""""+self.panel_column+"""\",1:"geometry"}),"""+f"""k={k})
+W.transform = "r"
 """
 
-		script_text += f"""
-
-try:
-	W = distance.KNN.from_dataframe(transformed_data[["{self.panel_column}","{geometry_column}"]], k={k})
-except ValueError:
-	transformed_data["{geometry_column}"] = transformed_data["{geometry_column}"].apply(loads)
-	W = distance.KNN.from_dataframe(transformed_data[["{self.panel_column}","{geometry_column}"]], k={k})
-regression_data = transformed_data[model_vars]
-"""
 		if reg_type == "error":
 			script_text += f"""
-spatial_reg_model = GM_Error(
-	y=transformed_data["{self.target_var}"], 
-	x=regression_data,
-	w=W
+spatial_reg_model = Panel_FE_Error(
+	y=np.array(regression_data["{self.target_var}"]), 
+	x=np.array(regression_data[model_vars]),
+	w=W,
+	name_x=model_vars,
+	name_y="{self.target_var}"
 )
 """
 		else:
-			if utils.spatial_std_error_map[std_error_type] is None:
-				std_err_string = "None"
-			else:
-				std_err_string = f"\"{utils.spatial_std_error_map[std_error_type]}\""
 			script_text += f"""
-Wk = distance.Kernel.from_dataframe(transformed_data[["{self.panel_column}","{geometry_column}"]], k={k})
-spatial_reg_model = GM_Lag(
-	y=transformed_data["{self.target_var}"], 
-	x=regression_data,
+spatial_reg_model = Panel_FE_Lag(
+	y=np.array(regression_data["{self.target_var}"]), 
+	x=np.array(regression_data[model_vars]),
 	w=W,
-	gwk=Wk,
-	robust={std_err_string},
-	w_lags={num_lags}
+	name_x=model_vars,
+	name_y="{self.target_var}"
 )
-"""	
-		script_text += "\nprint(spatial_reg_model.summary)\n"
-
+"""
+		script_text += """
+print(spatial_reg_model.summary)
+"""
 		file = open(f"{cet_home}/regression_scripts/{self.model_id}_spatial.py", "w")
 		file.write(script_text)
 		file.close()
@@ -220,26 +222,40 @@ spatial_reg_model = GM_Lag(
 		elif self.random_effects is not None:
 			script_text += "import statsmodels.formula.api as smf\n"
 		script_text += "import statsmodels.api as sm\n\n"
-		script_text += self.build_model_as_string(script_text)
 
 		if self.random_effects is not None:
 			script_text += f"""
-transformed_data = api.transform_data(api.model.dataset, api.model, demean=False)
-model_vars = utils.get_model_vars(transformed_data, api.model, exclude_fixed_effects=False)
+
+{self.build_model_as_string("")}
+transformed_data = api.transform_data(api.current_model, demean=False)
+model_vars = utils.get_model_vars(transformed_data, api.current_model, exclude_fixed_effects=True)
 transformed_data.columns = [col.replace("(","_").replace(")","_") for col in transformed_data.columns]
 model_vars = [var.replace("(","_").replace(")","_") for var in model_vars]
-mv_as_string = "+".join(model_vars) if len(model_vars) > 0 else "0"
 target_var = "{self.target_var}".replace("(","_").replace(")","_")
 re_for_model = "{self.random_effects[0]}".replace("(","_").replace(")","_")
+mv_as_string = "+".join(model_vars) if len(model_vars) > 0 else "0"
 formula = target_var + " ~ " + mv_as_string
-reg = smf.mixedlm(formula, data=transformed_data, groups="{self.random_effects[1]}", re_formula=f"0+"+re_for_model).fit()
+random_effects_formatted = api.current_model.random_effects[0].replace("(","_").replace(")","_")
+"""
+			if len(self.fixed_effects) > 0:
+				script_text += """
+for fe in api.current_model.fixed_effects:
+	formula += " + C("+fe+")"
+reg = smf.mixedlm(formula, data=transformed_data, groups=api.current_model.random_effects[1], re_formula=f"0+{random_effects_formatted}").fit()
+"""
+			else:
+				script_text += """
+reg = smf.mixedlm(formula, data=transformed_data, groups=api.current_model.random_effects[1], re_formula=f"1+{random_effects_formatted}").fit()
+"""
+			script_text += """
 print(reg.summary())
-		"""
+"""
 		else:
 			demean_data = False
 			if len(self.fixed_effects) > 0 and len(self.time_trends) == 0:
 				demean_data = True
-			script_text += f"transformed_data = api.transform_data(api.model.dataset, api.model, demean={str(demean_data)})\n"
+			script_text += self.build_model_as_string("")
+			script_text += f"transformed_data = api.transform_data(api.current_model, demean={str(demean_data)})\n"
 			if std_error_type != "driscollkraay":
 				if std_error_type not in utils.std_error_args:
 					reg_string = f"""reg = sm.OLS(transformed_data["{self.target_var}"],regression_data,missing="drop").fit(cov_type="{utils.std_error_name_map[std_error_type]}")\n"""
@@ -254,7 +270,7 @@ print(reg.summary())
 			else:
 				reg_string = f"""reg = PanelOLS(transformed_data["{self.target_var}"], regression_data, check_rank=False).fit(cov_type="{utils.std_error_name_map[std_error_type]}")\n"""
 			script_text += f"""
-model_vars = utils.get_model_vars(transformed_data, api.model, exclude_fixed_effects={str(demean_data)})"""
+model_vars = utils.get_model_vars(transformed_data, api.current_model, exclude_fixed_effects={str(demean_data)})"""
 			if std_error_type == "driscollkraay":
 				script_text += f"""
 transformed_data = transformed_data.set_index([\"{self.panel_column}\", \"{self.time_column}\"])"""

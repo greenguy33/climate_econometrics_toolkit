@@ -39,47 +39,27 @@ class StandardErrorPopup(tk.Toplevel):
 class SpatialRegressionTypePopup(tk.Toplevel):
 
 	reg_type = None
-	geometry_column = None
 	k = None
-	num_lags = None
-	std_error_type = None
 
 	def __init__(self, window):
 
 		popup = tk.Toplevel()
-		popup.geometry("700x500")
+		popup.geometry("600x200")
 		popup.transient(window)
 
 		def on_close():
 			self.reg_type = reg_type.get()
-			self.geometry_column = geometry_column.get()
 			self.k = k.get()
-			self.num_lags = num_lags.get()
-			self.std_error_type = std_error_type.get()
 			popup.destroy()
 
 		popup.protocol("WM_DELETE_WINDOW", on_close)
 
-		reg_type_list = ["lag (implementation: spreg.GM_Lag)","error (implementation: spreg.GM_Error)"]
-		std_error_type_list = ["nonrobust","whitehuber","neweywest"]
-
+		reg_type_list = ["lag (implementation: spreg.Panel_FE_Lag)","error (implementation: spreg.Panel_FE_Error)"]
 		reg_type = tk.StringVar(value=reg_type_list[0])
-		
-		text_entry_label = tk.Label(popup, text="Enter the column in your dataset containing the geometric coordinates of the panel variable.\nIf your dataset uses ISO3 country codes, no geometry column is required.")
-
-		geometry_column = tk.StringVar()
-		geometry_column_entry = tk.Entry(popup, textvariable=geometry_column)
 
 		k_label = tk.Label(popup, text="Enter an integer for k in k-nearest-neighbors spatial weight matrix construction:")
 		k = tk.StringVar(value="5")
 		k_column_entry = tk.Entry(popup, textvariable=k)
-
-		num_lags_label = tk.Label(popup, text="Enter an integer for the number of orders of the spatial weight matrix to include (only for lag model):")
-		num_lags = tk.StringVar(value="1")
-		num_lags_entry = tk.Entry(popup, textvariable=num_lags)
-
-		std_error_label = tk.Label(popup, text="Select a type of standard error to use (only for lag model):")
-		std_error_type = tk.StringVar(value=std_error_type_list[0])
 
 		radio_button_label = tk.Label(popup, text="Choose a type of spatial regression model to run:")
 		radio_button_label.grid(row=0, column=0, padx=5, pady=1)
@@ -87,17 +67,8 @@ class SpatialRegressionTypePopup(tk.Toplevel):
 			button = tk.Radiobutton(popup, text=method, variable=reg_type, value=method)
 			button.grid(row=index+1, column=0, padx=5, pady=1)
 
-		text_entry_label.grid(row=3, column=0, padx=5, pady=1, columnspan=2)
-		geometry_column_entry.grid(row=4, column=0, padx=5, pady=1, columnspan=2)
 		k_label.grid(row=5, column=0, padx=5, pady=1, columnspan=2)
 		k_column_entry.grid(row=6, column=0, padx=5, pady=1, columnspan=2)
-		num_lags_label.grid(row=7, column=0, padx=5, pady=1, columnspan=2)
-		num_lags_entry.grid(row=8, column=0, padx=5, pady=1, columnspan=2)
-		
-		std_error_label.grid(row=9, column=0, padx=5, pady=1, columnspan=2)
-		for index, method in enumerate(std_error_type_list):
-			button = tk.Radiobutton(popup, text=method, variable=std_error_type, value=method)
-			button.grid(row=index+10, column=0, padx=5, pady=1)
 		
 		window.wait_window(popup)
 
