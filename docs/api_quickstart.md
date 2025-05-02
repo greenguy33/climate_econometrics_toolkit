@@ -72,7 +72,7 @@ model_id : None
 
 ### Evaluate the model using FEOLS ten-fold cross-validation with Newey-West standard error
 ```
-api.evaluate_model(std_error_type="neweywest")
+api.evaluate_model_with_OLS(std_error_type="neweywest", cv_folds=10)
 ```
 ```
                                           Coef.      Std.Err.             z  \
@@ -110,37 +110,37 @@ model_id : 1745952935.2198904
 best_model = api.get_best_model(metric="rmse")
 ```
 
-### Run specification search to get best permutation of current model
+### Get best permutation of best model using specification search
 ```
-best_model = run_specification_search(metric="out_sample_mse_reduction")
+best_model = run_specification_search(best_model, metric="rmse")
 ```
 
 ### Run model as quantile regression
 ```
-api.run_quantile_regression([.1,.5,.99], std_error_type="greene",)
+api.run_quantile_regression(best_model, [.1,.5,.99], std_error_type="greene",)
 ```
 
 ### Run model as spatial lag regression
 ```
-api.run_spatial_regression("lag", k=5, num_lags=2)
+api.run_spatial_regression(best_model, "lag", k=5, num_lags=2)
 ```
 
 ### Run model as spatial error regression
 ```
-api.run_spatial_regression("error", k=5)
+api.run_spatial_regression(best_model, "error", k=5)
 ```
 
 ## Quantification of Uncertainty and Computation of Impacts
 
 ### Run Bayesian Inference to generate coefficient samples
 ```
-api.run_bayesian_regression(model, num_samples=1000)
+api.run_bayesian_regression(best_model, num_samples=1000)
 ```
 ### Run block bootstrap to generate coefficient samples
 ```
-api.run_block_bootstrap(api.get_model_by_id(model_id), std_error_type="driscollkraay", num_samples=1000)
+api.run_block_bootstrap(best_model, std_error_type="driscollkraay", num_samples=1000)
 ```
-### Use samples to generate predictions
+### Use Bayesian samples to generate predictions (used when available; otherwise bootstrap samples are used; otherwise point estimates are used)
 ```
-api.predict_out_of_sample(api.get_model_by_id(model_id), out_sample_data)
+api.predict_out_of_sample(best_model, out_sample_data)
 ```
