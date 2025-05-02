@@ -32,7 +32,8 @@ tfp_data = api.add_degree_days_to_dataframe(tfp_data, threshold=10, mode="betwee
 ```
 reg_data = api.integrate([clim_data,tfp_data])
 ```
-![Screenshot from 2025-04-29 14-44-43](https://github.com/user-attachments/assets/ffcbb074-d010-426a-b3ec-56f2b5390a9a)
+![Screenshot from 2025-05-02 14-56-08](https://github.com/user-attachments/assets/ae8887b5-6c40-475c-9dca-95d96c33ea4b)
+
 
 ## Model Building
 
