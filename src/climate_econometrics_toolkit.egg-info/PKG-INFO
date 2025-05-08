@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: climate_econometrics_toolkit
-Version: 0.0.16
+Version: 1.0.0
 Summary: An API and visual tool for building climate econometric models
 Author-email: Hayden Freedman <hfreedma@uci.edu>
 Classifier: Programming Language :: Python :: 3

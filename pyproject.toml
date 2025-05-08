@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "climate_econometrics_toolkit"
-version = "0.0.16"
+version = "1.0.0"
 authors = [
   { name="Hayden Freedman", email="hfreedma@uci.edu" },
 ]
@@ -31,21 +31,21 @@ climate_econometrics_toolkit = [
 ]
 
 dependencies = [
-  # "networkx>=3.3",
-  # "numpy>=1.26.4",
-  # "statsmodels>=0.14.2",
-  # "pandas>=2.2.2",
-  # "pymc>=5.10.3",
-  # "pyfixest>=0.24.1",
-  # "scikit-learn>=1.4.0",
-  # "scipy>=1.12.0",
-  # "xarray>=2024.1.0",
-  # "geopandas>=0.14.3",
-  # "exactextract>=0.2.0",
-  # "progressbar2>=4.5.0",
-  # "linearmodels>=6.1",
-  # "pysal>=25.1",
-  # "spreg>=1.8.2",
-  # "MetPy>=1.6.3",
-  # "rasterio>=1.4.3"
+  "networkx>=3.3",
+  "numpy>=1.26.4",
+  "statsmodels>=0.14.2",
+  "pandas>=2.2.2",
+  "pymc>=5.10.3",
+  "pyfixest>=0.24.1",
+  "scikit-learn>=1.4.0",
+  "scipy>=1.12.0",
+  "xarray>=2024.1.0",
+  "geopandas>=0.14.3",
+  "exactextract>=0.2.0",
+  "progressbar2>=4.5.0",
+  "linearmodels>=6.1",
+  "pysal>=25.1",
+  "spreg>=1.8.2",
+  "MetPy>=1.6.3",
+  "rasterio>=1.4.3"
 ]
