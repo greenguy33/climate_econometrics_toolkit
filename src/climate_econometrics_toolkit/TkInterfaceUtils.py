@@ -395,12 +395,6 @@ class TkInterfaceUtils():
 		utils.print_with_log("Model cache cleared.", "info")
 
 
-	def on_close(self):
-		self.window.quit()
-		self.window.destroy()
-		utils.print_with_log("Interface window closed.", "info")
-
-
 	def update_interface_window_output(self, output_text):
 		utils.print_with_log(output_text, "info")
 		self.dnd.canvas_print_out.delete(1.0, tk.END)

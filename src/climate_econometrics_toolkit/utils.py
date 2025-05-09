@@ -273,6 +273,12 @@ def get_model_vars(data, model, exclude_fixed_effects=True):
 	return model_vars
 
 
+def on_close(root):
+	root.quit()
+	root.destroy()
+	print_with_log("Interface window closed.", "info")
+
+
 def construct_model_input_from_cache(data_file, model_id):
 	model = pd.read_pickle(f"{cet_home}/model_cache/{data_file}/{model_id}/model.pkl")
 	covariate_list = ast.literal_eval(model.covariates)
@@ -334,7 +340,7 @@ def start_user_interface():
 	stat_plot = StatPlot(mse_canvas, pred_int_canvas, r2_canvas, rmse_canvas)
 	tk_utils = TkInterfaceUtils(window, canvas, dnd, regression_plot, result_plot, result_plot_frame, stat_plot)
 
-	root.protocol("WM_DELETE_WINDOW", tk_utils.on_close)
+	root.protocol("WM_DELETE_WINDOW", lambda: on_close(root))
 
 	# TODO: add frame for showing/changing the panel and time columns
 
