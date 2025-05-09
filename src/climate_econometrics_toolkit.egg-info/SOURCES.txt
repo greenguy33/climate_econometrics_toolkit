@@ -21,6 +21,7 @@ src/climate_econometrics_toolkit/utils.py
 src/climate_econometrics_toolkit.egg-info/PKG-INFO
 src/climate_econometrics_toolkit.egg-info/SOURCES.txt
 src/climate_econometrics_toolkit.egg-info/dependency_links.txt
+src/climate_econometrics_toolkit.egg-info/requires.txt
 src/climate_econometrics_toolkit.egg-info/top_level.txt
 src/climate_econometrics_toolkit/preprocessed_data/EMDAT_natural_disasters_1960_2024.csv
 src/climate_econometrics_toolkit/preprocessed_data/FAOSTAT_production_indices_1961_2023.csv
@@ -137,8 +138,6 @@ src/climate_econometrics_toolkit/preprocessed_data/raster_weights/cropland_weigh
 src/climate_econometrics_toolkit/preprocessed_data/raster_weights/cropland_weights/rice_weights_5m.tif
 src/climate_econometrics_toolkit/preprocessed_data/raster_weights/cropland_weights/soybean_weights_5m.tif
 src/climate_econometrics_toolkit/preprocessed_data/raster_weights/cropland_weights/wheat_weights_5m.tif
-src/climate_econometrics_toolkit/preprocessed_data/raster_weights/population_weights/__init__.py
-src/climate_econometrics_toolkit/preprocessed_data/raster_weights/population_weights/population_weights_5m.tif
 src/climate_econometrics_toolkit/preprocessed_data/shape_files/__init__.py
 src/climate_econometrics_toolkit/preprocessed_data/shape_files/country_shapes/__init__.py
 src/climate_econometrics_toolkit/preprocessed_data/shape_files/country_shapes/country.dbf

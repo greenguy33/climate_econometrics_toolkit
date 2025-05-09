@@ -26,17 +26,17 @@ class ClimateEconometricsModel:
 	]
 
 	def __init__(self):
-		self.target_var = np.NaN
+		self.target_var = np.nan
 		self.covariates = []
 		self.model_vars = []
-		self.out_sample_mse = np.NaN
-		self.in_sample_mse = np.NaN
-		self.out_sample_mse_reduction = np.NaN
-		self.in_sample_mse_reduction = np.NaN
-		self.out_sample_pred_int_cov = np.NaN
-		self.in_sample_pred_int_cov = np.NaN
-		self.r2 = np.NaN
-		self.rmse = np.NaN
+		self.out_sample_mse = np.nan
+		self.in_sample_mse = np.nan
+		self.out_sample_mse_reduction = np.nan
+		self.in_sample_mse_reduction = np.nan
+		self.out_sample_pred_int_cov = np.nan
+		self.in_sample_pred_int_cov = np.nan
+		self.r2 = np.nan
+		self.rmse = np.nan
 		self.fixed_effects = []
 		self.random_effects = None
 		self.time_trends = []

@@ -125,7 +125,7 @@ def aggregate_raster_data(
 					if len(agg_mean) > 0:
 						data.append([geo, period, np.nansum(agg_mean)])
 					else:
-						data.append([geo, period, np.NaN])
+						data.append([geo, period, np.nan])
 				elif aggregation_func == "mean":
 					data.append([geo, period, np.nanmean(agg_mean)])
 				period += 1

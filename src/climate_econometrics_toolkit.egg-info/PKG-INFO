@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: climate_econometrics_toolkit
-Version: 1.0.0
+Version: 1.0.1
 Summary: An API and visual tool for building climate econometric models
 Author-email: Hayden Freedman <hfreedma@uci.edu>
 Classifier: Programming Language :: Python :: 3
@@ -8,6 +8,23 @@ Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
 Requires-Python: >=3.10
 Description-Content-Type: text/markdown
+Requires-Dist: networkx>=3.3
+Requires-Dist: numpy>=1.26.4
+Requires-Dist: statsmodels>=0.14.2
+Requires-Dist: pandas>=2.2.2
+Requires-Dist: pymc>=5.10.3
+Requires-Dist: pyfixest>=0.24.1
+Requires-Dist: scikit-learn>=1.4.0
+Requires-Dist: scipy>=1.12.0
+Requires-Dist: xarray>=2024.1.0
+Requires-Dist: geopandas<1.0,>=0.14.3
+Requires-Dist: exactextract>=0.2.0
+Requires-Dist: progressbar2>=4.5.0
+Requires-Dist: linearmodels>=6.1
+Requires-Dist: pysal>=25.1
+Requires-Dist: spreg>=1.8.2
+Requires-Dist: MetPy>=1.6.3
+Requires-Dist: rasterio>=1.4.3
 
 ![graphical abstract](figures/graphical_abstract.png)
 

@@ -220,7 +220,7 @@ def bootstrap(transformed_data, model, num_samples, std_error_type, overwrite):
 						re_val = reg_result.random_effects[entity][model.random_effects[0].replace("(","_").replace(")","_")]
 					covar_coefs[model.random_effects[0] + "_" + entity].append(re_val)
 				else:
-					covar_coefs[model.random_effects[0] + "_" + entity].append(np.NaN)
+					covar_coefs[model.random_effects[0] + "_" + entity].append(np.nan)
 		else:
 			reg_result = run_standard_regression(resampled_data, model, std_error_type)
 			for covar in model.covariates:
