@@ -33,7 +33,8 @@ dependencies = [
   "pysal>=25.1",
   "spreg>=1.8.2",
   "MetPy>=1.6.3",
-  "rasterio>=1.4.3"
+  "rasterio>=1.4.3",
+  "pyreadr>=0.5.3"
 ]
 
 [tool.setuptools.package-data]

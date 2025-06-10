@@ -25,6 +25,7 @@ Requires-Dist: pysal>=25.1
 Requires-Dist: spreg>=1.8.2
 Requires-Dist: MetPy>=1.6.3
 Requires-Dist: rasterio>=1.4.3
+Requires-Dist: pyreadr>=0.5.3
 
 ![graphical abstract](figures/graphical_abstract.png)
 
@@ -77,7 +78,7 @@ source climate_econometrics_toolkit.venv/bin/activate
 #### Install package and dependencies
 
 ```
-pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ climate-econometrics-toolkit==0.0.16
+pip install climate-econometrics-toolkit
 ```
 
 #### Add environmental variable CET_HOME

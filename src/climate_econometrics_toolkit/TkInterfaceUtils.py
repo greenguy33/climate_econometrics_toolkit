@@ -376,6 +376,12 @@ class TkInterfaceUtils():
 				utils.print_with_log("Out-of-sample predictions generated for Model with ID {self.dnd.current_model.model_id} for data file(s) {out_sample_data_files}", "info")
 
 
+	def export_data(self):
+		format = ExportDataFormatPopup(self.window).export_format
+		model = api.build_model_object_from_canvas(self.build_model_indices_lists(), self.dnd.filename, self.panel_column, self.time_column)[0]
+		api.export_data(self.dataset, model, format)
+	
+	
 	def clear_canvas(self):
 		self.dnd.clear_canvas()
 		self.regression_plot.clear_figure()

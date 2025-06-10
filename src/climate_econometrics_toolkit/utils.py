@@ -86,7 +86,8 @@ def initial_checks():
 		"statistical_tests_output/cross_sectional_dependence_tests/",
 		"html",
 		"prediction_intervals",
-		"resampled_raster_files"
+		"resampled_raster_files",
+		"data"
 	]
 	for dir in dirs_to_init:
 		if not os.path.isdir(f"{cet_home}/{dir}"):
@@ -334,6 +335,7 @@ def start_user_interface():
 	r2_canvas = tk.Canvas(metrics_row2, width=100, height=100)
 	rmse_canvas = tk.Canvas(metrics_row2, width=100, height=100)
 
+	data_button_row = ttk.Frame(lefthand_bar, relief=tk.RAISED)
 	uncertainty_button_row = ttk.Frame(lefthand_bar, relief=tk.RAISED)
 	evaluation_button_row = ttk.Frame(lefthand_bar, relief=tk.RAISED)
 
@@ -347,7 +349,8 @@ def start_user_interface():
 	step1_label = tk.Label(lefthand_bar, text="Step 1: Climate Data Aggregation", font=('Helvetica', 12, 'bold'))
 	btn_extract = tk.Button(lefthand_bar, text="Extract Raster Data", command=lambda : tk_utils.extract_raster_data(window))
 	step2_label = tk.Label(lefthand_bar, text="Step 2: Construct and Evaluate Model", font=('Helvetica', 12, 'bold'))
-	btn_load = tk.Button(lefthand_bar, text="Load Dataset", command=tk_utils.add_data_columns_from_file)
+	btn_load = tk.Button(data_button_row, text="Load Dataset", command=tk_utils.add_data_columns_from_file)
+	btn_export = tk.Button(data_button_row, text="Export Dataset", command=tk_utils.export_data)
 	btn_clear_canvas = tk.Button(lefthand_bar, text="Clear Canvas", command=tk_utils.clear_canvas)
 	btn_clear_model_cache = tk.Button(lefthand_bar, text="Clear Model Cache", command=tk_utils.clear_model_cache)
 	btn_unit_root = tk.Button(evaluation_button_row, wraplength=120, text="Run ADF Panel Unit Root Tests", command=tk_utils.run_panel_unit_root_tests)
@@ -366,7 +369,10 @@ def start_user_interface():
 	btn_extract.pack(fill=tk.BOTH, expand=True)
 
 	step2_label.pack(fill=tk.BOTH, expand=True)
-	btn_load.pack(fill=tk.BOTH, expand=True)
+	data_button_row.pack(fill=tk.BOTH, expand=True)
+	btn_load.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+	btn_export.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
 	btn_clear_canvas.pack(fill=tk.BOTH, expand=True)
 	btn_clear_model_cache.pack(fill=tk.BOTH, expand=True)
 

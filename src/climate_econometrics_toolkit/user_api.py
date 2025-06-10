@@ -10,6 +10,7 @@ from metpy.calc import heat_index
 from metpy.units import units
 import progressbar
 import itertools as it
+import pyreadr
 
 from climate_econometrics_toolkit import interface_api as api
 from climate_econometrics_toolkit.ClimateEconometricsModel import ClimateEconometricsModel
@@ -627,6 +628,20 @@ def call_user_prediction_function(function_name, args):
 def transform_data(model, include_target_var=True, demean=False):
     utils.print_with_log(f"Running data transformation with the following settings: include_target_var: {include_target_var}, demean: {demean}", "info")
     return utils.transform_data(copy.deepcopy(model.dataset), model, include_target_var, demean)
+
+
+def export_data(model, format="csv"):
+    utils.assert_with_log(format in ["csv","stata","rdata"], "Format must be one of: 'csv', 'stata', 'rdata'.")
+    transformed_data = transform_data(model)
+    if format == "csv":
+        transformed_data.to_csv(f"data/{model.model_id}.csv")
+        utils.print_with_log(f"Dataset exported to 'data/{model.model_id}.csv", "info")
+    elif format == "stata":
+        transformed_data.to_stata(f"data/{model.model_id}.dta")
+        utils.print_with_log(f"Dataset exported to 'data/{model.model_id}.dta", "info")
+    elif format == "rdata":
+        pyreadr.pyreadr.write_rdata(f"data/{model.model_id}.rdata", transformed_data, model.model_id)
+        utils.print_with_log(f"Dataset exported to 'data/{model.model_id}.rdata", "info")
 
 
 def reset_model():

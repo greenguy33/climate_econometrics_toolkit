@@ -274,3 +274,32 @@ class QuantileRegressionPopup(tk.Toplevel):
 			button.grid(row=index+4, column=0, padx=5, pady=1)
 		
 		window.wait_window(popup)
+
+
+class ExportDataFormatPopup(tk.Toplevel):
+
+	export_format = None
+
+	def __init__(self, window):
+
+		popup = tk.Toplevel()
+		popup.geometry("500x300")
+		popup.transient(window)
+
+		def on_close():
+			self.export_format = export_format.get()
+			popup.destroy()
+
+		popup.protocol("WM_DELETE_WINDOW", on_close)
+
+		text_entry_label = tk.Label(popup, text="Select an export format:")
+		format_list = ["CSV", "Stata (dta)", "Rdata"]
+		export_format = tk.StringVar(value=format_list[0])
+		
+		text_entry_label.grid(row=0, column=0, padx=5, pady=1, columnspan=len(format_list))
+
+		for index, format in enumerate(format_list):
+			button = tk.Radiobutton(popup, text=format, variable=export_format, value=format)
+			button.grid(row=1, column=index, padx=5, pady=1)
+		
+		window.wait_window(popup)
