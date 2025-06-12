@@ -3,6 +3,7 @@ import shutil
 import os
 import threading
 import pyreadr
+import time
 
 import climate_econometrics_toolkit.evaluate_model as ce_eval
 import climate_econometrics_toolkit.model_builder as mb
@@ -146,17 +147,18 @@ def predict_function(model, out_sample_data_files, function_name):
 
 
 def export_data(data, model, format="csv"):
+	dataset_id = str(time.time())
 	utils.assert_with_log(format in ["csv","stata","rdata"], "Format must be one of: 'csv', 'stata', 'rdata'.")
 	transformed_data = utils.transform_data(data, model)
 	if format == "csv":
-		transformed_data.to_csv(f"data/{model.model_id}.csv")
-		utils.print_with_log(f"Dataset exported to 'data/{model.model_id}.csv", "info")
+		transformed_data.to_csv(f"{cet_home}/data/{dataset_id}.csv")
+		utils.print_with_log(f"Dataset exported to '{cet_home}/data/{dataset_id}.csv", "info")
 	elif format == "stata":
-		transformed_data.to_stata(f"data/{model.model_id}.dta")
-		utils.print_with_log(f"Dataset exported to 'data/{model.model_id}.dta", "info")
+		transformed_data.to_stata(f"{cet_home}/data/{dataset_id}.dta")
+		utils.print_with_log(f"Dataset exported to '{cet_home}/data/{dataset_id}.dta", "info")
 	elif format == "rdata":
-		pyreadr.pyreadr.write_rdata(f"data/{model.model_id}.rdata", transformed_data, model.model_id)
-		utils.print_with_log(f"Dataset exported to 'data/{model.model_id}.rdata", "info")
+		pyreadr.pyreadr.write_rdata(f"{cet_home}/data/{dataset_id}.rdata", transformed_data, dataset_id)
+		utils.print_with_log(f"Dataset exported to '{cet_home}/data/{dataset_id}.rdata", "info")
 
 
 def start_interface():

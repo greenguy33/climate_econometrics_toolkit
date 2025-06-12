@@ -20,6 +20,7 @@ from climate_econometrics_toolkit import prediction as predict
 from climate_econometrics_toolkit import raster_extraction as extract
 from climate_econometrics_toolkit import user_prediction_functions as user_predict
 from climate_econometrics_toolkit import stat_tests as stat_tests
+from climate_econometrics_toolkit import degree_days as dd
 
 current_model = ClimateEconometricsModel()
 
@@ -86,81 +87,35 @@ def run_specification_search(model=None, metric="out_sample_mse_reduction", cv_f
     return best_model
 
 
-def compute_degree_days(years, countries, threshold, mode="above", panel_column_name="ISO3", time_column_name="year", crop=None, second_threshold=None):
-    utils.print_with_log(f"Computing degree days with mode '{mode}', threshold '{threshold}', using panel column '{panel_column_name}' and time_column '{time_column_name}'", "info")
-    if crop is None:
-        utils.print_with_log("No growing season specified with 'crop' argument: degree days will be computed for the entire year.", "info")
-    utils.assert_with_log(mode in ["above","below","between"], "Mode most be either 'above', 'below', or 'between' the supplied threshold(s).")
-    if mode == "between":
-        utils.assert_with_log(second_threshold is not None, "Second threshold argument must be supplied to use mode 'between'.")
-        utils.assert_with_log(second_threshold > threshold, "Second threshold argument must be greater than threshold argument.")
-    elif second_threshold is not None:
-        utils.print_with_log(f"Argument '{second_threshold}' to 'second_threshold' parameter is ignored with mode {mode}.", "warning")
-    col_name = f"deg_days_{mode}_{str(threshold)}"
-    if mode == "between":
-        col_name += f"_{str(second_threshold)}"
-    if crop is not None:
-        col_name += f"_{crop}_growing_season"
-        # if crop specified, get growing season dates for specified crop
-        country_start_days, country_end_days = utils.get_growing_season_data_by_crop(crop)
-    res = {panel_column_name:[], time_column_name:[], col_name:[]}
-    years_missing_data, countries_missing_temp_data, countries_missing_crop_data = set(), set(), set()
-    for year in years:
-        try:
-            file = files(f"climate_econometrics_toolkit.preprocessed_data.daily_temp.unweighted").joinpath(f'temp.daily.bycountry.unweighted.{year}.csv')
-            daily_temp_data = pd.read_csv(file)
-            for country in countries:
-                if country in daily_temp_data:
-                    if crop is None:
-                        # if no crop specified, compute degree days for entire year
-                        daily_temps = daily_temp_data[country]
-                    else:
-                        # if crop specified, extract only crop growing days
-                        try:
-                            if country_end_days[country] < country_start_days[country]:
-                                daily_temps = pd.concat([daily_temp_data[country].iloc[:int(country_end_days[country])+1],daily_temp_data[country].iloc[int(country_start_days[country]):]])
-                            else:
-                                daily_temps = daily_temp_data[country].iloc[int(country_start_days[country]):int(country_end_days[country])+1]
-                        except (KeyError,ValueError):
-                            # except case where no crop growing season data exists
-                            daily_temps = None
-                    if daily_temps is not None:
-                        if mode == "above":
-                            degree_days = int(np.sum([val-threshold for val in daily_temps if val > threshold]))
-                        elif mode == "below":
-                            degree_days = int(np.sum([threshold-val for val in daily_temps if val < threshold]))
-                        elif mode == "between":
-                            degree_days = int(np.sum([val-threshold for val in daily_temps if val > threshold and val < second_threshold]))
-                    else:
-                        degree_days = pd.NA
-                        countries_missing_crop_data.add(country)
-                    res[panel_column_name].append(country)
-                    res[time_column_name].append(year)
-                    res[col_name].append(degree_days)
-                else:
-                    countries_missing_temp_data.add(country)
-        except FileNotFoundError:
-            years_missing_data.add(year)
-    if len(countries_missing_temp_data) > 0:
-        utils.print_with_log(f"No daily temperature data available for countries: {sorted(countries_missing_temp_data)}", "warning")
-    if len(countries_missing_crop_data) > 0:
-        utils.print_with_log(f"No {crop} growing season data available for countries: {sorted(countries_missing_crop_data)}", "warning")
-    if len(years_missing_data) > 0:
-        utils.print_with_log(f"No daily temperature data available for years: {sorted(years_missing_data)}", "warning")        
-    return pd.DataFrame.from_dict(res)
+def compute_degree_days(years, countries, threshold, mode="above", panel_column_name="ISO3", time_column_name="year", crop=None, second_threshold=None, computation="country"):
+	utils.print_with_log(f"Computing degree days with mode '{mode}', using panel column '{panel_column_name}' and time_column '{time_column_name}'", "info")
+	if crop is None:
+		utils.print_with_log("No growing season specified with 'crop' argument: degree days will be computed for the entire year.", "info")
+	utils.assert_with_log(mode in ["above","below","between"], "Mode most be either 'above', 'below', or 'between' the supplied threshold(s).")
+	if mode == "between":
+		utils.assert_with_log(second_threshold is not None, "Second threshold argument must be supplied to use mode 'between'.")
+		utils.assert_with_log(second_threshold > threshold, "Second threshold argument must be greater than threshold argument.")
+	elif second_threshold is not None:
+		utils.print_with_log(f"Argument '{second_threshold}' to 'second_threshold' parameter is ignored with mode {mode}.", "warning")
+	col_name = f"deg_days_{mode}_{str(threshold)}"
+	if mode == "between":
+		col_name += f"_{str(second_threshold)}"
+	if computation == "country":
+		return dd.compute_country_degree_days(years, countries, threshold, mode, panel_column_name, time_column_name, crop, second_threshold, col_name)
+	return dd.compute_gridded_degree_days(years, countries, threshold, mode, panel_column_name, time_column_name, crop, second_threshold, col_name)
 
 
-def add_degree_days_to_dataframe(dataframe, threshold, panel_column = "ISO3", time_column = "year", mode = "above", crop=None, second_threshold=None):
+def add_degree_days_to_dataframe(dataframe, threshold, panel_column = "ISO3", time_column = "year", mode = "above", crop=None, second_threshold=None, computation="country"):
     utils.assert_with_log(panel_column in dataframe, f"Specified panel column {panel_column} not in supplied dataframe.")
     utils.assert_with_log(time_column in dataframe, f"Specified time column {time_column} not in supplied dataframe.")
-    degree_days_df = compute_degree_days(set(dataframe[time_column]), set(dataframe[panel_column]), threshold, mode, crop=crop, second_threshold=second_threshold)
+    degree_days_df = compute_degree_days(set(dataframe[time_column]), set(dataframe[panel_column]), threshold, mode, crop=crop, second_threshold=second_threshold, computation=computation)
     utils.assert_with_log(len(degree_days_df) > 0, f"No daily temperature data available for supplied columns {panel_column}/{time_column}.")
     merge_strategy = "outer"
-    utils.print_with_log(f"Merging supplied dataframe with degree days dataframe using threshold '{threshold}' and merge strategy '{merge_strategy}'", "info")
+    utils.print_with_log(f"Merging supplied dataframe with degree days dataframe using merge strategy '{merge_strategy}'", "info")
     return pd.merge(dataframe, degree_days_df, on=[panel_column,time_column], how=merge_strategy)
 
 
-def integrate(dataframes, keep_na=False, panel_column="ISO3", time_column="year"):
+def integrate(dataframes, time_aggregation=None, keep_na=False, panel_column="ISO3", time_column="year"):
     df_mod = []
     for df in dataframes:
         df_mod.append(df[[col for col in df.columns if not col.startswith("Unnamed")]])
@@ -171,6 +126,13 @@ def integrate(dataframes, keep_na=False, panel_column="ISO3", time_column="year"
     merge_method = "inner" if not keep_na else "outer"
     integrated_df = reduce(lambda left,right: pd.merge(left,right,on=[panel_column,time_column], how=merge_method), df_mod)
     utils.print_with_log(f"Merging supplied dataframes using merge strategy '{merge_method}' and keep_na set to {keep_na}", "info")
+    if time_aggregation is not None:
+        utils.assert_with_log(isinstance(time_aggregation, int), "Argument to parameter 'time_aggregation' must be an integer.")
+        utils.print_with_log(f"Applying time-based aggregation using function 'mean' and chunk size {time_aggregation}", "info")
+        integrated_df["groupid"] = integrated_df.groupby(panel_column).cumcount()//time_aggregation
+        grouped_df = integrated_df.groupby([panel_column,"groupid"]).mean()
+        integrated_df = grouped_df.reset_index().drop("groupid",axis=1)
+        integrated_df[time_column] = integrated_df.apply(lambda x: str(x[time_column]-time_aggregation/2).split(".")[0] + "-" + str(x[time_column]+time_aggregation/2).split(".")[0], axis=1)
     return integrated_df.reset_index(drop=True)
 
 
@@ -199,7 +161,7 @@ def convert_between_administrative_levels(data, from_code, to_code):
         return pd.Series(list(map(lambda x: admin1_dict[admin1id_to_admin1_dict[admin2_dict[x]]] if x in admin2_dict and admin2_dict[x] in admin1id_to_admin1_dict and admin1id_to_admin1_dict[admin2_dict[x]] in admin1_dict else None, data)))
 
 
-def load_climate_data(weight="unweighted"):
+def load_ncep_ncar_data(weight="unweighted"):
     utils.assert_with_log(weight in utils.supported_weights, f"Weight argument must be one of: {utils.supported_weights}.")
     file = files("climate_econometrics_toolkit.preprocessed_data.weather_data").joinpath(f'NCEP_reanalaysis_climate_data_1948_2024_{weight}.csv')
     return pd.read_csv(file)
@@ -240,6 +202,18 @@ def load_worldbank_gdp_data():
 def load_spei_data(weight="unweighted"):
     utils.assert_with_log(weight in utils.supported_weights, f"Weight argument must be one of: {utils.supported_weights}.")
     file = files("climate_econometrics_toolkit.preprocessed_data.SPEI").joinpath(f'spei_{weight}.csv')
+    return pd.read_csv(file)
+
+
+def load_cdc_unified_max_temperature_data(weight="unweighted"):
+    utils.assert_with_log(weight in utils.supported_weights, f"Weight argument must be one of: {utils.supported_weights}.")
+    file = files(f"climate_econometrics_toolkit.preprocessed_data.daily_temp_max.{weight}").joinpath(f'temp.daily_max.daily.bycountry.{weight}.csv')
+    return pd.read_csv(file)
+
+
+def load_cdc_unified_min_temperature_data(weight="unweighted"):
+    utils.assert_with_log(weight in utils.supported_weights, f"Weight argument must be one of: {utils.supported_weights}.")
+    file = files(f"climate_econometrics_toolkit.preprocessed_data.daily_temp_min.{weight}").joinpath(f'temp.daily_min.daily.bycountry.{weight}.csv')
     return pd.read_csv(file)
 
 
@@ -598,7 +572,7 @@ def extract_raster_data(raster_file, shape_file=None, weights=None, weight_file=
     return extract.extract_raster_data(raster_file, shape_file, weight_file)
 
 
-def aggregate_raster_data(data, climate_var_name, aggregation_func, subperiods_per_year, starting_year, shape_file=None, geo_identifier=None, subperiods_to_use=None, crop=None):
+def aggregate_raster_data_to_year_level(data, climate_var_name, aggregation_func, subperiods_per_year, starting_year, shape_file=None, geo_identifier=None, subperiods_to_use=None, crop=None):
     if shape_file is not None:
         utils.assert_with_log(geo_identifier is not None, "If shape_file is specified, geo_identifier must also be specified.")
     if shape_file is None and geo_identifier is not None:
@@ -608,7 +582,20 @@ def aggregate_raster_data(data, climate_var_name, aggregation_func, subperiods_p
         geo_identifier = "GMI_CNTRY"
         utils.print_with_log("No shape file specified for aggregation. Using default country shape file.", "info")
     utils.print_with_log(f"Aggregating raster data using function {aggregation_func}", "info")
-    return extract.aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year, subperiods_to_use, crop)
+    return extract.aggregate_yearly_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year, subperiods_to_use, crop)
+
+
+def aggregate_raster_data_to_month_level(data, climate_var_name, aggregation_func, subperiods_per_day, starting_year, starting_month, shape_file=None, geo_identifier=None):
+    if shape_file is not None:
+        utils.assert_with_log(geo_identifier is not None, "If shape_file is specified, geo_identifier must also be specified.")
+    if shape_file is None and geo_identifier is not None:
+        utils.print_with_log(f"Specified geo_identifier {geo_identifier} is ignored with use of default country shapes file", "warning")
+    if shape_file is None:
+        shape_file = str(files("climate_econometrics_toolkit.preprocessed_data.shape_files.country_shapes").joinpath('country.shp'))
+        geo_identifier = "GMI_CNTRY"
+        utils.print_with_log("No shape file specified for aggregation. Using default country shape file.", "info")
+    utils.print_with_log(f"Aggregating raster data using function {aggregation_func}", "info")
+    return extract.aggregate_monthly_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_day, starting_year, starting_month)
 
 
 def predict_out_of_sample(model, data, transform_data=False, var_map=None):
@@ -631,17 +618,21 @@ def transform_data(model, include_target_var=True, demean=False):
 
 
 def export_data(model, format="csv"):
+    if not model.model_id is None:
+        dataset_id = str(model.model_id)
+    else:
+        dataset_id = str(time.time())
     utils.assert_with_log(format in ["csv","stata","rdata"], "Format must be one of: 'csv', 'stata', 'rdata'.")
     transformed_data = transform_data(model)
     if format == "csv":
-        transformed_data.to_csv(f"data/{model.model_id}.csv")
-        utils.print_with_log(f"Dataset exported to 'data/{model.model_id}.csv", "info")
+        transformed_data.to_csv(f"{cet_home}/data/{dataset_id}.csv")
+        utils.print_with_log(f"Dataset exported to '{cet_home}/data/{dataset_id}.csv", "info")
     elif format == "stata":
-        transformed_data.to_stata(f"data/{model.model_id}.dta")
-        utils.print_with_log(f"Dataset exported to 'data/{model.model_id}.dta", "info")
+        transformed_data.to_stata(f"{cet_home}/data/{dataset_id}.dta")
+        utils.print_with_log(f"Dataset exported to '{cet_home}/data/{dataset_id}.dta", "info")
     elif format == "rdata":
-        pyreadr.pyreadr.write_rdata(f"data/{model.model_id}.rdata", transformed_data, model.model_id)
-        utils.print_with_log(f"Dataset exported to 'data/{model.model_id}.rdata", "info")
+        pyreadr.pyreadr.write_rdata(f"{cet_home}/data/{dataset_id}.rdata", transformed_data, dataset_id)
+        utils.print_with_log(f"Dataset exported to '{cet_home}/data/{dataset_id}.rdata", "info")
 
 
 def reset_model():

@@ -107,7 +107,8 @@ For users who wish to avoid the raster extraction process entirely, the toolkit 
 
 | Data Source                                                                          | Data Variables                                                                    | Years in Dataset | Num. Countries in Dataset |
 |--------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|------------------|---------------------------|
-| NCEP-NCAR Reanalysis* (Kalnay 2018)                                         | Surface Air Temperature, Precipitation, Specific Humidity                         | 1948-2024        | 235                       |
+| NCEP-NCAR Reanalysis* (Kalnay 2018)                                         | Surface Air Temperature, Precipitation, Specific Humidity, Relative Humidity                        | 1948-2024        | 235           
+| CPC Global Unified Temperature | Maximum and Minimum Surface Air Temperature | 1979-2024 | 240
 | SPEIbase* (Begueria 2010)                                              | Standardized Precipitation-Evapotranspiration Index                               | 1901-2023        | 240                       |
 | PKU Global Inventory Modeling and Mapping Studies NDVI* (Li 2023) | Normalized Difference Vegetation Index                                            | 1982-2022        | 162                       |
 | FAOStat Database (Kasnakoglu 2006)                                 | Total Food, Primary Cereals, Agriculture, Livestock, and Crops Production Indices | 1961-2023        | 199                       |

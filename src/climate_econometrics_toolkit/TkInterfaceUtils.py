@@ -377,7 +377,12 @@ class TkInterfaceUtils():
 
 
 	def export_data(self):
-		format = ExportDataFormatPopup(self.window).export_format
+		format_name_map = {
+			"CSV":"csv", 
+			"Stata (dta)":"stata",
+			"Rdata":"rdata"
+		}
+		format = format_name_map[ExportDataFormatPopup(self.window).export_format]
 		model = api.build_model_object_from_canvas(self.build_model_indices_lists(), self.dnd.filename, self.panel_column, self.time_column)[0]
 		api.export_data(self.dataset, model, format)
 	

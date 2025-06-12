@@ -854,6 +854,9 @@ def test_compute_degree_days():
 	assert data is not None
 	assert sorted(set(data.year)) == list(range(1962,2016))
 
+	data = api.compute_degree_days([1961,2006], ["AFG","ESP","USA"], 10, second_threshold=20, mode="between", computation="gridded", crop="maize")
+	assert data is not None
+
 
 def test_add_degree_days_to_dataframe():
 

@@ -21,7 +21,7 @@ aggregated = api.aggregate_raster_data(extracted, "temp", "mean", 12, 1948, crop
 
 ### Alternatively, load some pre-loaded datasets for agricultural productiivty (TFP) from USDA FDA and climate data from NCAP-NCER
 ```
-clim_data = api.load_climate_data(weight="soybeanweighted")
+clim_data = api.load_ncep_ncar_data(weight="soybeanweighted")
 tfp_data = api.load_usda_fda_data()
 ```
 ### Add annual growing degree days between 10C and 15C to data 

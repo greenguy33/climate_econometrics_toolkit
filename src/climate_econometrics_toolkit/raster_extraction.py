@@ -85,10 +85,10 @@ def make_leapyear_subperiods(subperiods_per_year):
 	return reg_year_sbp, leap_year_sbp
 
 
-def aggregate_raster_data(
+def aggregate_yearly_raster_data(
 		raster_data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year, subperiods_to_use=None, crop=None
 	):
-	utils.assert_with_log(isinstance(subperiods_per_year, int), f"Value {subperiods_per_year} supplied as 'subperiods per time unit' argument is not an integer.")
+	utils.assert_with_log(isinstance(subperiods_per_year, int), f"Value {subperiods_per_year} supplied as 'subperiods_per_year' argument is not an integer.")
 	utils.assert_with_log(isinstance(starting_year, int), f"Value {starting_year} supplied as 'starting_year' argument is not an integer.")
 	utils.assert_with_log(aggregation_func in ["sum","mean"], "Argument aggregation_func must be 'sum' or 'mean'")
 	utils.assert_with_log(subperiods_to_use is None or crop is None, "Arguments 'subperiods_to_use' and 'crop' cannot both be supplied.")
@@ -108,12 +108,12 @@ def aggregate_raster_data(
 		agg_mean = []
 		period = starting_year
 		subperiod = 0
-		for index2, obs in enumerate(range(len(raster_data[index]["properties"]))):
+		for index2 in range(len(raster_data[index]["properties"])):
 			subperiod += 1
 			if subperiods_to_use is not None and geo not in subperiods_to_use:
 				omitted_geoids.add(geo)
 			if subperiods_to_use is None or (geo in subperiods_to_use and subperiod in subperiods_to_use[geo]):
-				agg_mean.append(new_dict[f"band_{str(obs+1)}"])
+				agg_mean.append(new_dict[f"band_{str(index2+1)}"])
 			if leap_year_sbp is None:
 				condition = (subperiod == subperiods_per_year)
 			elif calendar.isleap(period):
@@ -133,4 +133,42 @@ def aggregate_raster_data(
 				subperiod = 0
 	if len(omitted_geoids) > 0:
 		utils.print_with_log(f"These GeoIDs were omitted from the aggregated dataset: {sorted(omitted_geoids)}", "warning")        
-	return pd.DataFrame.from_records(data, columns=[geo_identifier,"time",climate_var_name]).sort_values([geo_identifier,"time"]).reset_index(drop=True)
+	return pd.DataFrame.from_records(data, columns=[geo_identifier,"year",climate_var_name]).sort_values([geo_identifier,"year"]).reset_index(drop=True)
+
+
+def aggregate_monthly_raster_data(raster_data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_day, starting_year, starting_month):
+	utils.assert_with_log(isinstance(subperiods_per_day, int), f"Value {subperiods_per_day} supplied as 'subperiods_per_day' argument is not an integer.")
+	utils.assert_with_log(isinstance(starting_year, int), f"Value {starting_year} supplied as 'starting_year' argument is not an integer.")
+	utils.assert_with_log(isinstance(starting_month, int), f"Value {starting_month} supplied as 'starting_month' argument is not an integer.")
+	utils.assert_with_log(aggregation_func in ["sum","mean"], "Argument aggregation_func must be 'sum' or 'mean'")
+	geo_shapes = gpd.read_file(shape_file)
+	data = []
+	for index, geo in enumerate(geo_shapes[geo_identifier]):
+		# this removes the name of the aggregation function from the key
+		new_dict = {}
+		for key in raster_data[index]["properties"]:
+			new_dict[key.split("_")[0] + "_" + key.split("_")[1]] = raster_data[index]["properties"][key]
+		agg_mean = []
+		curr_year = starting_year
+		curr_month = starting_month
+		group_size = calendar.monthrange(curr_year, curr_month)[1] * subperiods_per_day
+		subperiod = 0
+		for index2 in range(len(raster_data[index]["properties"])):
+			subperiod += 1
+			agg_mean.append(new_dict[f"band_{str(index2+1)}"])
+			if (subperiod == group_size) or (index2 == len(raster_data[index]["properties"]) - 1):
+				if aggregation_func == "sum":
+					if len(agg_mean) > 0:
+						data.append([geo, curr_year, curr_month, np.nansum(agg_mean)])
+					else:
+						data.append([geo, curr_year, curr_month, np.nan])
+				elif aggregation_func == "mean":
+					data.append([geo, curr_year, curr_month, np.nanmean(agg_mean)])
+				if curr_month + 1 <= 12:
+					curr_month += 1
+				else:
+					curr_month = 1
+					curr_year += 1
+				group_size = calendar.monthrange(curr_year, curr_month)[1] * subperiods_per_day
+				subperiod = 0
+	return pd.DataFrame.from_records(data, columns=[geo_identifier,"year","month",climate_var_name]).sort_values([geo_identifier,"year","month"]).reset_index(drop=True)
