@@ -12,12 +12,56 @@ Climate econometrics is a field designed to study "how social, economic, and bio
 * `Random Effects`
 * `Climate Projections`
 
-
 ## Designing an Appropriate Model
 
-There are a wide variety of different econometrics models and use cases that can be used by the field. This section seeks to help guide newcomes to the field towards appropriate model choices given their datasets and use cases. Although it is not possible to cover all possible scenarios, I attempted to select a few common...
+There are a wide variety of econometrics models and use cases that can be used by the field. This section seeks to help guide newcomes to the field towards appropriate model choices based on some common use cases. Although it is not possible to cover all possible scenarios, I attempted to provide a few pointers towards appropriate modeling decisions to help new users get started. It is also for new users recommended to look through the code in the `notebooks/` directory, specifically the two paper reproductions.
 
+### Treatment of climate variables
 
+appropriate weighting scheme
+quadratic, cubic
+
+### Treatment of economic variables
+
+first difference of natural log (if dependent variable)
+
+### Group intercepts (fixed effects)
+
+geography, time
+
+### Random slopes (random effects)
+
+heterogeneous effects by geography
+
+### Time trends
+
+### Lagged variables
+
+### Statistical tests
+
+* Stationarity checks
+
+panel unit root test
+
+* Cross-sectional dependence checks
+
+* Cointegration checks
+
+### Regression models
+
+* OLS
+
+standard error selection
+
+* Spatial Regression
+
+* Quantile Regression
+
+### Sampling-based inference
+
+* Bayesian Inference
+
+* Block Bootstrap
 
 
 ## Further Reading
