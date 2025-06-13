@@ -32,7 +32,7 @@ supported_effects = ["fe", "tt1", "tt2", "tt3","re"]
 supported_metrics = ["out_sample_mse_reduction","out_sample_mse","out_sample_pred_int_cov","rmse","r2"]
 supported_gcms = ["BCC-CSM2-MR","CanESM5","CNRM-CM6-1","HadGEM3-GC31-LL","IPSL-CM6A-LR","MIROC6","MRI-ESM2-0"]
 supported_standard_errors = ["nonrobust", "whitehuber", "driscollkraay", "neweywest", "clusteredtime","clusteredspace"]
-supported_weights = ["unweighted","popweighted","cropweighted","maizeweighted","riceweighted","soybeanweighted","wheatweighted"]
+supported_weights = ["areaweighted","popweighted","cropweighted","maizeweighted","riceweighted","soybeanweighted","wheatweighted"]
 std_type_string = ",".join(supported_standard_errors)
 
 std_error_name_map = {

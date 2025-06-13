@@ -161,20 +161,26 @@ def convert_between_administrative_levels(data, from_code, to_code):
         return pd.Series(list(map(lambda x: admin1_dict[admin1id_to_admin1_dict[admin2_dict[x]]] if x in admin2_dict and admin2_dict[x] in admin1id_to_admin1_dict and admin1id_to_admin1_dict[admin2_dict[x]] in admin1_dict else None, data)))
 
 
-def load_ncep_ncar_data(weight="unweighted"):
+def load_ncep_ncar_data(weight="areaweighted"):
     utils.assert_with_log(weight in utils.supported_weights, f"Weight argument must be one of: {utils.supported_weights}.")
+    if weight == "areaweighted":
+        weight = "unweighted"
     file = files("climate_econometrics_toolkit.preprocessed_data.weather_data").joinpath(f'NCEP_reanalaysis_climate_data_1948_2024_{weight}.csv')
     return pd.read_csv(file)
 
 
-def load_temperature_humidity_index_data(weight="unweighted"):
+def load_temperature_humidity_index_data(weight="areaweighted"):
     utils.assert_with_log(weight in utils.supported_weights, f"Weight argument must be one of: {utils.supported_weights}.")
+    if weight == "areaweighted":
+        weight = "unweighted"
     file = files("climate_econometrics_toolkit.preprocessed_data.temperature_humidity_index").joinpath(f'temperature_humidity_index_{weight}_1948_2024.csv')
     return pd.read_csv(file)
 
 
-def load_ndvi_data(weight="unweighted"):
+def load_ndvi_data(weight="areaweighted"):
     utils.assert_with_log(weight in utils.supported_weights, f"Weight argument must be one of: {utils.supported_weights}.")
+    if weight == "areaweighted":
+        weight = "unweighted"
     file = files("climate_econometrics_toolkit.preprocessed_data.NDVI").joinpath(f'pku_ndvi_data_aggregated_{weight}.csv')
     return pd.read_csv(file)
 
@@ -199,20 +205,26 @@ def load_worldbank_gdp_data():
     return pd.read_csv(file)
 
 
-def load_spei_data(weight="unweighted"):
+def load_spei_data(weight="areaweighted"):
     utils.assert_with_log(weight in utils.supported_weights, f"Weight argument must be one of: {utils.supported_weights}.")
+    if weight == "areaweighted":
+        weight = "unweighted"
     file = files("climate_econometrics_toolkit.preprocessed_data.SPEI").joinpath(f'spei_{weight}.csv')
     return pd.read_csv(file)
 
 
-def load_cdc_unified_max_temperature_data(weight="unweighted"):
+def load_cdc_unified_max_temperature_data(weight="areaweighted"):
     utils.assert_with_log(weight in utils.supported_weights, f"Weight argument must be one of: {utils.supported_weights}.")
+    if weight == "areaweighted":
+        weight = "unweighted"
     file = files(f"climate_econometrics_toolkit.preprocessed_data.daily_temp_max.{weight}").joinpath(f'temp.daily_max.daily.bycountry.{weight}.csv')
     return pd.read_csv(file)
 
 
-def load_cdc_unified_min_temperature_data(weight="unweighted"):
+def load_cdc_unified_min_temperature_data(weight="areaweighted"):
     utils.assert_with_log(weight in utils.supported_weights, f"Weight argument must be one of: {utils.supported_weights}.")
+    if weight == "areaweighted":
+        weight = "unweighted"
     file = files(f"climate_econometrics_toolkit.preprocessed_data.daily_temp_min.{weight}").joinpath(f'temp.daily_min.daily.bycountry.{weight}.csv')
     return pd.read_csv(file)
 
