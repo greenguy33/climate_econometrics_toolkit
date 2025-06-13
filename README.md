@@ -134,3 +134,8 @@ The toolkit makes several different types of regressions and estimators availabl
 | **Quantile Regression** via IWLS | - Non-robust SE  <br> - Greene SE | Statsmodels |
 | **Panel Spatial Lag Model** via ML <br> **Panel Spatial Error Model** via ML | - Non-robust SE   | PySAL/spreg |
 
+# Computing Growing and Killing Degree Days
+
+The toolkit provides functionality to automatically compute growing and killing degree days for the entire year as well as various crop growing seasons, and automatically integrates them with existing regression data. See the methods `compute_degree_days` and `add_degree_days_to_dataframe` (which calls `compute_degree_days` under the hood) in the API documentation. 
+
+Degree days can be calculated using one of two methods of computation: `country` and `grid`. `country` computation is less accurate but faster, as it simply uses the mean daily temperature for entire countries. `grid` computation is more time-consuming, but captures heterogeneous temperature effects that are present at the grid level. The computation mode is specified by the `computation` argument to both of the methods mentioned above. In order to use the `grid` computation method, you must download the gridded daily temperature data available [here](https://drive.google.com/drive/folders/1c7bl8vR9HtIUxDTYMFB3HyfJRyqcOQQQ?usp=drive_link) and place it in your `cet_home` directory with the sub-directory structure `daily_temp_mean/gridded/...`.
