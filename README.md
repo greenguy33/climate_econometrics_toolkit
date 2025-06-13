@@ -4,7 +4,7 @@ This project contains both a user interface and a Python API designed for helpin
 
 Developer contact: Hayden Freedman (hfreedma@uci.edu)
 
-This README provides a brief overview of the toolkit and instructions for installation. For further documentation, see the [API Quickstart Guide](docs/api_quickstart.md), [Interface Quickstart Guide](docs/interface_quickstart.md) and the [API Documentation](docs/api_documentation.pdf). In addition, for those users just getting started with climate impacts research, please see the [Guide for New Users](docs/new_users_guide.md), which provides some guidance as to the basics of climate econometrics modeling, which types of models are appropriate to construct using the tool, and some pointers to helpful external resources.
+This README provides a brief overview of the toolkit and instructions for installation. For further documentation, see the [API Quickstart Guide](docs/api_quickstart.md), [Interface Quickstart Guide](docs/interface_quickstart.md) and the [API Documentation](docs/api_documentation.pdf). In addition, for those users just getting started with climate impacts research, please see the [Guide for New Users](docs/guide_for_new_users.md), which provides some guidance as to the basics of climate econometrics modeling, which types of models are appropriate to construct using the tool, and some pointers to helpful external resources.
 
 # Is this the right tool for you?
 
