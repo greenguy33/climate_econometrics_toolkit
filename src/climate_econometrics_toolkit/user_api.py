@@ -177,6 +177,14 @@ def load_temperature_humidity_index_data(weight="areaweighted"):
     return pd.read_csv(file)
 
 
+def load_dewpoint_temperature_data(weight="areaweighted"):
+    utils.assert_with_log(weight in utils.supported_weights, f"Weight argument must be one of: {utils.supported_weights}.")
+    if weight == "areaweighted":
+        weight = "unweighted"
+    file = files("climate_econometrics_toolkit.preprocessed_data.dewpoint_temperature").joinpath(f'dewpoint_temperature_{weight}_1948_2024.csv')
+    return pd.read_csv(file)
+
+
 def load_ndvi_data(weight="areaweighted"):
     utils.assert_with_log(weight in utils.supported_weights, f"Weight argument must be one of: {utils.supported_weights}.")
     if weight == "areaweighted":

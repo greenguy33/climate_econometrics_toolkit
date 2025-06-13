@@ -119,7 +119,8 @@ For users who wish to avoid the raster extraction process entirely, the toolkit 
 
 | Data Source                                                                          | Data Variables                                                                    | Years in Dataset | Num. Countries in Dataset |
 |--------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|------------------|---------------------------|
-| NCEP-NCAR Reanalysis* (Kalnay 2018)                                         | Surface Air Temperature, Precipitation, Specific Humidity                         | 1948-2024        | 235                       |
+| NCEP-NCAR Reanalysis* (Kalnay 2018)                                         | Surface Air Temperature, Precipitation, Specific Humidity, Relative Humidity                        | 1948-2024        | 235           
+| CPC Global Unified Temperature | Maximum and Minimum Surface Air Temperature | 1979-2024 | 240
 | SPEIbase* (Begueria 2010)                                              | Standardized Precipitation-Evapotranspiration Index                               | 1901-2023        | 240                       |
 | PKU Global Inventory Modeling and Mapping Studies NDVI* (Li 2023) | Normalized Difference Vegetation Index                                            | 1982-2022        | 162                       |
 | FAOStat Database (Kasnakoglu 2006)                                 | Total Food, Primary Cereals, Agriculture, Livestock, and Crops Production Indices | 1961-2023        | 199                       |
@@ -145,3 +146,8 @@ The toolkit makes several different types of regressions and estimators availabl
 | **Quantile Regression** via IWLS | - Non-robust SE  <br> - Greene SE | Statsmodels |
 | **Panel Spatial Lag Model** via ML <br> **Panel Spatial Error Model** via ML | - Non-robust SE   | PySAL/spreg |
 
+# Computing Growing and Killing Degree Days
+
+The toolkit provides functionality to automatically compute growing and killing degree days for the entire year as well as various crop growing seasons, and automatically integrates them with existing regression data. See the methods `compute_degree_days` and `add_degree_days_to_dataframe` (which calls `compute_degree_days` under the hood) in the API documentation. 
+
+Degree days can be calculated using one of two methods of computation: `country` and `grid`. `country` computation is less accurate but faster, as it simply uses the mean daily temperature for entire countries. `grid` computation is more time-consuming, but captures heterogeneous temperature effects that are present at the grid level. The computation mode is specified by the `computation` argument to both of the methods mentioned above. In order to use the `grid` computation method, you must download the gridded daily temperature data available [here](https://drive.google.com/drive/folders/1c7bl8vR9HtIUxDTYMFB3HyfJRyqcOQQQ?usp=drive_link) and place it in your `cet_home` directory with the sub-directory structure `daily_temp_mean/gridded/...`.

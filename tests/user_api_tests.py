@@ -890,33 +890,33 @@ def test_add_degree_days_to_dataframe():
 	assert sorted(set(data.year)) == list(range(1962,2016))
 
 
-def test_load_climate_data():
+def test_load_ncep_ncar_data():
 
-	data = api.load_climate_data()
+	data = api.load_ncep_ncar_data()
 	assert data is not None
 	assert "ISO3" in data
 	assert "year" in data
-	data = api.load_climate_data("popweighted")
+	data = api.load_ncep_ncar_data("popweighted")
 	assert data is not None
 	assert "ISO3" in data
 	assert "year" in data
-	data = api.load_climate_data("cropweighted")
+	data = api.load_ncep_ncar_data("cropweighted")
 	assert data is not None
 	assert "ISO3" in data
 	assert "year" in data
-	data = api.load_climate_data("maizeweighted")
+	data = api.load_ncep_ncar_data("maizeweighted")
 	assert data is not None
 	assert "ISO3" in data
 	assert "year" in data
-	data = api.load_climate_data("wheatweighted")
+	data = api.load_ncep_ncar_data("wheatweighted")
 	assert data is not None
 	assert "ISO3" in data
 	assert "year" in data
-	data = api.load_climate_data("riceweighted")
+	data = api.load_ncep_ncar_data("riceweighted")
 	assert data is not None
 	assert "ISO3" in data
 	assert "year" in data
-	data = api.load_climate_data("soybeanweighted")
+	data = api.load_ncep_ncar_data("soybeanweighted")
 	assert data is not None
 	assert "ISO3" in data
 	assert "year" in data
@@ -1041,6 +1041,99 @@ def test_load_emdat_data():
 
 def test_load_faostat_data():
 	data = api.load_faostat_data()
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+
+
+def test_load_cdc_max_temp_data():
+	data = api.load_cdc_unified_max_temperature_data()
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_cdc_unified_max_temperature_data("popweighted")
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_cdc_unified_max_temperature_data("cropweighted")
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_cdc_unified_max_temperature_data("maizeweighted")
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_cdc_unified_max_temperature_data("riceweighted")
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_cdc_unified_max_temperature_data("soybeanweighted")
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_cdc_unified_max_temperature_data("wheatweighted")
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+
+
+def test_load_cdc_min_temp_data():
+	data = api.load_cdc_unified_min_temperature_data()
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_cdc_unified_min_temperature_data("popweighted")
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_cdc_unified_min_temperature_data("cropweighted")
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_cdc_unified_min_temperature_data("maizeweighted")
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_cdc_unified_min_temperature_data("riceweighted")
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_cdc_unified_min_temperature_data("soybeanweighted")
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_cdc_unified_min_temperature_data("wheatweighted")
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+
+
+def test_load_dewpoint_temp_data():
+	data = api.load_dewpoint_temperature_data()
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_dewpoint_temperature_data("popweighted")
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_dewpoint_temperature_data("cropweighted")
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_dewpoint_temperature_data("maizeweighted")
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_dewpoint_temperature_data("riceweighted")
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_dewpoint_temperature_data("soybeanweighted")
+	assert data is not None
+	assert "ISO3" in data
+	assert "year" in data
+	data = api.load_dewpoint_temperature_data("wheatweighted")
 	assert data is not None
 	assert "ISO3" in data
 	assert "year" in data
