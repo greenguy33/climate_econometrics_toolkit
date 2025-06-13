@@ -124,7 +124,7 @@ ag_tfp_data = api.load_usda_fda_data()
 reg_data = api.integrate([ndvi_data,spei_data,clim_data,ag_tfp_data], keep_na=False)
 ```
 
-Preprocessed temperature-humidity index and dewpoint temperature datasets are also included. These are derived from the NCEP-NCAR surface air temperature and relative humidity reanalysis data. See the API documentation for details.
+Preprocessed **temperature-humidity index** and **dewpoint temperature** datasets are also included. These are derived from the NCEP-NCAR surface air temperature and relative humidity reanalysis data. See the API documentation for details.
 
 # Available Regression Models and Estimators
 
