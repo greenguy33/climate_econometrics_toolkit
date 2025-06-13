@@ -1,6 +1,26 @@
-guidance as to the basics of climate econometrics modeling, which types of models are appropriate to construct using the tool, and some pointers to helpful external resources.
+# New Users Guide
 
-# Further Reading
+This brief guide is intended as a practical introduction to some of the more common techniques in climate econometrics, with code snippets showing use of the toolkit's API to implement these techniques are also included. This guide is not intended as an overview of the field, nor as a comprehensive guide to the techniques; see the _Further Reading_ section for resources that can provide a more in-depth introduction to the field.
+
+## Climate Econometrics Basics
+
+Climate econometrics is a field designed to study "how social, economic, and biophysical systems respond to weather" (Rising et al., 2020). To do so, weather data is combined with economic indicator data (i.e., agricultural productivity data, GDP data) and a regression model is fit to these data. Impacts are then computed based on the coefficient estimates derived from the regression output. This section defines a few key terms that newcomers to the field may be unfamiliar with, but which are useful for understanding the basics of a climate econometrics workflow.
+
+* `Gridded Climate Data`
+* `Raster Data Extraction`
+* `Fixed Effects`
+* `Random Effects`
+* `Climate Projections`
+
+
+## Designing an Appropriate Model
+
+There are a wide variety of different econometrics models and use cases that can be used by the field. This section seeks to help guide newcomes to the field towards appropriate model choices given their datasets and use cases. Although it is not possible to cover all possible scenarios, I attempted to select a few common...
+
+
+
+
+## Further Reading
 
 The following links provide practical resources for further broadening one's understanding of climate impacts research.
 
