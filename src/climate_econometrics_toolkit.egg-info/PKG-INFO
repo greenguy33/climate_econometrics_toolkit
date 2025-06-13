@@ -16,7 +16,7 @@ This project contains both a user interface and a Python API designed for helpin
 
 Developer contact: Hayden Freedman (hfreedma@uci.edu)
 
-This README provides a brief overview of the toolkit and instructions for installation. For further documentation, see the [API Quickstart Guide](docs/api_quickstart.md), [Interface Quickstart Guide](docs/interface_quickstart.md) and the [API Documentation](docs/api_documentation.pdf).
+This README provides a brief overview of the toolkit and instructions for installation. For further documentation, see the [API Quickstart Guide](docs/api_quickstart.md), [Interface Quickstart Guide](docs/interface_quickstart.md) and the [API Documentation](docs/api_documentation.pdf). In addition, for those users just getting started with climate impacts research, please see the [Guide for New Users](docs/guide_for_new_users.md), which provides some guidance as to the basics of climate econometrics modeling, which types of models are appropriate to construct using the tool, and some pointers to helpful external resources.
 
 # Is this the right tool for you?
 
@@ -135,6 +135,8 @@ clim_data = api.load_climate_data(weight='cropweighted')
 ag_tfp_data = api.load_usda_fda_data()
 reg_data = api.integrate([ndvi_data,spei_data,clim_data,ag_tfp_data], keep_na=False)
 ```
+
+Preprocessed **temperature-humidity index** and **dewpoint temperature** datasets are also included. These are derived from the NCEP-NCAR surface air temperature and relative humidity reanalysis data. See the API documentation for details.
 
 # Available Regression Models and Estimators
 

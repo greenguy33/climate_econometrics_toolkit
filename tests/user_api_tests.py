@@ -707,8 +707,7 @@ def test_specification_search():
 	model = api.run_specification_search(metric="out_sample_pred_int_cov", cv_folds=2)
 	assert model
 
-
-def test_extract_and_aggregate_raster_data():
+def test_extract_and_aggregate_raster_data_to_year_level():
 
 	shape_file = "tests/test_data/country_shapes/country.shp"
 	weight_file = "tests/test_data/CroplandPastureArea2000_Geotiff/ag_raster_resampled.tif"
@@ -719,75 +718,117 @@ def test_extract_and_aggregate_raster_data():
 	# no weight file
 	raster_data = api.extract_raster_data(monthly_raster_file, shape_file)
 	assert raster_data is not None
-	aggregated_data = api.aggregate_raster_data(raster_data, "tmean", "mean", 12, 1948, shape_file=shape_file, geo_identifier="GMI_CNTRY")
+	aggregated_data = api.aggregate_raster_data_to_year_level(raster_data, "tmean", "mean", 12, 1948, shape_file=shape_file, geo_identifier="GMI_CNTRY")
 	assert aggregated_data is not None
-	assert all(val in range(1948,2025) for val in aggregated_data.time)
+	assert all(val in range(1948,2025) for val in aggregated_data.year)
 
 	# with weight file
 	raster_data = api.extract_raster_data(monthly_raster_file, shape_file, weight_file=weight_file)
 	assert raster_data is not None
-	aggregated_data = api.aggregate_raster_data(raster_data, "tmean", "mean", 12, 1948, shape_file=shape_file, geo_identifier="GMI_CNTRY")
+	aggregated_data = api.aggregate_raster_data_to_year_level(raster_data, "tmean", "mean", 12, 1948, shape_file=shape_file, geo_identifier="GMI_CNTRY")
 	assert aggregated_data is not None
-	assert all(val in range(1948,2025) for val in aggregated_data.time)
+	assert all(val in range(1948,2025) for val in aggregated_data.year)
 
 	raster_data = api.extract_raster_data(monthly_raster_file, shape_file, weight_file=weight_file)
 	assert raster_data is not None
-	aggregated_data = api.aggregate_raster_data(raster_data, "tmean", "mean", 12, 1948, shape_file=shape_file, geo_identifier="GMI_CNTRY")
+	aggregated_data = api.aggregate_raster_data_to_year_level(raster_data, "tmean", "mean", 12, 1948, shape_file=shape_file, geo_identifier="GMI_CNTRY")
 	assert aggregated_data is not None
-	assert all(val in range(1948,2025) for val in aggregated_data.time)
+	assert all(val in range(1948,2025) for val in aggregated_data.year)
 
 	# with default shape file
 	raster_data = api.extract_raster_data(monthly_raster_file)
 	assert raster_data is not None
-	aggregated_data = api.aggregate_raster_data(raster_data, "tmean", "mean", 12, 1948)
+	aggregated_data = api.aggregate_raster_data_to_year_level(raster_data, "tmean", "mean", 12, 1948)
 	assert aggregated_data is not None
-	assert all(val in range(1948,2025) for val in aggregated_data.time)
+	assert all(val in range(1948,2025) for val in aggregated_data.year)
 
 	# test with crop growing season mask
-	aggregated_data = api.aggregate_raster_data(raster_data, "tmean", "mean", 12, 1948, crop="maize")
+	aggregated_data = api.aggregate_raster_data_to_year_level(raster_data, "tmean", "mean", 12, 1948, crop="maize")
 	assert aggregated_data is not None
-	assert all(val in range(1948,2025) for val in aggregated_data.time)
+	assert all(val in range(1948,2025) for val in aggregated_data.year)
 
 	# daily data
 	daily_raster_file = "tests/test_data/climate_raster_data/air.2m.gauss.1948.shifted.nc"
 
 	raster_data = api.extract_raster_data(daily_raster_file, shape_file, weight_file=weight_file)
 	assert raster_data is not None
-	aggregated_data = api.aggregate_raster_data(raster_data, "tmean", "mean", 1464, 1948)
+	aggregated_data = api.aggregate_raster_data_to_year_level(raster_data, "tmean", "mean", 1464, 1948)
 	assert aggregated_data is not None
-	assert len(set(aggregated_data.time)) == 1
+	assert len(set(aggregated_data.year)) == 1
 
-	aggregated_data = api.aggregate_raster_data(raster_data, "tmean", "mean", 1460, 1948)
+	aggregated_data = api.aggregate_raster_data_to_year_level(raster_data, "tmean", "mean", 1460, 1948)
 	assert aggregated_data is not None
-	assert len(set(aggregated_data.time)) == 1
+	assert len(set(aggregated_data.year)) == 1
 
 	# test with default shape file
 	raster_data = api.extract_raster_data(daily_raster_file)
 	assert raster_data is not None
-	aggregated_data = api.aggregate_raster_data(raster_data, "tmean", "mean", 1464, 1948)
+	aggregated_data = api.aggregate_raster_data_to_year_level(raster_data, "tmean", "mean", 1464, 1948)
 	assert aggregated_data is not None
-	assert len(set(aggregated_data.time)) == 1
+	assert len(set(aggregated_data.year)) == 1
 
 	daily_raster_file = "tests/test_data/climate_raster_data/air.2m.gauss.1949.shifted.nc"
 
 	raster_data = api.extract_raster_data(daily_raster_file, shape_file, weight_file=weight_file)
 	assert raster_data is not None
-	aggregated_data = api.aggregate_raster_data(raster_data, "tmean", "mean", 1464, 1949)
+	aggregated_data = api.aggregate_raster_data_to_year_level(raster_data, "tmean", "mean", 1464, 1949)
 	assert aggregated_data is not None
-	assert len(set(aggregated_data.time)) == 1
+	assert len(set(aggregated_data.year)) == 1
 
-	aggregated_data = api.aggregate_raster_data(raster_data, "tmean", "mean", 1460, 1949)
+	aggregated_data = api.aggregate_raster_data_to_year_level(raster_data, "tmean", "mean", 1460, 1949)
 	assert aggregated_data is not None
-	assert len(set(aggregated_data.time)) == 1
+	assert len(set(aggregated_data.year)) == 1
 
 	# test with crop growing season masks    
-	aggregated_data = api.aggregate_raster_data(raster_data, "tmean", "mean", 365, 1949, crop="rice")
+	aggregated_data = api.aggregate_raster_data_to_year_level(raster_data, "tmean", "mean", 365, 1949, crop="rice")
 	assert aggregated_data is not None
-	assert len(set(aggregated_data.time)) == 4
+	assert len(set(aggregated_data.year)) == 4
 
-	aggregated_data = api.aggregate_raster_data(raster_data, "tmean", "mean", 366, 1949, crop="wheat.spring")
+	aggregated_data = api.aggregate_raster_data_to_year_level(raster_data, "tmean", "mean", 366, 1949, crop="wheat.spring")
 	assert aggregated_data is not None
-	assert len(set(aggregated_data.time)) == 4
+	assert len(set(aggregated_data.year)) == 4
+
+
+def test_extract_and_aggregate_raster_data_to_month_level():
+
+	shape_file = "tests/test_data/country_shapes/country.shp"
+	weight_file = "tests/test_data/CroplandPastureArea2000_Geotiff/ag_raster_resampled.tif"
+	
+	daily_raster_file = "tests/test_data/climate_raster_data/air.2m.gauss.1948.shifted.nc"
+
+	raster_data = api.extract_raster_data(daily_raster_file, shape_file, weight_file=weight_file)
+	assert raster_data is not None
+	aggregated_data = api.aggregate_raster_data_to_month_level(raster_data, "tmean", "mean", 4, 1948, 1)
+	assert aggregated_data is not None
+	assert len(set(aggregated_data.year)) == 1
+	assert len(set(aggregated_data.month)) == 12
+
+	aggregated_data = api.aggregate_raster_data_to_month_level(raster_data, "tmean", "mean", 4, 1948, 1)
+	assert aggregated_data is not None
+	assert len(set(aggregated_data.year)) == 1
+	assert len(set(aggregated_data.month)) == 12
+
+	# test with default shape file
+	raster_data = api.extract_raster_data(daily_raster_file)
+	assert raster_data is not None
+	aggregated_data = api.aggregate_raster_data_to_month_level(raster_data, "tmean", "mean", 4, 1948, 1)
+	assert aggregated_data is not None
+	assert len(set(aggregated_data.year)) == 1
+	assert len(set(aggregated_data.month)) == 12
+
+	daily_raster_file = "tests/test_data/climate_raster_data/air.2m.gauss.1949.shifted.nc"
+
+	raster_data = api.extract_raster_data(daily_raster_file, shape_file, weight_file=weight_file)
+	assert raster_data is not None
+	aggregated_data = api.aggregate_raster_data_to_month_level(raster_data, "tmean", "mean", 4, 1949, 1)
+	assert aggregated_data is not None
+	assert len(set(aggregated_data.year)) == 1
+	assert len(set(aggregated_data.month)) == 12
+
+	aggregated_data = api.aggregate_raster_data_to_month_level(raster_data, "tmean", "mean", 4, 1949, 1)
+	assert aggregated_data is not None
+	assert len(set(aggregated_data.year)) == 1
+	assert len(set(aggregated_data.month)) == 12
 
 
 def test_extraction_with_built_in_weight_files():
@@ -1152,9 +1193,9 @@ def test_integrate_dataframes():
 			api.load_spei_data(),
 			api.load_spei_data("cropweighted"),
 			api.load_spei_data("soybeanweighted"),
-			api.load_climate_data(),
-			api.load_climate_data("popweighted"),
-			api.load_climate_data("wheatweighted"),
+			api.load_ncep_ncar_data(),
+			api.load_ncep_ncar_data("popweighted"),
+			api.load_ncep_ncar_data("wheatweighted"),
 			api.load_worldbank_gdp_data(),
 			api.load_usda_fda_data(),
 			api.load_emdat_data()
