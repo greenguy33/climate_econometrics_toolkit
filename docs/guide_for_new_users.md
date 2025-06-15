@@ -61,55 +61,46 @@ api.add_random_effect("Temperature", "Country")
 
 ## Designing an Appropriate Model
 
-There are a wide variety of econometrics models and use cases that can be used by the field. This section seeks to help guide newcomes to the field towards appropriate model choices based on some common use cases. Although it is not possible to cover all possible scenarios, I attempted to provide a few pointers towards appropriate modeling decisions to help new users get started. It is also for new users recommended to look through the code in the `notebooks/` directory, specifically the two paper reproductions.
+There are a wide variety of econometrics models and use cases that can be used by the field. This section seeks to help guide newcomes to the field towards appropriate model choices based on an example use case. Although it is not possible to cover all possible scenarios, I attempted to provide a few pointers towards appropriate modeling decisions to help new users get started. It is also recommended for new users to look through the code in the `notebooks/` directory, specifically the two paper reproductions.
 
-### Treatment of climate variables
+Consider the panel data example shown above, and consider that we would like to study the effect of temperature and precipitation on GDP at the country/year level. Let's assume we've already extracted the gridded climate data and integrated the data into a single regression dataset (see the `api.integrate` method for integration of various datasets that already exist at the same spatiotemporal level).
 
-appropriate weighting scheme
-quadratic, cubic
+### Treatment of dependent variable
 
-### Treatment of economic variables
+Consider applying the first difference of the natural log to the dependent variable (GDP) in climate econometrics models. This approach approximates the percentage change in the dependent variable while also accounting for non-stationarity.
 
-first difference of natural log (if dependent variable)
+```
+api.add_transformation("GDP", ["ln","fd"])
+```
+
+### Treatment of independent variables
+
+It is common to try models with quadratic or cubic transformations of the independent variables in order to account for non-linear effects. For example, we can make Temperature and Precipitation quadratic in the model by adding squared terms:
+
+```
+api.add_transformation("Temperature", "sq")
+api.add_transformation("Precipitation", "sq")
+```
 
 ### Group intercepts (fixed effects)
 
-geography, time
+Adding fixed effects is very common in climate econometrics models, as it is a straightforward way to account for geography- and time- specific effects on the dependent variable that are not directly caused by the independent variables. Let's add both country and year fixed effects to the model:
 
-### Random slopes (random effects)
-
-heterogeneous effects by geography
+```
+api.add_fixed_effects(["Country","Year"])
+```
 
 ### Time trends
 
-### Lagged variables
+Finally, we may choose to add time trends to the model, in order to account for country-specific changes over time that affect the dependent variable. For example, technological advances by a country can impact GDP over time. We can add quadratic time trends (the second argument as '2' in the code snippet below) in order to account for non-linear changes.
 
-### Statistical tests
+```
+api.add_time_trend("Country", 2)
+```
 
-* Stationarity checks
+After applying all of these transformations, we might come to a model that looks like this (which is the model used in the paper [Burke et al.](https://www.nature.com/articles/nature15725)).
 
-panel unit root test
-
-* Cross-sectional dependence checks
-
-* Cointegration checks
-
-### Regression models
-
-* OLS
-
-standard error selection
-
-* Spatial Regression
-
-* Quantile Regression
-
-### Sampling-based inference
-
-* Bayesian Inference
-
-* Block Bootstrap
-
+$\Delta \ln(GDP_{it}) = \beta_1 Temp_{it} + \beta_2 Temp_{it}^2 + \beta_3 Prec_{it} + \beta_4 Prec_{it}^2 + \alpha_i + \delta_t + \gamma_1 t + \gamma_2 t^2 + \varepsilon_{it}$
 
 ## Further Reading
 
