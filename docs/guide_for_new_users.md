@@ -82,6 +82,8 @@ api.add_transformation("Temperature", "sq")
 api.add_transformation("Precipitation", "sq")
 ```
 
+TODO: first differencing of variables based on panel unit root test...(include interpretation of test result)
+
 ### Group intercepts (fixed effects)
 
 Adding fixed effects is very common in climate econometrics models, as it is a straightforward way to account for geography- and time- specific effects on the dependent variable that are not directly caused by the independent variables. Let's add both country and year fixed effects to the model:
