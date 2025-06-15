@@ -1,6 +1,6 @@
 # New Users Guide
 
-This brief guide is intended as a practical introduction to some of the more common techniques in climate econometrics, with code snippets showing use of the toolkit's API to implement these techniques are also included. This guide is not intended as an overview of the field, nor as a comprehensive guide to the techniques; see the _Further Reading_ section for resources that can provide a more in-depth introduction to the field.
+This brief guide is intended as a practical introduction to some of the more common practices in climate econometrics, with code snippets showing use of the toolkit's API to implement these techniques are also included. This guide is not intended as an overview of the field, nor as a comprehensive guide to the techniques; see the _Further Reading_ section for resources that can provide a more in-depth introduction to the field.
 
 ## Climate Econometrics Basics
 
