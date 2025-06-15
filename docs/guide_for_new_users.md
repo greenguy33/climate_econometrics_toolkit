@@ -6,11 +6,58 @@ This brief guide is intended as a practical introduction to some of the more com
 
 Climate econometrics is a field designed to study "how social, economic, and biophysical systems respond to weather" (Rising et al., 2020). To do so, weather data is combined with economic indicator data (i.e., agricultural productivity data, GDP data) and a regression model is fit to these data. Impacts are then computed based on the coefficient estimates derived from the regression output. This section defines a few key terms that newcomers to the field may be unfamiliar with, but which are useful for understanding the basics of a climate econometrics workflow.
 
-* `Gridded Climate Data`
-* `Raster Data Extraction`
-* `Fixed Effects`
-* `Random Effects`
-* `Climate Projections`
+* `Panel Data`: The main type of data that is used in climate econometrics analyses. Panel data consists of observations of a set of variables that are tracked across space (typically countries or lower-level administrative units), and across time (typically years, sometimes months or weeks). In the climate econometrics context, such data allows the construction of models that provide insights into how climate change has impacted macroeconomies over time and how the effect may vary based on geography.
+
+As a brief example, consider this small dataset that shows temperature, precipitation, and GDP across two countries over two years:
+
+| Country  | Year | Temperature (°C) | Precipitation (mm) | GDP (bn USD) |
+| -------- | ---- | ---------------- | ------------------ | ------------ |
+| Country A | 2023 | 15.2             | 820                | 1,800        |
+| Country A | 2024 | 15.7             | 790                | 1,850        |
+| Country B | 2023 | 22.3             | 560                | 2,300        |
+| Country B | 2024 | 23.0             | 610                | 2,334        |
+  
+* `Gridded Climate Data`: Weather data is often available as a matrix of values corresponding to cells of a fixed dimension that are projected across a representation of the globe. Such data allows for more granular insights regarding climate and weather than if it were reported at the administrative level; however, in climate econometrics, it is often necessary to aggregate this data to the administrative level (see subsequent bullet). Also known as "raster data". Common formats for such data are NetCDF and TIF, and it can often be freely downloaded from public repositories.
+  
+* `Raster Data Extraction`: In order to accomodate a model that incorporates both economic data, which is often observed at the level of administrative units, and climate data, which is observed at the grid level, it is necessary to "extract" the climate data based on a shape file defining the relevant geography in order to obtain a single value of the climate variable for each administrative unit. This process may mean the gridded observations across the defined geography (for example, to generate the mean temperature for a given country/year), or in some cases sum them (for example, to generate the total precipitation for a given country/year). The toolkit's default strategy is to use area weighting, meaning that each grid cell falling fully within the shape of a given administrative unit is counted with weight of 1, while grid cells falling on the border between administrative units are weighted based on the fraction of the cell that is within the given administrative unit. Additional weighting schemes assign weights to grid cells based on population (often used in studies assessing the impact of climate change on economic output, or GDP) and cropland (often used to assess the impact of climate change on agricultural productiivty).
+
+In order to extract raster data using the toolkit API, consider a gridded climate data file alongside a shape file defining the boundaries of the administrative units. The gridded data contains 4X daily temperature observations (meaning a total of 1460 observations per year), starting in the year 1948:
+
+```
+extracted = api.extract_raster_data("path_to_gridded_climate_temperature_data.nc", my_shape_file, weights="cropweighted")
+aggregated = aggregate_raster_data_to_year_level(extracted, "temperature", "mean", 1460, 1948)
+```
+  
+* `Fixed Effects`: In the context of climate econometrics, "fixed effects" typically refers to "fixed" (non-random) intercepts that are learned individually for each entity in the panel data. For example, the equation below shows individual intercepts $\alpha$ learned for each country _i_:
+  
+$GDP_{it} = \beta_1 \cdot Temp_{it} + \beta_2 \cdot Prec_{it} + \alpha_i + \varepsilon_{it}$
+
+Such a model accounts for differences between individual countries that may affect the dependent variable (in this case, GDP) external to the impacts of climate on this variable. In addition, it is also common to use year fixed effects to account for temporary global phenomena that affect the dependent variable. To add fixed effects to a model using the toolkit API, see the code snippets below (for country fixed effects, year fixed effects, and both) which can be applied during model construction.
+
+```
+api.add_fixed_effects("Country")
+```
+```
+api.add_fixed_effects("Year")
+```
+```
+api.add_fixed_effects(["Country","Year"])
+```
+  
+
+* `Random Effects`: In the context of climate econometrics, "random effects" typically refers to learning multiple coefficients for a given model covariate based on groups defined by either the geography or time columns in the panel data. These effects are "random" because, while the coefficients are allowed to vary across time or administrative units, the values of the coefficients are drawn from a single, normal distribution that is learned simultaneously to the group level coefficients. Such a model enables variance in the studied effect across panel entities while still assuming that the studied effect operates according to a similar pattern across all entities.
+
+For example, consider that we want to learn the individual effect of temperature on GDP for each country in our dataset using a random slopes model. The equation below shows how this looks. $\beta_1$ is learned as a global coefficient and $u_{1i}$ is an offset from the global coefficient that exists separately for each country.
+
+$GDP_{it} = (\beta_1 + u_{1i}) \cdot Temp_{it} + \beta_2 \cdot Prec_{it} + \alpha + \varepsilon_{it}$
+
+The code snippet below shows how to apply random effects to the variable "Temperature", broken out by "Country". Note that the toolkit currently only supports one variable with random effects per model.
+
+```
+api.add_random_effect("Temperature", "Country")
+```
+
+* `Climate Projections`: After fitting a climate econometrics model, researchers are often interested in understanding the implications of the model by estimating future impacts. To do so, General Circulation Models (GCMs), which project future climate conditions under a variety of possible climatic scenarios, are often downloaded and used alongside the model results. These GCMs typically exist at the grid-cell level and thus require an extraction process similar to the historical gridded climate data that was input to the model. 
 
 ## Designing an Appropriate Model
 
