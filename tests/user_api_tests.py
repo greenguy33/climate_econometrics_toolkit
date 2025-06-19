@@ -5,6 +5,7 @@ import shutil
 import runpy
 
 from climate_econometrics_toolkit import user_api as api
+from climate_econometrics_toolkit import utils
 
 # TODO: ensure all methods in user_api are tested here.
 
@@ -961,6 +962,18 @@ def test_load_ncep_ncar_data():
 	assert data is not None
 	assert "ISO3" in data
 	assert "year" in data
+
+
+def test_load_ncep_ncar_data():
+	
+	for gcm in ["BCC","CanESM5","CNRM","HadGEM3","IPSL","MIROC6","MRI"]:
+		for experiment in ["historical","hist-nat","ssp245"]:
+			for weight in utils.supported_weights:
+				print(gcm, experiment, weight)
+				data = api.load_gcm_data(gcm, experiment, weight)
+				assert data is not None
+				assert "ISO3" in data
+				assert "year" in data
 
 
 def test_load_spei_data():

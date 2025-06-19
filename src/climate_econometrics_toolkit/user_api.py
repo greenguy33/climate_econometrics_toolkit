@@ -169,6 +169,14 @@ def load_ncep_ncar_data(weight="areaweighted"):
     return pd.read_csv(file)
 
 
+def load_gcm_data(gcm, experiment, weight="areaweighted"):
+    utils.assert_with_log(weight in utils.supported_weights, f"Weight argument must be one of: {utils.supported_weights}.")
+    utils.assert_with_log(gcm in ["BCC","CanESM5","CNRM","HadGEM3","IPSL","MIROC6","MRI"], f"GCM argument must be one of: BCC, CanESM5, CNRM, HadGEM3, IPSL, MIROC6, MRI.")
+    utils.assert_with_log(experiment in ["historical","hist-nat","ssp245"], "Experiment argument must be one of: historical, hist-nat, ssp245.")
+    file = files(f"climate_econometrics_toolkit.preprocessed_data.GCM_data.{gcm}.{weight}").joinpath(f'{experiment}.csv')
+    return pd.read_csv(file)
+
+
 def load_temperature_humidity_index_data(weight="areaweighted"):
     utils.assert_with_log(weight in utils.supported_weights, f"Weight argument must be one of: {utils.supported_weights}.")
     if weight == "areaweighted":
