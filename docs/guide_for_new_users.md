@@ -82,6 +82,31 @@ api.add_transformation("Temperature", "sq")
 api.add_transformation("Precipitation", "sq")
 ```
 
+### Stationarity Testing
+
+The decision of whether or not to apply first-differencing  (that is, replacing absolute values of the variables with the difference from year-to-year of thsoe variables) or natural log transformation to model variables can be driven in part by the result of a panel unit root test, which assesses stationarity. To run the panel unit root test, use the following code after constructing a model:
+
+```
+api.run_adf_panel_unit_root_tests()
+```
+This test will output a dataframe with a column named "decision" for each model variable. If the decision is "I(0)", stationarity was not detected and absolute values of the variable is acceptable. If the decision is "I(1)", stationarity was detected and it might be a good idea to apply first-differencing and/or a natural log transformation. These transformations can be applied to a variable via the transformations interface:
+
+Apply first-differencing to a variable:
+```
+api.add_transformation("var_name", "fd)
+```
+
+Apply natural log transformation to a variable:
+```
+apil.add_transformation("var_name", "ln")
+```
+
+Apply both (the transformations are applied in the order they appear in the list):
+```
+apil.add_transformation("var_name", ["ln", "fd"])
+```
+
+
 ### Group intercepts (fixed effects)
 
 Adding fixed effects is very common in climate econometrics models, as it is a straightforward way to account for geography- and time- specific effects on the dependent variable that are not directly caused by the independent variables. Let's add both country and year fixed effects to the model:
