@@ -627,7 +627,7 @@ def predict_out_of_sample(model, data, transform_data=False, var_map=None):
 
 
 def call_user_prediction_function(function_name, args):
-    utils.print_with_log(f"User prediction function '{function_name}' called with args: {args}", "info")
+    utils.print_with_log(f"Called user prediction function '{function_name}'.", "info")
     func = getattr(user_predict, function_name)
     return func(*args)
 
