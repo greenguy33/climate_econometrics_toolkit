@@ -126,6 +126,19 @@ reg_data = api.integrate([ndvi_data,spei_data,clim_data,ag_tfp_data], keep_na=Fa
 
 Preprocessed **temperature-humidity index** and **dewpoint temperature** datasets are also included. These are derived from the NCEP-NCAR surface air temperature and relative humidity reanalysis data. See the API documentation for details.
 
+## Pre-processed General Circulation Model (GCM) Experiment Data
+
+The toolkit also makes available the output of several experiments from General Circulation Models (GCMs) to be used for the computation of historical attribution or projecting future impacts based on a fit model. The table below shows the GCM experiments for which pre-processed data is available. These datasets are all available using extraction with each of the weighting strategies described above. All of the data described below is available from each of the following GCMs: **BCC-CSM2-MR**, **CanESM5**, **CNRM-CM6-1**, **HadGEM3-GC31-LL**, **IPSL-CM6A-LR**, **MIROC6**, and **MRI-ESM2-0**.
+
+| Experiment  | Data Variables                                                                 | Years in Dataset | Num. Countries in Dataset |
+|-------------|----------------------------------------------------------------------------------|------------------|----------------------------|
+| historical  | Maximum and Minimum Surface Air Temperature, Total Precipitation                | 1850 - 2014      | 238                        |
+| hist-nat    | Maximum and Minimum Surface Air Temperature, Total Precipitation                | 1850 - 2020      | 238                        |
+| ssp2-45     | Maximum and Minimum Surface Air Temperature, Total Precipitation                | 2015 - 2100      | 238                        |
+
+See the API method `load_gcm_data(gcm, experiment, weight="areaweighted")` to retrieve pre-processed GCM data.
+
+
 # Available Regression Models and Estimators
 
 The toolkit makes several different types of regressions and estimators available, which are designed to suit a variety of different use cases in the field of climate econometrics. The table below summarizes the types of regressions that can be used to fit specified models:
