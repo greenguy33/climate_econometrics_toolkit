@@ -88,7 +88,7 @@ def run_bayesian_regression(model, use_threading=True):
 
 def run_block_bootstrap(model, std_error_type, use_threading=True):
 	# TODO: check to see if bootstrap already ran for this model
-	regression.run_block_bootstrap(model, std_error_name_map[std_error_type], 1000, use_threading=use_threading)
+	regression.run_block_bootstrap(model, std_error_name_map[std_error_type], 10, use_threading=use_threading)
 
 
 def run_spatial_regression(model, reg_type, model_id, k):
@@ -120,7 +120,7 @@ def extract_raster_data(raster_file, shape_file, weights_file=None):
 
 
 def aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year, crop):
-	return extract.aggregate_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year, subperiods_to_use=None, crop=crop)
+	return extract.aggregate_yearly_raster_data(data, shape_file, climate_var_name, aggregation_func, geo_identifier, subperiods_per_year, starting_year, subperiods_to_use=None, crop=crop)
 
 
 def predict_out_of_sample(model, out_sample_data_file, function_name, use_threading=True):

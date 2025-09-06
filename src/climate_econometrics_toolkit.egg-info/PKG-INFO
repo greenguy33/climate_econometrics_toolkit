@@ -138,6 +138,19 @@ reg_data = api.integrate([ndvi_data,spei_data,clim_data,ag_tfp_data], keep_na=Fa
 
 Preprocessed **temperature-humidity index** and **dewpoint temperature** datasets are also included. These are derived from the NCEP-NCAR surface air temperature and relative humidity reanalysis data. See the API documentation for details.
 
+## Pre-processed General Circulation Model (GCM) Experiment Data
+
+The toolkit also makes available the output of several experiments from General Circulation Models (GCMs) to be used for the computation of historical attribution or projecting future impacts based on a fit model. The table below shows the GCM experiments for which pre-processed data is available. These datasets are all available using extraction with each of the weighting strategies described above. All of the data described below is available from each of the following GCMs: **BCC-CSM2-MR**, **CanESM5**, **CNRM-CM6-1**, **HadGEM3-GC31-LL**, **IPSL-CM6A-LR**, **MIROC6**, and **MRI-ESM2-0**.
+
+| Experiment  | Data Variables                                                                 | Years in Dataset | Num. Countries in Dataset |
+|-------------|----------------------------------------------------------------------------------|------------------|----------------------------|
+| historical  | Maximum and Minimum Surface Air Temperature, Total Precipitation                | 1850 - 2014      | 238                        |
+| hist-nat    | Maximum and Minimum Surface Air Temperature, Total Precipitation                | 1850 - 2020      | 238                        |
+| ssp2-45     | Maximum and Minimum Surface Air Temperature, Total Precipitation                | 2015 - 2100      | 238                        |
+
+See the API method `load_gcm_data(gcm, experiment, weight="areaweighted")` to retrieve pre-processed GCM data.
+
+
 # Available Regression Models and Estimators
 
 The toolkit makes several different types of regressions and estimators available, which are designed to suit a variety of different use cases in the field of climate econometrics. The table below summarizes the types of regressions that can be used to fit specified models:
@@ -153,3 +166,7 @@ The toolkit makes several different types of regressions and estimators availabl
 The toolkit provides functionality to automatically compute growing and killing degree days for the entire year as well as various crop growing seasons, and automatically integrates them with existing regression data. See the methods `compute_degree_days` and `add_degree_days_to_dataframe` (which calls `compute_degree_days` under the hood) in the API documentation. 
 
 Degree days can be calculated using one of two methods of computation: `country` and `grid`. `country` computation is less accurate but faster, as it simply uses the mean daily temperature for entire countries. `grid` computation is more time-consuming, but captures heterogeneous temperature effects that are present at the grid level. The computation mode is specified by the `computation` argument to both of the methods mentioned above. In order to use the `grid` computation method, you must download the gridded daily temperature data available [here](https://drive.google.com/drive/folders/1c7bl8vR9HtIUxDTYMFB3HyfJRyqcOQQQ?usp=drive_link) and place it in your `cet_home` directory with the sub-directory structure `daily_temp_mean/gridded/...`.
+
+The formula used to compute GDDs is shown below. Note that _i_ represents either a country or a grid cell, depending on the specified computation mode. D is the total number of days to be considered, which may be either all days of the year or days over a specified crop's growing season, depending on user configuration.
+
+![Screenshot from 2025-06-15 16-11-48](https://github.com/user-attachments/assets/55574c70-0932-4186-8b3b-d1baf787feb9)

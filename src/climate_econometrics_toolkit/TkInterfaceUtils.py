@@ -13,6 +13,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.transforms as transform
 
 import climate_econometrics_toolkit.interface_api as api
+import climate_econometrics_toolkit.user_api as user_api
+
 import climate_econometrics_toolkit.utils as utils
 from climate_econometrics_toolkit.Popups import *
 
@@ -56,15 +58,22 @@ class TkInterfaceUtils():
 		if self.dnd.variables_displayed:
 			self.update_interface_window_output("Please clear the canvas before loading another dataset.")
 		else:
-			filename = filedialog.askopenfilename(
+			filenames = filedialog.askopenfilenames(
 				initialdir = "/",
-				title = "Select a File",
+				title = "Select one or more CSV file(s)",
 				filetypes = (("CSV files",
 							"*.csv*"),
 							("all files",
 							"*.*"))
 			  )
-			# filename = "data/GDP_climate_test_data.csv"
+			
+			if len(filenames) == 1:
+				filename = filenames[0]
+			else:
+				dfs = [pd.read_csv(file) for file in filenames]
+				integrated_df = user_api.integrate(dfs)
+				filename = f"{cet_home}/data/integrated_dataset_{time.time()}.csv"
+				integrated_df.to_csv(filename)
 
 			self.dnd.data_source = filename.split("/")[-1]
 			self.dnd.filename = filename
@@ -317,11 +326,12 @@ class TkInterfaceUtils():
 		common_time_vals = set()
 		common_geo_vals = set()
 		for dataset in raster_datasets:
+			time_key = "time" if "time" in dataset else "year"
 			if len(common_time_vals) == 0:
-				common_time_vals = set(dataset["time"])
+				common_time_vals = set(dataset[time_key])
 			else:
 				for time_val in common_time_vals:
-					if time_val not in set(dataset["time"]):
+					if time_val not in set(dataset[time_key]):
 						common_time_vals.remove(time_val)
 			if len(common_geo_vals) == 0:
 				common_geo_vals = set(dataset[geo_id])
@@ -330,14 +340,15 @@ class TkInterfaceUtils():
 					if geo_val not in set(dataset[geo_id]):
 						common_geo_vals.remove(geo_val)
 		for dataset in raster_datasets:
-			dataset = dataset[dataset["time"].isin(common_time_vals)]
+			time_key = "time" if "time" in dataset else "year"
+			dataset = dataset[dataset[time_key].isin(common_time_vals)]
 			dataset = dataset[dataset[geo_id].isin(common_geo_vals)]
 		df = pd.DataFrame()
 		df[geo_id] = raster_datasets[0][geo_id]
-		df["time"] = raster_datasets[0]["time"]
+		df[time_key] = raster_datasets[0][time_key]
 		for dataset in raster_datasets:
 			df[dataset.columns[2]] = dataset[dataset.columns[2]]
-		df.to_csv(f"{cet_home}/raster_output/integrated_dataset_with_{len(raster_datasets)}_input_files.csv")
+		df.to_csv(f"{cet_home}/raster_output/integrated_dataset_with_{len(raster_datasets)}_input_files_{time.time()}.csv")
 
 
 	def raster_aggregation(self, raster_files, shape_file, aggregation_func, weights_file, subperiods_per_year, starting_year, crop, geo_identifier):
@@ -351,9 +362,9 @@ class TkInterfaceUtils():
 		if len(raster_files) == 1:
 			raster_file_short = raster_file.split("/")[-1].rpartition('.')[0]
 			raster_datasets[0].to_csv(f"{cet_home}/raster_output/{raster_file_short}.csv")
+			utils.print_with_log(f"Raster aggregation completed; output is available in {cet_home}/raster_output/{raster_file_short}.csv", "info")
 		else:
 			self.integrate_raster_datasets(raster_datasets, geo_identifier)
-		utils.print_with_log(f"Raster aggregation completed; output is available in {cet_home}/raster_output/{raster_file_short}.csv", "info")
 
 
 	def predict_out_of_sample(self):
